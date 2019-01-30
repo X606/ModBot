@@ -1,0 +1,33 @@
+GameFlowManager
+    Start()
+{
+
+    gameObject.AddComponent<WaitThenCallClass>();
+    gameObject.AddComponent<moddedObjectsManager>();
+    gameObject.AddComponent<ModsManager>();
+
+
+}
+Firstpersonmover
+    private new void Start()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnFirstPersonMoverSpawned(base.gameObject);
+    base.Start();
+}
+Firstpersonmover
+    void Update()
+{
+    ModsManager.Instance.passOnMod.OnFirstPersonMoverUpdate(gameObject);
+}
+
+LevelEditorUI
+Show()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnLevelEditorStarted();
+}
+
+ObjectPlacedInLevel
+Initialize()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnObjectPlacedInLevelEditor(base.gameObject);
+}

@@ -1,0 +1,1099 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+// Token: 0x0200095A RID: 2394
+public class GlobalEventManager : Singleton<GlobalEventManager>
+{
+	// Token: 0x06004741 RID: 18241 RVA: 0x00184C8D File Offset: 0x0018308D
+	public GlobalEventManager()
+	{
+	}
+
+	// Token: 0x06004742 RID: 18242 RVA: 0x00184C95 File Offset: 0x00183095
+	public override void Awake()
+	{
+		base.Awake();
+		this._eventListeners = new Dictionary<string, List<object>>();
+		this._onceListeners = new Dictionary<string, List<object>>();
+        this._moddedListenters = new Dictionary<string, List<fakeAction>>();
+    }
+
+	// Token: 0x06004743 RID: 18243 RVA: 0x00184CB4 File Offset: 0x001830B4
+	public void AddEventListenerOnce<T>(string eventName, Action<T> callback)
+	{
+		List<object> onceCallbackList = this.getOnceCallbackList(eventName);
+		onceCallbackList.Add(callback);
+	}
+
+	// Token: 0x06004744 RID: 18244 RVA: 0x00184CD0 File Offset: 0x001830D0
+	public void AddEventListenerOnce(string eventName, Action callback)
+	{
+		List<object> onceCallbackList = this.getOnceCallbackList(eventName);
+		onceCallbackList.Add(callback);
+	}
+
+	// Token: 0x06004745 RID: 18245 RVA: 0x00184CEC File Offset: 0x001830EC
+	public void AddEventListener<T>(string eventName, Action<T> callback)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		if (callbackList.Contains(callback))
+		{
+		}
+		callbackList.Add(callback);
+	}
+	
+	// Token: 0x06004746 RID: 18246 RVA: 0x00184D14 File Offset: 0x00183114
+	public void AddEventListener(string eventName, Action callback)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		if (callbackList.Contains(callback))
+		{
+		}
+		callbackList.Add(callback);
+	}
+
+	public void AddModdedEventListener(string eventName, Type type, string meahodName,object instance)
+	{
+		MethodInfo method = type.GetMethod(meahodName);
+
+		fakeAction callback = new fakeAction(method,instance);
+		List<fakeAction> callbackList = this.getModdedCallbackList(eventName);
+		if (callbackList.Contains(callback))
+		{
+		}
+		callbackList.Add(callback);
+	}
+	// Token: 0x06004747 RID: 18247 RVA: 0x00184D3C File Offset: 0x0018313C
+	public void RemoveEventListener(string eventName, Action callback)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		if (!callbackList.Contains(callback))
+		{
+		}
+		callbackList.Remove(callback);
+	}
+	public void RemoveModdedEventListener(string eventName, Type type, string meahodName,object instance)
+	{
+		MethodInfo method = type.GetMethod(meahodName);
+
+		fakeAction callback = new fakeAction(method,instance);
+		List<object> callbackList = this.getCallbackList(eventName);
+		if (!callbackList.Contains(callback))
+		{
+		}
+		callbackList.Remove(callback);
+	}
+
+	// Token: 0x06004748 RID: 18248 RVA: 0x00184D68 File Offset: 0x00183168
+	public void RemoveEventListener<T>(string eventName, Action<T> callback)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		if (!callbackList.Contains(callback))
+		{
+		}
+		callbackList.Remove(callback);
+	}
+
+	// Token: 0x06004749 RID: 18249 RVA: 0x00184D94 File Offset: 0x00183194
+	public void Dispatch(string eventName)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		foreach (object obj in callbackList)
+		{
+			Action action = (Action)obj;
+			action();
+		}
+		List<object> onceCallbackList = this.getOnceCallbackList(eventName);
+		foreach (object obj2 in onceCallbackList)
+		{
+			Action action2 = (Action)obj2;
+			action2();
+		}
+
+		List<fakeAction> moddedCallbackList = this.getModdedCallbackList(eventName);
+		foreach (fakeAction obj2 in moddedCallbackList)
+		{
+			obj2.Invoke(new object[]{});
+		}
+
+		onceCallbackList.Clear();
+	}
+	private Dictionary<string, List<fakeAction>> _moddedListenters;
+
+	// Token: 0x0600474A RID: 18250 RVA: 0x00184E54 File Offset: 0x00183254
+	public void Dispatch<T>(string eventName, T argument)
+	{
+		List<object> callbackList = this.getCallbackList(eventName);
+		for (int i = 0; i < callbackList.Count; i++)
+		{
+			Action<T> action = callbackList[i] as Action<T>;
+			if (action != null)
+			{
+				action(argument);
+			}
+		}
+		List<object> onceCallbackList = this.getOnceCallbackList(eventName);
+		for (int j = 0; j < onceCallbackList.Count; j++)
+		{
+			Action<T> action2 = onceCallbackList[j] as Action<T>;
+			if (action2 != null)
+			{
+				action2(argument);
+			}
+		}
+
+		List<fakeAction> moddedCallbackList = this.getModdedCallbackList(eventName);
+		for (int j = 0; j < moddedCallbackList.Count; j++)
+		{
+			moddedCallbackList[j].Invoke(new object[]{});
+		}
+		onceCallbackList.Clear();
+	}
+
+	// Token: 0x0600474B RID: 18251 RVA: 0x00184EE1 File Offset: 0x001832E1
+	private List<object> getCallbackList(string eventName)
+	{
+		if (!this._eventListeners.ContainsKey(eventName))
+		{
+			this._eventListeners[eventName] = new List<object>();
+		}
+		return this._eventListeners[eventName];
+	}
+
+	// Token: 0x0600474C RID: 18252 RVA: 0x00184F11 File Offset: 0x00183311
+	private List<object> getOnceCallbackList(string eventName)
+	{
+		if (!this._onceListeners.ContainsKey(eventName))
+		{
+			this._onceListeners[eventName] = new List<object>();
+		}
+		return this._onceListeners[eventName];
+	}
+	private List<fakeAction> getModdedCallbackList(string eventName)
+	{
+		if (!this._moddedListenters.ContainsKey(eventName))
+		{
+			this._moddedListenters[eventName] = new List<fakeAction>();
+		}
+		return this._moddedListenters[eventName];
+	}
+	// Token: 0x04003594 RID: 13716
+	private Dictionary<string, List<object>> _eventListeners;
+
+	// Token: 0x04003595 RID: 13717
+	private Dictionary<string, List<object>> _onceListeners;
+}
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
+using UnityEngine;
+
+// Token: 0x02000A98 RID: 2712
+public class LevelObjectsLibraryManager : Singleton<LevelObjectsLibraryManager>
+{
+    // Token: 0x06004DB3 RID: 19891
+    public LevelObjectsLibraryManager()
+    {
+    }
+
+    // Token: 0x06004DB4 RID: 19892
+    public void Initialize()
+    {
+        string text = (Resources.Load("Data/LevelObjects/LevelObjectManifest") as TextAsset).text;
+
+        string[] files = Directory.GetFiles(LevelObjectsLibraryManager.getSubdomain(Application.dataPath) + "mods");
+        List<LevelObjectEntry> moddedObjects = new List<LevelObjectEntry>();
+        for (int i = 0; i < files.Length; i++)
+        {
+            if (files[i].EndsWith(".json"))
+            {
+                string value = File.ReadAllText(files[i]);
+                moddedObjects = addToList(moddedObjects, JsonConvert.DeserializeObject<List<LevelObjectEntry>>(value, LevelObjectsLibraryManager.getSerializerSettings()));
+            }
+        }
+        this._levelObjects = JsonConvert.DeserializeObject<List<LevelObjectEntry>>(text, LevelObjectsLibraryManager.getSerializerSettings());
+
+
+        _levelObjects = addToList(_levelObjects, moddedObjects);
+
+        this._visibleLevelObjects = new List<LevelObjectEntry>(this._levelObjects);
+        this._visibleLevelObjects.RemoveAll((LevelObjectEntry entry) => entry.IsUnityEditorOnly());
+    }
+    List<LevelObjectEntry> addToList(List<LevelObjectEntry> org, List<LevelObjectEntry> _new)
+    {
+        for (int i = 0; i < _new.Count; i++)
+        {
+            org.Add(_new[i]);
+        }
+        return org;
+
+    }
+    // Token: 0x06004DB5 RID: 19893
+    public List<LevelObjectEntry> GetVisibleLevelEditorObjects()
+    {
+        return this._visibleLevelObjects;
+    }
+
+    // Token: 0x06004DB6 RID: 19894
+    public List<LevelObjectEntry> GetLevelObjectsInLibrary()
+    {
+        return this._levelObjects;
+    }
+
+    // Token: 0x06004DB7 RID: 19895
+    public static JsonSerializerSettings getSerializerSettings()
+    {
+        return new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.All
+        };
+    }
+
+    // Token: 0x06004DB8 RID: 19896
+    public List<LevelObjectEntry> GetAllEnemyLevelObjects()
+    {
+        List<LevelObjectEntry> list = new List<LevelObjectEntry>();
+        for (int i = 0; i < this._levelObjects.Count; i++)
+        {
+            if (this._levelObjects[i].IsEnemy())
+            {
+                list.Add(this._levelObjects[i]);
+            }
+        }
+        return list;
+    }
+
+    // Token: 0x06006020 RID: 24608
+    private static string getSubdomain(string path)
+    {
+        string[] subDomains = path.Split(new char[]
+        {
+            '/'
+        });
+        string newDomain = "";
+        for (int i = 0; i < subDomains.Length - 1; i++)
+        {
+            newDomain = newDomain + subDomains[i] + "/";
+        }
+        return newDomain;
+    }
+
+    // Token: 0x04003B33 RID: 15155
+    private List<LevelObjectEntry> _levelObjects;
+
+    // Token: 0x04003B34 RID: 15156
+    private List<LevelObjectEntry> _visibleLevelObjects;
+}
+using System;
+using System.IO;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+// Token: 0x02000A9B RID: 2715
+public class LibraryListItemDisplay : MonoBehaviour, IPointerUpHandler, IEventSystemHandler, IPointerDownHandler, IDragHandler
+{
+    // Token: 0x06004DC0 RID: 19904 RVA: 0x000425F4 File Offset: 0x000407F4
+    public void Populate(LevelObjectEntry levelObjectEntry)
+    {
+        this.ItemName.text = levelObjectEntry.DisplayName;
+        this._item = levelObjectEntry;
+        this.ItemPreviewImage.sprite = this.PNGPathToSprite(levelObjectEntry.PreviewPathUnderResources);
+    }
+
+    // Token: 0x06004DC1 RID: 19905
+    private Sprite PNGPathToSprite(string previewPathUnderResources)
+    {
+        Texture2D texture2D = new Texture2D(10, 10);
+        if (previewPathUnderResources.StartsWith("modded/"))
+        {
+            string temp = previewPathUnderResources.Replace("modded/", "");
+            byte[] data = File.ReadAllBytes(LibraryListItemDisplay.getSubdomain(Application.dataPath) + "mods/" + temp);
+            texture2D.LoadImage(data);
+        }
+        else
+        {
+            texture2D = Resources.Load<Texture2D>(previewPathUnderResources.Replace(".png", string.Empty));
+        }
+        return Sprite.Create(texture2D, new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    // Token: 0x06004DC2 RID: 19906 RVA: 0x00042625 File Offset: 0x00040825
+    public bool IsInFolder(string folderPath)
+    {
+        return this._item.PathUnderResources.StartsWith(folderPath);
+    }
+
+    // Token: 0x06004DC3 RID: 19907 RVA: 0x00017899 File Offset: 0x00015A99
+    public void OnPointerUp(PointerEventData eventData)
+    {
+    }
+
+    // Token: 0x06004DC4 RID: 19908 RVA: 0x00042638 File Offset: 0x00040838
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Singleton<LevelEditorSelectionManager>.Instance.SetLibraryItemPointerDown(this._item);
+    }
+
+    // Token: 0x06004DC5 RID: 19909 RVA: 0x00017899 File Offset: 0x00015A99
+    public void OnDrag(PointerEventData eventData)
+    {
+    }
+
+    // Token: 0x06006047 RID: 24647
+    private static string getSubdomain(string path)
+    {
+        string[] subDomains = path.Split(new char[]
+        {
+            '/'
+        });
+        string newDomain = "";
+        for (int i = 0; i < subDomains.Length - 1; i++)
+        {
+            newDomain = newDomain + subDomains[i] + "/";
+        }
+        return newDomain;
+    }
+
+    // Token: 0x04003B3E RID: 15166
+    public Text ItemName;
+
+    // Token: 0x04003B3F RID: 15167
+    public Image ItemBackground;
+
+    // Token: 0x04003B40 RID: 15168
+    public Image ItemPreviewImage;
+
+    // Token: 0x04003B41 RID: 15169
+    private LevelObjectEntry _item;
+
+    // Token: 0x04003B42 RID: 15170
+    private bool _isSelected;
+}
+using System;
+using System.Collections.Generic;
+using ModLibrary;
+using UnityEngine;
+
+// Token: 0x02000A7D RID: 2685
+public class LevelEditorObjectPlacementManager : Singleton<LevelEditorObjectPlacementManager>
+{
+    // Token: 0x06004CD8 RID: 19672 RVA: 0x001AF204 File Offset: 0x001AD404
+    public void Initialize()
+    {
+        this.ResetLevelObjectCount();
+        this._levelRoot = new GameObject().transform;
+        this._levelRoot.gameObject.name = "LevelRoot";
+        this._selectedSceneObjects = new List<ObjectPlacedInLevel>();
+        this._copiedObjects = new List<LevelEditorLevelObject>();
+        this._groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Singleton<GlobalEventManager>.Instance.AddEventListener(GlobalEvents.LevelEditorLevelOpened, new Action(this.onLevelOpened));
+    }
+
+    // Token: 0x06004CD9 RID: 19673 RVA: 0x00041BCE File Offset: 0x0003FDCE
+    private void OnDestroy()
+    {
+        Singleton<GlobalEventManager>.Instance.RemoveEventListener(GlobalEvents.LevelEditorLevelOpened, new Action(this.onLevelOpened));
+    }
+
+    // Token: 0x06004CDA RID: 19674 RVA: 0x00041BEB File Offset: 0x0003FDEB
+    private void onLevelOpened()
+    {
+        this._isDragging = false;
+        this._hasCreatedObjectsBeingPlaced = false;
+        this._selectedSceneObjects.Clear();
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSelectionChanged);
+    }
+
+    // Token: 0x06004CDB RID: 19675 RVA: 0x00041C15 File Offset: 0x0003FE15
+    public bool IsGoingToReselectSomething()
+    {
+        return this._isDeselectingButGoingToReselect;
+    }
+
+    // Token: 0x06004CDC RID: 19676 RVA: 0x00041C1D File Offset: 0x0003FE1D
+    public List<ObjectPlacedInLevel> GetAllObjectsInLevelSameDifficultyGroup()
+    {
+        return this._allObjectsInLevel.FindAll(delegate (ObjectPlacedInLevel o)
+        {
+            LevelEnemySpawner component = o.GetComponent<LevelEnemySpawner>();
+            return component == null || component.DifficultyGroupIndex == Singleton<LevelEditorDifficultyManager>.Instance.GetCurrentDifficultyIndex();
+        });
+    }
+
+    // Token: 0x06004CDD RID: 19677 RVA: 0x00041C47 File Offset: 0x0003FE47
+    public Transform GetLevelRoot()
+    {
+        return this._levelRoot;
+    }
+
+    // Token: 0x06004CDE RID: 19678 RVA: 0x00041C4F File Offset: 0x0003FE4F
+    public List<ObjectPlacedInLevel> GetSelectedSceneObjects()
+    {
+        return this._selectedSceneObjects;
+    }
+
+    // Token: 0x06004CDF RID: 19679 RVA: 0x00041C57 File Offset: 0x0003FE57
+    public bool IsDraggingObjectsFreely()
+    {
+        return this._isDragging;
+    }
+
+    // Token: 0x06004CE0 RID: 19680 RVA: 0x00041C5F File Offset: 0x0003FE5F
+    public void StartDraggingFromLibrary()
+    {
+        this.DeselectEverything();
+        this._isDragging = true;
+        this._hasCreatedObjectsBeingPlaced = false;
+        this._draggingMouseOffset = Vector3.zero;
+    }
+
+    // Token: 0x06004CE1 RID: 19681 RVA: 0x001AF284 File Offset: 0x001AD484
+    public ObjectPlacedInLevel PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedLevelObjectEntry, Transform levelRoot)
+    {
+        Transform transform = null;
+        if (objectPlacedLevelObjectEntry.PathUnderResources.StartsWith("modded/"))
+        {
+            string[] array = objectPlacedLevelObjectEntry.PathUnderResources.Split(new char[]
+            {
+                '/'
+            });
+            if (array.Length != 3)
+            {
+                Debug.LogError("'" + objectPlacedLevelObjectEntry.PathUnderResources + "' was not set up right! It needs to only have 2 '/'es");
+            }
+            try
+            {
+                transform = AssetLoader.getObjectFromFile(array[1], array[2]).transform;
+                goto IL_8A;
+            }
+            catch
+            {
+                Debug.LogError("You dont have the mod '" + array[1] + "* installed, please install this mod to use this level");
+                goto IL_8A;
+            }
+        }
+        transform = Resources.Load<Transform>(objectPlacedLevelObjectEntry.PathUnderResources);
+    IL_8A:
+        if (transform == null)
+        {
+            Debug.LogError("PlaceObjectInLevelRoot, Can't find asset: " + objectPlacedLevelObjectEntry.PathUnderResources);
+            return null;
+        }
+        Transform transform2 = UnityEngine.Object.Instantiate<Transform>(transform);
+        transform2.SetParent(levelRoot, false);
+        if (!objectPlacedLevelObjectEntry.IsSection())
+        {
+            transform2.gameObject.AddComponent<SectionMember>();
+        }
+        ObjectPlacedInLevel objectPlacedInLevel = transform2.gameObject.AddComponent<ObjectPlacedInLevel>();
+        objectPlacedInLevel.LevelObjectEntry = objectPlacedLevelObjectEntry;
+        ObjectPlacedInLevel objectPlacedInLevel2 = objectPlacedInLevel;
+        int currentLevelObjectCount = this._currentLevelObjectCount;
+        this._currentLevelObjectCount = currentLevelObjectCount + 1;
+        objectPlacedInLevel2.Initialize(currentLevelObjectCount);
+        this.registerObjectInAllObjectList(objectPlacedInLevel);
+        return objectPlacedInLevel;
+    }
+
+    // Token: 0x06004CE2 RID: 19682 RVA: 0x00041C80 File Offset: 0x0003FE80
+    private void registerObjectInAllObjectList(ObjectPlacedInLevel objectPlaced)
+    {
+        if (this._allObjectsInLevel == null)
+        {
+            this._allObjectsInLevel = new List<ObjectPlacedInLevel>();
+        }
+        this._allObjectsInLevel.Add(objectPlaced);
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorObjectCountChanged);
+    }
+
+    // Token: 0x06004CE3 RID: 19683 RVA: 0x00041CB3 File Offset: 0x0003FEB3
+    public void RemoveObjectfromAllObjectList(ObjectPlacedInLevel objectPlaced)
+    {
+        if (this._allObjectsInLevel != null && this._allObjectsInLevel.Contains(objectPlaced))
+        {
+            this._allObjectsInLevel.Remove(objectPlaced);
+            Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorObjectCountChanged);
+        }
+    }
+
+    // Token: 0x06004CE4 RID: 19684 RVA: 0x00041CED File Offset: 0x0003FEED
+    public void StopDragging()
+    {
+        this._isDragging = false;
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSceneDraggingStopped);
+    }
+
+    // Token: 0x06004CE5 RID: 19685 RVA: 0x001AF374 File Offset: 0x001AD574
+    private void Update()
+    {
+        if (!Singleton<GameFlowManager>.Instance.IsInEditorMode())
+        {
+            return;
+        }
+        if (Singleton<GameUIRoot>.Instance.LevelEditorUI.AreAnyDialogsOpen())
+        {
+            return;
+        }
+        this.setUpArenaBoundsIfNotSet();
+        if (this._isDragging)
+        {
+            this.updateDragging();
+        }
+        if (this._selectedSceneObjects.Count > 0 && !this._isDragging && Singleton<InputManager>.Instance.HotKeysEnabled())
+        {
+            if (InputManager.IsControlOrAppleDown() && Input.GetKeyDown(KeyCode.D))
+            {
+                this.duplicateCurrentSelection();
+            }
+            else if (InputManager.IsControlOrAppleDown() && Input.GetKeyDown(KeyCode.C))
+            {
+                this.copyCurrentSelection();
+            }
+            else if (InputManager.IsControlOrAppleDown() && Input.GetKeyDown(KeyCode.V))
+            {
+                this.pasteCurrentSelection();
+            }
+            else if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))
+            {
+                this.DeleteCurrentSelection();
+            }
+        }
+        if (!Input.GetKey(KeyCode.Space) && !Singleton<LevelEditorToolManager>.Instance.IsMouseOverAnyTool() && !Singleton<UIManager>.Instance.IsMouseOverUIElement() && Input.GetMouseButtonDown(0))
+        {
+            this._objectSelectedOnButtonDown = LevelEditorObjectPlacementManager.getClickedOnObjectPointer();
+            bool flag = this._objectSelectedOnButtonDown != null;
+            if (flag && this._selectedSceneObjects.Contains(this._objectSelectedOnButtonDown))
+            {
+                if (InputManager.IsHoldingMultiSelectKey())
+                {
+                    this.Deselect(this._objectSelectedOnButtonDown);
+                }
+                else
+                {
+                    bool flag2 = flag && LevelEditorToolRestriction.ObjectRestrictedWithCurrentTool(this._objectSelectedOnButtonDown);
+                    if (flag2)
+                    {
+                        Singleton<LevelEditorToolManager>.Instance.SetActiveTool(LevelEditorToolType.DragFreely);
+                    }
+                    if (Singleton<LevelEditorToolManager>.Instance.GetActiveToolType() == LevelEditorToolType.DragFreely)
+                    {
+                        this._isDragging = true;
+                        Vector3 a = Camera.main.WorldToScreenPoint(this._objectSelectedOnButtonDown.GetGlobalMoveCenterPosition());
+                        this._draggingMouseOffset = a - Input.mousePosition;
+                        this._draggingMouseOffset.z = 0f;
+                    }
+                }
+            }
+            else
+            {
+                this.deselectEverythingIfNotHoldingMultiselect(flag);
+                if (flag)
+                {
+                    this.Select(this._objectSelectedOnButtonDown);
+                }
+            }
+        }
+    }
+
+    // Token: 0x06004CE6 RID: 19686 RVA: 0x001AF580 File Offset: 0x001AD780
+    private static ObjectPlacedInLevel getClickedOnObjectPointer()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        ObjectPlacedInLevel result = null;
+        RaycastHit[] array = Physics.RaycastAll(ray);
+        float num = -1f;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (!array[i].collider.isTrigger || !(array[i].collider.GetComponent<TriggerWorksInLevelEditor>() == null))
+            {
+                ObjectPlacedInLevel componentInParent = array[i].collider.transform.GetComponentInParent<ObjectPlacedInLevel>();
+                if (componentInParent != null && (num < 0f || array[i].distance < num))
+                {
+                    num = array[i].distance;
+                    result = componentInParent;
+                }
+            }
+        }
+        return result;
+    }
+
+    // Token: 0x06004CE7 RID: 19687 RVA: 0x001AF654 File Offset: 0x001AD854
+    public void DeleteCurrentSelection()
+    {
+        if (this._selectedSceneObjects.Count == 0 || (this._selectedSceneObjects.Count == 1 && !this._selectedSceneObjects[0].CanBeDeleted()))
+        {
+            return;
+        }
+        Singleton<GameUIRoot>.Instance.LevelEditorUI.DeleteConfirmationDialog.Show(this._selectedSceneObjects, new Action(this.deleteSelectedObjects));
+    }
+
+    // Token: 0x06004CE8 RID: 19688 RVA: 0x00041D05 File Offset: 0x0003FF05
+    public void TemporarilyDeselectEverything()
+    {
+        this._isDeselectingButGoingToReselect = true;
+        this.DeselectEverything();
+        this._isDeselectingButGoingToReselect = false;
+    }
+
+    // Token: 0x06004CE9 RID: 19689 RVA: 0x00041D1B File Offset: 0x0003FF1B
+    public void Select(ObjectPlacedInLevel objectToSelect)
+    {
+        if (!this._selectedSceneObjects.Contains(objectToSelect))
+        {
+            this._selectedSceneObjects.Add(objectToSelect);
+            objectToSelect.ChangeToSelectionVisuals();
+            Singleton<LevelEditorSelectionManager>.Instance.ClearFileAndLibrarySelections();
+            Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSelectionChanged);
+        }
+    }
+
+    // Token: 0x06004CEA RID: 19690 RVA: 0x00041D59 File Offset: 0x0003FF59
+    public void Deselect(ObjectPlacedInLevel objectToDeselect)
+    {
+        if (this._selectedSceneObjects.Contains(objectToDeselect))
+        {
+            this._selectedSceneObjects.Remove(objectToDeselect);
+            objectToDeselect.ChangeToNotSelectedVisuals();
+            Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSelectionChanged);
+        }
+    }
+
+    // Token: 0x06004CEB RID: 19691 RVA: 0x001AF6C0 File Offset: 0x001AD8C0
+    public void DeselectEverything()
+    {
+        for (int i = 0; i < this._selectedSceneObjects.Count; i++)
+        {
+            this._selectedSceneObjects[i].ChangeToNotSelectedVisuals();
+        }
+        this._selectedSceneObjects.Clear();
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSelectionChanged);
+    }
+
+    // Token: 0x06004CEC RID: 19692 RVA: 0x00041D8E File Offset: 0x0003FF8E
+    private void deselectEverythingIfNotHoldingMultiselect(bool hasObject)
+    {
+        if (!InputManager.IsHoldingMultiSelectKey())
+        {
+            if (hasObject)
+            {
+                this.TemporarilyDeselectEverything();
+            }
+            else
+            {
+                this.DeselectEverything();
+            }
+        }
+    }
+
+    // Token: 0x06004CED RID: 19693 RVA: 0x001AF714 File Offset: 0x001AD914
+    private void updateDragging()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition + this._draggingMouseOffset);
+        RaycastHit[] array = Physics.RaycastAll(ray);
+        bool flag = false;
+        Vector3 hitPosition = Vector3.zero;
+        float num = -1f;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (!array[i].collider.isTrigger)
+            {
+                ObjectPlacedInLevel componentInParent = array[i].collider.transform.GetComponentInParent<ObjectPlacedInLevel>();
+                if (componentInParent != null && !this._selectedSceneObjects.Contains(componentInParent) && (num < 0f || array[i].distance < num))
+                {
+                    num = array[i].distance;
+                    hitPosition = array[i].point;
+                    flag = true;
+                }
+            }
+        }
+        float distance;
+        if (!flag && this._groundPlane.Raycast(ray, out distance))
+        {
+            hitPosition = ray.GetPoint(distance);
+            flag = true;
+        }
+        if (flag)
+        {
+            if (!this._hasCreatedObjectsBeingPlaced)
+            {
+                LevelObjectEntry selectedLibraryItem = Singleton<LevelEditorSelectionManager>.Instance.GetSelectedLibraryItem();
+                if (selectedLibraryItem != null)
+                {
+                    LevelObjectEntry objectPlacedLevelObjectEntry = selectedLibraryItem;
+                    ObjectPlacedInLevel objectPlacedInLevel = this.PlaceObjectInLevelRoot(objectPlacedLevelObjectEntry, this._levelRoot);
+                    if (LevelEditorToolRestriction.ObjectRestrictedWithCurrentTool(objectPlacedInLevel))
+                    {
+                        Singleton<LevelEditorToolManager>.Instance.SetActiveTool(LevelEditorToolType.DragFreely);
+                    }
+                    this.Select(objectPlacedInLevel);
+                    this._objectSelectedOnButtonDown = objectPlacedInLevel;
+                }
+                this._hasCreatedObjectsBeingPlaced = true;
+            }
+            Vector3 moveVectorForObjectUnderPointer = this.getMoveVectorForObjectUnderPointer(hitPosition);
+            for (int j = 0; j < this._selectedSceneObjects.Count; j++)
+            {
+                this._selectedSceneObjects[j].transform.position += moveVectorForObjectUnderPointer;
+                Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorItemMovedScaledOrRotated);
+            }
+        }
+    }
+
+    // Token: 0x06004CEE RID: 19694 RVA: 0x001AF8E4 File Offset: 0x001ADAE4
+    private Vector3 getMoveVectorForObjectUnderPointer(Vector3 hitPosition)
+    {
+        if (this._objectSelectedOnButtonDown != null)
+        {
+            Bounds bounds = this.CalculateSelectedObjectsBounds();
+            Vector3 center = bounds.center;
+            center.y = bounds.min.y;
+            Vector3 b = this._objectSelectedOnButtonDown.GetGlobalMoveCenterPosition() - center;
+            b.y = bounds.min.y;
+            hitPosition -= b;
+            Vector3 a = this.clampTargetPositionToArenaBounds(bounds, hitPosition);
+            center.y = 0f;
+            return a - center;
+        }
+        Debug.LogWarning("Warning: _objectSelect Is somehow null while draging;\nFor some reason we are trying to drag while there is no object under pointer!");
+        return Vector3.zero;
+    }
+
+    // Token: 0x06004CEF RID: 19695 RVA: 0x001AF988 File Offset: 0x001ADB88
+    private Vector3 clampTargetPositionToArenaBounds(Bounds bounds, Vector3 targetPosition)
+    {
+        Vector3 vector = bounds.min - bounds.center;
+        Vector3 vector2 = bounds.max - bounds.center;
+        if (!Singleton<LevelEditorDataManager>.Instance.IsCurrentLevelHidingTheArena())
+        {
+            if (targetPosition.x + vector2.x > this._arenaFloorBounds.max.x)
+            {
+                targetPosition.x = this._arenaFloorBounds.max.x - vector2.x;
+            }
+            if (targetPosition.x + vector.x < this._arenaFloorBounds.min.x)
+            {
+                targetPosition.x = this._arenaFloorBounds.min.x - vector.x;
+            }
+            if (targetPosition.z + vector2.z > this._arenaFloorBounds.max.z)
+            {
+                targetPosition.z = this._arenaFloorBounds.max.z - vector2.z;
+            }
+            if (targetPosition.z + vector.z < this._arenaFloorBounds.min.z)
+            {
+                targetPosition.z = this._arenaFloorBounds.min.z - vector.z;
+            }
+            if (targetPosition.x + vector2.x > this._arenaLiftRestrictedBounds.min.x && targetPosition.y < this._arenaLiftRestrictedBounds.max.y && targetPosition.z + vector2.z >= this._arenaLiftRestrictedBounds.min.z && targetPosition.z + vector.z <= this._arenaLiftRestrictedBounds.max.z)
+            {
+                Vector3 a = targetPosition + bounds.center;
+                Vector3 vector3 = a - this._arenaLiftRestrictedBounds.center;
+                if (Mathf.Abs(vector3.x) > Mathf.Abs(vector3.z))
+                {
+                    targetPosition.x = this._arenaLiftRestrictedBounds.min.x - vector2.x;
+                }
+                else if (vector3.z > 0f)
+                {
+                    targetPosition.z = this._arenaLiftRestrictedBounds.max.z - vector.z;
+                }
+                else
+                {
+                    targetPosition.z = this._arenaLiftRestrictedBounds.min.z - vector2.z;
+                }
+            }
+        }
+        return targetPosition;
+    }
+
+    // Token: 0x06004CF0 RID: 19696 RVA: 0x001AFC54 File Offset: 0x001ADE54
+    private void setUpArenaBoundsIfNotSet()
+    {
+        if (this._hasSetUpArenaBounds)
+        {
+            return;
+        }
+        this._hasSetUpArenaBounds = true;
+        for (int i = 0; i < this.ArenaLevelEditorFloorColliders.Length; i++)
+        {
+            if (i == 0)
+            {
+                this._arenaFloorBounds = this.ArenaLevelEditorFloorColliders[i].bounds;
+            }
+            else
+            {
+                this._arenaFloorBounds.Encapsulate(this.ArenaLevelEditorFloorColliders[i].bounds);
+            }
+        }
+        this._arenaLiftRestrictedBounds = Singleton<ArenaLiftManager>.Instance.Lift.LiftFloorCollider.bounds;
+        this._arenaLiftRestrictedBounds.max = this._arenaLiftRestrictedBounds.max + new Vector3(0f, 10f - this._arenaLiftRestrictedBounds.max.y, 0f);
+    }
+
+    // Token: 0x06004CF1 RID: 19697 RVA: 0x001AFD1C File Offset: 0x001ADF1C
+    public void DeselectEnemiesOfWrongDifficultyIndex()
+    {
+        ObjectPlacedInLevel[] array = this.GetSelectedSceneObjects().ToArray();
+        foreach (ObjectPlacedInLevel objectPlacedInLevel in array)
+        {
+            LevelEnemySpawner component = objectPlacedInLevel.GetComponent<LevelEnemySpawner>();
+            if (component != null && component.DifficultyGroupIndex != Singleton<LevelEditorDifficultyManager>.Instance.GetCurrentDifficultyIndex())
+            {
+                this.Deselect(objectPlacedInLevel);
+            }
+        }
+    }
+
+    // Token: 0x06004CF2 RID: 19698 RVA: 0x001AFD84 File Offset: 0x001ADF84
+    public void DeselectIncompatibleObjects()
+    {
+        if (Singleton<LevelEditorToolManager>.Instance.GetActiveToolType() == LevelEditorToolType.Scale || Singleton<LevelEditorToolManager>.Instance.GetActiveToolType() == LevelEditorToolType.Rotate)
+        {
+            return;
+        }
+        ObjectPlacedInLevel[] array = this.GetSelectedSceneObjects().ToArray();
+        foreach (ObjectPlacedInLevel objectPlacedInLevel in array)
+        {
+            LevelEditorToolRestriction component = objectPlacedInLevel.GetComponent<LevelEditorToolRestriction>();
+            if (component && component.CurrentToolIsRestricted())
+            {
+                this.Deselect(objectPlacedInLevel);
+            }
+        }
+    }
+
+    // Token: 0x06004CF3 RID: 19699 RVA: 0x001AFE00 File Offset: 0x001AE000
+    private void copyCurrentSelection()
+    {
+        this._copiedObjects.Clear();
+        for (int i = 0; i < this._selectedSceneObjects.Count; i++)
+        {
+            LevelEditorLevelObject levelEditorLevelObject = new LevelEditorLevelObject();
+            levelEditorLevelObject.SerializeFrom(this._selectedSceneObjects[i]);
+            this._copiedObjects.Add(levelEditorLevelObject);
+        }
+    }
+
+    // Token: 0x06004CF4 RID: 19700 RVA: 0x001AFE58 File Offset: 0x001AE058
+    private void pasteCurrentSelection()
+    {
+        this.TemporarilyDeselectEverything();
+        List<ObjectPlacedInLevel> list = new List<ObjectPlacedInLevel>();
+        for (int i = 0; i < this._copiedObjects.Count; i++)
+        {
+            LevelObjectEntry levelObjectEntry = this._copiedObjects[i].LevelObjectEntry;
+            if (levelObjectEntry.CanPlaceAnotherOfObject())
+            {
+                ObjectPlacedInLevel objectPlacedInLevel = this.PlaceObjectInLevelRoot(levelObjectEntry, this._levelRoot);
+                this._copiedObjects[i].DeserializeInto(objectPlacedInLevel);
+                list.Add(objectPlacedInLevel);
+            }
+        }
+        for (int j = 0; j < list.Count; j++)
+        {
+            this.Select(list[j]);
+        }
+        if (list.Count > 0)
+        {
+            Singleton<LevelEditorToolManager>.Instance.SetActiveTool(LevelEditorToolType.Move);
+            Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorLevelChanged);
+        }
+    }
+
+    // Token: 0x06004CF5 RID: 19701 RVA: 0x001AFF28 File Offset: 0x001AE128
+    public ObjectPlacedInLevel CreateObjectFromPrefabPath(string prefabPath)
+    {
+        return this.PlaceObjectInLevelRoot(Singleton<LevelObjectsLibraryManager>.Instance.GetLevelObjectsInLibrary().Find((LevelObjectEntry entry) => entry.PathUnderResources == prefabPath), this._levelRoot);
+    }
+
+    // Token: 0x06004CF6 RID: 19702 RVA: 0x001AFF6C File Offset: 0x001AE16C
+    private void duplicateCurrentSelection()
+    {
+        List<ObjectPlacedInLevel> list = new List<ObjectPlacedInLevel>();
+        for (int i = 0; i < this._selectedSceneObjects.Count; i++)
+        {
+            LevelEditorLevelObject levelEditorLevelObject = new LevelEditorLevelObject();
+            levelEditorLevelObject.SerializeFrom(this._selectedSceneObjects[i]);
+            LevelObjectEntry levelObjectEntry = this._selectedSceneObjects[i].LevelObjectEntry;
+            if (levelObjectEntry.CanPlaceAnotherOfObject())
+            {
+                ObjectPlacedInLevel objectPlacedInLevel = this.PlaceObjectInLevelRoot(levelObjectEntry, this._levelRoot);
+                levelEditorLevelObject.DeserializeInto(objectPlacedInLevel);
+                list.Add(objectPlacedInLevel);
+            }
+        }
+        this.TemporarilyDeselectEverything();
+        for (int j = 0; j < list.Count; j++)
+        {
+            this.Select(list[j]);
+        }
+        if (list.Count > 0)
+        {
+            Singleton<LevelEditorToolManager>.Instance.SetActiveTool(LevelEditorToolType.Move);
+            Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorLevelChanged);
+        }
+    }
+
+    // Token: 0x06004CF7 RID: 19703 RVA: 0x001B004C File Offset: 0x001AE24C
+    private void deleteSelectedObjects()
+    {
+        for (int i = 0; i < this._selectedSceneObjects.Count; i++)
+        {
+            if (this._selectedSceneObjects[i].CanBeDeleted())
+            {
+                this._selectedSceneObjects[i].OnObjectAboutToBeDeleted();
+                UnityEngine.Object.DestroyImmediate(this._selectedSceneObjects[i].gameObject);
+            }
+        }
+        this._selectedSceneObjects.Clear();
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorLevelChanged);
+        Singleton<GlobalEventManager>.Instance.Dispatch(GlobalEvents.LevelEditorSelectionChanged);
+    }
+
+    // Token: 0x06004CF8 RID: 19704 RVA: 0x001B00DC File Offset: 0x001AE2DC
+    public bool HasEnemySelected()
+    {
+        for (int i = 0; i < this._selectedSceneObjects.Count; i++)
+        {
+            if (this._selectedSceneObjects[i].GetComponent<LevelEnemySpawner>() != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Token: 0x06004CF9 RID: 19705 RVA: 0x00041DB1 File Offset: 0x0003FFB1
+    public void ResetLevelObjectCount()
+    {
+        this._currentLevelObjectCount = 0;
+        if (this._allObjectsInLevel == null)
+        {
+            this._allObjectsInLevel = new List<ObjectPlacedInLevel>();
+        }
+        else
+        {
+            this._allObjectsInLevel.Clear();
+        }
+    }
+
+    // Token: 0x06004CFA RID: 19706 RVA: 0x001B0124 File Offset: 0x001AE324
+    public bool HasExistingObjectInLevel(LevelObjectEntry entry)
+    {
+        ObjectPlacedInLevel[] array = UnityEngine.Object.FindObjectsOfType<ObjectPlacedInLevel>();
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i].IsSameObject(entry))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Token: 0x06004CFB RID: 19707 RVA: 0x001B015C File Offset: 0x001AE35C
+    private Bounds CalculateSelectedObjectsBounds()
+    {
+        if (this._selectedSceneObjects.Count > 0)
+        {
+            Bounds result = this._selectedSceneObjects[0].CalculateGlobalBounds();
+            for (int i = 1; i < this._selectedSceneObjects.Count; i++)
+            {
+                result.Encapsulate(this._selectedSceneObjects[i].CalculateGlobalBounds());
+            }
+            return result;
+        }
+        return default(Bounds);
+    }
+
+    // Token: 0x06004CFC RID: 19708 RVA: 0x00017899 File Offset: 0x00015A99
+    private void OnDrawGizmos()
+    {
+    }
+
+    // Token: 0x04003A91 RID: 14993
+    private const float DRAG_PRESS_DURATION_THRESHOLD = 0.3f;
+
+    // Token: 0x04003A92 RID: 14994
+    public Collider[] ArenaLevelEditorFloorColliders;
+
+    // Token: 0x04003A93 RID: 14995
+    public Material SelectedMaterialTemplate;
+
+    // Token: 0x04003A94 RID: 14996
+    private List<ObjectPlacedInLevel> _allObjectsInLevel;
+
+    // Token: 0x04003A95 RID: 14997
+    private List<ObjectPlacedInLevel> _selectedSceneObjects;
+
+    // Token: 0x04003A96 RID: 14998
+    private List<LevelEditorLevelObject> _copiedObjects;
+
+    // Token: 0x04003A97 RID: 14999
+    private Transform _levelRoot;
+
+    // Token: 0x04003A98 RID: 15000
+    private Plane _groundPlane;
+
+    // Token: 0x04003A99 RID: 15001
+    private Bounds _arenaFloorBounds;
+
+    // Token: 0x04003A9A RID: 15002
+    private Bounds _arenaLiftRestrictedBounds;
+
+    // Token: 0x04003A9B RID: 15003
+    private bool _hasSetUpArenaBounds;
+
+    // Token: 0x04003A9C RID: 15004
+    private bool _isDragging;
+
+    // Token: 0x04003A9D RID: 15005
+    private bool _hasCreatedObjectsBeingPlaced;
+
+    // Token: 0x04003A9E RID: 15006
+    private float _selectedColorAnimProgress;
+
+    // Token: 0x04003A9F RID: 15007
+    private int _selectedColorAnimDirection;
+
+    // Token: 0x04003AA0 RID: 15008
+    private Vector3 _draggingMouseOffset;
+
+    // Token: 0x04003AA1 RID: 15009
+    private bool _isDeselectingButGoingToReselect;
+
+    // Token: 0x04003AA2 RID: 15010
+    private int _currentLevelObjectCount;
+
+    // Token: 0x04003AA3 RID: 15011
+    private ObjectPlacedInLevel _objectSelectedOnButtonDown;
+}
+public List<Dropdown.OptionData> GetDropdownOptions(string fieldName)
+{
+    List<Dropdown.OptionData> list = new List<Dropdown.OptionData>();
+    List<LevelObjectEntry> levelObjectsInLibrary = Singleton<LevelObjectsLibraryManager>.Instance.GetLevelObjectsInLibrary();
+    for (int i = 0; i < levelObjectsInLibrary.Count; i++)
+    {
+        if (!levelObjectsInLibrary[i].PathUnderResources.StartsWith("modded/"))
+        {
+            LevelEnemySpawner component = Resources.Load<Transform>(levelObjectsInLibrary[i].PathUnderResources).GetComponent<LevelEnemySpawner>();
+            if (component != null)
+            {
+                FirstPersonMover component2 = component.EnemyPrefab.GetComponent<FirstPersonMover>();
+                if (component2 != null && component2.CanRideOthers())
+                {
+                    list.Add(new DropdownIntOptionData
+                    {
+                        text = levelObjectsInLibrary[i].DisplayName,
+                        IntValue = (int)component2.CharacterType
+                    });
+                }
+            }
+        }
+    }
+    list.Sort((Dropdown.OptionData x, Dropdown.OptionData y) => x.text.CompareTo(y.text));
+    list.Insert(0, new DropdownIntOptionData
+    {
+        text = "None",
+        IntValue = 0
+    });
+    return list;
+}

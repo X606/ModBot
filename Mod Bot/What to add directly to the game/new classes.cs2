@@ -1,0 +1,619 @@
+
+
+using System;
+using System.Collections.Generic;
+
+
+using System.Reflection;
+using ModLibrary;
+using UnityEngine;
+using System.IO;
+using UnityEngine.UI;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using TwitchChatter;
+
+
+public class WaitThenCallClass : Singleton<WaitThenCallClass>
+{
+    private List<Callback> callbacks = new List<Callback>();
+
+
+    void Update()
+    {
+        for (int i = 0; i < callbacks.Count; i++)
+        {
+            if (callbacks[i].time >= DateTime.Now)
+            {
+                callbacks[i].callback.Invoke();
+                callbacks.RemoveAt(i);
+                return;
+            }
+        }
+
+    }
+
+    public void AddCallback(fakeAction callback, TimeSpan offset)
+    {
+        callbacks.Add(new Callback(callback, DateTime.Now.Add(offset)));
+
+    }
+
+
+
+}
+public struct Callback
+{
+    // Token: 0x06005F6A RID: 24426 RVA: 0x0004EEEE File Offset: 0x0004D0EE
+    public Callback(fakeAction _callback, DateTime _time)
+    {
+        this.callback = _callback;
+        this.time = _time;
+    }
+    // Token: 0x04004CFB RID: 19707
+    public DateTime time;
+
+    // Token: 0x04004CFC RID: 19708
+    public fakeAction callback;
+}
+
+// Token: 0x02000D0B RID: 3339
+public class ModsManager : Singleton<ModsManager>
+{
+    // Token: 0x06005F30 RID: 24368
+    public void Start()
+    {
+        UnityEngine.Object.Instantiate<GameObject>(AssetLoader.getObjectFromFile("twitchmode", "Canvas", "Clone Drone in the Danger Zone_Data/"));
+        this.reloadMods();
+        this.passOnMod.OnSceneChanged(GameMode.None);
+    }
+
+
+    // Token: 0x06005F31 RID: 24369
+    private string getSubdomain(string path)
+    {
+        string[] array = path.Split(new char[]
+        {
+            '/'
+        });
+        string text = "";
+        for (int i = 0; i < array.Length - 1; i++)
+        {
+            text = text + array[i] + "/";
+        }
+        return text;
+    }
+
+    // Token: 0x06005F32 RID: 24370
+    public void reloadMods()
+    {
+        ModsManager.CleanCache();
+        AssetLoader.ClearCache();
+        this.mods.Clear();
+        this.passOnMod = new passOn();
+        string[] files = Directory.GetFiles(this.getSubdomain(Application.dataPath) + "mods/");
+        for (int i = 0; i < files.Length; i++)
+        {
+            if (files[i].EndsWith(".dll"))
+            {
+                try
+                {
+                    Type[] types = Assembly.Load(File.ReadAllBytes(files[i])).GetTypes();
+                    Type type = null;
+                    for (int j = 0; j < types.Length; j++)
+                    {
+                        if (types[j].Name == "main")
+                        {
+                            type = types[j];
+                        }
+                    }
+                    if (type == null)
+                    {
+                        throw new Exception("could not find class 'main'");
+                    }
+                    object obj = Activator.CreateInstance(type);
+                    this.mods.Add((Mod)obj);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("Mod '" + files[i] + "' is not working, make sure that it is set up right: " + ex.Message);
+                }
+            }
+        }
+        this.passOnMod.OnModRefreshed();
+    }
+
+    // Token: 0x06005F33 RID: 24371
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.F3) && Input.GetKeyDown(KeyCode.R))
+        {
+            this.reloadMods();
+        }
+    }
+
+    // Token: 0x06005F43 RID: 24387
+    public void LoadMod(byte[] assebly)
+    {
+        try
+        {
+            Type[] types = Assembly.Load(assebly).GetTypes();
+            Type type = null;
+            for (int i = 0; i < types.Length; i++)
+            {
+                if (types[i].Name == "main")
+                {
+                    type = types[i];
+                }
+            }
+            if (type == null)
+            {
+                throw new Exception("could not find class 'main'");
+            }
+            object obj = Activator.CreateInstance(type);
+            this.mods.Add((Mod)obj);
+            ((Mod)obj).OnModRefreshed();
+        }
+        catch
+        {
+            Debug.LogError("The mod you are trying to load isnt valid");
+        }
+    }
+
+    // Token: 0x06005FBC RID: 24508
+    public static void CleanCache()
+    {
+        if (Caching.ClearCache())
+        {
+            Singleton<global::Logger>.Instance.log("Successfully cleaned the cache.");
+            return;
+        }
+        Singleton<global::Logger>.Instance.log("Cache is being used.");
+    }
+
+    // Token: 0x04004CDE RID: 19678
+    public List<Mod> mods = new List<Mod>();
+
+    // Token: 0x04004CDF RID: 19679
+    public Mod passOnMod;
+}
+public class passOn : Mod
+{
+    // Token: 0x06005F42 RID: 24386
+    public override void OnFirstPersonMoverSpawned(GameObject me)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnFirstPersonMoverSpawned(me);
+        }
+    }
+
+    // Token: 0x06005F43 RID: 24387
+    public override void OnFirstPersonMoverUpdate(GameObject me)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnFirstPersonMoverUpdate(me);
+        }
+    }
+
+    // Token: 0x06005F44 RID: 24388
+    public override void OnSceneChanged(GameMode gamemode)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnSceneChanged(gamemode);
+        }
+    }
+
+    // Token: 0x06005F45 RID: 24389
+    public override void OnModRefreshed()
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnModRefreshed();
+        }
+    }
+
+    // Token: 0x06005F46 RID: 24390
+    public override void OnLevelEditorStarted()
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnLevelEditorStarted();
+        }
+    }
+
+    // Token: 0x06005F47 RID: 24391
+    public override void OnObjectPlacedInLevelEditor(GameObject _obj)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnObjectPlacedInLevelEditor(_obj);
+        }
+    }
+
+    // Token: 0x06005F6C RID: 24428
+    public override void OnCommandRan(string command)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+        for (int i = 0; i < mods.Count; i++)
+        {
+            mods[i].OnCommandRan(command);
+        }
+    }
+}
+
+
+// Token: 0x02000D0E RID: 3342
+public class modSuggestingManager : Singleton<modSuggestingManager>
+{
+    // Token: 0x06005F4B RID: 24395
+    private void Start()
+    {
+        TwitchChatClient.singleton.AddChatListener(new ChatMessageNotificationDelegate(this.OnTwitchChatMessage));
+    }
+
+    // Token: 0x06005F4C RID: 24396
+    private void Update()
+    {
+        if (!this.isInSuggestMode)
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.PageUp))
+        {
+            this.accept();
+            this.isInSuggestMode = false;
+        }
+        if (Input.GetKeyDown(KeyCode.PageDown))
+        {
+            this.deny();
+            this.isInSuggestMode = false;
+        }
+    }
+
+    // Token: 0x06005F4D RID: 24397
+    public void suggestMod()
+    {
+        this.ani.Play("suggestMod");
+        this.creatorName.text = "Suggested By: " + this.suggester;
+        this.modName.text = this.modNameString;
+        this.isInSuggestMode = true;
+    }
+
+    // Token: 0x06005F4E RID: 24398
+    public void accept()
+    {
+        TwitchManager.Instance.EnqueueChatMessage("Mod accepted. :)");
+        this.ani.Play("AcceptMod");
+        this.isInSuggestMode = false;
+        try
+        {
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(this.MyRemoteCertificateValidationCallback);
+            byte[] response = new WebClient
+            {
+                Headers =
+                {
+                    "User-Agent: Other"
+                }
+            }.DownloadData(this.url);
+            Singleton<ModsManager>.Instance.LoadMod(response);
+        }
+        catch (Exception e)
+        {
+            Singleton<global::Logger>.Instance.log(e.Message,Color.red);
+        }
+    }
+
+    // Token: 0x06005F4F RID: 24399
+    public void deny()
+    {
+        TwitchManager.Instance.EnqueueChatMessage("Mod denied. :(");
+        this.ani.Play("DenyMod");
+        this.isInSuggestMode = false;
+    }
+
+    // Token: 0x06005F50 RID: 24400
+    public modSuggestingManager()
+    {
+    }
+
+    // Token: 0x06005F79 RID: 24441
+    public void OnTwitchChatMessage(ref TwitchChatMessage msg)
+    {
+        string lowerText = msg.chatMessagePlainText;
+        if (!lowerText.StartsWith("!"))
+        {
+            return;
+        }
+        string[] subCommands = lowerText.Split(new char[]
+        {
+            ' '
+        });
+        if (subCommands[0].ToLower() == "!modsuggest")
+        {
+            if (subCommands.Length >= 3)
+            {
+                this.url = subCommands[2];
+                this.suggester = string.Concat(new string[]
+                {
+                "<color=",
+                msg.userNameColor,
+                ">",
+                msg.userName,
+                "</color>"
+                });
+                this.modNameString = subCommands[1];
+                this.suggestMod();
+                TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
+            }
+            else
+            {
+                TwitchManager.Instance.EnqueueChatMessage("Usage: !modsuggest <mod_name> <mod_link>");
+            }
+        }
+        
+    }
+
+    // Token: 0x06005F98 RID: 24472
+    public bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    {
+        bool isOk = true;
+        if (sslPolicyErrors != SslPolicyErrors.None)
+        {
+            for (int i = 0; i < chain.ChainStatus.Length; i++)
+            {
+                if (chain.ChainStatus[i].Status != X509ChainStatusFlags.RevocationStatusUnknown)
+                {
+                    chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+                    chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                    chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
+                    chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllFlags;
+                    if (!chain.Build((X509Certificate2)certificate))
+                    {
+                        isOk = false;
+                    }
+                }
+            }
+        }
+        return isOk;
+    }
+
+    // Token: 0x04004CE6 RID: 19686
+    public Animator ani;
+
+    // Token: 0x04004CE7 RID: 19687
+    public bool isInSuggestMode;
+
+    // Token: 0x04004CF6 RID: 19702
+    public Text modName;
+
+    // Token: 0x04004CF7 RID: 19703
+    public Text creatorName;
+
+    // Token: 0x04004CFE RID: 19710
+    public string url;
+
+    // Token: 0x04004D26 RID: 19750
+    public string suggester;
+
+    // Token: 0x04004D27 RID: 19751
+    public string modNameString;
+}
+public class Logger : Singleton<global::Logger>
+{
+    // Token: 0x06005F51 RID: 24401 RVA: 0x00017899 File Offset: 0x00015A99
+    private void Start()
+    {
+    }
+
+    // Token: 0x06005F52 RID: 24402 RVA: 0x00214784 File Offset: 0x00212984
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            this.Flip();
+        }
+        if (!this.Container.activeSelf)
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            this.RunCommand(this.input.text);
+            this.input.text = "";
+        }
+    }
+
+    // Token: 0x06005F53 RID: 24403 RVA: 0x0004EDB2 File Offset: 0x0004CFB2
+    private void Flip()
+    {
+        if (this.Container.activeSelf)
+        {
+            this.animator.Play("hideConsole");
+            return;
+        }
+        this.animator.Play("showConsole");
+    }
+
+    // Token: 0x06005F54 RID: 24404 RVA: 0x0004EDE2 File Offset: 0x0004CFE2
+    public void log(string whatToLog)
+    {
+        Text logText = this.LogText;
+        logText.text = logText.text + "\n" + whatToLog;
+    }
+
+    // Token: 0x06005F55 RID: 24405 RVA: 0x002147DC File Offset: 0x002129DC
+    public void log(string whatToLog, Color color)
+    {
+        string text = ColorUtility.ToHtmlStringRGB(color);
+        Text logText = this.LogText;
+        logText.text = string.Concat(new string[]
+        {
+            logText.text,
+            "\n<color#=",
+            text,
+            ">",
+            whatToLog,
+            "</color>"
+        });
+    }
+
+    // Token: 0x06005F57 RID: 24407
+    public void RunCommand(string command)
+    {
+        try
+        {
+            Singleton<ModsManager>.Instance.passOnMod.OnCommandRan(command);
+        }
+        catch (Exception exe)
+        {
+            this.log("command '" + command + "' failed with the following error: " + exe.Message, Color.red);
+            this.log(exe.StackTrace, Color.red);
+        }
+    }
+
+    // Token: 0x04004CEE RID: 19694
+    public Animator animator;
+
+    // Token: 0x04004CEF RID: 19695
+    public Text LogText;
+
+    // Token: 0x04004CF0 RID: 19696
+    public GameObject Container;
+
+    // Token: 0x04004CF1 RID: 19697
+    public InputField input;
+}
+
+// Token: 0x02000D10 RID: 3344
+public class FPSCount : MonoBehaviour
+{
+    // Token: 0x06005F5A RID: 24410
+    private void Start()
+    {
+        frames = new List<float>();
+    }
+
+
+    // Token: 0x06005F5B RID: 24411
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            this.counter.gameObject.SetActive(!this.counter.gameObject.activeSelf);
+        }
+        float num = 1f / Time.unscaledDeltaTime;
+        this.frames.Add(num);
+        if (this.frames.Count > 10)
+        {
+            this.frames.RemoveAt(0);
+        }
+        float FPS = 0f;
+        for (int i = 0; i < this.frames.Count; i++)
+        {
+            FPS += this.frames[i];
+        }
+        FPS /= (float)this.frames.Count;
+        this.counter.text = ((int)FPS).ToString();
+    }
+
+    // Token: 0x04004CF1 RID: 19697
+    public Text counter;
+
+    // Token: 0x04004D22 RID: 19746
+    private List<float> frames;
+}
+public class moddedObject : MonoBehaviour
+{
+    private void Awake()
+    {
+        Singleton<moddedObjectsManager>.Instance.addToModdedObjects(this);
+    }
+
+    private void OnDestroy()
+    {
+        Singleton<moddedObjectsManager>.Instance.removeFromModdedObjects(this);
+    }
+
+    public string ID;
+
+    public List<UnityEngine.Object> objects;
+}
+
+public class moddedObjectsManager : Singleton<moddedObjectsManager>
+{
+    // Token: 0x06005F5F RID: 24415
+    public void addToModdedObjects(moddedObject obj)
+    {
+        this.moddedObjects.Add(obj);
+    }
+
+    // Token: 0x06005F60 RID: 24416
+    public List<moddedObject> GetAllModdedObjects()
+    {
+        return this.moddedObjects;
+    }
+
+    // Token: 0x06005F62 RID: 24418
+    private void Start()
+    {
+        Singleton<GlobalEventManager>.Instance.AddEventListener("LevelCleanupStarted", new Action(this.clear));
+    }
+
+    // Token: 0x06005F63 RID: 24419
+    public void clear()
+    {
+        this.moddedObjects.Clear();
+    }
+
+    // Token: 0x06005F8E RID: 24462
+    public void removeFromModdedObjects(moddedObject obj)
+    {
+        this.moddedObjects.Remove(obj);
+    }
+
+    // Token: 0x04004CF3 RID: 19699
+    private List<moddedObject> moddedObjects = new List<moddedObject>();
+}
+
+public class fakeAction
+{
+    // Token: 0x06005F68 RID: 24424 RVA: 0x0004EEB0 File Offset: 0x0004D0B0
+    public fakeAction(MethodInfo _method, object _instance)
+    {
+        this.method = _method;
+        this.instance = _instance;
+    }
+    public fakeAction(MethodInfo _method, object _instance, object[] _args)
+    {
+        this.method = _method;
+        this.instance = _instance;
+        args = _args;
+    }
+    // Token: 0x06005F69 RID: 24425 RVA: 0x0004EEC6 File Offset: 0x0004D0C6
+    public void Invoke(object[] parms)
+    {
+        this.method.Invoke(this.instance, parms);
+    }
+    public void Invoke()
+    {
+        this.method.Invoke(this.instance, args);
+    }
+
+    // Token: 0x04004CF9 RID: 19705
+    public MethodInfo method;
+
+    // Token: 0x04004CFA RID: 19706
+    public object instance;
+
+    public object[] args;
+}
