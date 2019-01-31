@@ -261,12 +261,14 @@ namespace ModLibrary
             /// <param name="SortOrder"></param>
             /// <param name="Requirement">First Requirement</param>
             /// <param name="SecondRequirement">Second Requirement</param>
-            public static void Add(int UpgradeID, string Name, string Description, Sprite Icon, float AngleOffset, bool IsLimited, bool IsRepeatable, int MaxUses, int SortOrder, UpgradeDescription Requirement, UpgradeDescription SecondRequirement)
+            /// <returns>The created upgrade, will be null if upgrade with ID already exists</returns>
+            public static UpgradeDescription Add(int UpgradeID, string Name, string Description, Sprite Icon, float AngleOffset, bool IsLimited, bool IsRepeatable, int MaxUses, int SortOrder, UpgradeDescription Requirement, UpgradeDescription SecondRequirement)
             {
                 if (IsIDAlreadyUsed(UpgradeID))
-                    return;
+                    return null;
 
-                UpgradeDescription upgrade = UpgradeManager.Instance.UpgradeDescriptions[0].gameObject.AddComponent<UpgradeDescription>();
+                UpgradeDescription upgrade = New.MonoBehaviour(UpgradeManager.Instance.UpgradeDescriptions[0]);
+
                 upgrade.AngleOffset = AngleOffset;
                 upgrade.CanBeTransferredInMultiplayer = false;
                 upgrade.Description = Description;
@@ -289,6 +291,8 @@ namespace ModLibrary
                 upgrade.UpgradeType = (UpgradeType)UpgradeID;
 
                 UpgradeManager.Instance.UpgradeDescriptions.Add(upgrade);
+
+                return upgrade;
             }
         }
 
@@ -744,6 +748,28 @@ namespace ModLibrary
             public static Vector3 GetDirection(Vector3 StartPoint, Vector3 Destination)
             {
                 return Destination - StartPoint;
+            }
+        }
+
+        public static class New
+        {
+            /// <summary>
+            /// Creates a new MonoBehaviour of type T
+            /// </summary>
+            /// <typeparam name="T">The type to create</typeparam>
+            /// <param name="Template">An optional template to go off of, will use first found object in world if null</param>
+            /// <returns>The created type</returns>
+            public static T MonoBehaviour<T>(T Template = null) where T : MonoBehaviour
+            {
+                if (Template == null)
+                {
+                    if (UnityEngine.Object.FindObjectOfType<T>() != null)
+                        return UnityEngine.Object.FindObjectOfType<T>().gameObject.AddComponent<T>();
+                }
+                else
+                    return Template.gameObject.AddComponent<T>();
+
+                return null;
             }
         }
     }
