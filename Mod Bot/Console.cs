@@ -34,5 +34,31 @@ namespace ModLibrary
         {
             Logger.Instance.log(_log, _color);
         }
+
+        /// <summary>
+        /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        public static void PrintAll<T>(List<T> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Logger.Instance.log(list[i].ToString());
+            }
+        }
+
+        /// <summary>
+        /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        public static void PrintAll<T>(List<T> list, Color _color)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Logger.Instance.log(list[i].ToString(), _color);
+            }
+        }
     }
 }

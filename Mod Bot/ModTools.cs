@@ -7,24 +7,6 @@ namespace ModLibrary
 {
     namespace ModTools
     {
-        public class CharacterFirstPersonMover
-        {
-            public CharacterFirstPersonMover(Character character)
-            {
-                Character = character;
-                FirstPersonMover = null;
-            }
-
-            public CharacterFirstPersonMover(FirstPersonMover firstPersonMover)
-            {
-                Character = firstPersonMover;
-                FirstPersonMover = firstPersonMover;
-            }
-
-            public Character Character { get; private set; }
-            public FirstPersonMover FirstPersonMover { get; private set; }
-        }
-
         public static class Upgrade
         {
             /// <summary>
@@ -267,7 +249,7 @@ namespace ModLibrary
                 if (IsIDAlreadyUsed(UpgradeID))
                     return null;
 
-                UpgradeDescription upgrade = New.MonoBehaviour(UpgradeManager.Instance.UpgradeDescriptions[0]);
+                UpgradeDescription upgrade = UpgradeManager.Instance.UpgradeDescriptions[0].gameObject.AddComponent<UpgradeDescription>();
 
                 upgrade.AngleOffset = AngleOffset;
                 upgrade.CanBeTransferredInMultiplayer = false;
@@ -599,111 +581,8 @@ namespace ModLibrary
             }
         }
 
-        public static class CharacterFirstPersonMoverTools
-        {
-            /// <summary>
-            /// Gets the List of CharacterFirstPersonMovers from a List of Characters
-            /// </summary>
-            /// <param name="characters"></param>
-            /// <returns></returns>
-            public static List<CharacterFirstPersonMover> GetCharacterFirstPersonMovers(List<Character> characters)
-            {
-                List<CharacterFirstPersonMover> characterFirstPersonMovers = new List<CharacterFirstPersonMover>();
-
-                for (int i = 0; i < characters.Count; i++)
-                {
-                    characterFirstPersonMovers.Add(new CharacterFirstPersonMover(characters[i]));
-                }
-
-                return characterFirstPersonMovers;
-            }
-            /// <summary>
-            /// Gets the List of CharacterFirstPersonMovers from a List of FirstPersonMovers
-            /// </summary>
-            /// <param name="firstPersonMovers"></param>
-            /// <returns></returns>
-            public static List<CharacterFirstPersonMover> GetCharacterFirstPersonMovers(List<FirstPersonMover> firstPersonMovers)
-            {
-                List<CharacterFirstPersonMover> characterFirstPersonMovers = new List<CharacterFirstPersonMover>();
-
-                for (int i = 0; i < firstPersonMovers.Count; i++)
-                {
-                    characterFirstPersonMovers.Add(new CharacterFirstPersonMover(firstPersonMovers[i]));
-                }
-
-                return characterFirstPersonMovers;
-            }
-
-            /// <summary>
-            /// Gets the player as a CharacterFirstPersonMover
-            /// </summary>
-            /// <returns></returns>
-            public static CharacterFirstPersonMover GetPlayer()
-            {
-                return new CharacterFirstPersonMover(CharacterTracker.Instance.GetPlayer());
-            }
-
-            /// <summary>
-            /// Spawns an enemy
-            /// </summary>
-            /// <param name="enemyType"></param>
-            /// <param name="spawnPosition"></param>
-            /// <param name="lookAtPoint"></param>
-            /// <returns>The spawned enemy as a CharacterFirstPersonMover</returns>
-            public static CharacterFirstPersonMover SpawnEnemyAsCharacterFirstPersonMover(EnemyType enemyType, Vector3 spawnPosition, Vector3 lookAtPoint)
-            {
-                return new CharacterFirstPersonMover(EnemyFactory.Instance.SpawnEnemy(enemyType, spawnPosition, lookAtPoint).GetComponent<Character>());
-            }
-            /// <summary>
-            /// Spawns an enemy
-            /// </summary>
-            /// <param name="enemyPrefab"></param>
-            /// <param name="spawnPosition"></param>
-            /// <param name="lookAtPoint"></param>
-            /// <returns>The spawned enemy as a CharacterFirstPersonMover</returns>
-            public static CharacterFirstPersonMover SpawnEnemyAsCharacterFirstPersonMover(Transform enemyPrefab, Vector3 spawnPosition, Vector3 lookAtPoint)
-            {
-                return new CharacterFirstPersonMover(EnemyFactory.Instance.SpawnEnemy(enemyPrefab, spawnPosition, lookAtPoint).GetComponent<Character>());
-            }
-            /// <summary>
-            /// Spawn an enemy with rotation
-            /// </summary>
-            /// <param name="enemyType"></param>
-            /// <param name="spawnPosition"></param>
-            /// <param name="spawnRotation"></param>
-            /// <returns>The spawned enemy as a CharacterFirstPersonMover</returns>
-            public static CharacterFirstPersonMover SpawnEnemyWithRotationAsCharacterFirstPersonMover(EnemyType enemyType, Vector3 spawnPosition, Vector3 spawnRotation)
-            {
-                return new CharacterFirstPersonMover(EnemyFactory.Instance.SpawnEnemyWithRotation(enemyType, spawnPosition, spawnRotation).GetComponent<Character>());
-            }
-            /// <summary>
-            /// Spawn an enemy with rotation
-            /// </summary>
-            /// <param name="enemyPrefab"></param>
-            /// <param name="spawnPosition"></param>
-            /// <param name="spawnRotation"></param>
-            /// <returns>The spawned enemy as a CharacterFirstPersonMover</returns>
-            public static CharacterFirstPersonMover SpawnEnemyWithRotationAsCharacterFirstPersonMover(Transform enemyPrefab, Vector3 spawnPosition, Vector3 spawnRotation)
-            {
-                return new CharacterFirstPersonMover(EnemyFactory.Instance.SpawnEnemyWithRotation(enemyPrefab, spawnPosition, spawnRotation).GetComponent<Character>());
-            }
-        }
-
         public static class ListTools
         {
-            /// <summary>
-            /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="list"></param>
-            public static void PrintAll<T>(List<T> list)
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    debug.Log(list[i].ToString());
-                }
-            }
-
             /// <summary>
             /// Randomly shuffles the given list
             /// </summary>
@@ -748,28 +627,6 @@ namespace ModLibrary
             public static Vector3 GetDirection(Vector3 StartPoint, Vector3 Destination)
             {
                 return Destination - StartPoint;
-            }
-        }
-
-        public static class New
-        {
-            /// <summary>
-            /// Creates a new MonoBehaviour of type T
-            /// </summary>
-            /// <typeparam name="T">The type to create</typeparam>
-            /// <param name="Template">An optional template to go off of, will use first found object in world if null</param>
-            /// <returns>The created type</returns>
-            public static T MonoBehaviour<T>(T Template = null) where T : MonoBehaviour
-            {
-                if (Template == null)
-                {
-                    if (UnityEngine.Object.FindObjectOfType<T>() != null)
-                        return UnityEngine.Object.FindObjectOfType<T>().gameObject.AddComponent<T>();
-                }
-                else
-                    return Template.gameObject.AddComponent<T>();
-
-                return null;
             }
         }
     }
