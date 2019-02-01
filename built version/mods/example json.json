@@ -1,0 +1,17 @@
+{  
+   "$type":"System.Collections.Generic.List`1[[LevelObjectEntry, Assembly-CSharp]], mscorlib",
+   "$values":[  
+      {  
+         "$type":"LevelObjectEntry, Assembly-CSharp",
+         "DisplayName":"example name 32347",
+         "PathUnderResources":"modded/examplePath/exampleFile",
+         "PreviewPathUnderResources":"modded/examplePathFolder/exampleFile.png"
+      },
+	  {  
+         "$type":"LevelObjectEntry, Assembly-CSharp",
+         "DisplayName":"tree",
+         "PathUnderResources":"modded/examplePath/tree",
+         "PreviewPathUnderResources":"modded/examplePathFolder/exampleFile.png"
+      }
+   ]
+}
