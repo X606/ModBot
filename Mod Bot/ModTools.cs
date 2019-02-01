@@ -135,18 +135,6 @@ namespace ModLibrary
             /// </summary>
             /// <param name="Target"></param>
             /// <param name="Upgrades"></param>
-            public static void Give(FirstPersonMover Target, List<UpgradeDescription> Upgrades)
-            {
-                for (int i = 0; i < Upgrades.Count; i++)
-                {
-                    Give(Target, Upgrades[i]);
-                }
-            }
-            /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
             public static void Give(FirstPersonMover Target, UpgradeDescription[] Upgrades)
             {
                 for (int i = 0; i < Upgrades.Length; i++)
@@ -181,22 +169,6 @@ namespace ModLibrary
                 }
             }
             /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
-            /// <param name="Levels"></param>
-            public static void Give(FirstPersonMover Target, List<UpgradeType> Upgrades, List<int> Levels)
-            {
-                if (Upgrades.Count != Levels.Count)
-                    return;
-
-                for (int i = 0; i < Upgrades.Count; i++)
-                {
-                    Give(Target, GetUpgradeDescriptionFromTypeAndLevel(Upgrades[i], Levels[i]));
-                }
-            }
-            /// <summary>
             /// Gives the specified upgrade to a FirstPersonMover
             /// </summary>
             /// <param name="Target"></param>
@@ -204,18 +176,6 @@ namespace ModLibrary
             public static void Give(FirstPersonMover Target, UpgradeTypeAndLevel Upgrade)
             {
                 Give(Target, GetUpgradeDescriptionFromTypeAndLevel(Upgrade));
-            }
-            /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
-            public static void Give(FirstPersonMover Target, List<UpgradeTypeAndLevel> Upgrades)
-            {
-                for (int i = 0; i < Upgrades.Count; i++)
-                {
-                    Give(Target, Upgrades[i]);
-                }
             }
             /// <summary>
             /// Gives the specified upgrades to a FirstPersonMover
@@ -286,6 +246,8 @@ namespace ModLibrary
             public static void Spawn()
             {
                 CloneManager.Instance.CloneArea.CreateNewClone(false);
+                GameDataManager.Instance.IncreaseNumClones(1);
+                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
             }
             /// <summary>
             /// Spawns clones in the clone area without the camera panning to it
@@ -297,6 +259,8 @@ namespace ModLibrary
                 {
                     Spawn();
                 }
+
+                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
             }
 
             /// <summary>
@@ -306,11 +270,30 @@ namespace ModLibrary
             {
                 if (CloneManager.Instance.GetNumClones() == 0)
                     return;
+                
+                List<MechBodyPart> bodyParts = ((List<FirstPersonMover>)Accessor.GetPrivateField(typeof(CloneArea), "_clones", CloneManager.Instance.CloneArea))[CloneManager.Instance.GetNumClones() - 1].GetAllBodyParts();
 
-                int CloneCount = CloneManager.Instance.GetNumClones();
+                FireSpreadDefinition fireSpread = new FireSpreadDefinition
+                {
+                    DamageSourceType = DamageSourceType.None,
+                    FireType = FireType.BanFire,
+                    MinSpreadProbability = 1000f,
+                    SpreadProbabilityDropOff = 0f,
+                    StartSpreadProbability = 100f,
+                    WaitBetweenSpreads = 0.001f
+                };
 
-                CloneManager.Instance.CloneArea.RemoveAllClones();
-                Spawn(CloneCount - 1);
+                for (int i = 0; i < bodyParts.Count; i++)
+                {
+                    bodyParts[i].TryCutVolume(
+                        bodyParts[i].transform.position + new Vector3(2f, 0.5f, -2f),
+                        bodyParts[i].transform.position + new Vector3(-2f, 0.5f, -2f),
+                        bodyParts[i].transform.position + new Vector3(-2f, 0.5f, 2f),
+                        bodyParts[i].transform.position + new Vector3(2f, 0.5f, 2f),
+                        AttackManager.Instance.GetNextAttackID(), false, null, DamageSourceType.SpeedHackBanFire, fireSpread, false);
+                }
+
+                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
             }
             /// <summary>
             /// Removes clones from the clone area
@@ -322,30 +305,13 @@ namespace ModLibrary
                 {
                     Remove();
                 }
+
+                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
             }
         }
 
         public static class Arrow
         {
-            /// <summary>
-            /// Creates an arrow and makes it fly in the given direction
-            /// </summary>
-            /// <param name="Owner">The Character that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
-            /// <returns>The fired arrow</returns>
-            public static ArrowProjectile Create(Character Owner, Vector3 StartPosition, Vector3 MoveDir, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
-            {
-                ArrowProjectile arrow = ProjectileManager.Instance.CreateInactiveArrow(false);
-                arrow.transform.SetParent(LevelSpecificWorldRoot.Instance.transform, true);
-                arrow.SetBladeWidth(BladeWidth);
-                arrow.StartFlying(StartPosition, MoveDir, MakeFlyBySound, Owner, false, BoltNetwork.serverFrame, RotationZ);
-
-                return arrow;
-            }
             /// <summary>
             /// Creates an arrow and makes it fly in the given direction
             /// </summary>
@@ -358,33 +324,17 @@ namespace ModLibrary
             /// <returns>The fired arrow</returns>
             public static ArrowProjectile Create(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDir, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
             {
-                if (Owner.GetComponent<Character>() == null)
+                if (Owner == null)
                     return null;
 
-                return Create(Owner.GetComponent<Character>(), StartPosition, MoveDir, BladeWidth, MakeFlyBySound, RotationZ);
-            }
-
-            /// <summary>
-            /// Creates a flaming arrow and makes it fly in the given direction
-            /// </summary>
-            /// <param name="Owner">The Character that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="fireSpreadDefinition"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
-            /// <returns>The fired arrow</returns>
-            public static ArrowProjectile CreateFlaming(Character Owner, Vector3 StartPosition, Vector3 MoveDir, FireSpreadDefinition fireSpreadDefinition, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
-            {
-                ArrowProjectile arrow = ProjectileManager.Instance.CreateInactiveArrow(true);
+                ArrowProjectile arrow = ProjectileManager.Instance.CreateInactiveArrow(false);
                 arrow.transform.SetParent(LevelSpecificWorldRoot.Instance.transform, true);
                 arrow.SetBladeWidth(BladeWidth);
-                arrow.SetOnFire(fireSpreadDefinition);
                 arrow.StartFlying(StartPosition, MoveDir, MakeFlyBySound, Owner, false, BoltNetwork.serverFrame, RotationZ);
 
                 return arrow;
             }
+            
             /// <summary>
             /// Creates an arrow and makes it fly in the given direction
             /// </summary>
@@ -398,43 +348,13 @@ namespace ModLibrary
             /// <returns>The fired arrow</returns>
             public static ArrowProjectile CreateFlaming(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDir, FireSpreadDefinition fireSpreadDefinition, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
             {
-                if (Owner.GetComponent<Character>() == null)
+                if (Owner == null)
                     return null;
 
-                return CreateFlaming(Owner.GetComponent<Character>(), StartPosition, MoveDir, fireSpreadDefinition, BladeWidth, MakeFlyBySound, RotationZ);
-            }
-            /// <summary>
-            /// Creates an arrow and makes it fly in the given direction
-            /// </summary>
-            /// <param name="Owner">The Character that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="fireType"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
-            /// <returns>The fired arrow</returns>
-            public static ArrowProjectile CreateFlaming(Character Owner, Vector3 StartPosition, Vector3 MoveDir, FireType fireType, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
-            {
-                return CreateFlaming(Owner, StartPosition, MoveDir, FireManager.Instance.GetFireSpreadDefinition(fireType), BladeWidth, MakeFlyBySound, RotationZ);
-            }
-            /// <summary>
-            /// Creates an arrow and makes it fly in the given direction
-            /// </summary>
-            /// <param name="Owner">The FirstPersonMover that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="fireType"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
-            /// <returns>The fired arrow</returns>
-            public static ArrowProjectile CreateFlaming(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDir, FireType fireType, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
-            {
-                if (Owner.GetComponent<Character>() == null)
-                    return null;
+                ArrowProjectile arrow = Create(Owner, StartPosition, MoveDir, BladeWidth, MakeFlyBySound, RotationZ);
+                arrow.SetOnFire(fireSpreadDefinition);
 
-                return CreateFlaming(Owner.GetComponent<Character>(), StartPosition, MoveDir, fireType, BladeWidth, MakeFlyBySound, RotationZ);
+                return arrow;
             }
         }
 
