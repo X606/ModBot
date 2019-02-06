@@ -12,7 +12,7 @@ namespace ModLibrary
 {
     public static class AssetLoader
     {
-        static Dictionary<string, UnityEngine.Object> cached = new Dictionary<string, UnityEngine.Object>();
+        private static Dictionary<string, UnityEngine.Object> cached = new Dictionary<string, UnityEngine.Object>();
 
        /// <summary>
        /// Gets a GameObject from a file.
@@ -57,7 +57,7 @@ namespace ModLibrary
             string path = getSubdomain(Application.dataPath) + _path;
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terrably wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
@@ -84,7 +84,7 @@ namespace ModLibrary
             string path = getSubdomain(Application.dataPath) + "mods/";
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terrably wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
@@ -98,7 +98,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// (if it there is already a file named the same thing as name, this wont do anything)
+        /// if it there is already a file named the same thing as name, this wont do anything)
         /// </summary>
         public static void trySaveFileToMods(string url, string name)
         {
