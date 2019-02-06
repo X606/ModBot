@@ -8,3 +8,4 @@ Features:
 * A ModLibrary namespace that provides some useful functions for modding.
 
 Discord: https://discord.gg/Em4n6gB
+Website: http://clonedronemodbot.com
