@@ -31,3 +31,63 @@ Initialize()
 {
     Singleton<ModsManager>.Instance.passOnMod.OnObjectPlacedInLevelEditor(base.gameObject);
 }
+
+LevelEnemySpawner
+public List<Dropdown.OptionData> GetDropdownOptions(string fieldName)
+{
+    List<Dropdown.OptionData> list = new List<Dropdown.OptionData>();
+    List<LevelObjectEntry> levelObjectsInLibrary = Singleton<LevelObjectsLibraryManager>.Instance.GetLevelObjectsInLibrary();
+    for (int i = 0; i < levelObjectsInLibrary.Count; i++)
+    {
+        if (!levelObjectsInLibrary[i].PathUnderResources.StartsWith("modded/"))
+        {
+            LevelEnemySpawner component = Resources.Load<Transform>(levelObjectsInLibrary[i].PathUnderResources).GetComponent<LevelEnemySpawner>();
+            if (component != null)
+            {
+                FirstPersonMover component2 = component.EnemyPrefab.GetComponent<FirstPersonMover>();
+                if (component2 != null && component2.CanRideOthers())
+                {
+                    list.Add(new DropdownIntOptionData
+                    {
+                        text = levelObjectsInLibrary[i].DisplayName,
+                        IntValue = (int)component2.CharacterType
+                    });
+                }
+            }
+        }
+    }
+    list.Sort((Dropdown.OptionData x, Dropdown.OptionData y) => x.text.CompareTo(y.text));
+    list.Insert(0, new DropdownIntOptionData
+    {
+        text = "None",
+        IntValue = 0
+    });
+    return list;
+}
+
+LevelEditorObjectPlacementManager
+public ObjectPlacedInLevel PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedLevelObjectEntry, Transform levelRoot)
+	{
+		Transform transform = null;
+        if (objectPlacedLevelObjectEntry.PathUnderResources.StartsWith("modded/"))
+        {
+            string[] array = objectPlacedLevelObjectEntry.PathUnderResources.Split(new char[]
+            {
+                '/'
+            });
+            if (array.Length != 3)
+            {
+                Debug.LogError("'" + objectPlacedLevelObjectEntry.PathUnderResources + "' was not set up right! It needs to only have 2 '/'es");
+            }
+            try
+            {
+                transform = AssetLoader.getObjectFromFile(array[1], array[2]).transform;
+            }
+            catch
+            {
+                Debug.LogError("You dont have the mod '" + array[1] + "* installed, please install this mod to use this level");
+            }
+        } else {
+			transform = Resources.Load<Transform>(objectPlacedLevelObjectEntry.PathUnderResources);
+		}
+}
