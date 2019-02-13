@@ -69,10 +69,6 @@
     <Reference Include="Klattersynth">
       <HintPath>..\Clone drone dlls\Klattersynth.dll</HintPath>
     </Reference>
-    <Reference Include="ModLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Clone drone dlls\ModLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Nat">
       <HintPath>..\Clone drone dlls\Mono.Nat.dll</HintPath>
     </Reference>
