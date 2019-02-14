@@ -13,9 +13,9 @@ using ModLibrary;
 
 namespace InternalModBot
 {
-    public class UpdateChecker : MonoBehaviour
+    internal class UpdateChecker : MonoBehaviour
     {
-        public void Awake()
+        private void Awake()
         {
             GameObject prefab = AssetLoader.getObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(prefab);
@@ -56,7 +56,7 @@ namespace InternalModBot
             spawnedModdedObject.gameObject.SetActive(false);
         }
 
-        public moddedObject spawnedModdedObject { get; private set; }
+        private moddedObject spawnedModdedObject;
 
         // https://modbot-d8a58.firebaseio.com/ModBotDownloadLink/.json
         // https://modbot-d8a58.firebaseio.com/ModBotVer/.json
