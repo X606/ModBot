@@ -5,7 +5,7 @@ GameFlowManager
     gameObject.AddComponent<WaitThenCallClass>();
     gameObject.AddComponent<moddedObjectsManager>();
     gameObject.AddComponent<ModsManager>();
-
+	gameObject.AddComponent<UpdateChecker>();
 
 }
 Firstpersonmover

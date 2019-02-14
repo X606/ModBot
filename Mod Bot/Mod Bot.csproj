@@ -349,10 +349,12 @@
     <Compile Include="AssetLoader.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Delayed.cs" />
+    <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="ModTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="What to add directly to the game\changed meathods.cs2" />

@@ -153,7 +153,7 @@ namespace ModLibrary
         {
             cached.Clear();
         }
-        private static string getSubdomain(string path)
+        public static string getSubdomain(string path)
         {
             string[] subDomains = path.Split(new char[]
             {
