@@ -459,7 +459,7 @@ public class Logger : Singleton<global::Logger>
         logText.text = string.Concat(new string[]
         {
             logText.text,
-            "\n<color#=",
+            "\n<color=#",
             text,
             ">",
             whatToLog,
