@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+
 namespace ModLibrary
 {
     /// <summary>
@@ -62,6 +63,31 @@ namespace ModLibrary
         public virtual void OnCommandRan(string command)
         {
 
+        }
+
+        /// <summary>
+        /// Returns the name of the mod, override to set the name of you mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModName()
+        {
+            return null;
+        }
+        /// <summary>
+        /// Returns the description of the mod, override to change the description of your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModDescription()
+        {
+            return "";
+        }
+        /// <summary>
+        /// Returns the image displayed in the mods menu, override to set a custom image for your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual Texture2D GetModImage()
+        {
+            return null;
         }
     }
 }

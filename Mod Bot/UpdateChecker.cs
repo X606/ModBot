@@ -13,7 +13,7 @@ using ModLibrary;
 
 namespace InternalModBot
 {
-    internal class UpdateChecker : MonoBehaviour
+    public class UpdateChecker : MonoBehaviour
     {
         private void Awake()
         {
@@ -33,6 +33,8 @@ namespace InternalModBot
             string newestModBotGameVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json");
             string installedModBotVersion = File.ReadAllLines(AssetLoader.getSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8);
             string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
+
+            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion;
 
             if (installedGameVersion != newestModBotGameVersion || installedModBotVersion == newestModBotVersion)
             {
