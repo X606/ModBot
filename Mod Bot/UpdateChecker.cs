@@ -15,8 +15,11 @@ namespace InternalModBot
 {
     public class UpdateChecker : MonoBehaviour
     {
-        private void Awake()
+        private void Start()
         {
+            if (!GameModeManager.Is(GameMode.None))
+                return;
+
             GameObject prefab = AssetLoader.getObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(prefab);
             spawnedModdedObject = spawnedObject.GetComponent<moddedObject>();
