@@ -38,6 +38,10 @@ namespace InternalModBot
             modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu);
             ((Button)ModdedObjectModsWindow.objects[1]).onClick.AddListener(CloseModsMenu); // Close menu button
 
+            //ModsWindow.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = GameUIRoot.Instance.SettingsMenu.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
+
+            //Component[] components = GameUIRoot.Instance.SettingsMenu.gameObject.transform.GetChild(1).GetComponents(typeof(Component));
+
             ReloadModItems();
         }
 
