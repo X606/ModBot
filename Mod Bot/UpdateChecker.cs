@@ -23,18 +23,18 @@ namespace InternalModBot
             
             spawnedObject.SetActive(false);
 
-            Thread updateThread = new Thread(ThreadSequence);
+            Thread updateThread = new Thread(ThreadSequence); // In separate thread because it waits for a web response
             updateThread.Start();
         }
 
         private void ThreadSequence()
         {
-            string installedGameVersion = VersionNumberManager.Instance.GetVersionString();
-            string newestModBotGameVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json");
-            string installedModBotVersion = File.ReadAllLines(AssetLoader.getSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8);
-            string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
+            string installedGameVersion = VersionNumberManager.Instance.GetVersionString(); // Current game version
+            string newestModBotGameVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json"); // The latest version ModBot is updated for
+            string installedModBotVersion = File.ReadAllLines(AssetLoader.getSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
+            string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json"); // Latest ModBot version
 
-            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion;
+            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion; // Add ModBot version in corner
 
             if (installedGameVersion != newestModBotGameVersion || installedModBotVersion == newestModBotVersion)
             {
