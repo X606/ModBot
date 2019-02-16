@@ -13,30 +13,32 @@ namespace InternalModBot
     {
         private void Start()
         {
-            Vector3 ButtonOffset = new Vector3(0f, -1f, 0f);
+            // The offset to give buttons to make space for the Mods button
+            Vector3 buttonOffset = new Vector3(0f, -1f, 0f);
 
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(5).transform.position += ButtonOffset;
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).transform.position += ButtonOffset;
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(7).transform.position += ButtonOffset;
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(8).transform.position += ButtonOffset;
+            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(5).transform.position += buttonOffset; // Level editor button
+            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).transform.position += buttonOffset; // Options button
+            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(7).transform.position += buttonOffset; // Credits button
+            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(8).transform.position += buttonOffset; // Quit button
 
-            GameObject ModsButton = GameObject.Instantiate(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).gameObject, GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform);
-            ModsButton.transform.localPosition = new Vector3(0f, -146f, 0f);
+            // Copy the options button to make into the Mods button
+            GameObject modsButton = GameObject.Instantiate(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).gameObject, GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform);
+            modsButton.transform.localPosition = new Vector3(0f, -146f, 0f);
 
-            ModsButton.GetComponentInChildren<Text>().text = "MODS";
+            modsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
             
-            GameObject prefab = AssetLoader.getObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
-            ModsWindow = GameObject.Instantiate(prefab);
+            GameObject modsWindowPrefab = AssetLoader.getObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
+            ModsWindow = GameObject.Instantiate(modsWindowPrefab);
 
-            moddedObject spawnedWindowModdedObject = ModsWindow.GetComponent<moddedObject>();
+            ModdedObjectModsWindow = ModsWindow.GetComponent<moddedObject>();
             
             ModsWindow.SetActive(false);
 
-            ModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent();
-            ModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu);
-            ((Button)spawnedWindowModdedObject.objects[1]).onClick.AddListener(CloseModsMenu);
+            modsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
+            modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu);
+            ((Button)ModdedObjectModsWindow.objects[1]).onClick.AddListener(CloseModsMenu); // Close menu button
 
-            UpdateModItems(spawnedWindowModdedObject);
+            ReloadModItems();
         }
 
         private void OpenModsMenu()
@@ -53,10 +55,10 @@ namespace InternalModBot
         {
             ModsManager.Instance.mods.RemoveAt(ID);
 
-            UpdateModItems(ModsWindow.GetComponent<moddedObject>());
+            ReloadModItems();
         }
 
-        private void AddModToList(Mod mod, GameObject parent, int ID)
+        private void AddModToList(Mod mod, GameObject parent)
         {
             GameObject modItemPrefab = AssetLoader.getObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
             GameObject modItem = GameObject.Instantiate(modItemPrefab, parent.transform);
@@ -64,51 +66,46 @@ namespace InternalModBot
             string modName = mod.GetModName() == null ? "This mod does not have a name, contact the creator to add it in the Mod class" : mod.GetModName();
             Texture2D modImage = mod.GetModImage();
 
-            ((Text)modItem.GetComponent<moddedObject>().objects[0]).text = modName;
-            ((Text)modItem.GetComponent<moddedObject>().objects[1]).text = mod.GetModDescription();
+            ((Text)modItem.GetComponent<moddedObject>().objects[0]).text = modName; // Title
+            ((Text)modItem.GetComponent<moddedObject>().objects[1]).text = mod.GetModDescription(); // Description
 
             if (modImage != null)
-                ((RawImage)modItem.GetComponent<moddedObject>().objects[2]).texture = modImage;
+                ((RawImage)modItem.GetComponent<moddedObject>().objects[2]).texture = modImage; // Image
 
-            ((Button)modItem.GetComponent<moddedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ID); });
+            int ModID = ModsAddedToList;
+            ((Button)modItem.GetComponent<moddedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Disable button
 
-            modItem.transform.localPosition -= new Vector3(0f, 100 * ModsAddedToList, 0f);
+            modItem.transform.localPosition -= new Vector3(0f, ModItemHeight * ModsAddedToList, 0f);
 
             ModsAddedToList++;
         }
 
-        private void UpdateModItems(moddedObject modsWindowMO)
+        private void ReloadModItems()
         {
             ModsAddedToList = 0;
-
-            foreach (Transform child in ((GameObject)modsWindowMO.objects[0]).transform)
+            
+            // Remove all mods from list
+            foreach (Transform child in ((GameObject)ModdedObjectModsWindow.objects[0]).transform)
             {
                 Destroy(child.gameObject); //TODO: Remove this disgusting fucking pest from the code base, but make sure you replace it by something that works though...
             }
 
-            ((GameObject)modsWindowMO.objects[0]).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, 100f * ModsManager.Instance.mods.Count);
+            // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
+            ((GameObject)ModdedObjectModsWindow.objects[0]).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, ModItemHeight * ModsManager.Instance.mods.Count);
 
+            // Add all mods back to list
             for (int i = 0; i < ModsManager.Instance.mods.Count; i++)
             {
-                AddModToList(ModsManager.Instance.mods[i], (GameObject)modsWindowMO.objects[0], i);
+                AddModToList(ModsManager.Instance.mods[i], (GameObject)ModdedObjectModsWindow.objects[0]);
             }
         }
 
         private GameObject ModsWindow;
 
+        private moddedObject ModdedObjectModsWindow;
+
         private int ModsAddedToList;
 
         private const int ModItemHeight = 100;
     }
-
-    // LevelEditor: 5
-    // Options: 6
-    // Credits: 7
-    // Quit: 8
-
-    // MODITEM: //
-    // Title: 0
-    // Description: 1
-    // Image: 2
-    // Disable button: 3
 }
