@@ -352,6 +352,7 @@
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Mod.cs" />
+    <Compile Include="ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdateChecker.cs" />
