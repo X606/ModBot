@@ -29,7 +29,12 @@ namespace ModLibrary
             MethodInfo[] a = myType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a;
         }
+        [Obsolete("use SetPrivateField instead")]
         public void SetPriavteField(string name, object value)
+        {
+            SetPrivateField(name, value);
+        }
+        public void SetPrivateField(string name, object value)
         {
             FieldInfo a = myType.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             a.SetValue(myInstance, value);
