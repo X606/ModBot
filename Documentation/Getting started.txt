@@ -1,0 +1,69 @@
+This page already exists in the documentation on the site but I have made some minor changes to it
+
+<h1>Getting started</h1>
+<p>Before you can start modding you'll only need Visual Studio if you wont be including custom assets or viewing the game's 'decompiled' code.</p>
+<div class="programSeperator">
+	<p>1. <a href="https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community&rel=15" target="_blank">Visual Studio</a></p>
+	<p>
+		Visual studio will be used to write and compile the code of your mod.
+		<br>
+		<br>
+		NOTE: Make sure to include the '.NET Library' package during installation.
+	</p>
+</div>
+<br>
+<div class="programSeperator">
+	<p>2. <a href="https://unity3d.com/get-unity/download/archive" target="_blank">Unity 2017.3</a></p>
+	<p>
+		You will need to install the same version of Unity that Clone Drone has if you want to include custom assets in your mod (i.e. A custom model, animation, etc.).
+		<br>
+		<br>
+		NOTE: It needs to be the exact version of Unity that Clone Drone uses (2017.3) or the game will crash when trying to import the custom assets.
+	</p>
+</div>
+<br>
+<div class="programSeperator">
+	<p>3. <a href="https://github.com/0xd4d/dnSpy/releases" target="_blank">dnSpy</a></p>
+	<p>
+	dnSpy is not necessary to make mods, the reason it's included in this list is because it 'decompiles' the game's code so looking up how something is done in the game or getting the name of a private member to use in the Accessor class is made easier.
+	</p>
+</div>
+<br>
+<br>
+<br>
+<h2>Setup</h2>
+<p>Once you are done installing Visual Studio and any other listed program above, you can now start to make a mod.</p>
+<p>First, create a new '.NET Framework' project, name it, and click 'OK'</p>
+<img src="https://cdn.discordapp.com/attachments/418510776215535640/524963150316044308/unknown.png" alt="Create new project preview image">
+<p>When the project is created you will need to add references to some assemblies.</p>
+<p>To do this, go to the Solution Explorer, located on the right of the window by default, and right-click on the item called 'References' and click on 'Add Reference...'</p>
+<img src="https://cdn.discordapp.com/attachments/418510776215535640/524963864123539486/unknown.png" alt="Right click on references">
+<p>When you do this, a window will open. Click on 'Browse...'</p>
+<img src="https://cdn.discordapp.com/attachments/418510776215535640/524964116369244170/unknown.png" alt="Click on add">
+<p>
+	Navigate to your Clone Drone game files (<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=760447682" target="_blank">How do I find it?</a>), go into 'Clone Drone in the Danger Zone_Data' and then 'Managed', in that folder, find and select the following files:
+	<br>
+	'Assembly-CSharp.dll', 'bolt.dll', 'bolt.user.dll', 'ModLibrary.dll', 'UnityEngine.CoreModule.dll', and 'UnityEngine.dll'.
+	<br>
+	Then click 'Add', and then 'OK'
+</p>
+<img src="https://cdn.discordapp.com/attachments/526159007442927648/547849278526062656/MBDAddAssemblies.PNG" alt="Done button">
+<br>
+<br>
+<p>
+	Now add the following two lines of code at the top of your code:
+	<br>
+	using ModLibrary;
+	<br>
+	using UnityEngine;
+</p>
+<p>Change 'public class Class1' to 'public class main : Mod'</p>
+<img src="https://cdn.discordapp.com/attachments/418510776215535640/524964594662244362/unknown.png" alt="setup main class">
+<br>
+<br>
+<br>
+<br>
+<br>
+<p>You now have a blank canvas for a mod, to see a list of methods you can override, type in 'public override' somewhere between the brackets under the main class.</p>
+<img src="https://cdn.discordapp.com/attachments/418510776215535640/524965033269133342/unknown.png" alt="setup main class">
+<br>
