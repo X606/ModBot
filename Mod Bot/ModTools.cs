@@ -499,6 +499,20 @@ namespace ModLibrary
             {
                 return GetWeaponModelFromType((FirstPersonMover)character, type);
             }
+
+            public static List<Character> GetAllEnemyCharactersInRange(Vector3 origin, float radius)
+            {
+                List<Character> characters = CharacterTracker.Instance.GetAllLivingCharacters();
+                List<Character> charactersInRange = new List<Character>();
+
+                for(int i = 0; i < characters.Count; i++)
+                {
+                    if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].GetPositionForAIToAimAt()) <= radius)
+                        charactersInRange.Add(characters[i]);
+                }
+
+                return charactersInRange;
+            }
         }
 
         public static class ListTools
