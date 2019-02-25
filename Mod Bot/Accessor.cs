@@ -15,19 +15,14 @@ namespace ModLibrary
         }
         Type myType;
         object myInstance;
-        public void CallPrivateMethod(string method, object[] args = null)
+        public object CallPrivateMethod(string method, object[] args = null)
         {
-            if (args == null)
-            {
-                args = new object[] { };
-            }
             MethodInfo a = myType.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            a.Invoke(myInstance, args);
+            return a.Invoke(myInstance, args ?? (new object[] { }));
         }
         public MethodInfo[] GetAllMethods()
         {
-            MethodInfo[] a = myType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            return a;
+            return myType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
         }
         [Obsolete("use SetPrivateField instead")]
         public void SetPriavteField(string name, object value)
@@ -47,12 +42,12 @@ namespace ModLibrary
         public void SetPrivateProperty(string name, object value)
         {
             PropertyInfo a = myType.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            a.SetValue(myInstance, value,null);
+            a.SetValue(myInstance, value, null);
         }
         public object GetPrivateProperty(string name)
         {
             PropertyInfo a = myType.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            return a.GetValue(myInstance,null);
+            return a.GetValue(myInstance, null);
         }
 
         /// <summary>
@@ -64,11 +59,8 @@ namespace ModLibrary
         /// <param name="args">The arguments you want to pass in, if left empty no arguments will be called. Defined like this: object[] {arg1,arg2,arg3} </param>
         public static object CallPrivateMethod(Type type, string method, object instance, object[] args = null)
         {
-            if (args == null)
-                args = new object[] { };
-
             MethodInfo a = type.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            return a.Invoke(instance, args);
+            return a.Invoke(instance, args ?? (new object[] {}));
         }
         /// <summary>
         /// Just a debugging thing
@@ -77,8 +69,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static MethodInfo[] GetAllMethods(Type type)
         {
-            MethodInfo[] a = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            return a;
+            return type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
         }
 
         /// <summary>
@@ -138,6 +129,5 @@ namespace ModLibrary
             PropertyInfo a = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a.GetValue(instance,null);
         }
-
     }
 }
