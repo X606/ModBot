@@ -26,7 +26,6 @@ namespace ModLibrary
             if (cached.ContainsKey(key))
             {
                 return (GameObject)cached[key];
-
             }
             
             string path = getSubdomain(Application.dataPath) + "mods/";
@@ -45,13 +44,12 @@ namespace ModLibrary
             return result;
         }
 
-        public static GameObject getObjectFromFile(string file, string name,string _path)
+        public static GameObject getObjectFromFile(string file, string name, string _path)
         {
             string key = file + ":" + name;
             if (cached.ContainsKey(key))
             {
                 return (GameObject)cached[key];
-
             }
 
             string path = getSubdomain(Application.dataPath) + _path;
@@ -69,16 +67,13 @@ namespace ModLibrary
 
             return result;
         }
-
-
+        
         public static T getObjectFromFile<T>(string file, string name) where T : UnityEngine.Object
         {
             string key = file + ":" + name;
             if (cached.ContainsKey(key))
             {
-                
                 return (T)cached[key];
-
             }
 
             string path = getSubdomain(Application.dataPath) + "mods/";
