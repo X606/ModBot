@@ -84,6 +84,13 @@ namespace ModLibrary
         {
             SetPrivateField(type, name, instance, value);
         }
+        /// <summary>
+        /// Sets field value even if its private.
+        /// </summary>
+        /// <param name="type">The type that the field is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="instance">The object that the field is attached to.</param>
+        /// <param name="value">The value that the field should be set to.</param>
         public static void SetPrivateField(Type type, string name, object instance, object value)
         {
             FieldInfo a = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
