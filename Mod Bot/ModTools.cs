@@ -69,19 +69,9 @@ namespace ModLibrary
             /// <param name="type"></param>
             /// <param name="level"></param>
             /// <returns></returns>
-            public static UpgradeDescription GetUpgradeDescriptionFromTypeAndLevel(UpgradeType type, int level)
+            public static UpgradeDescription GetUpgradeDescriptionFromTypeAndLevel(UpgradeType type, int level = 1)
             {
-                List<UpgradeDescription> upgrades = UpgradeManager.Instance.UpgradeDescriptions;
-
-                for (int i = 0; i < upgrades.Count; i++)
-                {
-                    if (upgrades[i].UpgradeType == type && upgrades[i].Level == level)
-                    {
-                        return upgrades[i];
-                    }
-                }
-
-                return upgrades[0];
+                return UpgradeManager.Instance.GetUpgrade(type, level);
             }
             /// <summary>
             /// Gets an UpgradeDescription from an UpgradeTypeAndLevel
@@ -118,9 +108,11 @@ namespace ModLibrary
                         return;
                     }
 
+                    UpgradeTypeAndLevel upgradeToGive = new UpgradeTypeAndLevel { UpgradeType = Upgrade.UpgradeType, Level = Upgrade.Level };
+
                     List<UpgradeTypeAndLevel> upgrades = ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades.ToList();
 
-                    upgrades.Add(GetUpgradeTypeAndLevelFromUpgradeDescription(Upgrade));
+                    upgrades.Add(upgradeToGive);
 
                     ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades = upgrades.ToArray();
                     ((PreconfiguredUpgradeCollection)upgradeCollection).InitializeUpgrades();
@@ -158,35 +150,16 @@ namespace ModLibrary
             /// <param name="Target"></param>
             /// <param name="Upgrades"></param>
             /// <param name="Levels"></param>
-            public static void Give(FirstPersonMover Target, UpgradeType[] Upgrades, int[] Levels)
+            public static void Give(FirstPersonMover Target, Dictionary<UpgradeType, int> upgrades)
             {
-                if (Upgrades.Length != Levels.Length)
-                    return;
+                List<UpgradeType> upgradeTypes = EnumTools.GetValues<UpgradeType>();
 
-                for (int i = 0; i < Upgrades.Length; i++)
+                for (int i = 0; i < upgradeTypes.Count; i++)
                 {
-                    Give(Target, GetUpgradeDescriptionFromTypeAndLevel(Upgrades[i], Levels[i]));
-                }
-            }
-            /// <summary>
-            /// Gives the specified upgrade to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrade"></param>
-            public static void Give(FirstPersonMover Target, UpgradeTypeAndLevel Upgrade)
-            {
-                Give(Target, GetUpgradeDescriptionFromTypeAndLevel(Upgrade));
-            }
-            /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
-            public static void Give(FirstPersonMover Target, UpgradeTypeAndLevel[] Upgrades)
-            {
-                for (int i = 0; i < Upgrades.Length; i++)
-                {
-                    Give(Target, Upgrades[i]);
+                    if (upgrades.TryGetValue(upgradeTypes[i], out int level))
+                    {
+                        Give(Target, GetUpgradeDescriptionFromTypeAndLevel(upgradeTypes[i], level));
+                    }
                 }
             }
             /// <summary>
