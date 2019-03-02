@@ -355,6 +355,7 @@
     <Compile Include="ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIBuilder.cs" />
     <Compile Include="UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>

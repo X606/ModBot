@@ -617,3 +617,10 @@ public class fakeAction
 
     public object[] args;
 }
+public class xButton : MonoBehaviour {
+
+	public void Close()
+    {
+        gameObject.SetActive(false);
+    }
+}
