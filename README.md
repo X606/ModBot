@@ -8,5 +8,5 @@ A mod loader for clone drone in the danger zone! If you want to help improve the
 * A ModLibrary namespace that provides some useful functions for modding.
 
 ## Community
-Feel free to join our Discord or check out the website below.
+Feel free to join our Discord or check out the website below.<br/>
 [Discord](https://discord.gg/Em4n6gB) - [Website](http://clonedronemodbot.com)
