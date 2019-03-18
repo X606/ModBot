@@ -1,6 +1,3 @@
-
-This page already exists in the documentation on the site but I have made some minor changes to it
-
 # Getting started
 
 Before you can start modding you'll only need Visual Studio if you wont be including custom assets or viewing the game's 'decompiled' code.
