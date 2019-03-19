@@ -358,6 +358,7 @@
     <Compile Include="UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="What to add directly to the game\Added Methods.cs2" />
     <None Include="What to add directly to the game\changed meathods.cs2" />
     <None Include="What to add directly to the game\new classes.cs2" />
     <None Include="What to add directly to the game\overwritten classes.cs2" />

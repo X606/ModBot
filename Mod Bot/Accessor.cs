@@ -20,10 +20,6 @@ namespace ModLibrary
             MethodInfo a = myType.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a.Invoke(myInstance, args ?? (new object[] { }));
         }
-        public MethodInfo[] GetAllMethods()
-        {
-            return myType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        }
         [Obsolete("use SetPrivateField instead")]
         public void SetPriavteField(string name, object value)
         {
@@ -62,16 +58,6 @@ namespace ModLibrary
             MethodInfo a = type.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a.Invoke(instance, args ?? (new object[] {}));
         }
-        /// <summary>
-        /// Just a debugging thing
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static MethodInfo[] GetAllMethods(Type type)
-        {
-            return type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        }
-
         /// <summary>
         /// Sets field value even if its private.
         /// </summary>
