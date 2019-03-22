@@ -11,6 +11,7 @@ namespace ModLibrary
         {
             WaitThenCallClass.Instance.AddCallback(action, time);
         }
+
         public static void TriggerAfterDelay(fakeAction action, float seconds)
         {
             int intSeconds = (int)Math.Floor(seconds);
