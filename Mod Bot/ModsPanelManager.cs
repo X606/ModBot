@@ -13,17 +13,20 @@ namespace InternalModBot
     {
         private void Start()
         {
-            // The offset to give buttons to make space for the Mods button
-            Vector3 buttonOffset = new Vector3(0f, -1f, 0f);
+            Vector3 buttonOffset = new Vector3(0f, -1f, 0f); // The offset to give buttons to make space for the Mods button
 
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(5).transform.position += buttonOffset; // Level editor button
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).transform.position += buttonOffset; // Options button
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(7).transform.position += buttonOffset; // Credits button
-            GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(8).transform.position += buttonOffset; // Quit button
+            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer;
+
+            titleScreenContainer.transform.GetChild(5).transform.position += buttonOffset; // Level editor button
+            titleScreenContainer.transform.GetChild(6).transform.position += buttonOffset; // Options button
+            titleScreenContainer.transform.GetChild(7).transform.position += buttonOffset; // Credits button
+            titleScreenContainer.transform.GetChild(8).transform.position += buttonOffset; // Quit button
 
             // Copy the options button to make into the Mods button
-            GameObject modsButton = GameObject.Instantiate(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform.GetChild(6).gameObject, GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.transform);
-            modsButton.transform.localPosition = new Vector3(0f, -146f, 0f);
+            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(6).gameObject;
+            GameObject modsButton = GameObject.Instantiate(modsButtonPrefab, titleScreenContainer.transform);
+
+            modsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
 
             modsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
             
@@ -35,12 +38,9 @@ namespace InternalModBot
             ModsWindow.SetActive(false);
 
             modsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
-            modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu);
-            ((Button)ModdedObjectModsWindow.objects[1]).onClick.AddListener(CloseModsMenu); // Close menu button
+            modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
 
-            //ModsWindow.transform.GetChild(0).gameObject.GetComponent<Image>().sprite = GameUIRoot.Instance.SettingsMenu.gameObject.transform.GetChild(1).GetComponent<Image>().sprite;
-
-            //Component[] components = GameUIRoot.Instance.SettingsMenu.gameObject.transform.GetChild(1).GetComponents(typeof(Component));
+            ((Button)ModdedObjectModsWindow.objects[1]).onClick.AddListener(CloseModsMenu); // Add close menu button callback
 
             ReloadModItems();
         }
