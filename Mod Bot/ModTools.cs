@@ -98,6 +98,7 @@ namespace ModLibrary
                     UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(Upgrade.UpgradeType, Upgrade.Level);
                     GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
                 }
+
                 else
                 {
                     UpgradeCollection upgradeCollection = Target.gameObject.GetComponent<UpgradeCollection>();
@@ -235,7 +236,6 @@ namespace ModLibrary
 
                 CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
             }
-
             /// <summary>
             /// Removes a clone from the clone area
             /// </summary>
@@ -307,7 +307,6 @@ namespace ModLibrary
 
                 return arrow;
             }
-            
             /// <summary>
             /// Creates an arrow and makes it fly in the given direction
             /// </summary>
@@ -392,7 +391,6 @@ namespace ModLibrary
                 enemyNameTag.Initialize(character, DisplayName, enemyNameTagConfig);
                 character.SetHasNameTag();
             }
-
             /// <summary>
             /// Gets the MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
             /// </summary>
@@ -440,7 +438,6 @@ namespace ModLibrary
 
                 return OutputList;
             }
-
             /// <summary>
             /// Gets a WeaponModel from the given FirstPersonMover from the given WeaponType (Returns null if the FirstPersonMover does not have the weapon)
             /// </summary>

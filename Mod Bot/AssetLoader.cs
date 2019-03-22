@@ -103,7 +103,7 @@ namespace ModLibrary
                 return;
             }
             saveFileToMods(url, name);
-         }
+        }
 
         public static void saveFileToMods(string url, string name)
         {
@@ -120,7 +120,6 @@ namespace ModLibrary
             a.Close();
             File.WriteAllBytes(path + name, file);
         }
-
 
         static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
@@ -144,10 +143,12 @@ namespace ModLibrary
             }
             return result;
         }
+
         public static void ClearCache()
         {
             cached.Clear();
         }
+
         public static string getSubdomain(string path)
         {
             string[] subDomains = path.Split(new char[]
