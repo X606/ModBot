@@ -77,7 +77,7 @@ namespace InternalModBot
                 ((RawImage)modItem.GetComponent<moddedObject>().objects[2]).texture = modImage; // Image
 
             int ModID = ModsAddedToList;
-            ((Button)modItem.GetComponent<moddedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Disable button
+            ((Button)modItem.GetComponent<moddedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Add disable button callback
 
             modItem.transform.localPosition -= new Vector3(0f, ModItemHeight * ModsAddedToList, 0f);
 

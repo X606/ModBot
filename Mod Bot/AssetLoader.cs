@@ -121,7 +121,7 @@ namespace ModLibrary
             File.WriteAllBytes(path + name, file);
         }
 
-        static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool result = true;
             if (sslPolicyErrors != SslPolicyErrors.None)

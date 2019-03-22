@@ -14,7 +14,7 @@ namespace ModLibrary
             myInstance = _instance;
         }
         Type myType;
-        object myInstance;
+        private object myInstance;
         public object CallPrivateMethod(string method, object[] args = null)
         {
             MethodInfo a = myType.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
@@ -116,7 +116,6 @@ namespace ModLibrary
         /// <param name="type">The type that the property is in. (Get this by typing "typeof(Class)" where Class is the class where the mathod you want to run is located).</param>
         /// <param name="name">The name of the Property.</param>
         /// <param name="instance">The object that the property is attached to.</param>
-        /// <param name="value">The value the property should be set to.</param>
         public static object GetPrivateProperty(Type type, string name, object instance)
         {
             PropertyInfo a = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
