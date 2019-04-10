@@ -591,7 +591,7 @@ namespace ModLibrary
             }
         }
 
-        internal static class ExtensionMethods
+        public static class ExtensionMethods
         {
             /// <summary>
             /// Checks whether or not the given upgrade id is already in use
