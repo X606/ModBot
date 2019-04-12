@@ -84,9 +84,14 @@ namespace ModLibrary
         /// Returns the image displayed in the mods menu, override to set a custom image for your mod
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Use GetModImageURL instead, this is never used")]
         public virtual Texture2D GetModImage()
         {
             return null;
+        }
+        public virtual string GetModImageURL()
+        {
+            return "";
         }
     }
 }

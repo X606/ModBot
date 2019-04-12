@@ -96,17 +96,7 @@ public ObjectPlacedInLevel PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedL
 Character
 protected virtual void Awake()
 	{
-		this._isAlive = true;
-		this._horizontalMeasurementIndex = 0;
-		this._damagedBodyParts = new Dictionary<MechBodyPartType, bool>();
-		this._damagedByAttackIDs = new Dictionary<int, bool>();
-		this._deathListeners = new List<Action>();
-		this.moddedDeathListeners = new List<fakeAction>();
-		this._armorPieces = new List<ArmorPiece>();
-		this._hasNameTag = false;
-		this._isDetached = false;
-		this._timeKilledByServer = -1f;
-		this._moveSpeedOverride = -1f;
-		this._timeCreated = Time.time;
-		this._rigidBody = base.GetComponent<Rigidbody>();
+		this._moddedDeathListeners = new List<fakeAction>();
 	}
+
+	public List<fakeAction> _moddedDeathListeners;

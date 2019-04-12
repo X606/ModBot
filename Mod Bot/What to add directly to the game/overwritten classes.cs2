@@ -286,6 +286,7 @@ public class LevelObjectsLibraryManager : Singleton<LevelObjectsLibraryManager>
     // Token: 0x04003B34 RID: 15156
     private List<LevelObjectEntry> _visibleLevelObjects;
 }
+
 using System;
 using System.IO;
 using UnityEngine;

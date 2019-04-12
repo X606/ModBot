@@ -1,12 +1,12 @@
 ﻿class Character : EntityEventListener<IFirstPersonMoverState>
 {
-	public bool HasModdedDeathListener(Character character, fakeAction listener)
+	public bool HasModdedDeathListener(fakeAction listener)
     {
         List<string> methods = new List<string>();
 
-        for (int i = 0; i < character.moddedDeathListeners.Count; i++)
+        for (int i = 0; i < this._moddedDeathListeners.Count; i++)
         {
-            methods.Add(character.moddedDeathListeners[i].method.Name);
+            methods.Add(this._moddedDeathListeners[i].method.Name);
         }
 
         return methods.Contains(listener.method.Name);
@@ -16,9 +16,7 @@
 	{
 		Action listener = (Action)Delegate.CreateDelegate(typeof(Action), deathListener.method);
 		this._deathListeners.Add(listener);
-		this.moddedDeathListeners.Add(deathListener);
+		this._moddedDeathListeners.Add(deathListener);
 	}
-
-	// Token: 0x04004DA2 RID: 19874
-	public List<fakeAction> moddedDeathListeners;
+	
 }
