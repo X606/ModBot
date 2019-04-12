@@ -71,7 +71,7 @@ namespace InternalModBot
 
             if (url != "")
             {
-                this.modItem = modItem;
+                this.modItems.Add(modItem);
                 SetImageFromURL(url);
             }
             ((Text)modItem.GetComponent<moddedObject>().objects[0]).text = modName; // Title
@@ -89,19 +89,23 @@ namespace InternalModBot
         private void SetImageFromURL(string url)
         {
             
-            www = new WWW(url);
+            wwws.Add(new WWW(url));
         }
-        WWW www;
-        GameObject modItem;
+        List<WWW> wwws = new List<WWW>();
+        List<GameObject> modItems = new List<GameObject>();
         private void Update()
         {
-            if (www != null && www.isDone)
+            for (int i = 0; i < wwws.Count; i++)
             {
-                Texture2D modImage = new Texture2D(1, 1);
-                www.LoadImageIntoTexture(modImage);
-                if (modImage != null)
-                    ((RawImage)modItem.GetComponent<moddedObject>().objects[2]).texture = modImage; // Image
-                www = null;
+                if (wwws[i] != null && wwws[i].isDone)
+                {
+                    Texture2D modImage = new Texture2D(1, 1);
+                    wwws[i].LoadImageIntoTexture(modImage);
+                    if (modImage != null)
+                        ((RawImage)modItems[i].GetComponent<moddedObject>().objects[2]).texture = modImage; // Image
+                    wwws.RemoveAt(i);
+                    modItems.RemoveAt(i);
+                }
             }
         }
                 
