@@ -64,7 +64,6 @@ namespace ModLibrary
         {
 
         }
-
         /// <summary>
         /// Returns the name of the mod, override to set the name of you mod
         /// </summary>

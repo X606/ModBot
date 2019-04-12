@@ -14,15 +14,11 @@ namespace ModLibrary
             myInstance = _instance;
         }
         Type myType;
-        object myInstance;
+        private object myInstance;
         public object CallPrivateMethod(string method, object[] args = null)
         {
             MethodInfo a = myType.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a.Invoke(myInstance, args ?? (new object[] { }));
-        }
-        public MethodInfo[] GetAllMethods()
-        {
-            return myType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
         }
         [Obsolete("use SetPrivateField instead")]
         public void SetPriavteField(string name, object value)
@@ -62,16 +58,6 @@ namespace ModLibrary
             MethodInfo a = type.GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             return a.Invoke(instance, args ?? (new object[] {}));
         }
-        /// <summary>
-        /// Just a debugging thing
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static MethodInfo[] GetAllMethods(Type type)
-        {
-            return type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        }
-
         /// <summary>
         /// Sets field value even if its private.
         /// </summary>
@@ -130,7 +116,6 @@ namespace ModLibrary
         /// <param name="type">The type that the property is in. (Get this by typing "typeof(Class)" where Class is the class where the mathod you want to run is located).</param>
         /// <param name="name">The name of the Property.</param>
         /// <param name="instance">The object that the property is attached to.</param>
-        /// <param name="value">The value the property should be set to.</param>
         public static object GetPrivateProperty(Type type, string name, object instance)
         {
             PropertyInfo a = type.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);

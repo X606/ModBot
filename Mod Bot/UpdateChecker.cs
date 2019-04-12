@@ -38,20 +38,12 @@ namespace InternalModBot
             string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json"); // Latest ModBot version
 
             GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion; // Add ModBot version in corner
-
-
-           
+            
             if (installedGameVersion != newestModBotGameVersion || installedModBotVersion == newestModBotVersion)
             {
                 debug.Log("ModBot version '" + installedModBotVersion + "' up to date!", Color.green);
                 return;
             }
-            if (spawnedModdedObject.transform.GetChild(1).GetComponent<Image>().sprite == null)
-                debug.Log("nulk");
-            if (GameUIRoot.Instance.SettingsMenu.GetComponent<Image>().sprite)
-                debug.Log("mulk2");
-
-            debug.Log("milk");
 
             ((Text)spawnedModdedObject.objects[0]).text = "New ModBot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
             ((Button)spawnedModdedObject.objects[1]).onClick.AddListener(OnInstallButtonClicked);

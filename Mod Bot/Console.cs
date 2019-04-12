@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+
 namespace ModLibrary
 {
     /*
@@ -25,6 +26,7 @@ namespace ModLibrary
         {
             Logger.Instance.log(_log);
         }
+
         /// <summary>
         /// Writes to the in-game console, in color.
         /// </summary>

@@ -103,7 +103,7 @@ namespace ModLibrary
                 return;
             }
             saveFileToMods(url, name);
-         }
+        }
 
         public static void saveFileToMods(string url, string name)
         {
@@ -121,8 +121,7 @@ namespace ModLibrary
             File.WriteAllBytes(path + name, file);
         }
 
-
-        static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool result = true;
             if (sslPolicyErrors != SslPolicyErrors.None)
@@ -144,10 +143,12 @@ namespace ModLibrary
             }
             return result;
         }
+
         public static void ClearCache()
         {
             cached.Clear();
         }
+
         public static string getSubdomain(string path)
         {
             string[] subDomains = path.Split(new char[]
