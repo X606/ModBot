@@ -20,6 +20,16 @@ Firstpersonmover
 {
     ModsManager.Instance.passOnMod.OnFirstPersonMoverUpdate(gameObject);
 }
+Firstpersonmover
+public void RefreshUpgrades()
+	{
+		if (!base.IsAlive() || this._characterModel == null)
+		{
+			return;
+		}
+		ModsManager.Instance.passOnMod.OnUpgradesRefreshed(gameObject,this._upgradeCollection);
+	}
+
 
 LevelEditorUI
 Show()
@@ -100,3 +110,14 @@ protected virtual void Awake()
 	}
 
 	public List<fakeAction> _moddedDeathListeners;
+
+Character
+	protected virtual void Start()
+	{
+		ModsManager.Instance.passOnMod.OnCharacterSpawned(gameObject);
+	}
+Character
+	protected virtual void Update()
+	{
+		ModsManager.Instance.passOnMod.OnCharacterUpdate(gameObject);
+	}

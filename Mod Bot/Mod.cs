@@ -28,13 +28,28 @@ namespace ModLibrary
 
         }
         /// <summary>
-        /// Called in FirstPersonMover Update()
+        /// Called in Character Update()
         /// </summary>
         /// <param name="me"></param>
         public virtual void OnFirstPersonMoverUpdate(GameObject me)
         {
 
         }
+
+        public virtual void OnCharacterSpawned(GameObject me)
+        {
+
+        }
+        /// <summary>
+        /// Called in Character Update()
+        /// </summary>
+        /// <param name="me"></param>
+        public virtual void OnCharacterUpdate(GameObject me)
+        {
+
+        }
+
+
         /// <summary>
         /// Called when F3 + R is pressed.
         /// </summary>
@@ -92,6 +107,15 @@ namespace ModLibrary
         public virtual string GetModImageURL()
         {
             return "";
+        }
+        /// <summary>
+        /// Called when FirstPersonMover.RefreshUpgrades is called.
+        /// </summary>
+        /// <param name="me"></param>
+        /// <param name="upgrades"></param>
+        public virtual void OnUpgradesRefreshed(GameObject me, UpgradeCollection upgrades)
+        {
+
         }
     }
 }

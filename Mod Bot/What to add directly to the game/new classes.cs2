@@ -183,78 +183,110 @@ public class ModsManager : Singleton<ModsManager>
     // Token: 0x04004CDF RID: 19679
     public Mod passOnMod;
 }
+// Token: 0x02000DDB RID: 3547
 public class passOn : Mod
 {
-    // Token: 0x06005F42 RID: 24386
-    public override void OnFirstPersonMoverSpawned(GameObject me)
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnFirstPersonMoverSpawned(me);
-        }
-    }
+	// Token: 0x0600694A RID: 26954
+	public override void OnFirstPersonMoverSpawned(GameObject me)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnFirstPersonMoverSpawned(me);
+		}
+	}
 
-    // Token: 0x06005F43 RID: 24387
-    public override void OnFirstPersonMoverUpdate(GameObject me)
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnFirstPersonMoverUpdate(me);
-        }
-    }
+	// Token: 0x0600694B RID: 26955
+	public override void OnFirstPersonMoverUpdate(GameObject me)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnFirstPersonMoverUpdate(me);
+		}
+	}
 
-    // Token: 0x06005F44 RID: 24388
-    public override void OnSceneChanged(GameMode gamemode)
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnSceneChanged(gamemode);
-        }
-    }
+	// Token: 0x0600694C RID: 26956
+	public override void OnSceneChanged(GameMode gamemode)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnSceneChanged(gamemode);
+		}
+	}
 
-    // Token: 0x06005F45 RID: 24389
-    public override void OnModRefreshed()
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnModRefreshed();
-        }
-    }
+	// Token: 0x0600694D RID: 26957
+	public override void OnModRefreshed()
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnModRefreshed();
+		}
+	}
 
-    // Token: 0x06005F46 RID: 24390
-    public override void OnLevelEditorStarted()
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnLevelEditorStarted();
-        }
-    }
+	// Token: 0x0600694E RID: 26958
+	public override void OnLevelEditorStarted()
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnLevelEditorStarted();
+		}
+	}
 
-    // Token: 0x06005F47 RID: 24391
-    public override void OnObjectPlacedInLevelEditor(GameObject _obj)
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnObjectPlacedInLevelEditor(_obj);
-        }
-    }
+	// Token: 0x0600694F RID: 26959
+	public override void OnObjectPlacedInLevelEditor(GameObject _obj)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnObjectPlacedInLevelEditor(_obj);
+		}
+	}
 
-    // Token: 0x06005F6C RID: 24428
-    public override void OnCommandRan(string command)
-    {
-        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-        for (int i = 0; i < mods.Count; i++)
-        {
-            mods[i].OnCommandRan(command);
-        }
-    }
+	// Token: 0x06006950 RID: 26960
+	public override void OnCommandRan(string command)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnCommandRan(command);
+		}
+	}
+
+	// Token: 0x0600697A RID: 27002
+	public override void OnUpgradesRefreshed(GameObject me, UpgradeCollection upgrades)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnUpgradesRefreshed(me, upgrades);
+		}
+	}
+
+	// Token: 0x0600697B RID: 27003
+	public override void OnCharacterSpawned(GameObject me)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnCharacterSpawned(me);
+		}
+	}
+
+	// Token: 0x0600697C RID: 27004
+	public override void OnCharacterUpdate(GameObject me)
+	{
+		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnCharacterUpdate(me);
+		}
+	}
 }
+
 
 
 // Token: 0x02000D0E RID: 3342
