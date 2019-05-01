@@ -9,17 +9,13 @@ namespace ModLibrary
     {
         public static void TriggerAfterDelay(fakeAction action, TimeSpan time)
         {
-            WaitThenCallClass.Instance.AddCallback(action, time);
+            WaitThenCallClass.Instance.AddCallback(action, (float)time.TotalSeconds);
         }
 
         public static void TriggerAfterDelay(fakeAction action, float seconds)
         {
-            int intSeconds = (int)Math.Floor(seconds);
-            int miliseconds = (int)((seconds - intSeconds)*1000);
-            int hours = intSeconds / 60;
-            intSeconds = intSeconds % 60;
 
-            WaitThenCallClass.Instance.AddCallback(action, new TimeSpan(0, hours, intSeconds, miliseconds));
+            WaitThenCallClass.Instance.AddCallback(action, seconds);
         }
     }
 }

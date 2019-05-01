@@ -15,47 +15,52 @@ using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
 
 
+// Token: 0x02000DD8 RID: 3544
 public class WaitThenCallClass : Singleton<WaitThenCallClass>
 {
-    private List<Callback> callbacks = new List<Callback>();
+		// Token: 0x0600693F RID: 26943
+	private void Update()
+	{
+		for (int i = 0; i < this.callbacks.Count; i++)
+		{
+			if (this.callbacks[i].time <= Time.time)
+			{
+				this.callbacks[i].callback.Invoke();
+				this.callbacks.RemoveAt(i);
+				i--;
+			}
+		}
+	}
 
+	// Token: 0x06006940 RID: 26944 RVA: 0x00234780 File Offset: 0x00232980
+	public void AddCallback(fakeAction callback, float offset)
+	{
+		this.callbacks.Add(new Callback(callback, Time.time + offset));
+	}
 
-    void Update()
-    {
-        for (int i = 0; i < callbacks.Count; i++)
-        {
-            if (callbacks[i].time >= DateTime.Now)
-            {
-                callbacks[i].callback.Invoke();
-                callbacks.RemoveAt(i);
-                return;
-            }
-        }
+	// Token: 0x06006941 RID: 26945 RVA: 0x00054B20 File Offset: 0x00052D20
+	public WaitThenCallClass()
+	{
+	}
 
-    }
-
-    public void AddCallback(fakeAction callback, TimeSpan offset)
-    {
-        callbacks.Add(new Callback(callback, DateTime.Now.Add(offset)));
-
-    }
-
-
-
+	// Token: 0x040052FC RID: 21244
+	private List<Callback> callbacks = new List<Callback>();
 }
+
 public struct Callback
 {
-    // Token: 0x06005F6A RID: 24426 RVA: 0x0004EEEE File Offset: 0x0004D0EE
-    public Callback(fakeAction _callback, DateTime _time)
-    {
-        this.callback = _callback;
-        this.time = _time;
-    }
-    // Token: 0x04004CFB RID: 19707
-    public DateTime time;
+	// Token: 0x06006977 RID: 26999
+	public Callback(fakeAction _callback, float _time)
+	{
+		this.callback = _callback;
+		this.time = _time;
+	}
 
-    // Token: 0x04004CFC RID: 19708
-    public fakeAction callback;
+	// Token: 0x040052FE RID: 21246
+	public fakeAction callback;
+
+	// Token: 0x04005315 RID: 21269
+	public float time;
 }
 
 // Token: 0x02000D0B RID: 3339
