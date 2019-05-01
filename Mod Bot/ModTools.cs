@@ -7,41 +7,6 @@ namespace ModLibrary
 {
     namespace ModTools
     {
-        public class ModdedUpgrade
-        {
-            public ModdedUpgrade(
-                UpgradeType _id, int _level, string _upgradeName, string _upgradeDescription, Sprite _icon,
-                float _angleOffsetInUpgradeTree, int _maxRepetitions, bool _isUpgradeRepeatable, int _sortOrder,
-                UpgradeDescription _firstRequirement, UpgradeDescription _secondRequirement)
-            {
-                ID = _id;
-                UpgradeLevel = _level;
-                UpgradeName = _upgradeName;
-                UpgradeDescription = _upgradeDescription;
-                UpgradeIcon = _icon;
-                AngleOffsetInUpgradeTree = _angleOffsetInUpgradeTree;
-                HasLimitedUses = _maxRepetitions > 0;
-                MaxRepititions = _maxRepetitions;
-                IsUpgradeRepeatable = _isUpgradeRepeatable;
-                SortOrder = _sortOrder;
-                FirstRequirement = _firstRequirement;
-                SecondRequirement = _secondRequirement;
-            }
-
-            public readonly UpgradeType ID;
-            public readonly int UpgradeLevel;
-            public readonly string UpgradeName;
-            public readonly string UpgradeDescription;
-            public readonly Sprite UpgradeIcon;
-            public readonly float AngleOffsetInUpgradeTree;
-            public readonly bool HasLimitedUses;
-            public readonly int MaxRepititions;
-            public readonly bool IsUpgradeRepeatable;
-            public readonly int SortOrder;
-            public readonly UpgradeDescription FirstRequirement;
-            public readonly UpgradeDescription SecondRequirement;
-        }
-
         public static class Upgrade
         {
             /// <summary>
@@ -590,366 +555,358 @@ namespace ModLibrary
                 return Destination - StartPoint;
             }
         }
+    }
 
-        public static class ExtensionMethods
+    public class ModdedUpgrade
+    {
+        public ModdedUpgrade(
+            UpgradeType _id, int _level, string _upgradeName, string _upgradeDescription, Sprite _icon,
+            float _angleOffsetInUpgradeTree, int _maxRepetitions, bool _isUpgradeRepeatable, int _sortOrder,
+            UpgradeDescription _firstRequirement, UpgradeDescription _secondRequirement)
         {
-            /// <summary>
-            /// Checks whether or not the given upgrade id is already in use
-            /// </summary>
-            /// <param name="ID">The ID of the upgrade</param>
-            /// <returns></returns>
-            public static bool IsUpgradeTypeAndLevelUsed(this UpgradeManager upgradeManager, UpgradeType ID, int Level = 1)
-            {
-                List<UpgradeDescription> upgrades = UpgradeManager.Instance.UpgradeDescriptions;
+            ID = _id;
+            UpgradeLevel = _level;
+            UpgradeName = _upgradeName;
+            UpgradeDescription = _upgradeDescription;
+            UpgradeIcon = _icon;
+            AngleOffsetInUpgradeTree = _angleOffsetInUpgradeTree;
+            HasLimitedUses = _maxRepetitions > 0;
+            MaxRepititions = _maxRepetitions;
+            IsUpgradeRepeatable = _isUpgradeRepeatable;
+            SortOrder = _sortOrder;
+            FirstRequirement = _firstRequirement;
+            SecondRequirement = _secondRequirement;
+        }
 
-                for (int i = 0; i < upgrades.Count; i++)
+        public readonly UpgradeType ID;
+        public readonly int UpgradeLevel;
+        public readonly string UpgradeName;
+        public readonly string UpgradeDescription;
+        public readonly Sprite UpgradeIcon;
+        public readonly float AngleOffsetInUpgradeTree;
+        public readonly bool HasLimitedUses;
+        public readonly int MaxRepititions;
+        public readonly bool IsUpgradeRepeatable;
+        public readonly int SortOrder;
+        public readonly UpgradeDescription FirstRequirement;
+        public readonly UpgradeDescription SecondRequirement;
+    }
+
+    public static class ExtensionMethods
+    {
+        /// <summary>
+        /// Checks whether or not the given upgrade id is already in use
+        /// </summary>
+        /// <param name="ID">The ID of the upgrade</param>
+        /// <returns></returns>
+        public static bool IsUpgradeTypeAndLevelUsed(this UpgradeManager upgradeManager, UpgradeType ID, int Level = 1)
+        {
+            List<UpgradeDescription> upgrades = UpgradeManager.Instance.UpgradeDescriptions;
+
+            for (int i = 0; i < upgrades.Count; i++)
+            {
+                if (upgrades[i].UpgradeType == ID)
+                    return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// Gets the icon of the specified upgrade
+        /// </summary>
+        /// <param name="type">The upgrade's corresponding UpgradeType</param>
+        /// <param name="level">The level of the upgrade</param>
+        /// <returns></returns>
+        public static Sprite GetUpgradeIcon(this UpgradeManager upgradeManager, UpgradeType type, int level = 1)
+        {
+            return UpgradeManager.Instance.GetUpgrade(type, level).Icon;
+        }
+        /// <summary>
+        /// Gets the icon of the specified upgrade
+        /// </summary>
+        /// <param name="upgrade"></param>
+        /// <returns></returns>
+        public static Sprite GetUpgradeIcon(this UpgradeManager upgradeManager, UpgradeTypeAndLevel upgrade)
+        {
+            return UpgradeManager.Instance.GetUpgradeIcon(upgrade.UpgradeType, upgrade.Level);
+        }
+        /// <summary>
+        /// Gives the specified upgrade to a FirstPersonMover
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <param name="Upgrade"></param>
+        public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription Upgrade)
+        {
+            if (firstPersonMover == null)
+                return;
+
+            if (firstPersonMover.IsMainPlayer())
+            {
+                GameDataManager.Instance.SetUpgradeLevel(Upgrade.UpgradeType, Upgrade.Level);
+                UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(Upgrade.UpgradeType, Upgrade.Level);
+                GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
+            }
+
+            else
+            {
+                UpgradeCollection upgradeCollection = firstPersonMover.gameObject.GetComponent<UpgradeCollection>();
+
+                if (upgradeCollection == null)
                 {
-                    if (upgrades[i].UpgradeType == ID)
-                        return true;
-                }
-
-                return false;
-            }
-            /// <summary>
-            /// Gets the icon of the specified upgrade
-            /// </summary>
-            /// <param name="type">The upgrade's corresponding UpgradeType</param>
-            /// <param name="level">The level of the upgrade</param>
-            /// <returns></returns>
-            public static Sprite GetUpgradeIcon(this UpgradeManager upgradeManager, UpgradeType type, int level = 1)
-            {
-                return UpgradeManager.Instance.GetUpgrade(type, level).Icon;
-            }
-            /// <summary>
-            /// Gets the icon of the specified upgrade
-            /// </summary>
-            /// <param name="upgrade"></param>
-            /// <returns></returns>
-            public static Sprite GetUpgradeIcon(this UpgradeManager upgradeManager, UpgradeTypeAndLevel upgrade)
-            {
-                return UpgradeManager.Instance.GetUpgradeIcon(upgrade.UpgradeType, upgrade.Level);
-            }
-            /// <summary>
-            /// Gives the specified upgrade to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrade"></param>
-            public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription Upgrade)
-            {
-                if (firstPersonMover == null)
+                    debug.Log("Failed to give upgrade '" + Upgrade.UpgradeName + "' (Level: " + Upgrade.Level + ") to " + firstPersonMover.CharacterName + " (UpgradeCollection is null)", Color.red);
                     return;
-
-                if (firstPersonMover.IsMainPlayer())
-                {
-                    GameDataManager.Instance.SetUpgradeLevel(Upgrade.UpgradeType, Upgrade.Level);
-                    UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(Upgrade.UpgradeType, Upgrade.Level);
-                    GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
                 }
 
-                else
+                UpgradeTypeAndLevel upgradeToGive = new UpgradeTypeAndLevel { UpgradeType = Upgrade.UpgradeType, Level = Upgrade.Level };
+
+                List<UpgradeTypeAndLevel> upgrades = ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades.ToList();
+
+                upgrades.Add(upgradeToGive);
+
+                ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades = upgrades.ToArray();
+                ((PreconfiguredUpgradeCollection)upgradeCollection).InitializeUpgrades();
+
+                firstPersonMover.RefreshUpgrades();
+            }
+
+            firstPersonMover.SetUpgradesNeedsRefreshing();
+        }
+        /// <summary>
+        /// Gives the specified upgrades to a FirstPersonMover
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <param name="Upgrades"></param>
+        public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription[] Upgrades)
+        {
+            for (int i = 0; i < Upgrades.Length; i++)
+            {
+                firstPersonMover.GiveUpgrade(Upgrades[i]);
+            }
+        }
+        /// <summary>
+        /// Gives the specified upgrade to a FirstPersonMover
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <param name="Upgrade"></param>
+        /// <param name="Level"></param>
+        public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeType upgrade, int Level)
+        {
+            firstPersonMover.GiveUpgrade(ModTools.Upgrade.GetUpgradeDescriptionFromTypeAndLevel(upgrade, Level));
+        }
+        /// <summary>
+        /// Gives the specified upgrades to a FirstPersonMover
+        /// </summary>
+        /// <param name="Target"></param>
+        /// <param name="Upgrades"></param>
+        /// <param name="Levels"></param>
+        public static void GiveUpgrade(this FirstPersonMover firstPersonMover, Dictionary<UpgradeType, int> Upgrades)
+        {
+            foreach (UpgradeType upgrade in Upgrades.Keys)
+            {
+                firstPersonMover.GiveUpgrade(upgrade, Upgrades[upgrade]);
+            }
+        }
+
+        /// <summary>
+        /// Spawns a clone in the clone area
+        /// </summary>
+        /// <param name="cloneManager"></param>
+        /// <returns>The created clone</returns>
+        public static FirstPersonMover SpawnClone(this CloneManager cloneManager)
+        {
+            Accessor cloneAreaAccessor = new Accessor(typeof(CloneArea), CloneManager.Instance.CloneArea);
+
+            FirstPersonMover clone = (FirstPersonMover)cloneAreaAccessor.CallPrivateMethod("spawnClone");
+
+            CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
+
+            return clone;
+        }
+        /// <summary>
+        /// Spawns clones in the clone area
+        /// </summary>
+        /// <param name="cloneManager"></param>
+        /// <param name="count">Amount to spawn</param>
+        /// <returns>The created clones</returns>
+        public static List<FirstPersonMover> SpawnClone(this CloneManager cloneManager, int count)
+        {
+            List<FirstPersonMover> spawnedClones = new List<FirstPersonMover>();
+
+            for (int i = 0; i < count; i++)
+            {
+                spawnedClones.Add(CloneManager.Instance.SpawnClone());
+            }
+
+            CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
+
+            return spawnedClones;
+        }
+        /// <summary>
+        /// Removes a clone from the clone area
+        /// </summary>
+        /// <param name="cloneManager"></param>
+        public static void RemoveClone(this CloneManager cloneManager)
+        {
+            if (CloneManager.Instance.GetNumClones() == 0)
+                return;
+
+            List<FirstPersonMover> clones = (List<FirstPersonMover>)Accessor.GetPrivateField(typeof(CloneArea), "_clones", CloneManager.Instance.CloneArea);
+
+            List<MechBodyPart> bodyParts = clones[CloneManager.Instance.GetNumClones() - 1].GetAllBodyParts();
+
+            FireSpreadDefinition fireSpread = new FireSpreadDefinition
+            {
+                DamageSourceType = DamageSourceType.None,
+                FireType = FireType.BanFire,
+                MinSpreadProbability = 1000f,
+                SpreadProbabilityDropOff = 0f,
+                StartSpreadProbability = 100f,
+                WaitBetweenSpreads = 0.001f
+            };
+
+            for (int i = 0; i < bodyParts.Count; i++)
+            {
+                bodyParts[i].TryCutVolume(
+                    bodyParts[i].transform.position + new Vector3(2f, 0.5f, -2f),
+                    bodyParts[i].transform.position + new Vector3(-2f, 0.5f, -2f),
+                    bodyParts[i].transform.position + new Vector3(-2f, 0.5f, 2f),
+                    bodyParts[i].transform.position + new Vector3(2f, 0.5f, 2f),
+                    AttackManager.Instance.GetNextAttackID(), false, null, DamageSourceType.SpeedHackBanFire, fireSpread, false);
+            }
+
+            CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
+        }
+        /// <summary>
+        /// Removes clones from the clone area
+        /// </summary>
+        /// <param name="cloneManager"></param>
+        /// <param name="count">The amount to remove</param>
+        public static void RemoveClone(this CloneManager cloneManager, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                CloneManager.Instance.RemoveClone();
+            }
+
+            CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
+        }
+
+        /// <summary>
+        /// Adds a name tag to a character
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="DisplayName"></param>
+        /// <param name="TextColor"></param>
+        /// <param name="OverrideOld"></param>
+        public static void AddNameTag(this Character character, string DisplayName, Color TextColor, bool OverrideOld)
+        {
+            if (character.HasNameTag() && !OverrideOld)
+                return;
+
+            Transform nameTag = TwitchEnemySpawnManager.Instance.TwitchEnemyNameTagPool.InstantiateNewObject(false);
+            nameTag.SetParent(GameUIRoot.Instance.transform, false);
+            nameTag.SetAsFirstSibling();
+
+            EnemyNameTag enemyNameTag = nameTag.GetComponent<EnemyNameTag>();
+            EnemyNameTagConfig enemyNameTagConfig = new EnemyNameTagConfig
+            {
+                HideAtDistance = CharacterNameTagManager.Instance.HideNameTagsAtDistance,
+                HideIfNotVisible = true
+            };
+
+            enemyNameTag.NameText.color = TextColor;
+
+            enemyNameTag.Initialize(character, DisplayName, enemyNameTagConfig);
+            character.SetHasNameTag();
+        }
+        /// <summary>
+        /// Gets the MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static MechBodyPart GetBodyPart(this Character character, MechBodyPartType type)
+        {
+            List<MechBodyPart> bodyParts = character.GetAllBodyParts();
+
+            for (int i = 0; i < bodyParts.Count; i++)
+            {
+                if (bodyParts[i].PartType == type)
+                    return bodyParts[i];
+            }
+
+            return null;
+        }
+        /// <summary>
+        /// Gets all MechBodyParts of the given MechBodyPartTypes (Elements in the List will be null if the given Character does not have a MechBodyPartType specified in the List)
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public static List<MechBodyPart> GetBodyParts(this Character character, List<MechBodyPartType> types)
+        {
+            if (types == null || types.Count == 0)
+                return new List<MechBodyPart>();
+
+            List<MechBodyPart> bodyParts = character.GetAllBodyParts();
+            List<MechBodyPart> passedParts = new List<MechBodyPart>();
+
+            for (int i = 0; i < bodyParts.Count;)
+            {
+                if (types.Contains(bodyParts[i].PartType))
                 {
-                    UpgradeCollection upgradeCollection = firstPersonMover.gameObject.GetComponent<UpgradeCollection>();
-
-                    if (upgradeCollection == null)
-                    {
-                        debug.Log("Failed to give upgrade '" + Upgrade.UpgradeName + "' (Level: " + Upgrade.Level + ") to " + firstPersonMover.CharacterName + " (UpgradeCollection is null)", Color.red);
-                        return;
-                    }
-
-                    UpgradeTypeAndLevel upgradeToGive = new UpgradeTypeAndLevel { UpgradeType = Upgrade.UpgradeType, Level = Upgrade.Level };
-
-                    List<UpgradeTypeAndLevel> upgrades = ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades.ToList();
-
-                    upgrades.Add(upgradeToGive);
-
-                    ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades = upgrades.ToArray();
-                    ((PreconfiguredUpgradeCollection)upgradeCollection).InitializeUpgrades();
-
-                    firstPersonMover.RefreshUpgrades();
+                    types.Remove(bodyParts[i].PartType);
+                    passedParts.Add(bodyParts[i]);
                 }
-
-                firstPersonMover.SetUpgradesNeedsRefreshing();
-            }
-            /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
-            public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription[] Upgrades)
-            {
-                for (int i = 0; i < Upgrades.Length; i++)
-                {
-                    firstPersonMover.GiveUpgrade(Upgrades[i]);
-                }
-            }
-            /// <summary>
-            /// Gives the specified upgrade to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrade"></param>
-            /// <param name="Level"></param>
-            public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeType upgrade, int Level)
-            {
-                firstPersonMover.GiveUpgrade(Upgrade.GetUpgradeDescriptionFromTypeAndLevel(upgrade, Level));
-            }
-            /// <summary>
-            /// Gives the specified upgrades to a FirstPersonMover
-            /// </summary>
-            /// <param name="Target"></param>
-            /// <param name="Upgrades"></param>
-            /// <param name="Levels"></param>
-            public static void GiveUpgrade(this FirstPersonMover firstPersonMover, Dictionary<UpgradeType, int> Upgrades)
-            {
-                foreach (UpgradeType upgrade in Upgrades.Keys)
-                {
-                    firstPersonMover.GiveUpgrade(upgrade, Upgrades[upgrade]);
-                }
-            }
-            /// <summary>
-            /// Adds a new upgrade to the upgrade tree
-            /// </summary>
-            /// <param name="upgradeManager"></param>
-            /// <param name="upgrade"></param>
-            /// <returns>The created upgrade</returns>
-            public static UpgradeDescription AddUpgrade(this UpgradeManager upgradeManager, ModdedUpgrade upgrade)
-            {
-                if (upgrade == null || UpgradeManager.Instance == null)
-                {
-                    return null;
-                }
-
-                if (UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.ID, upgrade.UpgradeLevel))
-                {
-                    return UpgradeManager.Instance.GetUpgrade(upgrade.ID, upgrade.UpgradeLevel);
-                }
-
-                UpgradeDescription newUpgrade = UpgradeManager.Instance.UpgradeDescriptions[0].gameObject.AddComponent<UpgradeDescription>();
-
-                newUpgrade.AngleOffset = upgrade.AngleOffsetInUpgradeTree;
-                newUpgrade.CanBeTransferredInMultiplayer = false;
-                newUpgrade.Description = upgrade.UpgradeDescription;
-                newUpgrade.HideInStoryMode = false;
-                newUpgrade.Icon = upgrade.UpgradeIcon;
-                newUpgrade.IsAvailableInMultiplayer = false;
-                newUpgrade.IsConsumable = upgrade.HasLimitedUses;
-                newUpgrade.IsDisabledInBattleRoyale = true;
-                newUpgrade.IsRepeatable = upgrade.IsUpgradeRepeatable;
-                newUpgrade.IsUpgradeVisible = true;
-                newUpgrade.Level = upgrade.UpgradeLevel;
-                newUpgrade.MaxRepetitions = upgrade.MaxRepititions;
-                newUpgrade.RequiredMetagameProgress = MetagameProgress.P0_None;
-                newUpgrade.Requirement = upgrade.FirstRequirement;
-                newUpgrade.Requirement2 = upgrade.SecondRequirement;
-                newUpgrade.SkillPointCostBattleRoyale = 9999;
-                newUpgrade.SkillPointCostMultiplayer = 9999;
-                newUpgrade.SortOrder = upgrade.SortOrder;
-                newUpgrade.UpgradeName = upgrade.UpgradeName;
-                newUpgrade.UpgradeType = upgrade.ID;
-
-                return newUpgrade;
             }
 
-            /// <summary>
-            /// Spawns a clone in the clone area
-            /// </summary>
-            /// <param name="cloneManager"></param>
-            /// <returns>The created clone</returns>
-            public static FirstPersonMover SpawnClone(this CloneManager cloneManager)
-            {
-                Accessor cloneAreaAccessor = new Accessor(typeof(CloneArea), CloneManager.Instance.CloneArea);
+            return passedParts;
+        }
 
-                FirstPersonMover clone = (FirstPersonMover)cloneAreaAccessor.CallPrivateMethod("spawnClone");
-
-                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
-
-                return clone;
-            }
-            /// <summary>
-            /// Spawns clones in the clone area
-            /// </summary>
-            /// <param name="cloneManager"></param>
-            /// <param name="count">Amount to spawn</param>
-            /// <returns>The created clones</returns>
-            public static List<FirstPersonMover> SpawnClone(this CloneManager cloneManager, int count)
-            {
-                List<FirstPersonMover> spawnedClones = new List<FirstPersonMover>();
-
-                for (int i = 0; i < count; i++)
-                {
-                    spawnedClones.Add(CloneManager.Instance.SpawnClone());
-                }
-
-                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
-
-                return spawnedClones;
-            }
-            /// <summary>
-            /// Removes a clone from the clone area
-            /// </summary>
-            /// <param name="cloneManager"></param>
-            public static void RemoveClone(this CloneManager cloneManager)
-            {
-                if (CloneManager.Instance.GetNumClones() == 0)
-                    return;
-
-                List<FirstPersonMover> clones = (List<FirstPersonMover>)Accessor.GetPrivateField(typeof(CloneArea), "_clones", CloneManager.Instance.CloneArea);
-
-                List<MechBodyPart> bodyParts = clones[CloneManager.Instance.GetNumClones() - 1].GetAllBodyParts();
-
-                FireSpreadDefinition fireSpread = new FireSpreadDefinition
-                {
-                    DamageSourceType = DamageSourceType.None,
-                    FireType = FireType.BanFire,
-                    MinSpreadProbability = 1000f,
-                    SpreadProbabilityDropOff = 0f,
-                    StartSpreadProbability = 100f,
-                    WaitBetweenSpreads = 0.001f
-                };
-
-                for (int i = 0; i < bodyParts.Count; i++)
-                {
-                    bodyParts[i].TryCutVolume(
-                        bodyParts[i].transform.position + new Vector3(2f, 0.5f, -2f),
-                        bodyParts[i].transform.position + new Vector3(-2f, 0.5f, -2f),
-                        bodyParts[i].transform.position + new Vector3(-2f, 0.5f, 2f),
-                        bodyParts[i].transform.position + new Vector3(2f, 0.5f, 2f),
-                        AttackManager.Instance.GetNextAttackID(), false, null, DamageSourceType.SpeedHackBanFire, fireSpread, false);
-                }
-
-                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
-            }
-            /// <summary>
-            /// Removes clones from the clone area
-            /// </summary>
-            /// <param name="cloneManager"></param>
-            /// <param name="count">The amount to remove</param>
-            public static void RemoveClone(this CloneManager cloneManager, int count)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    CloneManager.Instance.RemoveClone();
-                }
-
-                CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
-            }
-
-            /// <summary>
-            /// Adds a name tag to a character
-            /// </summary>
-            /// <param name="character"></param>
-            /// <param name="DisplayName"></param>
-            /// <param name="TextColor"></param>
-            /// <param name="OverrideOld"></param>
-            public static void AddNameTag(this Character character, string DisplayName, Color TextColor, bool OverrideOld)
-            {
-                if (character.HasNameTag() && !OverrideOld)
-                    return;
-
-                Transform nameTag = TwitchEnemySpawnManager.Instance.TwitchEnemyNameTagPool.InstantiateNewObject(false);
-                nameTag.SetParent(GameUIRoot.Instance.transform, false);
-                nameTag.SetAsFirstSibling();
-
-                EnemyNameTag enemyNameTag = nameTag.GetComponent<EnemyNameTag>();
-                EnemyNameTagConfig enemyNameTagConfig = new EnemyNameTagConfig
-                {
-                    HideAtDistance = CharacterNameTagManager.Instance.HideNameTagsAtDistance,
-                    HideIfNotVisible = true
-                };
-
-                enemyNameTag.NameText.color = TextColor;
-
-                enemyNameTag.Initialize(character, DisplayName, enemyNameTagConfig);
-                character.SetHasNameTag();
-            }
-            /// <summary>
-            /// Gets the MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
-            /// </summary>
-            /// <param name="character"></param>
-            /// <param name="type"></param>
-            /// <returns></returns>
-            public static MechBodyPart GetBodyPart(this Character character, MechBodyPartType type)
-            {
-                List<MechBodyPart> bodyParts = character.GetAllBodyParts();
-
-                for (int i = 0; i < bodyParts.Count; i++)
-                {
-                    if (bodyParts[i].PartType == type)
-                        return bodyParts[i];
-                }
-
+        /// <summary>
+        /// Gets a WeaponModel from the given FirstPersonMover from the given WeaponType (Returns null if the FirstPersonMover does not have the weapon)
+        /// </summary>
+        /// <param name="firstPersonMover"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static WeaponModel GetWeaponModel(this FirstPersonMover firstPersonMover, WeaponType type)
+        {
+            if (type == WeaponType.None || firstPersonMover == null)
                 return null;
-            }
-            /// <summary>
-            /// Gets all MechBodyParts of the given MechBodyPartTypes (Elements in the List will be null if the given Character does not have a MechBodyPartType specified in the List)
-            /// </summary>
-            /// <param name="character"></param>
-            /// <param name="types"></param>
-            /// <returns></returns>
-            public static List<MechBodyPart> GetBodyParts(this Character character, List<MechBodyPartType> types)
+
+            WeaponModel[] weaponModels = firstPersonMover.GetCharacterModel().WeaponModels;
+
+            for (int i = 0; i < weaponModels.Length; i++)
             {
-                if (types == null || types.Count == 0)
-                    return new List<MechBodyPart>();
-
-                List<MechBodyPart> bodyParts = character.GetAllBodyParts();
-                List<MechBodyPart> passedParts = new List<MechBodyPart>();
-
-                for (int i = 0; i < bodyParts.Count;)
-                {
-                    if (types.Contains(bodyParts[i].PartType))
-                    {
-                        types.Remove(bodyParts[i].PartType);
-                        passedParts.Add(bodyParts[i]);
-                    }
-                }
-
-                return passedParts;
+                if (weaponModels[i].WeaponType == type)
+                    return weaponModels[i];
             }
-            
-            /// <summary>
-            /// Gets a WeaponModel from the given FirstPersonMover from the given WeaponType (Returns null if the FirstPersonMover does not have the weapon)
-            /// </summary>
-            /// <param name="firstPersonMover"></param>
-            /// <param name="type"></param>
-            /// <returns></returns>
-            public static WeaponModel GetWeaponModel(this FirstPersonMover firstPersonMover, WeaponType type)
+
+            return null;
+        }
+
+        /// <summary>
+        /// Randomizes the order of the list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        public static void Randomize<T>(this List<T> list)
+        {
+            System.Random random = new System.Random();
+
+            List<T> shuffledList = new List<T>();
+            List<int> used = new List<int>();
+
+            for (int i = random.Next(0, list.Count - 1); list.Count < 0;)
             {
-                if (type == WeaponType.None || firstPersonMover == null)
-                    return null;
+                while (used.Contains(i))
+                    i = random.Next(0, list.Count - 1);
 
-                WeaponModel[] weaponModels = firstPersonMover.GetCharacterModel().WeaponModels;
-
-                for (int i = 0; i < weaponModels.Length; i++)
-                {
-                    if (weaponModels[i].WeaponType == type)
-                        return weaponModels[i];
-                }
-
-                return null;
+                shuffledList.Add(list[i]);
+                used.Add(i);
             }
 
-            /// <summary>
-            /// Randomizes the order of the list
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="list"></param>
-            public static void Randomize<T>(this List<T> list)
-            {
-                System.Random random = new System.Random();
-
-                List<T> shuffledList = new List<T>();
-                List<int> used = new List<int>();
-
-                for (int i = random.Next(0, list.Count - 1); list.Count < 0;)
-                {
-                    while(used.Contains(i))
-                        i = random.Next(0, list.Count - 1);
-
-                    shuffledList.Add(list[i]);
-                    used.Add(i);
-                }
-
-                list = new List<T>(shuffledList);
-            }
+            list = new List<T>(shuffledList);
         }
     }
 }
