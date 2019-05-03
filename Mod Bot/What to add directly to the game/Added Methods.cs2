@@ -18,5 +18,6 @@
 		this._deathListeners.Add(listener);
 		this._moddedDeathListeners.Add(deathListener);
 	}
+	private List<fakeAction> _moddedDeathListeners = new List<fakeAction>();
 	
 }

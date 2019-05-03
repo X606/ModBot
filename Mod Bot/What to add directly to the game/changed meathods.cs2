@@ -109,8 +109,6 @@ protected virtual void Awake()
 		this._moddedDeathListeners = new List<fakeAction>();
 	}
 
-	public List<fakeAction> _moddedDeathListeners;
-
 Character
 	protected virtual void Start()
 	{
