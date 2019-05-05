@@ -348,13 +348,16 @@
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="Console.cs" />
+    <Compile Include="CustomUpgradeManger.cs" />
     <Compile Include="Delayed.cs" />
+    <Compile Include="ErrorChanger.cs" />
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StartupManager.cs" />
     <Compile Include="UIBuilder.cs" />
     <Compile Include="UpdateChecker.cs" />
   </ItemGroup>

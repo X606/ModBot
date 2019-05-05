@@ -92,7 +92,9 @@ public class ModsManager : Singleton<ModsManager>
 
     // Token: 0x06005F32 RID: 24370
     public void reloadMods()
-    {
+	{
+		UpgradeCosts.Reset();
+		UpgradePagesMangaer.Reset();
         ModsManager.CleanCache();
         AssetLoader.ClearCache();
         this.mods.Clear();

@@ -14,8 +14,6 @@
 
 	public void AddModdedDeathListener(fakeAction deathListener)
 	{
-		Action listener = (Action)Delegate.CreateDelegate(typeof(Action), deathListener.method);
-		this._deathListeners.Add(listener);
 		this._moddedDeathListeners.Add(deathListener);
 	}
 	private List<fakeAction> _moddedDeathListeners = new List<fakeAction>();

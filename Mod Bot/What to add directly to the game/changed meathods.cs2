@@ -1,12 +1,7 @@
 GameFlowManager
     Start()
 {
-
-    gameObject.AddComponent<WaitThenCallClass>();
-    gameObject.AddComponent<moddedObjectsManager>();
-    gameObject.AddComponent<ModsManager>();
-	gameObject.AddComponent<UpdateChecker>();
-	gameObject.AddComponent<ModsPanelManager>();
+	StartupManager.OnStartUp();
 
 }
 Firstpersonmover
@@ -118,4 +113,33 @@ Character
 	protected virtual void Update()
 	{
 		ModsManager.Instance.passOnMod.OnCharacterUpdate(gameObject);
+	}
+Character
+	protected virtual void onDeath(Character killer, DamageSourceType damageSourceType)
+	for (int j = 0; j < this._moddedDeathListeners.Count; j++)
+		{
+			this._moddedDeathListeners[j].Invoke();
+		}
+		this._moddedDeathListeners.Clear();
+
+UpgradeDescription
+	public int GetSkillPointCost()
+	{
+		if (GameModeManager.UsesBattleRoyaleUpgradeCosts() && this.SkillPointCostBattleRoyale > 0)
+		{
+			return this.SkillPointCostBattleRoyale;
+		}
+		if (GameModeManager.UsesMultiplayerUpgrades())
+		{
+			return this.SkillPointCostMultiplayer;
+		}
+		return UpgradeCosts.GetCostOfUpgrade(this.UpgradeType, this.Level);
+	}
+
+UpgradeDescription
+	public virtual bool IsUpgradeCurrentlyVisible()
+	{
+		if (!UpgradePagesMangaer.GetUpgradePages(this.UpgradeType,this.Level).Contains(UpgradePagesMangaer.currentPage)) {
+			return false;
+		}
 	}

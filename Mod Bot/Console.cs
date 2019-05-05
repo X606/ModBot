@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.IO;
 
 namespace ModLibrary
 {
@@ -24,6 +25,7 @@ namespace ModLibrary
         /// <param name="_log"></param>
         public static void Log(string _log)
         {
+            //Console.WriteLine(_log);
             Logger.Instance.log(_log);
         }
 
@@ -62,5 +64,46 @@ namespace ModLibrary
                 Logger.Instance.log(list[i].ToString(), _color);
             }
         }
+
+
+        public static void PrintAllChildren(Transform obj)
+        {
+            outputText = "";
+            WriteToFile(obj.ToString());
+            RecursivePrintAllChildren("   ", obj);
+
+            File.WriteAllText(Application.persistentDataPath + "/debug.txt",outputText);
+            System.Diagnostics.Process.Start("notepad.exe", Application.persistentDataPath + "/debug.txt");
+
+        }
+        static void RecursivePrintAllChildren(string pre, Transform obj)
+        {
+            Component[] components = obj.gameObject.GetComponents(typeof(Component));
+            if (components.Length != 0)
+            {
+                WriteToFile(pre + "Components: ");
+            }
+            for (int i = 0; i < components.Length; i++)
+            {
+                WriteToFile(pre + components[i].ToString());
+            }
+
+
+            if (obj.childCount != 0)
+            {
+                WriteToFile(pre + "Children: ");
+            }
+            for (int i = 0; i < obj.childCount; i++)
+            {
+                Transform child = obj.GetChild(i);
+                WriteToFile(pre + i + ": " + child.name);
+                RecursivePrintAllChildren(pre + "   ", child);
+            }
+        }
+        static void WriteToFile(string msg)
+        {
+            outputText += msg + "\n";
+        }
+        static string outputText;
     }
 }
