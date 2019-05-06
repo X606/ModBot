@@ -6,6 +6,7 @@ A mod loader for clone drone in the danger zone! If you want to help improve the
 * The ability to load in mods during runtime in clone drone in the danger zone.
 * A `!modsuggest <mod_name> <mod_link>` command in Twitch Mode that allows viewers to suggest mods.
 * A ModLibrary namespace that provides some useful functions for modding.
+* A Multipage upgrade select screen that is fully moddable.
 
 ## Community
 Feel free to join our Discord or check out the website below.<br/>
