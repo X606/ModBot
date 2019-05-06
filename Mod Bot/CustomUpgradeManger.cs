@@ -38,14 +38,31 @@ namespace ModLibrary
         public void BackClicked()
         {
             UpgradePagesMangaer.PreviusPage();
-            Accessor.CallPrivateMethod(typeof(UpgradeUI), "PopulateIcons", GameUIRoot.Instance.UpgradeUI);
+            OnBackOrNextClicked();
         }
         public void NextClicked()
         {
             UpgradePagesMangaer.NextPage();
-            Accessor.CallPrivateMethod(typeof(UpgradeUI), "PopulateIcons", GameUIRoot.Instance.UpgradeUI);
+            OnBackOrNextClicked();
         }
 
+        void OnBackOrNextClicked()
+        {
+            Accessor.CallPrivateMethod(typeof(UpgradeUI), "PopulateIcons", GameUIRoot.Instance.UpgradeUI);
+            /* didnt work, might fix it later
+            Mod mod = UpgradePagesMangaer.GetModForPage(UpgradePagesMangaer.currentPage);
+            if (mod != null)
+            {
+                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade [" + mod.GetModName() + "]";
+            }
+            else
+            {
+                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade";
+            }
+            */
+
+            
+        }
 
 
 
@@ -61,8 +78,14 @@ namespace ModLibrary
             }
             return upgradeCostsDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)];
         }
-        public static void SetCostOfUpgrade(this UpgradeManager upgradeDescription, UpgradeType upgradeType, int level, int newCost)
+        public static void SetCostOfUpgrade(UpgradeType upgradeType, int level, int newCost)
         {
+            if (upgradeCostsDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
+            {
+                upgradeCostsDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)] = newCost;
+                return;
+            }
+
             upgradeCostsDictionary.Add(new ModdedUpgradeTypeAndLevel(upgradeType, level), newCost);
             
         }
@@ -82,7 +105,7 @@ namespace ModLibrary
             upgradeManager.UpgradeDescriptions.Add(upgrade);
             int page = UpgradePagesMangaer.GetPageForMod(mod);
 
-            UpgradePagesMangaer.SetUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
+            UpgradePagesMangaer.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
 
             if (upgrade.Requirement != null)
             {
@@ -92,18 +115,39 @@ namespace ModLibrary
         public static void AddUpgradeToModPage(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
             int page = UpgradePagesMangaer.GetPageForMod(mod);
-            UpgradePagesMangaer.SetUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
+            UpgradePagesMangaer.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
         }
+        public static void AddUpgradeAlreadyInGame(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
+        {
+            UpgradePagesMangaer.AddUpgradeAlreadyInGame(upgrade.UpgradeType, upgrade.Level, mod);
+        }
+
+
         public static bool IsModdedUpgradeType(this UpgradeDescription upgrade)
         {
             return !ModTools.EnumTools.GetValues<UpgradeType>().Contains(upgrade.UpgradeType);
         }
+
+        public static void SetSingleplayerCost(this UpgradeDescription upgradeDescription, int cost)
+        {
+            UpgradeCosts.SetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level, cost);
+        }
+        public static int GetSinglePlayerCost(this UpgradeDescription upgradeDescription)
+        {
+            return UpgradeCosts.GetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
+        }
+
+
+
+
+
+
         static void RecursivelyAddRequirments(UpgradeDescription upgrade, int page)
         {
             if (upgrade == null)
                 return;
 
-            UpgradePagesMangaer.SetUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
+            UpgradePagesMangaer.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
 
 
             if (upgrade.Requirement2 != null)
@@ -125,6 +169,7 @@ namespace InternalModBot
     {
         public static void Reset()
         {
+
             for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
             {
                 if (UpgradeManager.Instance.UpgradeDescriptions[i].IsModdedUpgradeType())
@@ -154,7 +199,7 @@ namespace InternalModBot
             }
             return upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)];
         }
-        public static void SetUpgradePage(UpgradeType upgradeType, int level, int newPage)
+        public static void AddUpgradePage(UpgradeType upgradeType, int level, int newPage)
         {
             if (!upgradePagesDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
             {
@@ -169,6 +214,22 @@ namespace InternalModBot
             }
             upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Add(newPage);
 
+        }
+
+        public static void AddUpgradeAlreadyInGame(UpgradeType upgradeType, int level, Mod mod)
+        {
+            int page = GetPageForMod(mod);
+
+            if (!upgradePagesDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
+            {
+                upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)] = new List<int>();
+            }
+            if (upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Contains(0))
+            {
+                upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Remove(0);
+            }
+
+            upgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Add(page);
         }
 
         private static Dictionary<ModdedUpgradeTypeAndLevel, List<int>> upgradePagesDictionary = new Dictionary<ModdedUpgradeTypeAndLevel, List<int>>();
@@ -203,6 +264,20 @@ namespace InternalModBot
                 }
             }
             return TryAddPage(mod);
+        }
+
+        public static Mod GetModForPage(int page)
+        {
+
+            for (int i = 0; i < ModsManager.Instance.mods.Count; i++)
+            {
+                if (ModsManager.Instance.mods[i].GetHashCode() == modIds[page])
+                {
+                    return ModsManager.Instance.mods[i];
+                }
+            }
+
+            return null;
         }
 
         public static void NextPage()
