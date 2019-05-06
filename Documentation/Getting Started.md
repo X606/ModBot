@@ -65,3 +65,7 @@ Change 'public class Class1' to 'public class main : Mod'
 You now have a blank canvas for a mod, to see a list of methods you can override, type in 'public override' somewhere between the brackets under the main class.
 
 ![setup main class](https://cdn.discordapp.com/attachments/418510776215535640/524965033269133342/unknown.png)
+
+Finaly, all mods should override a GetModName, this is to make sure that the user can see what mod is what in game.
+
+And of course if you have any questions ask away in the discord!
