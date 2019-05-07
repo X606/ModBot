@@ -29,6 +29,14 @@ namespace ModLibrary
             Logger.Instance.log(_log);
         }
 
+
+        public static void Log(object _log)
+        {
+            //Console.WriteLine(_log);
+            Logger.Instance.log(_log.ToString());
+            
+        }
+
         /// <summary>
         /// Writes to the in-game console, in color.
         /// </summary>

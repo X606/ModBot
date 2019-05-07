@@ -48,6 +48,7 @@ namespace ModLibrary
 
         void OnBackOrNextClicked()
         {
+
             Accessor.CallPrivateMethod(typeof(UpgradeUI), "PopulateIcons", GameUIRoot.Instance.UpgradeUI);
             /* didnt work, might fix it later
             Mod mod = UpgradePagesMangaer.GetModForPage(UpgradePagesMangaer.currentPage);

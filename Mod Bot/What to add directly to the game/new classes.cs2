@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
+using InternalModBot;
 
 
 // Token: 0x02000DD8 RID: 3544
