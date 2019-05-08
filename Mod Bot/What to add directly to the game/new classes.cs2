@@ -509,17 +509,18 @@ public class Logger : Singleton<global::Logger>
 
     // Token: 0x06005F57 RID: 24407
     public void RunCommand(string command)
-    {
-        try
-        {
-            Singleton<ModsManager>.Instance.passOnMod.OnCommandRan(command);
-        }
-        catch (Exception exe)
-        {
-            this.log("command '" + command + "' failed with the following error: " + exe.Message, Color.red);
-            this.log(exe.StackTrace, Color.red);
-        }
-    }
+	{
+		try
+		{
+			ConsoleInputManager.OnCommandRan(command);
+			Singleton<ModsManager>.Instance.passOnMod.OnCommandRan(command);
+		}
+		catch (Exception ex)
+		{
+			this.log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
+			this.log(ex.StackTrace, Color.red);
+		}
+	}
 
     // Token: 0x04004CEE RID: 19694
     public Animator animator;

@@ -50,17 +50,18 @@ namespace ModLibrary
         {
 
             Accessor.CallPrivateMethod(typeof(UpgradeUI), "PopulateIcons", GameUIRoot.Instance.UpgradeUI);
-            /* didnt work, might fix it later
+           
             Mod mod = UpgradePagesMangaer.GetModForPage(UpgradePagesMangaer.currentPage);
             if (mod != null)
             {
-                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade [" + mod.GetModName() + "]";
+                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade\n[" + mod.GetModName() + "]";
+                GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
             }
             else
             {
                 GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade";
+                GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
             }
-            */
 
             
         }

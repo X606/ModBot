@@ -178,3 +178,19 @@ UpgradeDescription
 			return false;
 		}
 	}
+
+RepairUpgrade
+	public virtual bool IsUpgradeCurrentlyVisible()
+	{
+		if (!UpgradePagesMangaer.GetUpgradePages(this.UpgradeType,this.Level).Contains(UpgradePagesMangaer.currentPage)) {
+			return false;
+		}
+	}
+
+
+
+ErrorManager
+	HandleLog
+	if (IgnoreCrashesManager.GetIsIgnoringCrashes()) {
+			return;
+		}

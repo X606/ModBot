@@ -26,7 +26,13 @@ namespace ModLibrary
         public static void Log(string _log)
         {
             //Console.WriteLine(_log);
+            if (Logger.Instance.LogText.text.Length > 200) {
+                string newText = Logger.Instance.LogText.text.Substring(Logger.Instance.LogText.text.Length - 200);
+                Logger.Instance.LogText.text = newText;
+            }
+
             Logger.Instance.log(_log);
+            
         }
 
 

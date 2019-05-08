@@ -22,6 +22,8 @@ namespace InternalModBot
             gameObject.AddComponent<UpdateChecker>();
             gameObject.AddComponent<ModsPanelManager>();
             gameObject.AddComponent<CustomUpgradeManger>();
+
+            IgnoreCrashesManager.Start();
             
             
         }
