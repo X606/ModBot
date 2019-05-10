@@ -490,6 +490,7 @@ namespace ModLibrary
                 return GetWeaponModelFromType((FirstPersonMover)character, type);
             }
             
+            [Obsolete("Use CharacterTracker.GetAllEnemyCharactersInRange instead")]
             public static List<Character> GetAllEnemyCharactersInRange(Vector3 origin, float radius)
             {
                 List<Character> characters = CharacterTracker.Instance.GetAllLivingCharacters();
@@ -594,6 +595,64 @@ namespace ModLibrary
 
     public static class ExtensionMethods
     {
+        /// <summary>
+        /// Adds a collection to a list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="collection"></param>
+        public static void Add<T>(this List<T> list, IEnumerable<T> collection)
+        {
+            foreach (T item in collection)
+            {
+                list.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Gets all enemies in the specified range
+        /// </summary>
+        /// <param name="characterTracker"></param>
+        /// <param name="origin"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public static List<Character> GetAllEnemyCharactersInRange(this CharacterTracker characterTracker, Vector3 origin, float radius)
+        {
+            List<Character> characters = CharacterTracker.Instance.GetAllLivingCharacters();
+            List<Character> charactersInRange = new List<Character>();
+
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].GetPositionForAIToAimAt()) <= radius)
+                    charactersInRange.Add(characters[i]);
+            }
+
+            return charactersInRange;
+        }
+
+        /// <summary>
+        /// Gets all characters in the specified range
+        /// </summary>
+        /// <param name="characterTracker"></param>
+        /// <param name="origin"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
+        public static List<Character> GetAllCharactersInRange(this CharacterTracker characterTracker, Vector3 origin, float radius)
+        {
+            List<Character> characters = CharacterTracker.Instance.GetAllLivingCharacters();
+            List<Character> charactersInRange = new List<Character>();
+
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (Vector3.Distance(origin, characters[i].transform.position) <= radius)
+                {
+                    charactersInRange.Add(characters[i]);
+                }
+            }
+
+            return charactersInRange;
+        }
+
         /// <summary>
         /// Checks whether or not the given upgrade id is already in use
         /// </summary>
