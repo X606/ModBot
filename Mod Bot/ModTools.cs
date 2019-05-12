@@ -951,21 +951,15 @@ namespace ModLibrary
         /// <param name="list"></param>
         public static void Randomize<T>(this List<T> list)
         {
-            System.Random random = new System.Random();
+            List<T> randomizedList = new List<T>();
 
-            List<T> shuffledList = new List<T>();
-            List<int> used = new List<int>();
-
-            for (int i = random.Next(0, list.Count - 1); list.Count < 0;)
+            while (list.Count > 0)
             {
-                while (used.Contains(i))
-                    i = random.Next(0, list.Count - 1);
+                int index = UnityEngine.Random.Range(0, list.Count);
 
-                shuffledList.Add(list[i]);
-                used.Add(i);
+                randomizedList.Add(list[index]);
+                list.RemoveAt(index);
             }
-
-            list = new List<T>(shuffledList);
         }
     }
 }
