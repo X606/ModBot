@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace ModLibrary
@@ -115,7 +112,7 @@ namespace ModLibrary
         /// <typeparam name="ReturnType">The return type of the method.</typeparam>
         /// <param name="methodName">The name of the method.</param>
         /// <param name="instance">The instance of the class you want to call the method in.</param>
-        /// <param name="args">The arguments to pass to the method</param>
+        /// <param name="args">The arguments to pass to the method.</param>
         public static ReturnType CallPrivateMethod<InstanceType, ReturnType>(string methodName, InstanceType instance, object[] args = null)
         {
             if (args == null)
@@ -125,6 +122,24 @@ namespace ModLibrary
 
             MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
             return (ReturnType)method.Invoke(instance, args);
+        }
+
+        /// <summary>
+        /// Calls a method even if its private but does not return its return value. (Use only for methods that have no return value or you dont need it)
+        /// </summary>
+        /// <typeparam name="InstanceType">The type of the class the method is in.</typeparam>
+        /// <param name="methodName">The name of the method.</param>
+        /// <param name="instance">The instance of the class you want to call the method in.</param>
+        /// <param name="args">The arguments to pass to the method.</param>
+        public static void CallPrivateMethod<InstanceType>(string methodName, InstanceType instance, object[] args = null)
+        {
+            if (args == null)
+            {
+                args = new object[] { };
+            }
+
+            MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
+            method.Invoke(instance, args);
         }
 
         /// <summary>
