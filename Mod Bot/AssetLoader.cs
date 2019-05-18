@@ -1,25 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using System;
+using System.Security.Cryptography.X509Certificates;
+using UnityEngine;
 
 namespace ModLibrary
 {
     public static class AssetLoader
     {
         private static Dictionary<string, UnityEngine.Object> cached = new Dictionary<string, UnityEngine.Object>();
-
-       /// <summary>
-       /// Gets a GameObject from a file.
-       /// </summary>
-       /// <param name="file">The asset file (loaded from the mods folder)</param>
-       /// <param name="name">Name of the GamObject to get</param>
-       /// <returns</returns>
+        
+        /// <summary>
+        /// Gets a GameObject from a file.
+        /// </summary>
+        /// <param name="file">The asset file (loaded from the mods folder)</param>
+        /// <param name="name">Name of the GamObject to get</param>
+        /// <returns</returns>
         public static GameObject getObjectFromFile(string file, string name)
         {
             string key = file + ":" + name;
@@ -93,7 +91,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// if it there is already a file named the same thing as name, this wont do anything)
+        /// If it there is already a file named the same thing as name, this wont do anything
         /// </summary>
         public static void trySaveFileToMods(string url, string name)
         {

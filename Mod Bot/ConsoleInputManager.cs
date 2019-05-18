@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 
 namespace InternalModBot
@@ -29,22 +25,14 @@ namespace InternalModBot
             {
                 Delayed.TriggerAfterDelay(new fakeAction(typeof(ConsoleInputManager).GetMethod("Crash"), null), 1);
             }
-
-
         }
-
-
-
 
         public static void Crash()
         {
             throw new Exception("Boom crash");
         }
     }
-
-
-
-
+    
     public static class IgnoreCrashesManager
     {
         private static bool isIgnoringCrashes = false;
@@ -60,30 +48,24 @@ namespace InternalModBot
             }
             
         }
-
-
+        
         public static void Alert()
         {
             debug.Log("Rememberd that you wanted to ingnore crashes. If you want to be more secure turn it off at anytime by typing in \"ignoreallcrashes 0\" into the console :)", Color.red);
         }
-
-
+        
         public static void SetIsIgnoringCrashes(bool state)
         {
             isIgnoringCrashes = state;
-            if (isIgnoringCrashes)
-            {
-                PlayerPrefs.SetInt("IgnoreCrashes", 1);
-            } else
-            {
-                PlayerPrefs.SetInt("IgnoreCrashes", 0);
-            }
+            int ignoreCrashesIntValue = isIgnoringCrashes ? 1 : 0;
             
-
+            PlayerPrefs.SetInt("IgnoreCrashes", ignoreCrashesIntValue);
+            
             if (state)
             {
                 debug.Log("The game is now ignoring all crashes, this means that if something goes wrong it could REALLY go wrong. But it also means that you dont crash like ever!", Color.red);
-            } else
+            }
+            else
             {
                 debug.Log("The game is now NOT ignoring crashes anymore, so you should be a lot safer now!", Color.green);
             }
@@ -93,6 +75,5 @@ namespace InternalModBot
         {
             return isIgnoringCrashes;
         }
-
     }
 }

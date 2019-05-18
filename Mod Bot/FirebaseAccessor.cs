@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.IO;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ModLibrary
 {
@@ -21,7 +16,7 @@ namespace ModLibrary
         {
             WebRequest webRequest = WebRequest.Create(URLToRead);
             webRequest.Method = "GET";
-            ServicePointManager.ServerCertificateValidationCallback = ((object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true);
+            ServicePointManager.ServerCertificateValidationCallback = (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
             return new StreamReader(webRequest.GetResponse().GetResponseStream()).ReadToEnd().Replace("\"", "");
         }
     }

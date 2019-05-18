@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ModLibrary
 {
@@ -14,7 +11,6 @@ namespace ModLibrary
 
         public static void TriggerAfterDelay(fakeAction action, float seconds)
         {
-
             WaitThenCallClass.Instance.AddCallback(action, seconds);
         }
     }

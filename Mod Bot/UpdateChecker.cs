@@ -1,15 +1,8 @@
-﻿using System;
+﻿using ModLibrary;
 using System.IO;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -62,9 +55,5 @@ namespace InternalModBot
         }
 
         private moddedObject spawnedModdedObject;
-
-        // https://modbot-d8a58.firebaseio.com/ModBotDownloadLink/.json
-        // https://modbot-d8a58.firebaseio.com/ModBotVer/.json
-        // https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json
     }
 }

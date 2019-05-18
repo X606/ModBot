@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace ModLibrary
@@ -19,6 +16,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called in FirstPersonMover Start()
         /// </summary>
@@ -27,6 +25,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called in Character Update()
         /// </summary>
@@ -40,6 +39,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called in Character Update()
         /// </summary>
@@ -49,7 +49,6 @@ namespace ModLibrary
 
         }
 
-
         /// <summary>
         /// Called when F3 + R is pressed.
         /// </summary>
@@ -57,6 +56,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called when the level editor is started.
         /// </summary>
@@ -64,6 +64,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called when a level editor object is placed or spawned (gets called when any object gets spawed).
         /// </summary>
@@ -71,6 +72,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Called when you run a command in the console (mostly for debuging).
         /// </summary>
@@ -79,6 +81,7 @@ namespace ModLibrary
         {
 
         }
+
         /// <summary>
         /// Returns the name of the mod, override to set the name of you mod
         /// </summary>
@@ -87,6 +90,7 @@ namespace ModLibrary
         {
             return null;
         }
+
         /// <summary>
         /// Returns the description of the mod, override to change the description of your mod
         /// </summary>
@@ -95,6 +99,7 @@ namespace ModLibrary
         {
             return "";
         }
+
         /// <summary>
         /// Returns the image displayed in the mods menu, override to set a custom image for your mod
         /// </summary>
@@ -104,10 +109,12 @@ namespace ModLibrary
         {
             return null;
         }
+
         public virtual string GetModImageURL()
         {
             return "";
         }
+
         /// <summary>
         /// Called when FirstPersonMover.RefreshUpgrades is called.
         /// </summary>
