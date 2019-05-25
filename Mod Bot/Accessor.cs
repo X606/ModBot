@@ -72,7 +72,7 @@ namespace ModLibrary
         public void SetPrivateProperty<T>(string propertyName, T value)
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
-            property.SetValue(Instance, value);
+            property.SetValue(Instance, value, null);
         }
 
         public object GetPrivateProperty(string propertyName)
@@ -243,7 +243,7 @@ namespace ModLibrary
         public static PropertyType GetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance)
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
-            return (PropertyType)property.GetValue(instance);
+            return (PropertyType)property.GetValue(instance, null);
         }
     }
 }
