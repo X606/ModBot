@@ -879,7 +879,7 @@ namespace ModLibrary
             character.SetHasNameTag();
         }
         /// <summary>
-        /// Gets the MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
+        /// Gets the first found MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
         /// </summary>
         /// <param name="character"></param>
         /// <param name="type"></param>
@@ -920,6 +920,26 @@ namespace ModLibrary
             }
 
             return passedParts;
+        }
+        /// <summary>
+        /// Gets all MechBodyParts of the given MechBodyPartType
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<MechBodyPart> GetBodyParts(this Character character, MechBodyPartType type)
+        {
+            List<MechBodyPart> bodyParts = new List<MechBodyPart>();
+
+            for (int i = 0; i < character.GetAllBodyParts().Count; i++)
+            {
+                if (character.GetAllBodyParts()[i].PartType == type)
+                {
+                    bodyParts.Add(character.GetAllBodyParts()[i]);
+                }
+            }
+
+            return bodyParts;
         }
 
         /// <summary>
