@@ -13,7 +13,7 @@ namespace InternalModBot
             if (!GameModeManager.Is(GameMode.None))
                 return;
 
-            GameObject prefab = AssetLoader.getObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
+            GameObject prefab = AssetLoader.GetObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(prefab);
             spawnedModdedObject = spawnedObject.GetComponent<moddedObject>();
 
@@ -27,7 +27,7 @@ namespace InternalModBot
         {
             string installedGameVersion = VersionNumberManager.Instance.GetVersionString(); // Current game version
             string newestModBotGameVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json"); // The latest version ModBot is updated for
-            string installedModBotVersion = File.ReadAllLines(AssetLoader.getSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
+            string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
             string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json"); // Latest ModBot version
 
             GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion; // Add ModBot version in corner
