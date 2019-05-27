@@ -2,7 +2,7 @@
 
 namespace InternalModBot
 {
-    static class ErrorChanger
+    internal static class ErrorChanger
     {
         public static void ChangeError()
         {

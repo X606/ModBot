@@ -18,6 +18,7 @@ namespace InternalModBot
                     debug.Log("usage: ignoreallcrashes <number 0-1>");
                     return;
                 }
+
                 IgnoreCrashesManager.SetIsIgnoringCrashes(subCommands[1] == "1");
             }
 
@@ -29,7 +30,7 @@ namespace InternalModBot
 
         public static void Crash()
         {
-            throw new Exception("Boom crash");
+            throw new Exception("-Crashed from console-");
         }
     }
     
@@ -46,12 +47,11 @@ namespace InternalModBot
             {
                 Delayed.TriggerAfterDelay(new fakeAction(typeof(IgnoreCrashesManager).GetMethod("Alert"), null), 1);
             }
-            
         }
         
         public static void Alert()
         {
-            debug.Log("Rememberd that you wanted to ingnore crashes. If you want to be more secure turn it off at anytime by typing in \"ignoreallcrashes 0\" into the console :)", Color.red);
+            debug.Log("Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing \"ignoreallcrashes 0\" into the console.", Color.red);
         }
         
         public static void SetIsIgnoringCrashes(bool state)
@@ -63,11 +63,11 @@ namespace InternalModBot
             
             if (state)
             {
-                debug.Log("The game is now ignoring all crashes, this means that if something goes wrong it could REALLY go wrong. But it also means that you dont crash like ever!", Color.red);
+                debug.Log("The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.", Color.red);
             }
             else
             {
-                debug.Log("The game is now NOT ignoring crashes anymore, so you should be a lot safer now!", Color.green);
+                debug.Log("The game is no longer ignoring crashes, this option should always be turned off for stability purposes.", Color.green);
             }
         }
 
