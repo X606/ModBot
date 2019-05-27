@@ -34,7 +34,7 @@ namespace ModLibrary
             return method.Invoke(Instance, args);
         }
 
-        public T CallPrivateMethod<T>(string methodName, object[] args = null)
+        public ReturnType CallPrivateMethod<ReturnType>(string methodName, object[] args = null)
         {
             if (args == null)
             {
@@ -48,7 +48,7 @@ namespace ModLibrary
                 throw new MissingMethodException(InstanceType.FullName, methodName);
             }
 
-            return (T)method.Invoke(Instance, args);
+            return (ReturnType)method.Invoke(Instance, args);
         }
 
         public void SetPrivateField(string fieldName, object value)
@@ -63,7 +63,7 @@ namespace ModLibrary
             field.SetValue(Instance, value);
         }
 
-        public void SetPrivateField<T>(string fieldName, T value)
+        public void SetPrivateField<FieldType>(string fieldName, FieldType value)
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
@@ -87,7 +87,7 @@ namespace ModLibrary
             return field.GetValue(Instance);
         }
 
-        public T GetPrivateField<T>(string fieldName)
+        public FieldType GetPrivateField<FieldType>(string fieldName)
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
@@ -96,7 +96,7 @@ namespace ModLibrary
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
 
-            return (T)field.GetValue(Instance);
+            return (FieldType)field.GetValue(Instance);
         }
 
         public void SetPrivateProperty(string propertyName, object value)
@@ -111,7 +111,7 @@ namespace ModLibrary
             property.SetValue(Instance, value, null);
         }
 
-        public void SetPrivateProperty<T>(string propertyName, T value)
+        public void SetPrivateProperty<PropertyType>(string propertyName, PropertyType value)
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
@@ -135,7 +135,7 @@ namespace ModLibrary
             return property.GetValue(Instance, null);
         }
 
-        public T GetPrivateProperty<T>(string propertyName)
+        public PropertyType GetPrivateProperty<PropertyType>(string propertyName)
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
@@ -144,7 +144,7 @@ namespace ModLibrary
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
 
-            return (T)property.GetValue(Instance, null);
+            return (PropertyType)property.GetValue(Instance, null);
         }
 
         /// <summary>
