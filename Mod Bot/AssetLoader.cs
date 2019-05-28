@@ -97,6 +97,7 @@ namespace ModLibrary
         /// <summary>
         /// If it there is already a file named the same thing as name, this wont do anything
         /// </summary>
+        [Obsolete("Use TrySaveFileToMods instead")]
         public static void trySaveFileToMods(string url, string name)
         {
             string path = getSubdomain(Application.dataPath) + "mods/" + name;
@@ -107,6 +108,7 @@ namespace ModLibrary
             saveFileToMods(url, name);
         }
 
+        [Obsolete("Use SaveFileToMods instead")]
         public static void saveFileToMods(string url, string name)
         {
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
