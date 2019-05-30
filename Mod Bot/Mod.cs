@@ -6,7 +6,7 @@ namespace ModLibrary
     /// <summary>
     /// Base class for all mods, contains virtual implementations for diffrent events in the game.
     /// </summary>
-    public class Mod
+    public abstract class Mod
     {
         /// <summary>
         /// Called when the game scene is changed
@@ -86,10 +86,7 @@ namespace ModLibrary
         /// Returns the name of the mod, override to set the name of you mod
         /// </summary>
         /// <returns></returns>
-        public virtual string GetModName()
-        {
-            return null;
-        }
+        public abstract string GetModName();
 
         /// <summary>
         /// Returns the description of the mod, override to change the description of your mod
