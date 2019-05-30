@@ -37,9 +37,9 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
-    <Compile Include="Console.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="ConsoleInputManager.cs" />
-    <Compile Include="CustomUpgradeManger.cs" />
+    <Compile Include="CustomUpgradeManager.cs" />
     <Compile Include="Delayed.cs" />
     <Compile Include="ErrorChanger.cs" />
     <Compile Include="FirebaseAccessor.cs" />
