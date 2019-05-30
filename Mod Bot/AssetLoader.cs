@@ -31,7 +31,7 @@ namespace ModLibrary
             string path = getSubdomain(Application.dataPath) + "mods/";
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("getObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
@@ -56,7 +56,7 @@ namespace ModLibrary
             string path = getSubdomain(Application.dataPath) + _path;
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("getObjectFromFile + This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
@@ -81,7 +81,7 @@ namespace ModLibrary
             string path = getSubdomain(Application.dataPath) + "mods/";
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("getObjectFromFile<T> + This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
@@ -133,7 +133,7 @@ namespace ModLibrary
             List<string> subDomainsList = new List<string>(subDomainsArray);
             subDomainsList.RemoveAt(subDomainsList.Count - 1);
 
-            return subDomainsList.Join("/");
+            return subDomainsList.Join("/") + "/";
         }
         #endregion
 
@@ -156,7 +156,7 @@ namespace ModLibrary
 
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("GetObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
                 return null;
             }
 
@@ -190,7 +190,7 @@ namespace ModLibrary
 
             if (!Directory.Exists(assetBundlePath))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("GetObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + assetBundlePath);
                 return null;
             }
 
@@ -223,7 +223,7 @@ namespace ModLibrary
             string path = GetSubdomain(Application.dataPath) + "mods/";
             if (!Directory.Exists(path))
             {
-                Debug.LogError("This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)");
+                Debug.LogError("GetObjectFromFile<T>: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
                 return null;
             }
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + assetBundleName, 1);
