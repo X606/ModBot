@@ -59,7 +59,7 @@ namespace InternalModBot
             GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
             GameObject modItem = GameObject.Instantiate(modItemPrefab, parent.transform);
 
-            string modName = mod.GetModName() == null ? "This mod does not have a name, contact the creator to add it in the Mod class" : mod.GetModName();
+            string modName = mod.GetModName();
             string url = mod.GetModImageURL();
 
             if (url != "")
