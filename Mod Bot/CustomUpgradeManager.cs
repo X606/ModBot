@@ -259,6 +259,9 @@ namespace InternalModBot
 
         public static Mod GetModForPage(int page)
         {
+            if (modIds.Count-1 < page)
+                return null;
+
             for (int i = 0; i < ModsManager.Instance.mods.Count; i++)
             {
                 if (ModsManager.Instance.mods[i].GetHashCode() == modIds[page])
