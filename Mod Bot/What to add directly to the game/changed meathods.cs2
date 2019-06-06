@@ -14,7 +14,7 @@ public partial class LibraryListItemDisplay : MonoBehaviour, IPointerUpHandler, 
         if (previewPathUnderResources.StartsWith("modded/"))
         {
             string temp = previewPathUnderResources.Replace("modded/", "");
-            byte[] data = File.ReadAllBytes(LibraryListItemDisplay.getSubdomain(Application.dataPath) + "mods/" + temp);
+            byte[] data = File.ReadAllBytes(AssetLoader.GetSubdomain(Application.dataPath) + "mods/" + temp);
             texture2D.LoadImage(data);
         }
         else
@@ -23,19 +23,7 @@ public partial class LibraryListItemDisplay : MonoBehaviour, IPointerUpHandler, 
         }
         return Sprite.Create(texture2D, new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height), new Vector2(0.5f, 0.5f), 100f);
     }
-	private static string getSubdomain(string path)
-    {
-        string[] subDomains = path.Split(new char[]
-        {
-            '/'
-        });
-        string newDomain = "";
-        for (int i = 0; i < subDomains.Length - 1; i++)
-        {
-            newDomain = newDomain + subDomains[i] + "/";
-        }
-        return newDomain;
-    }
+}
 
 
 
@@ -122,11 +110,11 @@ public ObjectPlacedInLevel PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedL
             }
             try
             {
-                transform = AssetLoader.getObjectFromFile(array[1], array[2]).transform;
+                transform = AssetLoader.GetObjectFromFile(array[1], array[2]).transform;
             }
             catch
             {
-                Debug.LogError("You dont have the mod '" + array[1] + "* installed, please install this mod to use this level");
+                Debug.LogError("You dont have the mod '" + array[1] + "' installed, please install this mod to use this level");
             }
         } else {
 			transform = Resources.Load<Transform>(objectPlacedLevelObjectEntry.PathUnderResources);

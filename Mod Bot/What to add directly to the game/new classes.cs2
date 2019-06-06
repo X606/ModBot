@@ -288,6 +288,11 @@ public class passOn : Mod
 			mods[i].OnCharacterUpdate(me);
 		}
 	}
+
+	public override string GetModName()
+	{
+		return "";
+	}
 }
 
 
