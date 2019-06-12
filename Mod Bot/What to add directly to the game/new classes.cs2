@@ -189,6 +189,14 @@ public class ModsManager : Singleton<ModsManager>
 // Token: 0x02000DDB RID: 3547
 public class passOn : Mod
 {
+	public override void OnMultiplayerMessageRecived(string message)
+    {
+        List<Mod> mods = Singleton<ModsManager>.Instance.mods;
+		for (int i = 0; i < mods.Count; i++)
+		{
+			mods[i].OnMultiplayerMessageRecived(message);
+		}
+    }
 	// Token: 0x0600694A RID: 26954
 	public override void OnFirstPersonMoverSpawned(GameObject me)
 	{
@@ -639,6 +647,7 @@ public class fakeAction
         this.method = _method;
         this.instance = _instance;
     }
+
     public fakeAction(MethodInfo _method, object _instance, object[] _args)
     {
         this.method = _method;

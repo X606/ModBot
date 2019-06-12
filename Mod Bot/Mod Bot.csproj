@@ -47,6 +47,7 @@
     <Compile Include="Mod.cs" />
     <Compile Include="ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
+    <Compile Include="MultiplayerMessageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupManager.cs" />
     <Compile Include="UIBuilder.cs" />
@@ -65,8 +66,9 @@
     <Reference Include="bolt">
       <HintPath>..\Clone drone dlls\bolt.dll</HintPath>
     </Reference>
-    <Reference Include="bolt.user">
-      <HintPath>..\Clone drone dlls\bolt.user.dll</HintPath>
+    <Reference Include="bolt.user, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\games\new\steamapps\common\Clone Drone in the Danger Zone\Clone Drone in the Danger Zone_Data\Managed\bolt.user.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
