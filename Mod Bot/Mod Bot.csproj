@@ -37,6 +37,8 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandManager.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="ConsoleInputManager.cs" />
     <Compile Include="CustomUpgradeManager.cs" />

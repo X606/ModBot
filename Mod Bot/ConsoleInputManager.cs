@@ -1,5 +1,6 @@
 ﻿using ModLibrary;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace InternalModBot
@@ -25,6 +26,19 @@ namespace InternalModBot
             if (subCommands[0] == "crash")
             {
                 Delayed.TriggerAfterDelay(new fakeAction(typeof(ConsoleInputManager).GetMethod("Crash"), null), 1);
+            }
+
+            if (CommandManager.Instance.HasCommand(subCommands[0]))
+            {
+                List<string> args = new List<string>(subCommands);
+                //Convert so we can remove the first value giving us just the command arguments.
+                args.RemoveAt(0);
+
+                CommandManager.Instance.RunCommand(subCommands[0], args);
+            }
+            else 
+            {
+                debug.Log("Invalid Command");
             }
         }
 
