@@ -593,7 +593,7 @@ namespace ModLibrary
         public readonly UpgradeDescription SecondRequirement;
     }
 
-    public static class ExtensionMethods
+    public static class ModToolExtensionMethods
     {
         /// <summary>
         /// Adds a collection to a list
@@ -705,7 +705,6 @@ namespace ModLibrary
                 UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(Upgrade.UpgradeType, Upgrade.Level);
                 GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
             }
-
             else
             {
                 UpgradeCollection upgradeCollection = firstPersonMover.gameObject.GetComponent<UpgradeCollection>();

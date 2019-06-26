@@ -13,5 +13,10 @@ namespace ModLibrary
         {
             WaitThenCallClass.Instance.AddCallback(action, seconds);
         }
+
+        public static void TriggerAfterDelay(FakeAction action, float secondsToWait)
+        {
+            WaitThenCallClass.Instance.AddCallback(action, secondsToWait);
+        }
     }
 }

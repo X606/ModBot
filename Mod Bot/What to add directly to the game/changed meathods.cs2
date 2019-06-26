@@ -45,7 +45,13 @@ public void RefreshUpgrades()
 		{
 			return;
 		}
-		ModsManager.Instance.passOnMod.OnUpgradesRefreshed(gameObject,this._upgradeCollection);
+		ModsManager.Instance.passOnMod.OnUpgradesRefreshed(gameObject, this._upgradeCollection);
+
+		.
+		.
+		.
+
+		ModsManager.Instance.passOnMod.AfterUpgradesRefreshed(gameObject, this._upgradeCollection);
 	}
 
 
@@ -124,26 +130,30 @@ public ObjectPlacedInLevel PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedL
 Character
 protected virtual void Awake()
 	{
-		this._moddedDeathListeners = new List<fakeAction>();
+		...
+		this._noArgumentModdedDeathListeners = new List<NoArgumentAction>();
+		this._selfPassingModdedDeathListeners = new List<Action<Character>>();
 	}
-
-Character
 	protected virtual void Start()
 	{
 		ModsManager.Instance.passOnMod.OnCharacterSpawned(gameObject);
+		...
 	}
-Character
 	protected virtual void Update()
 	{
 		ModsManager.Instance.passOnMod.OnCharacterUpdate(gameObject);
+		...
 	}
-Character
 	protected virtual void onDeath(Character killer, DamageSourceType damageSourceType)
-	for (int j = 0; j < this._moddedDeathListeners.Count; j++)
+	{
+		Singleton<ModsManager>.Instance.passOnMod.OnCharacterKilled(base.gameObject, killer.gameObject, damageSourceType);
+		...
+		for (int j = 0; j < this._moddedDeathListeners.Count; j++)
 		{
 			this._moddedDeathListeners[j].Invoke();
 		}
 		this._moddedDeathListeners.Clear();
+	}
 
 UpgradeDescription
 	public int GetSkillPointCost()
@@ -182,3 +192,61 @@ ErrorManager
 	if (IgnoreCrashesManager.GetIsIgnoringCrashes()) {
 			return;
 		}
+
+
+ProjectileManager
+public ArrowProjectile CreateInactiveArrow(bool isOnFire)
+	{
+		Transform transform = this.ArrowPool.InstantiateNewObject(false);
+		ArrowProjectile arrowProjectile = Singleton<CacheManager>.Instance.GetArrowProjectile(transform);
+		arrowProjectile.SetFlamingVisuals(isOnFire);
+		arrowProjectile.SetInactive();
+		arrowProjectile.SetDamageTypeOverride(DamageSourceType.None);
+		if (BoltNetwork.isServer)
+		{
+			this._nextArrowID++;
+		}
+		arrowProjectile.SetProjectileID(this._nextArrowID);
+		ModsManager.Instance.passOnMod.OnProjectileCreated(arrowProjectile.gameObject);
+		return arrowProjectile;
+	}
+public BulletProjectile CreateMortarShrapnel(Vector3 startPosition, Vector3 flyDirection, Character owner)
+	{
+		Transform transform = this.MortarExplosionShrapnelPool.InstantiateNewObject(false);
+		BulletProjectile bulletProjectile = Singleton<CacheManager>.Instance.GetBulletProjectile(transform);
+		ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+		bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
+		return bulletProjectile;
+	}
+public BulletProjectile CreateFlameBreathProjectile(Vector3 startPosition, Vector3 flyDirection, Character owner)
+	{
+		PooledPrefab pooledPrefab;
+		if (owner.IsMainPlayer())
+		{
+			pooledPrefab = this.FlameBreathProjectilePool;
+		}
+		else
+		{
+			pooledPrefab = this.FlameBreathEnemyProjectilePool;
+		}
+		Transform transform = pooledPrefab.InstantiateNewObject(false);
+		BulletProjectile bulletProjectile = Singleton<CacheManager>.Instance.GetBulletProjectile(transform);
+		ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+		bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
+		return bulletProjectile;
+	}
+public BulletProjectile CreateRepairFlameProjectile(Vector3 startPosition, Vector3 flyDirection)
+	{
+		Transform transform = this.RepairFlameProjectilePool.InstantiateNewObject(false);
+		BulletProjectile bulletProjectile = Singleton<CacheManager>.Instance.GetBulletProjectile(transform);
+		Singleton<ModsManager>.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+		bulletProjectile.StartFlying(startPosition, flyDirection, false, null);
+		return bulletProjectile;
+	}
+
+Projectile
+public virtual void StartFlying(Vector3 startPosition, Vector3 flyDirection, bool makeFlyBySound, Character owner, int startServerFrame, float rotationZ)
+	{
+		...
+		ModsManager.Instance.passOnMod.OnProjectileStartedMoving(this.gameObject);
+	}
