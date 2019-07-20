@@ -198,30 +198,6 @@ namespace ModLibrary
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
             return GetObjectFromFileInternal(assetBundleName, objectName, customPath);
-
-            string assetPath = assetBundleName + ":" + objectName;
-            string assetBundlePath = GetSubdomain(Application.dataPath) + customPath;
-
-            if (cachedObjects.ContainsKey(assetPath))
-            {
-                return (GameObject)cachedObjects[assetPath];
-            }
-
-            if (!Directory.Exists(assetBundlePath))
-            {
-                Debug.LogError("GetObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + assetBundlePath);
-                return null;
-            }
-
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundlePath + assetBundleName, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(objectName).asset as GameObject;
-            www.Dispose();
-            assetBundle.Unload(false);
-
-            cachedObjects[assetPath] = result;
-
-            return result;
         }
 
         /// <summary>
@@ -234,27 +210,6 @@ namespace ModLibrary
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
             return GetObjectFromFileInternal(assetBundleName, objectName) as T;
-
-            string key = assetBundleName + ":" + objectName;
-            if (cachedObjects.ContainsKey(key))
-            {
-                return (T)cachedObjects[key];
-            }
-
-            string path = GetSubdomain(Application.dataPath) + "mods/";
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("GetObjectFromFile<T>: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + assetBundleName, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            T result = assetBundle.LoadAssetAsync<T>(objectName).asset as T;
-            www.Dispose();
-            assetBundle.Unload(false);
-            cachedObjects[key] = result;
-
-            return result;
         }
 
         /// <summary>
