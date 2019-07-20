@@ -91,7 +91,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (field == null)
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -115,7 +115,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (property == null)
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -148,12 +148,12 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Calls a Method even if its private
+        /// Calls a method even if its private
         /// </summary>
-        /// <param name="type">The type that the method is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
+        /// <param name="type">The type that the method is in. (Get this by typing "<see langword="typeof"/>(Class)" where "Class" is the <see langword="class"/> where the method you want to run is located).</param>
         /// <param name="methodName">The name of the method, case sensitive.</param>
         /// <param name="instance">The object that the method is attached to.</param>
-        /// <param name="args">The arguments you want to pass in, if left empty no arguments will be called. Defined like this: object[] {arg1,arg2,arg3} </param>
+        /// <param name="args">The arguments you want to pass in, if left empty no arguments will be called. Defined like this: <see langword="new object"/>[] { arg1, arg2, arg3 } </param>
         public static object CallPrivateMethod(Type type, string methodName, object instance, object[] args = null)
         {
             if (args == null)
