@@ -1,7 +1,7 @@
 ﻿using ModLibrary;
 using UnityEngine;
-
 using System;
+using System.IO;
 using System.Collections.Generic;
 
 namespace InternalModBot
@@ -10,6 +10,11 @@ namespace InternalModBot
     {
         public static void OnStartUp()
         {
+            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory()))
+            {
+                throw new DirectoryNotFoundException("Mods folder not found!");
+            }
+
             ErrorChanger.ChangeError();
 
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
