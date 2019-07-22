@@ -17,40 +17,40 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in FirstPersonMover.Start()
+        /// Called in <see cref="FirstPersonMover"/>.Start()
         /// </summary>
-        /// <param name="me">The GameObject with the corresponding FirstPersonMover component</param>
+        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
         public virtual void OnFirstPersonMoverSpawned(GameObject me)
         {
         }
 
         /// <summary>
-        /// Called in FirstPersonMover.Update()
+        /// Called in <see cref="FirstPersonMover"/>.Update()
         /// </summary>
-        /// <param name="me">The GameObject with the corresponding FirstPersonMover component</param>
+        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
         public virtual void OnFirstPersonMoverUpdate(GameObject me)
         {
         }
 
         /// <summary>
-        /// Called in Character.Start()
+        /// Called in <see cref="Character"/>.Start()
         /// </summary>
-        /// <param name="me">The GameObject with the corresponding Character component</param>
+        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
         public virtual void OnCharacterSpawned(GameObject me)
         {
         }
 
         /// <summary>
-        /// Called in Character.Update()
+        /// Called in <see cref="Character"/>.Update()
         /// </summary>
-        /// <param name="me">The GameObject with the corresponding FirstPersonMover component</param>
+        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
         public virtual void OnCharacterUpdate(GameObject me)
         {
 
         }
 
         /// <summary>
-        /// Called in ModsManager.resetMods()
+        /// Called in <see cref="ModsManager"/>.resetMods()
         /// </summary>
         public virtual void OnModRefreshed()
         {
@@ -66,7 +66,7 @@ namespace ModLibrary
         /// <summary>
         /// Called when any object is placed in the level editor
         /// </summary>
-        /// <param name="_object">The GameObject with the corresponding ObjectPlacedInLevel component</param>
+        /// <param name="_object">The <see cref="GameObject"/> with the corresponding <see cref="ObjectPlacedInLevel"/> component</param>
         public virtual void OnObjectPlacedInLevelEditor(GameObject _object)
         {
         }
@@ -110,57 +110,57 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when FirstPersonMover.RefreshUpgrades() is called.
+        /// Called when <see cref="FirstPersonMover"/> RefreshUpgrades() is called.
         /// </summary>
-        /// <param name="me">The GameObject with the corresponding FirstPersonMover component</param>
-        /// <param name="upgrades">The UpgradeCollection on the FirstPersonMover object</param>
+        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
+        /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
         public virtual void OnUpgradesRefreshed(GameObject me, UpgradeCollection upgrades)
         {
         }
 
         /// <summary>
-        /// Called at the end of FirstPersonMover.RefreshUpgrades()
+        /// Called at the end of <see cref="FirstPersonMover"/>.RefreshUpgrades()
         /// </summary>
-        /// <param name="owner">The GameObject with the corresponding FirstPersonMover component</param>
-        /// <param name="upgrades">The UpgradeCollection on the FirstPersonMover object</param>
+        /// <param name="owner">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
+        /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
         public virtual void AfterUpgradesRefreshed(GameObject owner, UpgradeCollection upgrades)
         {
         }
 
         /// <summary>
-        /// Called when a Projectile is created
+        /// Called when a <see cref="Projectile"/> is created
         /// </summary>
-        /// <param name="projectile">The projectile's GameObject</param>
+        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
         public virtual void OnProjectileCreated(GameObject projectile)
         {
         }
 
         /// <summary>
-        /// Called when an ArrowProjectile is created
+        /// Called when a <see cref="Projectile"/> starts moving
         /// </summary>
-        /// <param name="arrow">The created ArrowProjectile</param>
-        public virtual void OnArrowProjectileCreated(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
-        /// Called when a BulletProjectile is created
-        /// </summary>
-        /// <param name="bullet">The created BulletProjectile</param>
-        public virtual void OnBulletProjectileCreated(BulletProjectile bullet)
-        {
-        }
-
-        /// <summary>
-        /// Called when a Projectile starts moving
-        /// </summary>
-        /// <param name="projectile">The projectile's GameObject</param>
+        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
         public virtual void OnProjectileStartedMoving(GameObject projectile)
         {
         }
 
         /// <summary>
-        /// Called when an ArrowProjectile starts moving
+        /// Called every frame since the given <see cref="Projectile"/> was created
+        /// </summary>
+        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        public virtual void OnProjectileUpdate(GameObject projectile)
+        {
+        }
+
+        /// <summary>
+        /// Called when an <see cref="ArrowProjectile"/> is created
+        /// </summary>
+        /// <param name="arrow">The created <see cref="ArrowProjectile"/></param>
+        public virtual void OnArrowProjectileCreated(ArrowProjectile arrow)
+        {
+        }
+
+        /// <summary>
+        /// Called when an <see cref="ArrowProjectile"/> starts moving
         /// </summary>
         /// <param name="arrow"></param>
         public virtual void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
@@ -168,22 +168,45 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when a BulletProjectile starts moving
+        /// Called every frame since the given <see cref="ArrowProjectile"/> was created
         /// </summary>
-        /// <param name="bullet"></param>
-        public virtual void OnBulletProjectileStartedMoving(BulletProjectile bullet)
+        /// <param name="arrow"></param>
+        public virtual void OnArrowProjectileUpdate(ArrowProjectile arrow)
         {
         }
 
         /// <summary>
-        /// Called when a character is killed
+        /// Called when a <see cref="BulletProjectile"/> is created
         /// </summary>
-        /// <param name="killedCharacter">The GameObject for the character that was killed</param>
-        /// <param name="killerCharacter">The GameObject for the killer character</param>
+        /// <param name="bullet">The created <see cref="BulletProjectile"/></param>
+        public virtual void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+        }
+
+        /// <summary>
+        /// Called when a <see cref="BulletProjectile"/> starts moving
+        /// </summary>
+        /// <param name="bullet"></param>
+        public virtual void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+        }
+
+        /// <summary>
+        /// Called every frame since the given <see cref="BulletProjectile"/> was created
+        /// </summary>
+        /// <param name="bullet"></param>
+        public virtual void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+        }
+
+        /// <summary>
+        /// Called when a <see cref="Character"/> is killed
+        /// </summary>
+        /// <param name="killedCharacter">The <see cref="GameObject"/> for the <see cref="Character"/> that was killed</param>
+        /// <param name="killerCharacter">The <see cref="GameObject"/> for the killer <see cref="Character"/></param>
         /// <param name="damageSourceType">The cause of death</param>
         public virtual void OnCharacterKilled(GameObject killedCharacter, GameObject killerCharacter, DamageSourceType damageSourceType)
         {
-
         }
     }
 }

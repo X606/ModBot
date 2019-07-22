@@ -1,12 +1,16 @@
-﻿using System;
+﻿using ModLibrary;
 using System.Collections.Generic;
 using UnityEngine;
-using ModLibrary;
 
 namespace InternalModBot
 {
     public class PassOnToModsManager : Mod
     {
+        public override string GetModName()
+        {
+            return "";
+        }
+
         public override void OnFirstPersonMoverSpawned(GameObject me)
         {
             List<Mod> mods = ModsManager.Instance.mods;
@@ -97,11 +101,6 @@ namespace InternalModBot
             }
         }
 
-        public override string GetModName()
-        {
-            return "";
-        }
-
         public override void AfterUpgradesRefreshed(GameObject owner, UpgradeCollection upgrades)
         {
             List<Mod> mods = ModsManager.Instance.mods;
@@ -126,7 +125,13 @@ namespace InternalModBot
                 }
                 if (projectileComponent is BulletProjectile)
                 {
-                    mods[i].OnBulletProjectileCreated(projectileComponent as BulletProjectile);
+                    BulletProjectile bullet = projectileComponent as BulletProjectile;
+
+                    bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
+                    bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
+                    bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
+
+                    mods[i].OnBulletProjectileCreated(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
                 }
             }
         }
@@ -142,11 +147,43 @@ namespace InternalModBot
 
                 if (projectileComponent is ArrowProjectile)
                 {
-                    mods[i].OnArrowProjectileCreated(projectileComponent as ArrowProjectile);
+                    mods[i].OnArrowProjectileStartedMoving(projectileComponent as ArrowProjectile);
                 }
                 if (projectileComponent is BulletProjectile)
                 {
-                    mods[i].OnBulletProjectileCreated(projectileComponent as BulletProjectile);
+                    BulletProjectile bullet = projectileComponent as BulletProjectile;
+
+                    bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
+                    bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
+                    bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
+
+                    mods[i].OnBulletProjectileStartedMoving(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
+                }
+            }
+        }
+
+        public override void OnProjectileUpdate(GameObject projectile)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnProjectileUpdate(projectile);
+
+                Projectile projectileComponent = projectile.GetComponent<Projectile>();
+
+                if (projectileComponent is ArrowProjectile)
+                {
+                    mods[i].OnArrowProjectileUpdate(projectileComponent as ArrowProjectile);
+                }
+                if (projectileComponent is BulletProjectile)
+                {
+                    BulletProjectile bullet = projectileComponent as BulletProjectile;
+
+                    bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
+                    bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
+                    bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
+
+                    mods[i].OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
                 }
             }
         }
@@ -169,21 +206,39 @@ namespace InternalModBot
             }
         }
 
-        public override void OnBulletProjectileCreated(BulletProjectile bullet)
+        public override void OnArrowProjectileUpdate(ArrowProjectile arrow)
         {
             List<Mod> mods = ModsManager.Instance.mods;
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnBulletProjectileCreated(bullet);
+                mods[i].OnArrowProjectileUpdate(arrow);
             }
         }
 
-        public override void OnBulletProjectileStartedMoving(BulletProjectile bullet)
+        public override void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
             List<Mod> mods = ModsManager.Instance.mods;
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnBulletProjectileStartedMoving(bullet);
+                mods[i].OnBulletProjectileCreated(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
+            }
+        }
+
+        public override void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnBulletProjectileStartedMoving(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
+            }
+        }
+
+        public override void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
             }
         }
 

@@ -32,17 +32,6 @@ public class WaitThenCallClass : Singleton<WaitThenCallClass>
 				i--;
 			}
 		}
-		for (int j = 0; j < this.actionCallbacks.Keys.Count; j++)
-		{
-			KeyValuePair<Action, float> actionTimer = new KeyValuePair<Action, float>(this.actionCallbacks.Keys.ToList<Action>()[j], this.actionCallbacks[this.actionCallbacks.Keys.ToList<Action>()[j]]);
-			bool flag2 = actionTimer.Value >= Time.time;
-			if (flag2)
-			{
-				actionTimer.Key();
-				this.actionCallbacks.Remove(actionTimer.Key);
-				j--;
-			}
-		}
 	}
 
 	// Token: 0x06006CF1 RID: 27889
@@ -51,18 +40,8 @@ public class WaitThenCallClass : Singleton<WaitThenCallClass>
 		this.callbacks.Add(new Callback(callback, Time.time + offset));
 	}
 
-	// Token: 0x060070F1 RID: 28913
-	public void AddCallback(FakeAction callback, float offset)
-	{
-		Action action = (Action)Delegate.CreateDelegate(typeof(Action), callback.Target, callback.Method.Name);
-		this.actionCallbacks.Add(action, Time.time + offset);
-	}
-
 	// Token: 0x040055DA RID: 21978
 	private List<Callback> callbacks = new List<Callback>();
-
-	// Token: 0x0400582B RID: 22571
-	private Dictionary<Action, float> actionCallbacks = new Dictionary<Action, float>();
 }
 
 public struct Callback

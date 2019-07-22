@@ -146,7 +146,7 @@ protected virtual void Awake()
 	}
 	protected virtual void onDeath(Character killer, DamageSourceType damageSourceType)
 	{
-		Singleton<ModsManager>.Instance.passOnMod.OnCharacterKilled(base.gameObject, killer.gameObject, damageSourceType);
+		ModsManager.Instance.passOnMod.OnCharacterKilled(base.gameObject, (killer != null) ? killer.gameObject : null, damageSourceType);
 		...
 		for (int j = 0; j < this._moddedDeathListeners.Count; j++)
 		{
@@ -248,5 +248,10 @@ Projectile
 public virtual void StartFlying(Vector3 startPosition, Vector3 flyDirection, bool makeFlyBySound, Character owner, int startServerFrame, float rotationZ)
 	{
 		...
-		ModsManager.Instance.passOnMod.OnProjectileStartedMoving(this.gameObject);
+		ModsManager.Instance.passOnMod.OnProjectileStartedMoving(gameObject);
+	}
+protected virtual void FixedUpdate()
+	{
+		ModsManager.Instance.passOnMod.OnProjectileUpdate(gameObject);
+		...
 	}
