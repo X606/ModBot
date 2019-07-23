@@ -9,7 +9,7 @@ namespace ModLibrary
 
         public readonly object Instance;
 
-        public const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public;
+        public const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
         public Accessor(Type _type, object _instance)
         {
