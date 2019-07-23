@@ -50,7 +50,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="ModsManager"/>.resetMods()
+        /// Called in <see cref="ModsManager"/>.reloadMods()
         /// </summary>
         public virtual void OnModRefreshed()
         {
@@ -104,13 +104,17 @@ namespace ModLibrary
             return null;
         }
 
+        /// <summary>
+        /// Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetModImageURL()
         {
             return "";
         }
 
         /// <summary>
-        /// Called when <see cref="FirstPersonMover"/> RefreshUpgrades() is called.
+        /// Called at the start <see cref="FirstPersonMover"/>.RefreshUpgrades()
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>

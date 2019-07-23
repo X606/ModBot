@@ -71,22 +71,6 @@ public class ModsManager : Singleton<ModsManager>
         this.passOnMod.OnSceneChanged(GameMode.None);
     }
 
-
-    // Token: 0x06005F31 RID: 24369
-    private string getSubdomain(string path)
-    {
-        string[] array = path.Split(new char[]
-        {
-            '/'
-        });
-        string text = "";
-        for (int i = 0; i < array.Length - 1; i++)
-        {
-            text = text + array[i] + "/";
-        }
-        return text;
-    }
-
     // Token: 0x06005F32 RID: 24370
     public void reloadMods()
 	{
@@ -96,7 +80,7 @@ public class ModsManager : Singleton<ModsManager>
         AssetLoader.ClearCache();
         this.mods.Clear();
         this.passOnMod = new PassOnToModsManager();
-        string[] files = Directory.GetFiles(this.getSubdomain(Application.dataPath) + "mods/");
+        string[] files = Directory.GetFiles(AssetLoader.GetSubdomain(Application.dataPath) + "mods/");
         for (int i = 0; i < files.Length; i++)
         {
             if (files[i].EndsWith(".dll"))
