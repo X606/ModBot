@@ -188,6 +188,32 @@ namespace InternalModBot
             }
         }
 
+        public override void OnProjectileDestroyed(GameObject projectile)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnProjectileDestroyed(projectile);
+
+                Projectile projectileComponent = projectile.GetComponent<Projectile>();
+
+                if (projectileComponent is ArrowProjectile)
+                {
+                    mods[i].OnArrowProjectileDestroyed(projectileComponent as ArrowProjectile);
+                }
+                if (projectileComponent is BulletProjectile)
+                {
+                    BulletProjectile bullet = projectileComponent as BulletProjectile;
+
+                    bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
+                    bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
+                    bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
+
+                    mods[i].OnBulletProjectileDestroyed(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
+                }
+            }
+        }
+
         public override void OnArrowProjectileCreated(ArrowProjectile arrow)
         {
             List<Mod> mods = ModsManager.Instance.mods;
@@ -215,6 +241,15 @@ namespace InternalModBot
             }
         }
 
+        public override void OnArrowProjectileDestroyed(ArrowProjectile arrow)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnArrowProjectileDestroyed(arrow);
+            }
+        }
+
         public override void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
             List<Mod> mods = ModsManager.Instance.mods;
@@ -239,6 +274,15 @@ namespace InternalModBot
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
+            }
+        }
+
+        public override void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+            List<Mod> mods = ModsManager.Instance.mods;
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnBulletProjectileDestroyed(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
             }
         }
 

@@ -255,3 +255,14 @@ protected virtual void FixedUpdate()
 		ModsManager.Instance.passOnMod.OnProjectileUpdate(gameObject);
 		...
 	}
+public void DestroyProjectile()
+	{
+		ModsManager.Instance.passOnMod.OnProjectileDestroyed(gameObject);
+		...
+	}
+public void OnEnvironmentCollided(bool playImpactVFX = true)
+	{
+		...
+		ModsManager.Instance.passOnMod.OnProjectileDestroyed(gameObject);
+		base.GetComponent<PooledPrefabReference>().OwnerPool.DestroyObject(base.gameObject, true);
+	}

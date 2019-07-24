@@ -156,6 +156,14 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Called when the given <see cref="Projectile"/> is destroyed in any way
+        /// </summary>
+        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        public virtual void OnProjectileDestroyed(GameObject projectile)
+        {
+        }
+
+        /// <summary>
         /// Called when an <see cref="ArrowProjectile"/> is created
         /// </summary>
         /// <param name="arrow">The created <see cref="ArrowProjectile"/></param>
@@ -180,6 +188,14 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Called when the given <see cref="ArrowProjectile"/> is destroyed in any way
+        /// </summary>
+        /// <param name="arrow"></param>
+        public virtual void OnArrowProjectileDestroyed(ArrowProjectile arrow)
+        {
+        }
+
+        /// <summary>
         /// Called when a <see cref="BulletProjectile"/> is created
         /// </summary>
         /// <param name="bullet">The created <see cref="BulletProjectile"/></param>
@@ -200,6 +216,14 @@ namespace ModLibrary
         /// </summary>
         /// <param name="bullet"></param>
         public virtual void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+        {
+        }
+
+        /// <summary>
+        /// Called when the given <see cref="BulletProjectile"/> is destroyed in any way
+        /// </summary>
+        /// <param name="bullet"></param>
+        public virtual void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
 
