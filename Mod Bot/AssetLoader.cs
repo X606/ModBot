@@ -10,7 +10,7 @@ namespace ModLibrary
 {
     public static class AssetLoader
     {
-        private static Dictionary<string, UnityEngine.Object> cached = new Dictionary<string, UnityEngine.Object>();
+        private static Dictionary<string, UnityEngine.Object> cachedObjects = new Dictionary<string, UnityEngine.Object>();
 
         #region Obsolete methods
         /// <summary>
@@ -23,11 +23,11 @@ namespace ModLibrary
         public static GameObject getObjectFromFile(string file, string name)
         {
             string key = file + ":" + name;
-            if (cached.ContainsKey(key))
+            if (cachedObjects.ContainsKey(key))
             {
-                return (GameObject)cached[key];
+                return (GameObject)cachedObjects[key];
             }
-            
+
             string path = getSubdomain(Application.dataPath) + "mods/";
             if (!Directory.Exists(path))
             {
@@ -39,7 +39,7 @@ namespace ModLibrary
             GameObject result = assetBundle.LoadAssetAsync<GameObject>(name).asset as GameObject;
             www.Dispose();
             assetBundle.Unload(false);
-            cached[key] = result;
+            cachedObjects[key] = result;
 
             return result;
         }
@@ -48,9 +48,9 @@ namespace ModLibrary
         public static GameObject getObjectFromFile(string file, string name, string _path)
         {
             string key = file + ":" + name;
-            if (cached.ContainsKey(key))
+            if (cachedObjects.ContainsKey(key))
             {
-                return (GameObject)cached[key];
+                return (GameObject)cachedObjects[key];
             }
 
             string path = getSubdomain(Application.dataPath) + _path;
@@ -64,7 +64,7 @@ namespace ModLibrary
             GameObject result = assetBundle.LoadAssetAsync<GameObject>(name).asset as GameObject;
             www.Dispose();
             assetBundle.Unload(false);
-            cached[key] = result;
+            cachedObjects[key] = result;
 
             return result;
         }
@@ -73,9 +73,9 @@ namespace ModLibrary
         public static T getObjectFromFile<T>(string file, string name) where T : UnityEngine.Object
         {
             string key = file + ":" + name;
-            if (cached.ContainsKey(key))
+            if (cachedObjects.ContainsKey(key))
             {
-                return (T)cached[key];
+                return (T)cachedObjects[key];
             }
 
             string path = getSubdomain(Application.dataPath) + "mods/";
@@ -89,7 +89,7 @@ namespace ModLibrary
             T result = assetBundle.LoadAssetAsync<T>(name).asset as T;
             www.Dispose();
             assetBundle.Unload(false);
-            cached[key] = result;
+            cachedObjects[key] = result;
 
             return result;
         }
@@ -137,6 +137,46 @@ namespace ModLibrary
         }
         #endregion
 
+        public const string ModsFolderName = "mods/";
+
+        /// <returns>The full directory to the mods folder</returns>
+        public static string GetModsFolderDirectory()
+        {
+            return GetSubdomain(Application.dataPath) + ModsFolderName;
+        }
+
+        private static GameObject GetObjectFromFileInternal(string _assetBundleName, string _objectName, string _customPathFromDataPath = ModsFolderName)
+        {
+            string key = _assetBundleName + ":" + _objectName;
+
+            if (cachedObjects.ContainsKey(key))
+            {
+                return (GameObject)cachedObjects[key];
+            }
+
+            string assetBundleDirectory = GetSubdomain(Application.dataPath) + _customPathFromDataPath;
+            string assetBundleFilePath = assetBundleDirectory + _assetBundleName;
+
+            if (!Directory.Exists(assetBundleDirectory))
+            {
+                throw new DirectoryNotFoundException("Could not find directory " + assetBundleDirectory);
+            }
+            if (!File.Exists(assetBundleFilePath))
+            {
+                throw new FileNotFoundException("Could not find AssetBundle file", _assetBundleName);
+            }
+
+            WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundleFilePath, 1);
+            AssetBundle assetBundle = www.assetBundle;
+            GameObject result = assetBundle.LoadAssetAsync<GameObject>(_objectName).asset as GameObject;
+            www.Dispose();
+            assetBundle.Unload(false);
+
+            cachedObjects[key] = result;
+
+            return result;
+        }
+
         /// <summary>
         /// Gets a GameObject from an asset bundle
         /// </summary>
@@ -145,34 +185,11 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
         {
-            string key = assetBundleName + ":" + objectName;
-
-            if (cached.ContainsKey(key))
-            {
-                return (GameObject)cached[key];
-            }
-
-            string path = GetSubdomain(Application.dataPath) + "mods/";
-
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("GetObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + assetBundleName, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(objectName).asset as GameObject;
-            www.Dispose();
-            assetBundle.Unload(false);
-
-            cached[key] = result;
-
-            return result;
+            return GetObjectFromFileInternal(assetBundleName, objectName);
         }
 
         /// <summary>
-        /// Gets a GameObject from an asset bundle
+        /// Gets a <see cref="GameObject"/> from an asset bundle
         /// </summary>
         /// <param name="assetBundleName">The name of the asset bundle file</param>
         /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
@@ -180,33 +197,11 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
-            string assetPath = assetBundleName + ":" + objectName;
-            string assetBundlePath = GetSubdomain(Application.dataPath) + customPath;
-
-            if (cached.ContainsKey(assetPath))
-            {
-                return (GameObject)cached[assetPath];
-            }
-
-            if (!Directory.Exists(assetBundlePath))
-            {
-                Debug.LogError("GetObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + assetBundlePath);
-                return null;
-            }
-
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundlePath + assetBundleName, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(objectName).asset as GameObject;
-            www.Dispose();
-            assetBundle.Unload(false);
-
-            cached[assetPath] = result;
-
-            return result;
+            return GetObjectFromFileInternal(assetBundleName, objectName, customPath);
         }
 
         /// <summary>
-        /// Gets an Object of type T from an asset bundle
+        /// Gets an Object of type <typeparamref name="T"/> from an asset bundle
         /// </summary>
         /// <typeparam name="T">The type of the object</typeparam>
         /// <param name="assetBundleName">The name of the asset bundle file</param>
@@ -214,28 +209,23 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
-            string key = assetBundleName + ":" + objectName;
-            if (cached.ContainsKey(key))
-            {
-                return (T)cached[key];
-            }
-
-            string path = GetSubdomain(Application.dataPath) + "mods/";
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("GetObjectFromFile<T>: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + assetBundleName, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            T result = assetBundle.LoadAssetAsync<T>(objectName).asset as T;
-            www.Dispose();
-            assetBundle.Unload(false);
-            cached[key] = result;
-
-            return result;
+            return GetObjectFromFileInternal(assetBundleName, objectName) as T;
         }
 
+        /// <summary>
+        /// Gets an Object of type <typeparamref name="T"/> from an assetbundle
+        /// </summary>
+        /// <typeparam name="T">The type of the object in the assetbundle</typeparam>
+        /// <param name="assetBundleName">The name of the assetbundle file</param>
+        /// <param name="objectName">The name of the object you want to get from the assetbundle</param>
+        /// <param name="customPath">The custom path where the assetbundle is located (goes from <seealso cref="Application.dataPath"/>)</param>
+        /// <returns></returns>
+        public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
+        {
+            return GetObjectFromFileInternal(assetBundleName, objectName, customPath) as T;
+        }
+
+        /// <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
         /// <param name="url">The URL to download the file from.</param>
         /// <param name="name">The name of the file that will be created.</param>
         public static void TrySaveFileToMods(string url, string name)
@@ -296,7 +286,7 @@ namespace ModLibrary
 
         public static void ClearCache()
         {
-            cached.Clear();
+            cachedObjects.Clear();
         }
 
         public static string GetSubdomain(string path)

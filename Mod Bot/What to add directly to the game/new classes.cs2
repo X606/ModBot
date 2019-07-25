@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 
 using System.Reflection;
+using System.Linq;
 using ModLibrary;
 using UnityEngine;
 using System.IO;
@@ -15,16 +16,16 @@ using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
 using InternalModBot;
 
-
-// Token: 0x02000DD8 RID: 3544
+// Token: 0x02000E46 RID: 3654
 public class WaitThenCallClass : Singleton<WaitThenCallClass>
 {
-		// Token: 0x0600693F RID: 26943
+	// Token: 0x06006CF0 RID: 27888
 	private void Update()
 	{
 		for (int i = 0; i < this.callbacks.Count; i++)
 		{
-			if (this.callbacks[i].time <= Time.time)
+			bool flag = this.callbacks[i].time >= Time.time;
+			if (flag)
 			{
 				this.callbacks[i].callback.Invoke();
 				this.callbacks.RemoveAt(i);
@@ -33,18 +34,13 @@ public class WaitThenCallClass : Singleton<WaitThenCallClass>
 		}
 	}
 
-	// Token: 0x06006940 RID: 26944 RVA: 0x00234780 File Offset: 0x00232980
+	// Token: 0x06006CF1 RID: 27889
 	public void AddCallback(fakeAction callback, float offset)
 	{
 		this.callbacks.Add(new Callback(callback, Time.time + offset));
 	}
 
-	// Token: 0x06006941 RID: 26945 RVA: 0x00054B20 File Offset: 0x00052D20
-	public WaitThenCallClass()
-	{
-	}
-
-	// Token: 0x040052FC RID: 21244
+	// Token: 0x040055DA RID: 21978
 	private List<Callback> callbacks = new List<Callback>();
 }
 
@@ -75,22 +71,6 @@ public class ModsManager : Singleton<ModsManager>
         this.passOnMod.OnSceneChanged(GameMode.None);
     }
 
-
-    // Token: 0x06005F31 RID: 24369
-    private string getSubdomain(string path)
-    {
-        string[] array = path.Split(new char[]
-        {
-            '/'
-        });
-        string text = "";
-        for (int i = 0; i < array.Length - 1; i++)
-        {
-            text = text + array[i] + "/";
-        }
-        return text;
-    }
-
     // Token: 0x06005F32 RID: 24370
     public void reloadMods()
 	{
@@ -99,8 +79,8 @@ public class ModsManager : Singleton<ModsManager>
         ModsManager.CleanCache();
         AssetLoader.ClearCache();
         this.mods.Clear();
-        this.passOnMod = new passOn();
-        string[] files = Directory.GetFiles(this.getSubdomain(Application.dataPath) + "mods/");
+        this.passOnMod = new PassOnToModsManager();
+        string[] files = Directory.GetFiles(AssetLoader.GetSubdomain(Application.dataPath) + "mods/");
         for (int i = 0; i < files.Length; i++)
         {
             if (files[i].EndsWith(".dll"))
@@ -184,118 +164,8 @@ public class ModsManager : Singleton<ModsManager>
     public List<Mod> mods = new List<Mod>();
 
     // Token: 0x04004CDF RID: 19679
-    public Mod passOnMod;
+    public Mod passOnMod = new PassOnToModsManager();
 }
-// Token: 0x02000DDB RID: 3547
-public class passOn : Mod
-{
-	// Token: 0x0600694A RID: 26954
-	public override void OnFirstPersonMoverSpawned(GameObject me)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnFirstPersonMoverSpawned(me);
-		}
-	}
-
-	// Token: 0x0600694B RID: 26955
-	public override void OnFirstPersonMoverUpdate(GameObject me)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnFirstPersonMoverUpdate(me);
-		}
-	}
-
-	// Token: 0x0600694C RID: 26956
-	public override void OnSceneChanged(GameMode gamemode)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnSceneChanged(gamemode);
-		}
-	}
-
-	// Token: 0x0600694D RID: 26957
-	public override void OnModRefreshed()
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnModRefreshed();
-		}
-	}
-
-	// Token: 0x0600694E RID: 26958
-	public override void OnLevelEditorStarted()
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnLevelEditorStarted();
-		}
-	}
-
-	// Token: 0x0600694F RID: 26959
-	public override void OnObjectPlacedInLevelEditor(GameObject _obj)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnObjectPlacedInLevelEditor(_obj);
-		}
-	}
-
-	// Token: 0x06006950 RID: 26960
-	public override void OnCommandRan(string command)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnCommandRan(command);
-		}
-	}
-
-	// Token: 0x0600697A RID: 27002
-	public override void OnUpgradesRefreshed(GameObject me, UpgradeCollection upgrades)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnUpgradesRefreshed(me, upgrades);
-		}
-	}
-
-	// Token: 0x0600697B RID: 27003
-	public override void OnCharacterSpawned(GameObject me)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnCharacterSpawned(me);
-		}
-	}
-
-	// Token: 0x0600697C RID: 27004
-	public override void OnCharacterUpdate(GameObject me)
-	{
-		List<Mod> mods = Singleton<ModsManager>.Instance.mods;
-		for (int i = 0; i < mods.Count; i++)
-		{
-			mods[i].OnCharacterUpdate(me);
-		}
-	}
-
-	public override string GetModName()
-	{
-		return "";
-	}
-}
-
-
 
 // Token: 0x02000D0E RID: 3342
 public class modSuggestingManager : Singleton<modSuggestingManager>
@@ -631,6 +501,7 @@ public class moddedObjectsManager : Singleton<moddedObjectsManager>
     private List<moddedObject> moddedObjects = new List<moddedObject>();
 }
 
+[Obsolete("Use NoArgumentAction for a callback with no arguments, and actions otherwise")]
 public class fakeAction
 {
     // Token: 0x06005F68 RID: 24424 RVA: 0x0004EEB0 File Offset: 0x0004D0B0
