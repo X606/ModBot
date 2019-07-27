@@ -42,12 +42,14 @@
     <Compile Include="CustomUpgradeManager.cs" />
     <Compile Include="Delayed.cs" />
     <Compile Include="ErrorChanger.cs" />
+    <Compile Include="FakeAction.cs" />
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
     <Compile Include="MultiplayerMessageSender.cs" />
+    <Compile Include="PassOnToModsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupManager.cs" />
     <Compile Include="UIBuilder.cs" />
@@ -60,7 +62,8 @@
     <None Include="What to add directly to the game\overwritten classes.cs2" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Clone drone dlls\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="bolt">

@@ -195,7 +195,7 @@ namespace ModLibrary
             }
 
             /// <summary>
-            /// Gets an UpgradeTypeAndLevel from an UpgradeDescription
+            /// Gets an <see cref="UpgradeTypeAndLevel"/> from an <see cref="UpgradeDescription"/>
             /// </summary>
             /// <param name="upgrade"></param>
             /// <returns></returns>
@@ -209,6 +209,7 @@ namespace ModLibrary
             /// <param name="type"></param>
             /// <param name="level"></param>
             /// <returns></returns>
+            [Obsolete("Use UpgradeManager.GetUpgrade(UpgradeType, int) instead")]
             public static UpgradeDescription GetUpgradeDescriptionFromTypeAndLevel(UpgradeType type, int level = 1)
             {
                 return UpgradeManager.Instance.GetUpgrade(type, level);
@@ -220,10 +221,11 @@ namespace ModLibrary
             /// <returns></returns>
             public static UpgradeDescription GetUpgradeDescriptionFromTypeAndLevel(UpgradeTypeAndLevel upgrade)
             {
-                return GetUpgradeDescriptionFromTypeAndLevel(upgrade.UpgradeType, upgrade.Level);
+                return UpgradeManager.Instance.GetUpgrade(upgrade.UpgradeType, upgrade.Level);
             }
         }
 
+        [Obsolete("All methods have been replaced with overrides")]
         public static class Clone
         {
             /// <summary>
@@ -302,16 +304,16 @@ namespace ModLibrary
         public static class Arrow
         {
             /// <summary>
-            /// Creates an arrow and makes it fly in the given direction
+            /// Creates an <see cref="ArrowProjectile"/> and makes it fly in the specified <paramref name="MoveDirection"/>
             /// </summary>
-            /// <param name="Owner">The FirstPersonMover that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
-            /// <returns>The fired arrow</returns>
-            public static ArrowProjectile Create(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDir, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
+            /// <param name="Owner">The <see cref="FirstPersonMover"/> that should be considered the owner of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="StartPosition">The starting position of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="MoveDirection">The travel direction the created <see cref="ArrowProjectile"/></param>
+            /// <param name="BladeWidth">The width of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="MakeFlyBySound">If the created <see cref="ArrowProjectile"/> should make a sound when flying close to the player, should be <see langword="false"/> if <paramref name="Owner"/> is the player</param>
+            /// <param name="RotationZ">The rotation of the created <see cref="ArrowProjectile"/></param>
+            /// <returns>The fired <see cref="ArrowProjectile"/></returns>
+            public static ArrowProjectile Create(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDirection, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
             {
                 if (Owner == null)
                     return null;
@@ -319,27 +321,27 @@ namespace ModLibrary
                 ArrowProjectile arrow = ProjectileManager.Instance.CreateInactiveArrow(false);
                 arrow.transform.SetParent(LevelSpecificWorldRoot.Instance.transform, true);
                 arrow.SetBladeWidth(BladeWidth);
-                arrow.StartFlying(StartPosition, MoveDir, MakeFlyBySound, Owner, false, BoltNetwork.serverFrame, RotationZ);
+                arrow.StartFlying(StartPosition, MoveDirection, MakeFlyBySound, Owner, false, BoltNetwork.serverFrame, RotationZ);
 
                 return arrow;
             }
             /// <summary>
-            /// Creates an arrow and makes it fly in the given direction
+            /// Creates a flaming <see cref="ArrowProjectile"/> with the specified <see cref="FireSpreadDefinition"/> and makes it fly in the specified <paramref name="MoveDirection"/>
             /// </summary>
-            /// <param name="Owner">The FirstPersonMover that should be considered the owner of the arrow</param>
-            /// <param name="StartPosition"></param>
-            /// <param name="MoveDir"></param>
-            /// <param name="fireSpreadDefinition"></param>
-            /// <param name="BladeWidth"></param>
-            /// <param name="MakeFlyBySound"></param>
-            /// <param name="RotationZ"></param>
+            /// <param name="Owner">The <see cref="FirstPersonMover"/> that should be considered the owner of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="StartPosition">The starting position of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="MoveDirection">The travel direction the created <see cref="ArrowProjectile"/></param>
+            /// <param name="fireSpreadDefinition">The <see cref="FireSpreadDefinition"/> used to calculate the spread and damage of the fire applied to the <see cref="Character"/> that was hit by the created <see cref="ArrowProjectile"/></param>
+            /// <param name="BladeWidth">The width of the created <see cref="ArrowProjectile"/></param>
+            /// <param name="MakeFlyBySound">If the created <see cref="ArrowProjectile"/> should make a sound when flying close to the player, should be <see langword="false"/> if <paramref name="Owner"/> is the player</param>
+            /// <param name="RotationZ">The rotation of the created <see cref="ArrowProjectile"/></param>
             /// <returns>The fired arrow</returns>
-            public static ArrowProjectile CreateFlaming(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDir, FireSpreadDefinition fireSpreadDefinition, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
+            public static ArrowProjectile CreateFlaming(FirstPersonMover Owner, Vector3 StartPosition, Vector3 MoveDirection, FireSpreadDefinition fireSpreadDefinition, float BladeWidth = 1f, bool MakeFlyBySound = false, float RotationZ = 0f)
             {
                 if (Owner == null)
                     return null;
 
-                ArrowProjectile arrow = Create(Owner, StartPosition, MoveDir, BladeWidth, MakeFlyBySound, RotationZ);
+                ArrowProjectile arrow = Create(Owner, StartPosition, MoveDirection, BladeWidth, MakeFlyBySound, RotationZ);
                 arrow.SetOnFire(fireSpreadDefinition);
 
                 return arrow;
@@ -349,17 +351,24 @@ namespace ModLibrary
         public static class EnumTools
         {
             /// <summary>
-            /// Gets the name of the given value in an enum
+            /// Gets the name of the given value in an <see langword="enum"/>
+            /// <para>Exceptions:</para>
+            /// <para/><see cref="ArgumentNullException"/>: If value is <see langword="null"/> or <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
             /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <param name="value"></param>
-            /// <returns></returns>
+            /// <typeparam name="T">The type of <see langword="enum"/> to get the name from</typeparam>
+            /// <param name="value">The value assigned to an entry in the specified <see langword="enum"/></param>
+            /// <returns>The name of the entry with the value <paramref name="value"/></returns>
             public static string GetName<T>(T value)
             {
                 return Enum.GetName(typeof(T), value);
             }
+
             /// <summary>
-            /// Gets all names in the given enum
+            /// Gets all names in the given <see langword="enum"/>
+            /// <para>Exceptions:</para>
+            /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
             /// </summary>
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
@@ -367,8 +376,12 @@ namespace ModLibrary
             {
                 return Enum.GetNames(typeof(T)).ToList();
             }
+
             /// <summary>
-            /// Gets all values of an enum
+            /// Gets all values of an <see langword="enum"/>
+            /// <para>Exceptions:</para>
+            /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
             /// </summary>
             /// <typeparam name="T"></typeparam>
             /// <returns></returns>
@@ -378,6 +391,7 @@ namespace ModLibrary
             }
         }
 
+        [Obsolete("All methods have been replaced with overrides")]
         public static class CharacterTools
         {
             /// <summary>
@@ -506,6 +520,7 @@ namespace ModLibrary
             }
         }
 
+        [Obsolete("All methods have been replaced with overrides")]
         public static class ListTools
         {
             /// <summary>
@@ -546,10 +561,10 @@ namespace ModLibrary
         public static class Vector3Tools
         {
             /// <summary>
-            /// Gets a direction from one Vector3 to another
+            /// Gets a direction from one <see cref="Vector3"/> to another
             /// </summary>
-            /// <param name="StartPoint"></param>
-            /// <param name="Destination"></param>
+            /// <param name="StartPoint">The position to go from</param>
+            /// <param name="Destination">The position to go to</param>
             /// <returns>The direction between the two points</returns>
             public static Vector3 GetDirection(Vector3 StartPoint, Vector3 Destination)
             {
@@ -558,6 +573,7 @@ namespace ModLibrary
         }
     }
 
+    [Obsolete]
     public class ModdedUpgrade
     {
         public ModdedUpgrade(
@@ -593,14 +609,15 @@ namespace ModLibrary
         public readonly UpgradeDescription SecondRequirement;
     }
 
-    public static class ExtensionMethods
+    public static class ModToolExtensionMethods
     {
         /// <summary>
-        /// Adds a collection to a list
+        /// Adds a collection to a <see cref="List{T}"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="collection"></param>
+        [Obsolete("Use List<T>.AddRange(ICollection<T>) instead")]
         public static void Add<T>(this List<T> list, IEnumerable<T> collection)
         {
             foreach (T item in collection)
@@ -610,11 +627,11 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Gets all enemies in the specified range
+        /// Gets all enemy <see cref="Character"/>s in the specified range
         /// </summary>
         /// <param name="characterTracker"></param>
-        /// <param name="origin"></param>
-        /// <param name="radius"></param>
+        /// <param name="origin">The point to calculate the distance from</param>
+        /// <param name="radius">The radius to get all enemy <see cref="Character"/>s within</param>
         /// <returns></returns>
         public static List<Character> GetAllEnemyCharactersInRange(this CharacterTracker characterTracker, Vector3 origin, float radius)
         {
@@ -631,11 +648,11 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Gets all characters in the specified range
+        /// Gets all <see cref="Character"/>s in the specified range
         /// </summary>
         /// <param name="characterTracker"></param>
-        /// <param name="origin"></param>
-        /// <param name="radius"></param>
+        /// <param name="origin">The point to calculate the distance from</param>
+        /// <param name="radius">The radius to get all <see cref="Character"/>s within</param>
         /// <returns></returns>
         public static List<Character> GetAllCharactersInRange(this CharacterTracker characterTracker, Vector3 origin, float radius)
         {
@@ -654,26 +671,18 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Checks whether or not the given upgrade id is already in use
+        /// Checks whether or not the given <see cref="UpgradeType"/> and level is already in use by an <see cref="UpgradeDescription"/>
         /// </summary>
         /// <param name="ID">The ID of the upgrade</param>
         /// <returns></returns>
         public static bool IsUpgradeTypeAndLevelUsed(this UpgradeManager upgradeManager, UpgradeType ID, int Level = 1)
         {
-            List<UpgradeDescription> upgrades = UpgradeManager.Instance.UpgradeDescriptions;
-
-            for (int i = 0; i < upgrades.Count; i++)
-            {
-                if (upgrades[i].UpgradeType == ID)
-                    return true;
-            }
-
-            return false;
+            return UpgradeManager.Instance.GetUpgrade(ID, Level) != null;
         }
         /// <summary>
         /// Gets the icon of the specified upgrade
         /// </summary>
-        /// <param name="type">The upgrade's corresponding UpgradeType</param>
+        /// <param name="type">The upgrade's corresponding <see cref="UpgradeType"/></param>
         /// <param name="level">The level of the upgrade</param>
         /// <returns></returns>
         public static Sprite GetUpgradeIcon(this UpgradeManager upgradeManager, UpgradeType type, int level = 1)
@@ -690,9 +699,8 @@ namespace ModLibrary
             return UpgradeManager.Instance.GetUpgradeIcon(upgrade.UpgradeType, upgrade.Level);
         }
         /// <summary>
-        /// Gives the specified upgrade to a FirstPersonMover
+        /// Gives the specified <see cref="UpgradeDescription"/> to a <see cref="FirstPersonMover"/>
         /// </summary>
-        /// <param name="Target"></param>
         /// <param name="Upgrade"></param>
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription Upgrade)
         {
@@ -705,7 +713,6 @@ namespace ModLibrary
                 UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(Upgrade.UpgradeType, Upgrade.Level);
                 GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
             }
-
             else
             {
                 UpgradeCollection upgradeCollection = firstPersonMover.gameObject.GetComponent<UpgradeCollection>();
@@ -731,9 +738,8 @@ namespace ModLibrary
             firstPersonMover.SetUpgradesNeedsRefreshing();
         }
         /// <summary>
-        /// Gives the specified upgrades to a FirstPersonMover
+        /// Gives the specified <see cref="UpgradeDescription"/> to a <see cref="FirstPersonMover"/>
         /// </summary>
-        /// <param name="Target"></param>
         /// <param name="Upgrades"></param>
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription[] Upgrades)
         {
@@ -745,12 +751,11 @@ namespace ModLibrary
         /// <summary>
         /// Gives the specified upgrade to a FirstPersonMover
         /// </summary>
-        /// <param name="Target"></param>
         /// <param name="Upgrade"></param>
         /// <param name="Level"></param>
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeType upgrade, int Level)
         {
-            firstPersonMover.GiveUpgrade(ModTools.Upgrade.GetUpgradeDescriptionFromTypeAndLevel(upgrade, Level));
+            firstPersonMover.GiveUpgrade(UpgradeManager.Instance.GetUpgrade(upgrade, Level));
         }
         /// <summary>
         /// Gives the specified upgrades to a FirstPersonMover
@@ -767,9 +772,8 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Spawns a clone in the clone area
+        /// Spawns a clone in the <see cref="CloneArea"/>
         /// </summary>
-        /// <param name="cloneManager"></param>
         /// <returns>The created clone</returns>
         public static FirstPersonMover SpawnClone(this CloneManager cloneManager)
         {
@@ -782,7 +786,7 @@ namespace ModLibrary
             return clone;
         }
         /// <summary>
-        /// Spawns clones in the clone area
+        /// Spawns clones in the <see cref="CloneArea"/>
         /// </summary>
         /// <param name="cloneManager"></param>
         /// <param name="count">Amount to spawn</param>
@@ -801,7 +805,7 @@ namespace ModLibrary
             return spawnedClones;
         }
         /// <summary>
-        /// Removes a clone from the clone area
+        /// Removes a clone from the <see cref="CloneArea"/>
         /// </summary>
         /// <param name="cloneManager"></param>
         public static void RemoveClone(this CloneManager cloneManager)
@@ -836,7 +840,7 @@ namespace ModLibrary
             CloneManager.Instance.CloneArea.PutAllClonesBackToStartingPositions();
         }
         /// <summary>
-        /// Removes clones from the clone area
+        /// Removes clones from the <see cref="CloneArea"/>
         /// </summary>
         /// <param name="cloneManager"></param>
         /// <param name="count">The amount to remove</param>
@@ -851,7 +855,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Adds a name tag to a character
+        /// Adds a name tag to a <see cref="Character"/>
         /// </summary>
         /// <param name="character"></param>
         /// <param name="DisplayName"></param>
@@ -878,8 +882,9 @@ namespace ModLibrary
             enemyNameTag.Initialize(character, DisplayName, enemyNameTagConfig);
             character.SetHasNameTag();
         }
+
         /// <summary>
-        /// Gets the first found MechBodyPart of the given MechBodyPartType (Returns null if the given Character does not have that body type)
+        /// Gets the first found <see cref="MechBodyPart"/> of the given <see cref="MechBodyPartType"/> (Returns <see langword="null"/> if the given <see cref="Character"/> does not have the specified <see cref="MechBodyPartType"/>)
         /// </summary>
         /// <param name="character"></param>
         /// <param name="type"></param>
@@ -897,7 +902,7 @@ namespace ModLibrary
             return null;
         }
         /// <summary>
-        /// Gets all MechBodyParts of the given MechBodyPartTypes (Elements in the List will be null if the given Character does not have a MechBodyPartType specified in the List)
+        /// Gets all <see cref="MechBodyPart"/>s of the given <see cref="MechBodyPartType"/>s (Elements in the returned <see cref="List{T}"/> will be <see langword="null"/> if the given <see cref="Character"/> does not have a <see cref="MechBodyPartType"/> specified in the <see cref="List{T}"/>)
         /// </summary>
         /// <param name="character"></param>
         /// <param name="types"></param>
@@ -922,7 +927,7 @@ namespace ModLibrary
             return passedParts;
         }
         /// <summary>
-        /// Gets all MechBodyParts of the given MechBodyPartType
+        /// Gets all <see cref="MechBodyPart"/>s of the given <see cref="MechBodyPartType"/>
         /// </summary>
         /// <param name="character"></param>
         /// <param name="type"></param>
@@ -948,20 +953,15 @@ namespace ModLibrary
         /// <param name="firstPersonMover"></param>
         /// <param name="type"></param>
         /// <returns></returns>
+        [Obsolete("Use CharacterModel.GetWeaponModel(WeaponType) instead")]
         public static WeaponModel GetWeaponModel(this FirstPersonMover firstPersonMover, WeaponType type)
         {
-            if (type == WeaponType.None || firstPersonMover == null)
-                return null;
-
-            WeaponModel[] weaponModels = firstPersonMover.GetCharacterModel().WeaponModels;
-
-            for (int i = 0; i < weaponModels.Length; i++)
+            if (firstPersonMover == null || firstPersonMover.GetCharacterModel() == null)
             {
-                if (weaponModels[i].WeaponType == type)
-                    return weaponModels[i];
+                return null;
             }
 
-            return null;
+            return firstPersonMover.GetCharacterModel().GetWeaponModel(type);
         }
 
         /// <summary>
