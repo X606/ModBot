@@ -501,7 +501,6 @@ public class moddedObjectsManager : Singleton<moddedObjectsManager>
     private List<moddedObject> moddedObjects = new List<moddedObject>();
 }
 
-[Obsolete("Use NoArgumentAction for a callback with no arguments, and actions otherwise")]
 public class fakeAction
 {
     // Token: 0x06005F68 RID: 24424 RVA: 0x0004EEB0 File Offset: 0x0004D0B0

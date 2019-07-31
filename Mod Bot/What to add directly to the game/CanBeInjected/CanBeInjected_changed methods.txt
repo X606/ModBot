@@ -1,0 +1,88 @@
+﻿GameFlowManager
+    Start()
+{
+	StartupManager.OnStartUp();
+
+}
+
+Firstpersonmover
+    void Update()
+{
+    ModsManager.Instance.passOnMod.OnFirstPersonMoverUpdate(gameObject);
+}
+
+LevelEditorUI
+Show()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnLevelEditorStarted();
+}
+
+ObjectPlacedInLevel
+Initialize()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnObjectPlacedInLevelEditor(base.gameObject);
+}
+
+Character
+	protected virtual void Start()
+	{
+		ModsManager.Instance.passOnMod.OnCharacterSpawned(gameObject);
+		...
+	}
+	protected virtual void Update()
+	{
+		ModsManager.Instance.passOnMod.OnCharacterUpdate(gameObject);
+		...
+	}
+	protected virtual void onDeath(Character killer, DamageSourceType damageSourceType)
+	{
+		MethodsCalledFromInjections.PassCharacterKilledInfoToMods(this, killer, damageSourceType);
+		...
+	}
+
+UpgradeDescription
+	public int GetSkillPointCost()
+	{
+		return MethodsCalledFromInjections.GetSkillPointCost(this);
+	}
+
+UpgradeDescription
+	public virtual bool IsUpgradeCurrentlyVisible()
+	{
+		if (MethodsCalledFromInjections.IsUpgradeNotCurrentlyVisible(this))
+		{
+			return false;
+		}
+	}
+
+RepairUpgrade
+	public virtual bool IsUpgradeCurrentlyVisible()
+	{
+		if (MethodsCalledFromInjections.IsUpgradeNotCurrentlyVisible(this))
+		{
+			return false;
+		}
+	}
+
+ErrorManager
+	HandleLog
+	if (IgnoreCrashesManager.GetIsIgnoringCrashes()) {
+			return;
+		}
+
+Projectile
+public virtual void StartFlying(Vector3 startPosition, Vector3 flyDirection, bool makeFlyBySound, Character owner, int startServerFrame, float rotationZ)
+	{
+		...
+		ModsManager.Instance.passOnMod.OnProjectileStartedMoving(gameObject);
+	}
+protected virtual void FixedUpdate()
+	{
+		ModsManager.Instance.passOnMod.OnProjectileUpdate(gameObject);
+		...
+	}
+public void DestroyProjectile()
+	{
+		ModsManager.Instance.passOnMod.OnProjectileDestroyed(gameObject);
+		...
+	}
