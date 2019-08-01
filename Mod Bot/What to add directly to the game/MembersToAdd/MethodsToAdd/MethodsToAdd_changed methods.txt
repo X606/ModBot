@@ -1,0 +1,6 @@
+﻿Firstpersonmover
+    private new void Start()
+{
+    Singleton<ModsManager>.Instance.passOnMod.OnFirstPersonMoverSpawned(base.gameObject);
+    base.Start();
+}

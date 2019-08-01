@@ -1,0 +1,22 @@
+﻿public void Initialize()
+    {
+        string text = (Resources.Load("Data/LevelObjects/LevelObjectManifest") as TextAsset).text;
+
+        string[] files = Directory.GetFiles(LevelObjectsLibraryManager.getSubdomain(Application.dataPath) + "mods");
+        List<LevelObjectEntry> moddedObjects = new List<LevelObjectEntry>();
+        for (int i = 0; i < files.Length; i++)
+        {
+            if (files[i].EndsWith(".json"))
+            {
+                string value = File.ReadAllText(files[i]);
+                moddedObjects = addToList(moddedObjects, JsonConvert.DeserializeObject<List<LevelObjectEntry>>(value, LevelObjectsLibraryManager.getSerializerSettings()));
+            }
+        }
+        this._levelObjects = JsonConvert.DeserializeObject<List<LevelObjectEntry>>(text, LevelObjectsLibraryManager.getSerializerSettings());
+
+
+        _levelObjects = addToList(_levelObjects, moddedObjects);
+
+        this._visibleLevelObjects = new List<LevelObjectEntry>(this._levelObjects);
+        this._visibleLevelObjects.RemoveAll((LevelObjectEntry entry) => entry.IsUnityEditorOnly());
+    }

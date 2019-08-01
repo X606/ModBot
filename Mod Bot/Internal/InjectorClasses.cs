@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ModLibrary;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace InternalModBot
 {
@@ -188,6 +189,28 @@ namespace InternalModBot
             ModsManager.Instance.passOnMod.OnProjectileDestroyed(projectile.gameObject);
             projectile.GetComponent<PooledPrefabReference>().OwnerPool.DestroyObject(projectile.gameObject, true);
         }
+
+        public static void LevelObjectsLibraryManager_Initialize()
+        {
+            Accessor levelObjectsLibraryManagerAccessor = new Accessor(typeof(LevelObjectsLibraryManager), LevelObjectsLibraryManager.Instance);
+
+            string text = (Resources.Load("Data/LevelObjects/LevelObjectManifest") as TextAsset).text;
+            string[] files = Directory.GetFiles(AssetLoader.GetModsFolderDirectory());
+            List<LevelObjectEntry> moddedObjects = new List<LevelObjectEntry>();
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i].EndsWith(".json"))
+                {
+                    string value = File.ReadAllText(files[i]);
+                    moddedObjects.AddRange(JsonConvert.DeserializeObject<List<LevelObjectEntry>>(value, LevelObjectsLibraryManager.getSerializerSettings()));
+                }
+            }
+            levelObjectsLibraryManagerAccessor.SetPrivateField("_levelObjects", JsonConvert.DeserializeObject<List<LevelObjectEntry>>(text, LevelObjectsLibraryManager.getSerializerSettings()));
+            levelObjectsLibraryManagerAccessor.GetPrivateField<List<LevelObjectEntry>>("_levelObjects").AddRange(moddedObjects);
+
+            levelObjectsLibraryManagerAccessor.SetPrivateField("_visibleLevelObjects", new List<LevelObjectEntry>(levelObjectsLibraryManagerAccessor.GetPrivateField<List<LevelObjectEntry>>("_levelObjects")));
+            levelObjectsLibraryManagerAccessor.GetPrivateField<List<LevelObjectEntry>>("_visibleLevelObjects").RemoveAll((LevelObjectEntry entry) => entry.IsUnityEditorOnly());
+        }
     }
 
     public static class MethodsCalledFromInjections
@@ -224,6 +247,26 @@ namespace InternalModBot
             }
 
             ModsManager.Instance.passOnMod.OnCharacterKilled(killed.gameObject, killerGameObject, damageSourceType);
+        }
+
+        public static void PassOnUpgradesRefreshedInfoToMods(FirstPersonMover firstPersonMover)
+        {
+            if (!firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
+            {
+                return;
+            }
+
+            ModsManager.Instance.passOnMod.OnUpgradesRefreshed(firstPersonMover.gameObject, firstPersonMover.GetComponent<UpgradeCollection>());
+        }
+
+        public static void PassAfterUpgradesRefreshedInfoToMods(FirstPersonMover firstPersonMover)
+        {
+            if (!firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
+            {
+                return;
+            }
+
+            ModsManager.Instance.passOnMod.AfterUpgradesRefreshed(firstPersonMover.gameObject, firstPersonMover.GetComponent<UpgradeCollection>());
         }
     }
 }

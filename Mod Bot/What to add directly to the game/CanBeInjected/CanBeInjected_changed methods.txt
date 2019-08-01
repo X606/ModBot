@@ -86,3 +86,15 @@ public void DestroyProjectile()
 		ModsManager.Instance.passOnMod.OnProjectileDestroyed(gameObject);
 		...
 	}
+
+Firstpersonmover
+public void RefreshUpgrades()
+	{
+		MethodsCalledFromInjections.PassOnUpgradesRefreshedInfoToMods(this);
+		...
+	}
+public void RefreshUpgrades()
+	{
+		...
+		MethodsCalledFromInjections.PassAfterUpgradesRefreshedInfoToMods(this);
+	}
