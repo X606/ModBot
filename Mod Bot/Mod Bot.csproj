@@ -38,32 +38,34 @@
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="ConsoleInputManager.cs" />
+    <Compile Include="Internal\ConsoleInputManager.cs" />
     <Compile Include="CustomUpgradeManager.cs" />
     <Compile Include="Delayed.cs" />
-    <Compile Include="ErrorChanger.cs" />
+    <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="FakeAction.cs" />
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
+    <Compile Include="Internal\MethodsCalledFromInjections.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="ModsPanelManager.cs" />
+    <Compile Include="Internal\ModsPanelManager.cs" />
     <Compile Include="ModTools.cs" />
-    <Compile Include="PassOnToModsManager.cs" />
+    <Compile Include="Internal\PassOnToModsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupManager.cs" />
     <Compile Include="UIBuilder.cs" />
-    <Compile Include="UpdateChecker.cs" />
+    <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="What to add directly to the game\Added Methods.cs2" />
-    <None Include="What to add directly to the game\changed meathods.cs2" />
     <None Include="What to add directly to the game\new classes.cs2" />
-    <None Include="What to add directly to the game\overwritten classes.cs2" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Clone drone dlls\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive\Dokument\GitHub\ModBot\Clone drone dlls\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="bolt">
       <HintPath>..\Clone drone dlls\bolt.dll</HintPath>
@@ -78,12 +80,31 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\Clone drone dlls\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive\Dokument\GitHub\ModBot\Clone drone dlls\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\OneDrive\Dokument\GitHub\ModBot\Clone drone dlls\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\Clone drone dlls\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
       <HintPath>..\Clone drone dlls\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="What to add directly to the game\CanBeInjected\CanBeInjected_changed methods.txt" />
+    <Content Include="What to add directly to the game\MembersToAdd\MethodsToAdd\MethodsToAdd_changed methods.txt" />
+    <Content Include="What to add directly to the game\NeedsToBeOverwritten\NeedsToBeOverwritten_changed methods.txt" />
+    <Content Include="What to add directly to the game\NeedsToBeOverwritten\overwritten classes\LevelObjectsLibraryManager.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="What to add directly to the game\CanBeInjected\overwritten classes\" />
+    <Folder Include="What to add directly to the game\MembersToAdd\FieldsToAdd\overwritten classes\" />
+    <Folder Include="What to add directly to the game\MembersToAdd\MethodsToAdd\overwritten classes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
