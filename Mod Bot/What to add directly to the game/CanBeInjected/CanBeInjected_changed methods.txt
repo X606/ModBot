@@ -1,28 +1,4 @@
-﻿GameFlowManager
-    Start()
-{
-	StartupManager.OnStartUp();
-
-}
-
-Firstpersonmover
-    void Update()
-{
-    ModsManager.Instance.passOnMod.OnFirstPersonMoverUpdate(gameObject);
-}
-
-LevelEditorUI
-Show()
-{
-    Singleton<ModsManager>.Instance.passOnMod.OnLevelEditorStarted();
-}
-
-ObjectPlacedInLevel
-Initialize()
-{
-    Singleton<ModsManager>.Instance.passOnMod.OnObjectPlacedInLevelEditor(base.gameObject);
-}
-
+﻿
 Character
 	protected virtual void Start()
 	{

@@ -5,8 +5,40 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using InternalModBot;
 
-public static class MethodsToInject
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class ReplaceParameterWithInstanceAttribute : Attribute
+{
+    public ReplaceParameterWithInstanceAttribute(string _parameterName)
+    {
+        ParameterName = _parameterName;
+    }
+
+    public string ParameterName { get; private set; }
+}
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class InjectIntoMethodAttribute : Attribute
+{
+    public InjectIntoMethodAttribute()
+    {
+        InjectionIndex = 0;
+        InjectAfterIndex = true;
+    }
+
+    public InjectIntoMethodAttribute(int _injectionIndex, bool _injectAfterIndex)
+    {
+        InjectionIndex = _injectionIndex;
+        InjectAfterIndex = _injectAfterIndex;
+    }
+
+    public int InjectionIndex { get; }
+
+    public bool InjectAfterIndex { get; }
+}
+
+public static class MethodOverrideSource
 {
     public static Sprite LibraryListItemDisplay_PNGPathToSprite(string previewPathUnderResources)
     {
@@ -56,7 +88,7 @@ public static class MethodsToInject
         return list;
     }
 
-    public static ObjectPlacedInLevel ObjectPlacedInLevel_PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedLevelObjectEntry, Transform levelRoot)
+    public static ObjectPlacedInLevel ObjectPlacementManager_PlaceObjectInLevelRoot(LevelObjectEntry objectPlacedLevelObjectEntry, Transform levelRoot)
     {
         Transform transform = null;
         if (objectPlacedLevelObjectEntry.PathUnderResources.StartsWith("modded/"))
@@ -119,7 +151,7 @@ public static class MethodsToInject
             projectileManagerAccessor.SetPrivateField("_nextArrowID", projectileManagerAccessor.GetPrivateField<int>("_nextArrowID") + 1);
         }
         arrowProjectile.SetProjectileID(projectileManagerAccessor.GetPrivateField<int>("_nextArrowID"));
-        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(arrowProjectile.gameObject);
+        ModsManager.Instance.passOnMod.OnProjectileCreated(arrowProjectile.gameObject);
         return arrowProjectile;
     }
 
@@ -127,7 +159,7 @@ public static class MethodsToInject
     {
         Transform transform = ProjectileManager.Instance.MortarExplosionShrapnelPool.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
         return bulletProjectile;
     }
@@ -145,7 +177,7 @@ public static class MethodsToInject
         }
         Transform transform = pooledPrefab.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
         return bulletProjectile;
     }
@@ -154,11 +186,12 @@ public static class MethodsToInject
     {
         Transform transform = ProjectileManager.Instance.RepairFlameProjectilePool.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, null);
         return bulletProjectile;
     }
 
+    [ReplaceParameterWithInstance("projectile")]
     public static void Projectile_OnEnvironmentCollided(Projectile projectile, bool playImpactVFX)
     {
         if (projectile.PassThroughEnvironment)
@@ -182,7 +215,7 @@ public static class MethodsToInject
         {
             projectileAccessor.CallPrivateMethod("PlayGroundImpactVFX");
         }
-        InjectionClasses. ModsManager.Instance.passOnMod.OnProjectileDestroyed(projectile.gameObject);
+        ModsManager.Instance.passOnMod.OnProjectileDestroyed(projectile.gameObject);
         projectile.GetComponent<PooledPrefabReference>().OwnerPool.DestroyObject(projectile.gameObject, true);
     }
 
@@ -209,3 +242,38 @@ public static class MethodsToInject
     }
 }
 
+public static class MethodsToInjectInMethods
+{
+    [InjectIntoMethod]
+    public static void GameFlowManager_Start()
+    {
+        StartupManager.OnStartUp();
+    }
+
+    [InjectIntoMethod]
+    [ReplaceParameterWithInstance("firstPersonMover")]
+    public static void FirstPersonMover_Update(FirstPersonMover firstPersonMover)
+    {
+        ModsManager.Instance.passOnMod.OnFirstPersonMoverUpdate(firstPersonMover.gameObject);
+    }
+
+    [InjectIntoMethod]
+    public static void LevelEditorUI_Show()
+    {
+        ModsManager.Instance.passOnMod.OnLevelEditorStarted();
+    }
+
+    [InjectIntoMethod]
+    [ReplaceParameterWithInstance("objectPlacedInLevel")]
+    public static void ObjectPlacedInLevel_Initialize(ObjectPlacedInLevel objectPlacedInLevel)
+    {
+        ModsManager.Instance.passOnMod.OnObjectPlacedInLevelEditor(objectPlacedInLevel.gameObject);
+    }
+
+    [InjectIntoMethod]
+    [ReplaceParameterWithInstance("character")]
+    public static void Character_Start(Character character)
+    {
+        ModsManager.Instance.passOnMod.OnCharacterSpawned(character.gameObject);
+    }
+}
