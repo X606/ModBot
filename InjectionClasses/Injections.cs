@@ -119,7 +119,7 @@ public static class MethodsToInject
             projectileManagerAccessor.SetPrivateField("_nextArrowID", projectileManagerAccessor.GetPrivateField<int>("_nextArrowID") + 1);
         }
         arrowProjectile.SetProjectileID(projectileManagerAccessor.GetPrivateField<int>("_nextArrowID"));
-        ModsManager.Instance.passOnMod.OnProjectileCreated(arrowProjectile.gameObject);
+        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(arrowProjectile.gameObject);
         return arrowProjectile;
     }
 
@@ -127,7 +127,7 @@ public static class MethodsToInject
     {
         Transform transform = ProjectileManager.Instance.MortarExplosionShrapnelPool.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
         return bulletProjectile;
     }
@@ -145,7 +145,7 @@ public static class MethodsToInject
         }
         Transform transform = pooledPrefab.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, owner);
         return bulletProjectile;
     }
@@ -154,7 +154,7 @@ public static class MethodsToInject
     {
         Transform transform = ProjectileManager.Instance.RepairFlameProjectilePool.InstantiateNewObject(false);
         BulletProjectile bulletProjectile = CacheManager.Instance.GetBulletProjectile(transform);
-        ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
+        InjectionClasses.ModsManager.Instance.passOnMod.OnProjectileCreated(bulletProjectile.gameObject);
         bulletProjectile.StartFlying(startPosition, flyDirection, false, null);
         return bulletProjectile;
     }
@@ -182,7 +182,7 @@ public static class MethodsToInject
         {
             projectileAccessor.CallPrivateMethod("PlayGroundImpactVFX");
         }
-        ModsManager.Instance.passOnMod.OnProjectileDestroyed(projectile.gameObject);
+        InjectionClasses. ModsManager.Instance.passOnMod.OnProjectileDestroyed(projectile.gameObject);
         projectile.GetComponent<PooledPrefabReference>().OwnerPool.DestroyObject(projectile.gameObject, true);
     }
 

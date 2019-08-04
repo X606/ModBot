@@ -56,9 +56,6 @@
     <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="What to add directly to the game\new classes.cs2" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Clone drone dlls\Assembly-CSharp.dll</HintPath>

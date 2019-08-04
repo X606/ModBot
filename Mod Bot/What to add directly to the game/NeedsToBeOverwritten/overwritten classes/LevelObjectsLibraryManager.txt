@@ -14,7 +14,6 @@
         }
         this._levelObjects = JsonConvert.DeserializeObject<List<LevelObjectEntry>>(text, LevelObjectsLibraryManager.getSerializerSettings());
 
-
         _levelObjects = addToList(_levelObjects, moddedObjects);
 
         this._visibleLevelObjects = new List<LevelObjectEntry>(this._levelObjects);

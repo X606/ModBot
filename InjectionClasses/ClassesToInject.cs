@@ -137,10 +137,10 @@ namespace InjectionClasses
         {
             if (Caching.ClearCache())
             {
-                Singleton<global::Logger>.Instance.log("Successfully cleaned the cache.");
+                Singleton<Logger>.Instance.log("Successfully cleaned the cache.");
                 return;
             }
-            Singleton<global::Logger>.Instance.log("Cache is being used.");
+            Singleton<Logger>.Instance.log("Cache is being used.");
         }
 
         public List<Mod> mods = new List<Mod>();
@@ -200,7 +200,7 @@ namespace InjectionClasses
             }
             catch (Exception e)
             {
-                Singleton<global::Logger>.Instance.log(e.Message, Color.red);
+                Singleton<Logger>.Instance.log(e.Message, Color.red);
             }
         }
 
@@ -275,7 +275,7 @@ namespace InjectionClasses
         public string modNameString;
     }
 
-    public class Logger : Singleton<global::Logger>
+    public class Logger : Singleton<Logger>
     {
         private void Update()
         {
@@ -418,38 +418,6 @@ namespace InjectionClasses
         }
 
         private List<moddedObject> moddedObjects = new List<moddedObject>();
-    }
-
-    public class fakeAction
-    {
-        public fakeAction(MethodInfo _method, object _instance)
-        {
-            method = _method;
-            instance = _instance;
-        }
-
-        public fakeAction(MethodInfo _method, object _instance, object[] _args)
-        {
-            method = _method;
-            instance = _instance;
-            args = _args;
-        }
-
-        public void Invoke(object[] parms)
-        {
-            method.Invoke(instance, parms);
-        }
-
-        public void Invoke()
-        {
-            method.Invoke(instance, args);
-        }
-
-        public MethodInfo method;
-
-        public object instance;
-
-        public object[] args;
     }
 
     public class xButton : MonoBehaviour

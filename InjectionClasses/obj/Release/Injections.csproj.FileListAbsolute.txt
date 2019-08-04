@@ -68,3 +68,4 @@ C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\obj\Release\Injections.
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\obj\Release\Injections.csproj.CopyComplete
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\obj\Release\InjectionClasses.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\obj\Release\InjectionClasses.pdb
+C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\obj\Release\Injections.csprojAssemblyReference.cache
