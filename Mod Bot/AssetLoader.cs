@@ -145,13 +145,13 @@ namespace ModLibrary
             return GetSubdomain(Application.dataPath) + ModsFolderName;
         }
 
-        private static GameObject GetObjectFromFileInternal(string _assetBundleName, string _objectName, string _customPathFromDataPath = ModsFolderName)
+        private static T GetObjectFromFileInternal<T>(string _assetBundleName, string _objectName, string _customPathFromDataPath = ModsFolderName) where T : UnityEngine.Object
         {
             string key = _assetBundleName + ":" + _objectName;
 
             if (cachedObjects.ContainsKey(key))
             {
-                return (GameObject)cachedObjects[key];
+                return cachedObjects[key] as T;
             }
 
             string assetBundleDirectory = GetSubdomain(Application.dataPath) + _customPathFromDataPath;
@@ -168,7 +168,7 @@ namespace ModLibrary
 
             WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundleFilePath, 1);
             AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(_objectName).asset as GameObject;
+            T result = assetBundle.LoadAssetAsync<T>(_objectName).asset as T;
             www.Dispose();
             assetBundle.Unload(false);
 
@@ -178,14 +178,14 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Gets a GameObject from an asset bundle
+        /// Gets a <see cref="GameObject"/> from an asset bundle
         /// </summary>
         /// <param name="assetBundleName">The name of the asset bundle file (Must be located in the 'mods' folder for this method)</param>
         /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
         {
-            return GetObjectFromFileInternal(assetBundleName, objectName);
+            return GetObjectFromFileInternal<GameObject>(assetBundleName, objectName);
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
-            return GetObjectFromFileInternal(assetBundleName, objectName, customPath);
+            return GetObjectFromFileInternal<GameObject>(assetBundleName, objectName, customPath);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
-            return GetObjectFromFileInternal(assetBundleName, objectName) as T;
+            return GetObjectFromFileInternal<T>(assetBundleName, objectName);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
         {
-            return GetObjectFromFileInternal(assetBundleName, objectName, customPath) as T;
+            return GetObjectFromFileInternal<T>(assetBundleName, objectName, customPath);
         }
 
         /// <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
