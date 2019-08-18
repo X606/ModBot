@@ -262,11 +262,11 @@ namespace InternalModBot
             if (modIds.Count-1 < page)
                 return null;
 
-            for (int i = 0; i < ModsManager.Instance.mods.Count; i++)
+            for (int i = 0; i < ModsManager.Instance.Mods.Count; i++)
             {
-                if (ModsManager.Instance.mods[i].GetHashCode() == modIds[page])
+                if (ModsManager.Instance.Mods[i].GetHashCode() == modIds[page])
                 {
-                    return ModsManager.Instance.mods[i];
+                    return ModsManager.Instance.Mods[i];
                 }
             }
 

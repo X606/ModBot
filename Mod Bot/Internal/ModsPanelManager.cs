@@ -27,7 +27,7 @@ namespace InternalModBot
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
             modsWindow = GameObject.Instantiate(modsWindowPrefab);
             
-            moddedObjectModsWindow = modsWindow.GetComponent<moddedObject>();
+            moddedObjectModsWindow = modsWindow.GetComponent<ModdedObject>();
             modsWindow.SetActive(false);
 
             modsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
@@ -49,7 +49,7 @@ namespace InternalModBot
 
         private void DisableMod(int ID)
         {
-            ModsManager.Instance.mods.RemoveAt(ID);
+            ModsManager.Instance.Mods.RemoveAt(ID);
 
             ReloadModItems();
         }
@@ -68,12 +68,12 @@ namespace InternalModBot
                 SetImageFromURL(url);
             }
 
-            ((Text)modItem.GetComponent<moddedObject>().objects[0]).text = modName; // Title
-            ((Text)modItem.GetComponent<moddedObject>().objects[1]).text = mod.GetModDescription(); // Description
+            ((Text)modItem.GetComponent<ModdedObject>().objects[0]).text = modName; // Title
+            ((Text)modItem.GetComponent<ModdedObject>().objects[1]).text = mod.GetModDescription(); // Description
 
             
             int ModID = modsAddedToList;
-            ((Button)modItem.GetComponent<moddedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Add disable button callback
+            ((Button)modItem.GetComponent<ModdedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Add disable button callback
 
             modItem.transform.localPosition -= new Vector3(0f, MOD_ITEM_HEIGHT * modsAddedToList, 0f);
 
@@ -96,7 +96,7 @@ namespace InternalModBot
 
                     if (modImage != null)
                     {
-                        ((RawImage)modItems[i].GetComponent<moddedObject>().objects[2]).texture = modImage; // Image
+                        ((RawImage)modItems[i].GetComponent<ModdedObject>().objects[2]).texture = modImage; // Image
                     }
 
                     imageNetworkConnections.RemoveAt(i);
@@ -120,12 +120,12 @@ namespace InternalModBot
             }
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
-            ((GameObject)moddedObjectModsWindow.objects[0]).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, MOD_ITEM_HEIGHT * ModsManager.Instance.mods.Count);
+            ((GameObject)moddedObjectModsWindow.objects[0]).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, MOD_ITEM_HEIGHT * ModsManager.Instance.Mods.Count);
 
             // Add all mods back to list
-            for (int i = 0; i < ModsManager.Instance.mods.Count; i++)
+            for (int i = 0; i < ModsManager.Instance.Mods.Count; i++)
             {
-                AddModToList(ModsManager.Instance.mods[i], (GameObject)moddedObjectModsWindow.objects[0]);
+                AddModToList(ModsManager.Instance.Mods[i], (GameObject)moddedObjectModsWindow.objects[0]);
             }
         }
 
@@ -135,7 +135,7 @@ namespace InternalModBot
 
         private GameObject modsWindow;
 
-        private moddedObject moddedObjectModsWindow;
+        private ModdedObject moddedObjectModsWindow;
 
         private int modsAddedToList;
 

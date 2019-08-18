@@ -20,7 +20,7 @@ namespace ModLibrary
         /// Called in <see cref="FirstPersonMover"/>.Start()
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
-        public virtual void OnFirstPersonMoverSpawned(GameObject me)
+        public virtual void OnFirstPersonMoverSpawned(FirstPersonMover me)
         {
         }
 
@@ -28,7 +28,7 @@ namespace ModLibrary
         /// Called in <see cref="FirstPersonMover"/>.Update()
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
-        public virtual void OnFirstPersonMoverUpdate(GameObject me)
+        public virtual void OnFirstPersonMoverUpdate(FirstPersonMover me)
         {
         }
 
@@ -36,7 +36,7 @@ namespace ModLibrary
         /// Called in <see cref="Character"/>.Start()
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
-        public virtual void OnCharacterSpawned(GameObject me)
+        public virtual void OnCharacterSpawned(Character me)
         {
         }
 
@@ -44,7 +44,7 @@ namespace ModLibrary
         /// Called in <see cref="Character"/>.Update()
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
-        public virtual void OnCharacterUpdate(GameObject me)
+        public virtual void OnCharacterUpdate(Character me)
         {
 
         }
@@ -95,16 +95,6 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Returns the image displayed in the mods menu, override to set a custom image for your mod
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("Use GetModImageURL instead, this is never used")]
-        public virtual Texture2D GetModImage()
-        {
-            return null;
-        }
-
-        /// <summary>
         /// Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
         /// </summary>
         /// <returns></returns>
@@ -118,7 +108,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
-        public virtual void OnUpgradesRefreshed(GameObject me, UpgradeCollection upgrades)
+        public virtual void OnUpgradesRefreshed(FirstPersonMover me, UpgradeCollection upgrades)
         {
         }
 
@@ -127,7 +117,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="owner">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
-        public virtual void AfterUpgradesRefreshed(GameObject owner, UpgradeCollection upgrades)
+        public virtual void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
         }
 
@@ -135,7 +125,7 @@ namespace ModLibrary
         /// Called when a <see cref="Projectile"/> is created
         /// </summary>
         /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
-        public virtual void OnProjectileCreated(GameObject projectile)
+        public virtual void OnProjectileCreated(Projectile projectile)
         {
         }
 
@@ -143,7 +133,7 @@ namespace ModLibrary
         /// Called when a <see cref="Projectile"/> starts moving
         /// </summary>
         /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
-        public virtual void OnProjectileStartedMoving(GameObject projectile)
+        public virtual void OnProjectileStartedMoving(Projectile projectile)
         {
         }
 
@@ -151,7 +141,7 @@ namespace ModLibrary
         /// Called every frame since the given <see cref="Projectile"/> was created
         /// </summary>
         /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
-        public virtual void OnProjectileUpdate(GameObject projectile)
+        public virtual void OnProjectileUpdate(Projectile projectile)
         {
         }
 
@@ -159,7 +149,7 @@ namespace ModLibrary
         /// Called when the given <see cref="Projectile"/> is destroyed in any way
         /// </summary>
         /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
-        public virtual void OnProjectileDestroyed(GameObject projectile)
+        public virtual void OnProjectileDestroyed(Projectile projectile)
         {
         }
 
@@ -233,7 +223,7 @@ namespace ModLibrary
         /// <param name="killedCharacter">The <see cref="GameObject"/> for the <see cref="Character"/> that was killed</param>
         /// <param name="killerCharacter">The <see cref="GameObject"/> for the killer <see cref="Character"/></param>
         /// <param name="damageSourceType">The cause of death</param>
-        public virtual void OnCharacterKilled(GameObject killedCharacter, GameObject killerCharacter, DamageSourceType damageSourceType)
+        public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
         {
         }
     }

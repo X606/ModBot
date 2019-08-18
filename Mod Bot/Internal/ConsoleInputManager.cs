@@ -25,7 +25,7 @@ namespace InternalModBot
             if (subCommands[0] == "crash")
             {
                 //Delayed.TriggerAfterDelay(new fakeAction(typeof(ConsoleInputManager).GetMethod("Crash"), null), 1);
-                Delayed.TriggerAfterDelay(new fakeAction(typeof(ConsoleInputManager).GetMethod(nameof(Crash)), null), 1f);
+                DelegateScheduler.Instance.Schedule(Crash, 1f);
             }
         }
 
@@ -46,7 +46,7 @@ namespace InternalModBot
 
             if (isIgnoringCrashes)
             {
-                Delayed.TriggerAfterDelay(new fakeAction(typeof(IgnoreCrashesManager).GetMethod(nameof(Alert)), null), 1f);
+                DelegateScheduler.Instance.Schedule(Alert, 1f);
             }
         }
         

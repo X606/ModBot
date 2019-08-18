@@ -11,7 +11,7 @@ namespace ModLibrary
         public UIBuilder()
         {
             GameObject prefab = AssetLoader.GetObjectFromFile("uibuilder", "Canvas", "Clone Drone in the Danger Zone_Data/");
-            BaseObject = (GameObject)GameObject.Instantiate(prefab).GetComponent<moddedObject>().objects[0];
+            BaseObject = (GameObject)GameObject.Instantiate(prefab).GetComponent<ModdedObject>().objects[0];
         }
 
         public GameObject BaseObject;

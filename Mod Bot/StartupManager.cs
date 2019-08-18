@@ -18,51 +18,37 @@ namespace InternalModBot
             ErrorChanger.ChangeError();
 
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
-
-            gameFlowManager.AddComponent<WaitThenCallClass>();
-            gameFlowManager.AddComponent<moddedObjectsManager>();
+            
             gameFlowManager.AddComponent<ModsManager>();
             gameFlowManager.AddComponent<UpdateChecker>();
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManger>();
-            gameFlowManager.AddComponent<GameFlowManagerStartTest>();
+            
+            InitilizeUI();
+            
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
+            
 
             IgnoreCrashesManager.Start();
         }
+
+        private static void InitilizeUI()
+        {
+            GameObject spawnedUI = UnityEngine.Object.Instantiate(AssetLoader.GetObjectFromFile("twitchmode", "Canvas", "Clone Drone in the Danger Zone_Data/"));
+            ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
+
+            Logger logger = spawnedUI.AddComponent<Logger>();
+            logger.animator = spawedUIModdedObject.GetObject<Animator>(0);
+            logger.LogText = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(1);
+            logger.Container = spawedUIModdedObject.GetObject<GameObject>(2);
+            logger.input = spawedUIModdedObject.GetObject<UnityEngine.UI.InputField>(3);
+
+            FPSCount fps = spawnedUI.AddComponent<FPSCount>();
+            fps.counter = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(4);
+        }
+
+        
     }
 
-    public class GameFlowManagerStartTest : MonoBehaviour
-    {
-        private void Start()
-        {
-            hasInitialized = false;
-        }
-
-        private void Update()
-        {
-            if (!hasInitialized && GameFlowManager.Instance != null)
-            {
-                OnGameFlowManagerStart();
-                hasInitialized = true;
-            }
-        }
-
-        private void OnGameFlowManagerStart()
-        {
-            //Action<string> callback = new Action<string>(FakeActionTest);
-            //callback("Test message");
-        }
-
-        private void FakeActionTestNoArguments()
-        {
-            debug.Log("Test message 3");
-        }
-
-        private void FakeActionTest(string message)
-        {
-            debug.Log(message);
-        }
-
-        private bool hasInitialized;
-    }
+    
 }

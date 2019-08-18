@@ -15,7 +15,7 @@ namespace InternalModBot
 
             GameObject prefab = AssetLoader.GetObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(prefab);
-            spawnedModdedObject = spawnedObject.GetComponent<moddedObject>();
+            spawnedModdedObject = spawnedObject.GetComponent<ModdedObject>();
 
             spawnedModdedObject.gameObject.SetActive(false);
 
@@ -30,17 +30,17 @@ namespace InternalModBot
             string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
             string newestModBotVersion = FirebaseAccessor.ReadFromFirebaseURL("https://modbot-d8a58.firebaseio.com/ModBotVer/.json"); // Latest ModBot version
 
-            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nModBot Version: " + installedModBotVersion; // Add ModBot version in corner
+            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nMod-Bot Version: " + installedModBotVersion; // Add ModBot version in corner
             
             if (installedGameVersion != newestModBotGameVersion || installedModBotVersion == newestModBotVersion)
             {
-                debug.Log("ModBot version '" + installedModBotVersion + "' up to date!", Color.green);
+                debug.Log("Mod-Bot version '" + installedModBotVersion + "' up to date!", Color.green);
                 return;
             }
 
-            ((Text)spawnedModdedObject.objects[0]).text = "New ModBot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
-            ((Button)spawnedModdedObject.objects[1]).onClick.AddListener(OnInstallButtonClicked);
-            ((Button)spawnedModdedObject.objects[2]).onClick.AddListener(OnDismissButtonClicked);
+            spawnedModdedObject.GetObject<Text>(0).text = "New Mod-Bot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
+            spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(OnInstallButtonClicked);
+            spawnedModdedObject.GetObject<Button>(2).onClick.AddListener(OnDismissButtonClicked);
             spawnedModdedObject.gameObject.SetActive(true);
         }
 
@@ -54,6 +54,6 @@ namespace InternalModBot
             spawnedModdedObject.gameObject.SetActive(false);
         }
 
-        private moddedObject spawnedModdedObject;
+        private ModdedObject spawnedModdedObject;
     }
 }
