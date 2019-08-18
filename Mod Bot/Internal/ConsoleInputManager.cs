@@ -15,7 +15,7 @@ namespace InternalModBot
             {
                 if (subCommands.Length <= 1)
                 {
-                    debug.Log("usage: ignoreallcrashes <number 0-1>");
+                    debug.Log("Usage: ignoreallcrashes <number 0-1>");
                     return;
                 }
 
@@ -24,7 +24,6 @@ namespace InternalModBot
 
             if (subCommands[0] == "crash")
             {
-                //Delayed.TriggerAfterDelay(new fakeAction(typeof(ConsoleInputManager).GetMethod("Crash"), null), 1);
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
             }
         }
@@ -41,8 +40,8 @@ namespace InternalModBot
 
         public static void Start()
         {
-            int get = PlayerPrefs.GetInt("IgnoreCrashes", 0);
-            isIgnoringCrashes = get == 1;
+            int isIgnoringCrashesInt = PlayerPrefs.GetInt("IgnoreCrashes", 0);
+            isIgnoringCrashes = isIgnoringCrashesInt == 1;
 
             if (isIgnoringCrashes)
             {

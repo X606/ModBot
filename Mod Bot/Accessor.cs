@@ -46,7 +46,7 @@ namespace ModLibrary
 
             MethodInfo method = InstanceType.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
             }
@@ -70,7 +70,7 @@ namespace ModLibrary
 
             MethodInfo method = InstanceType.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
             }
@@ -87,7 +87,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -105,7 +105,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -122,7 +122,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -157,7 +157,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -192,7 +192,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -210,7 +210,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -234,7 +234,7 @@ namespace ModLibrary
 
             MethodInfo method = type.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(type.FullName, methodName);
             }
@@ -259,7 +259,7 @@ namespace ModLibrary
 
             MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
             }
@@ -283,7 +283,7 @@ namespace ModLibrary
 
             MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
             }
@@ -302,7 +302,7 @@ namespace ModLibrary
         {
             FieldInfo field = type.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(type.FullName, fieldName);
             }
@@ -322,7 +322,7 @@ namespace ModLibrary
         {
             FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
             }
@@ -340,7 +340,7 @@ namespace ModLibrary
         {
             FieldInfo field = type.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(type.FullName, fieldName);
             }
@@ -359,7 +359,7 @@ namespace ModLibrary
         {
             FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
             }
@@ -378,7 +378,7 @@ namespace ModLibrary
         {
             PropertyInfo property = type.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(type.FullName, propertyName);
             }
@@ -398,7 +398,7 @@ namespace ModLibrary
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
             }
@@ -416,7 +416,7 @@ namespace ModLibrary
         {
             PropertyInfo property = type.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(type.FullName, propertyName);
             }
@@ -435,7 +435,7 @@ namespace ModLibrary
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
             }

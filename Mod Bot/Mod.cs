@@ -17,40 +17,39 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="FirstPersonMover"/>.Start()
-        /// </summary>
-        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
-        public virtual void OnFirstPersonMoverSpawned(FirstPersonMover me)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="FirstPersonMover"/>.Update()
-        /// </summary>
-        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
-        public virtual void OnFirstPersonMoverUpdate(FirstPersonMover me)
-        {
-        }
-
-        /// <summary>
         /// Called in <see cref="Character"/>.Start()
         /// </summary>
-        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
-        public virtual void OnCharacterSpawned(Character me)
+        /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was spawned</param>
+        public virtual void OnFirstPersonMoverSpawned(FirstPersonMover firstPersonMover)
         {
         }
 
         /// <summary>
         /// Called in <see cref="Character"/>.Update()
         /// </summary>
-        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="Character"/> component</param>
-        public virtual void OnCharacterUpdate(Character me)
+        /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was updated</param>
+        public virtual void OnFirstPersonMoverUpdate(FirstPersonMover firstPersonMover)
         {
-
         }
 
         /// <summary>
-        /// Called in <see cref="ModsManager"/>.reloadMods()
+        /// Called in <see cref="Character"/>.Start()
+        /// </summary>
+        /// <param name="character">The <see cref="Character"/> that was spawned</param>
+        public virtual void OnCharacterSpawned(Character character)
+        {
+        }
+
+        /// <summary>
+        /// Called in <see cref="Character"/>.Update()
+        /// </summary>
+        /// <param name="character">The <see cref="Character"/> that was updated</param>
+        public virtual void OnCharacterUpdate(Character character)
+        {
+        }
+
+        /// <summary>
+        /// Called in <see cref="ModsManager"/>.ReloadMods()
         /// </summary>
         public virtual void OnModRefreshed()
         {
@@ -66,8 +65,8 @@ namespace ModLibrary
         /// <summary>
         /// Called when any object is placed in the level editor
         /// </summary>
-        /// <param name="_object">The <see cref="GameObject"/> with the corresponding <see cref="ObjectPlacedInLevel"/> component</param>
-        public virtual void OnObjectPlacedInLevelEditor(GameObject _object)
+        /// <param name="_object">The <see cref="ObjectPlacedInLevel"/> component on the object spawned</param>
+        public virtual void OnObjectPlacedInLevelEditor(ObjectPlacedInLevel _object)
         {
         }
 
@@ -106,16 +105,16 @@ namespace ModLibrary
         /// <summary>
         /// Called at the start <see cref="FirstPersonMover"/>.RefreshUpgrades()
         /// </summary>
-        /// <param name="me">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
+        /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
-        public virtual void OnUpgradesRefreshed(FirstPersonMover me, UpgradeCollection upgrades)
+        public virtual void OnUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
         }
 
         /// <summary>
         /// Called at the end of <see cref="FirstPersonMover"/>.RefreshUpgrades()
         /// </summary>
-        /// <param name="owner">The <see cref="GameObject"/> with the corresponding <see cref="FirstPersonMover"/> component</param>
+        /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
         public virtual void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
@@ -124,7 +123,7 @@ namespace ModLibrary
         /// <summary>
         /// Called when a <see cref="Projectile"/> is created
         /// </summary>
-        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        /// <param name="projectile">6</param>
         public virtual void OnProjectileCreated(Projectile projectile)
         {
         }
@@ -132,7 +131,7 @@ namespace ModLibrary
         /// <summary>
         /// Called when a <see cref="Projectile"/> starts moving
         /// </summary>
-        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        /// <param name="projectile"></param>
         public virtual void OnProjectileStartedMoving(Projectile projectile)
         {
         }
@@ -140,7 +139,7 @@ namespace ModLibrary
         /// <summary>
         /// Called every frame since the given <see cref="Projectile"/> was created
         /// </summary>
-        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        /// <param name="projectile"></param>
         public virtual void OnProjectileUpdate(Projectile projectile)
         {
         }
@@ -148,7 +147,7 @@ namespace ModLibrary
         /// <summary>
         /// Called when the given <see cref="Projectile"/> is destroyed in any way
         /// </summary>
-        /// <param name="projectile">The <see cref="Projectile"/>'s <see cref="GameObject"/></param>
+        /// <param name="projectile"></param>
         public virtual void OnProjectileDestroyed(Projectile projectile)
         {
         }
@@ -220,8 +219,8 @@ namespace ModLibrary
         /// <summary>
         /// Called when a <see cref="Character"/> is killed
         /// </summary>
-        /// <param name="killedCharacter">The <see cref="GameObject"/> for the <see cref="Character"/> that was killed</param>
-        /// <param name="killerCharacter">The <see cref="GameObject"/> for the killer <see cref="Character"/></param>
+        /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
+        /// <param name="killerCharacter">The killer <see cref="Character"/></param>
         /// <param name="damageSourceType">The cause of death</param>
         public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
         {

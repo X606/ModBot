@@ -56,7 +56,7 @@ namespace InternalModBot
             }
         }
 
-        public override void OnObjectPlacedInLevelEditor(GameObject _obj)
+        public override void OnObjectPlacedInLevelEditor(ObjectPlacedInLevel _obj)
         {
             List<Mod> mods = ModsManager.Instance.Mods;
             for (int i = 0; i < mods.Count; i++)

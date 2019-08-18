@@ -1,11 +1,10 @@
-﻿using System;
+﻿using InternalModBot;
+using ModLibrary;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using InternalModBot;
-using UnityEngine;
 using System.IO;
 using System.Reflection;
-using ModLibrary;
+using UnityEngine;
 
 public class ModsManager : Singleton<ModsManager>
 {
@@ -18,7 +17,7 @@ public class ModsManager : Singleton<ModsManager>
     public void ReloadMods()
     {
         UpgradeCosts.Reset();
-        UpgradePagesMangaer.Reset();
+        UpgradePagesManager.Reset();
         ClearCache();
         AssetLoader.ClearCache();
         Mods.Clear();
@@ -94,10 +93,10 @@ public class ModsManager : Singleton<ModsManager>
     {
         if (Caching.ClearCache())
         {
-            Singleton<Logger>.Instance.log("Successfully cleared the cache.");
+            Singleton<Logger>.Instance.Log("Successfully cleared the cache.");
             return;
         }
-        Singleton<Logger>.Instance.log("Cache is being used.");
+        Singleton<Logger>.Instance.Log("Cache is being used.");
     }
 
     public List<Mod> Mods = new List<Mod>();

@@ -19,32 +19,32 @@ namespace InternalModBot
 
             // Copy the options button to make into the Mods button
             GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(7).gameObject;
-            GameObject modsButton = GameObject.Instantiate(modsButtonPrefab, titleScreenContainer.transform);
+            GameObject modsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
             modsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
             modsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
 
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
-            modsWindow = GameObject.Instantiate(modsWindowPrefab);
+            ModsWindow = Instantiate(modsWindowPrefab);
             
-            moddedObjectModsWindow = modsWindow.GetComponent<ModdedObject>();
-            modsWindow.SetActive(false);
+            ModsWindowModdedObject = ModsWindow.GetComponent<ModdedObject>();
+            ModsWindow.SetActive(false);
 
             modsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
             modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
-            ((Button)moddedObjectModsWindow.objects[1]).onClick.AddListener(CloseModsMenu); // Add close menu button callback
-
+            ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
+            
             ReloadModItems();
         }
 
         private void OpenModsMenu()
         {
-            modsWindow.SetActive(true);
+            ModsWindow.SetActive(true);
         }
 
         private void CloseModsMenu()
         {
-            modsWindow.SetActive(false);
+            ModsWindow.SetActive(false);
         }
 
         private void DisableMod(int ID)
@@ -57,50 +57,59 @@ namespace InternalModBot
         private void AddModToList(Mod mod, GameObject parent)
         {
             GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
-            GameObject modItem = GameObject.Instantiate(modItemPrefab, parent.transform);
+            GameObject modItem = Instantiate(modItemPrefab, parent.transform);
 
             string modName = mod.GetModName();
             string url = mod.GetModImageURL();
 
-            if (url != "")
+            if (string.IsNullOrEmpty(url))
             {
-                modItems.Add(modItem);
+                ModItems.Add(modItem);
                 SetImageFromURL(url);
             }
 
-            ((Text)modItem.GetComponent<ModdedObject>().objects[0]).text = modName; // Title
-            ((Text)modItem.GetComponent<ModdedObject>().objects[1]).text = mod.GetModDescription(); // Description
+            ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
+
+            modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
+            modItemModdedObject.GetObject<Text>(1).text = mod.GetModDescription(); // Set description
 
             
-            int ModID = modsAddedToList;
-            ((Button)modItem.GetComponent<ModdedObject>().objects[3]).onClick.AddListener(delegate { DisableMod(ModID); }); // Add disable button callback
+            int ModID = ModsAddedToList;
+            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { DisableMod(ModID); }); // Add disable button callback
 
-            modItem.transform.localPosition -= new Vector3(0f, MOD_ITEM_HEIGHT * modsAddedToList, 0f);
+            modItem.transform.localPosition -= new Vector3(0f, MOD_ITEM_HEIGHT * ModsAddedToList, 0f);
 
-            modsAddedToList++;
+            ModsAddedToList++;
         }
 
         private void SetImageFromURL(string url)
         {
-            imageNetworkConnections.Add(new WWW(url));
+            ModImageNetworkConnections.Add(new WWW(url));
         }
 
         private void Update()
         {
-            for (int i = 0; i < imageNetworkConnections.Count;)
+            if (ModImageNetworkConnections.Count != ModItems.Count)
             {
-                if (imageNetworkConnections[i] != null && imageNetworkConnections[i].isDone)
+                debug.Log("Error: Amount of mod images to download does not match amount of registered mods!", Color.red);
+                return;
+            }
+
+            for (int i = 0; i < ModImageNetworkConnections.Count;)
+            {
+                if (ModImageNetworkConnections[i] != null && ModImageNetworkConnections[i].isDone)
                 {
                     Texture2D modImage = new Texture2D(1, 1);
-                    imageNetworkConnections[i].LoadImageIntoTexture(modImage);
+                    ModImageNetworkConnections[i].LoadImageIntoTexture(modImage);
 
                     if (modImage != null)
                     {
-                        ((RawImage)modItems[i].GetComponent<ModdedObject>().objects[2]).texture = modImage; // Image
+                        ModdedObject modItemModdedObject = ModItems[i].GetComponent<ModdedObject>();
+                        modItemModdedObject.GetObject<RawImage>(2).texture = modImage; // Set image
                     }
 
-                    imageNetworkConnections.RemoveAt(i);
-                    modItems.RemoveAt(i);
+                    ModImageNetworkConnections.RemoveAt(i);
+                    ModItems.RemoveAt(i);
                 }
                 else
                 {
@@ -111,33 +120,33 @@ namespace InternalModBot
                 
         private void ReloadModItems()
         {
-            modsAddedToList = 0;
+            ModsAddedToList = 0;
             
             // Remove all mods from list
-            foreach (Transform child in ((GameObject)moddedObjectModsWindow.objects[0]).transform)
+            foreach (Transform child in ((GameObject)ModsWindowModdedObject.objects[0]).transform)
             {
                 Destroy(child.gameObject);
             }
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
-            ((GameObject)moddedObjectModsWindow.objects[0]).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, MOD_ITEM_HEIGHT * ModsManager.Instance.Mods.Count);
+            ModsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>().sizeDelta += new Vector2(0f, MOD_ITEM_HEIGHT * ModsManager.Instance.Mods.Count);
 
             // Add all mods back to list
             for (int i = 0; i < ModsManager.Instance.Mods.Count; i++)
             {
-                AddModToList(ModsManager.Instance.Mods[i], (GameObject)moddedObjectModsWindow.objects[0]);
+                AddModToList(ModsManager.Instance.Mods[i], ModsWindowModdedObject.GetObject<GameObject>(0));
             }
         }
 
-        private List<WWW> imageNetworkConnections = new List<WWW>();
+        private List<WWW> ModImageNetworkConnections = new List<WWW>();
 
-        private List<GameObject> modItems = new List<GameObject>();
+        private List<GameObject> ModItems = new List<GameObject>();
 
-        private GameObject modsWindow;
+        private GameObject ModsWindow;
 
-        private ModdedObject moddedObjectModsWindow;
+        private ModdedObject ModsWindowModdedObject;
 
-        private int modsAddedToList;
+        private int ModsAddedToList;
 
         private const int MOD_ITEM_HEIGHT = 100;
     }

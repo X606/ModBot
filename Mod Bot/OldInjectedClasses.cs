@@ -1,13 +1,12 @@
-﻿using System;
+﻿using InternalModBot;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
-using TwitchChatter;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using InternalModBot;
+using TwitchChatter;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ModSuggestingManager : Singleton<ModSuggestingManager>
 {
@@ -61,7 +60,7 @@ public class ModSuggestingManager : Singleton<ModSuggestingManager>
         }
         catch (Exception e)
         {
-            Singleton<Logger>.Instance.log(e.Message, Color.red);
+            Singleton<Logger>.Instance.Log(e.Message, Color.red);
         }
     }
 
@@ -165,13 +164,13 @@ public class Logger : Singleton<Logger>
         animator.Play("showConsole");
     }
 
-    public void log(string whatToLog)
+    public void Log(string whatToLog)
     {
         Text logText = LogText;
         logText.text = logText.text + "\n" + whatToLog;
     }
 
-    public void log(string whatToLog, Color color)
+    public void Log(string whatToLog, Color color)
     {
         string text = ColorUtility.ToHtmlStringRGB(color);
         Text logText = LogText;
@@ -187,8 +186,8 @@ public class Logger : Singleton<Logger>
         }
         catch (Exception ex)
         {
-            log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
-            log(ex.StackTrace, Color.red);
+            Log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
+            Log(ex.StackTrace, Color.red);
         }
     }
 

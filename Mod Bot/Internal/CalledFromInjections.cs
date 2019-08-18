@@ -44,7 +44,7 @@ namespace InternalModBot
         }
         public static bool FromIsUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
-            if (!UpgradePagesMangaer.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesMangaer.currentPage))
+            if (!UpgradePagesManager.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesManager.CurrentPage))
             {
                 return false;
             }
@@ -52,7 +52,7 @@ namespace InternalModBot
         }
         public static bool FromIsRepairUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
-            if (!UpgradePagesMangaer.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesMangaer.currentPage))
+            if (!UpgradePagesManager.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesManager.CurrentPage))
             {
                 return false;
             }

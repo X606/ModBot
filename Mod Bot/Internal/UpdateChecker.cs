@@ -11,10 +11,12 @@ namespace InternalModBot
         private void Start()
         {
             if (!GameModeManager.Is(GameMode.None))
+            {
                 return;
+            }
 
             GameObject prefab = AssetLoader.GetObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedObject = GameObject.Instantiate(prefab);
+            GameObject spawnedObject = Instantiate(prefab);
             spawnedModdedObject = spawnedObject.GetComponent<ModdedObject>();
 
             spawnedModdedObject.gameObject.SetActive(false);

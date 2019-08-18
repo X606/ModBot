@@ -1,8 +1,7 @@
 ﻿using ModLibrary;
-using UnityEngine;
 using System;
 using System.IO;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -22,13 +21,12 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModsManager>();
             gameFlowManager.AddComponent<UpdateChecker>();
             gameFlowManager.AddComponent<ModsPanelManager>();
-            gameFlowManager.AddComponent<CustomUpgradeManger>();
+            gameFlowManager.AddComponent<CustomUpgradeManager>();
             
             InitilizeUI();
             
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
             
-
             IgnoreCrashesManager.Start();
         }
 
@@ -46,9 +44,5 @@ namespace InternalModBot
             FPSCount fps = spawnedUI.AddComponent<FPSCount>();
             fps.counter = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(4);
         }
-
-        
     }
-
-    
 }

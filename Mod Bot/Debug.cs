@@ -17,50 +17,52 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
+        public const int CONSOLE_CHARACTER_LIMIT = 1000;
+
         /// <summary>
         /// Writes to the in-game console.
         /// </summary>
-        /// <param name="_log"></param>
+        /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
-            //Console.WriteLine(_log);
-            if (Logger.Instance.LogText.text.Length > 200) {
-                string newText = Logger.Instance.LogText.text.Substring(Logger.Instance.LogText.text.Length - 200);
+            Logger.Instance.Log(_log);
+
+            if (Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            {
+                string newText = Logger.Instance.LogText.text.Substring(Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
                 Logger.Instance.LogText.text = newText;
             }
-
-            Logger.Instance.log(_log);
-            
         }
 
-
+        /// <summary>
+        /// Writes the given object's ToString() value to the console
+        /// </summary>
+        /// <param name="_log">The object to write</param>
         public static void Log(object _log)
         {
-            //Console.WriteLine(_log);
-            Logger.Instance.log(_log.ToString());
-            
+            Log(_log.ToString());
         }
 
         /// <summary>
         /// Writes to the in-game console, in color.
         /// </summary>
-        /// <param name="_log"></param>
-        /// <param name="_color"></param>
+        /// <param name="_log">What to write</param>
+        /// <param name="_color">The color to write in</param>
         public static void Log(string _log, Color _color)
         {
-            Logger.Instance.log(_log, _color);
+            Logger.Instance.Log(_log, _color);
         }
 
         /// <summary>
-        /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+        /// Passes every instance of the given list's 'ToString()' value to 'debug.Log()'
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void PrintAll<T>(List<T> list)
+        public static void PrintAll<T>(IEnumerable<T> list)
         {
-            for (int i = 0; i < list.Count; i++)
+            foreach (T item in list)
             {
-                Logger.Instance.log(list[i].ToString());
+                Log(item.ToString());
             }
         }
 
@@ -69,14 +71,15 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void PrintAll<T>(List<T> list, Color _color)
+        public static void PrintAll<T>(IEnumerable<T> list, Color color)
         {
-            for (int i = 0; i < list.Count; i++)
+            foreach (T item in list)
             {
-                Logger.Instance.log(list[i].ToString(), _color);
+                Log(item.ToString(), color);
             }
         }
 
+        // TODO : Rewrite this function
         public static void PrintAllChildren(Transform obj)
         {
             outputText = "";
