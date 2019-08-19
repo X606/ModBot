@@ -84,14 +84,16 @@ namespace InternalModBot
 
         private void SetImageFromURL(string url)
         {
+            if (string.IsNullOrEmpty(url))
+                return;
+
             ModImageNetworkConnections.Add(new WWW(url));
         }
 
         private void Update()
         {
-            if (ModImageNetworkConnections.Count != ModItems.Count)
+            if (ModImageNetworkConnections.Count == 0)
             {
-                debug.Log("Error: Amount of mod images to download does not match amount of registered mods!", Color.red);
                 return;
             }
 

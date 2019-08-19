@@ -68,9 +68,33 @@ namespace InternalModBot
             return !(player == null) && player.HasLimbDamage();
         }
 
-        public static void FromCreateInactiveArrow(ArrowProjectile arrow)
+        public static void FromSetInactive(Projectile arrow)
         {
             ModsManager.Instance.PassOnMod.OnProjectileCreated(arrow);
+        }
+        public static void FromStartFlying(Projectile arrow)
+        {
+            ModsManager.Instance.PassOnMod.OnProjectileStartedMoving(arrow);
+        }
+        public static void FromDestroyProjectile(Projectile arrow)
+        {
+            ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
+        }
+        public static void FromOnEnvironmentCollided(Projectile arrow)
+        {
+            if (arrow.PassThroughEnvironment)
+            {
+                return;
+            }
+            if (!arrow.IsFlying())
+            {
+                return;
+            }
+            if (arrow.MainCollider != null)
+            {
+                arrow.MainCollider.enabled = false;
+            }
+            ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
     }
 }
