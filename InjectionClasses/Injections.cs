@@ -1,12 +1,4 @@
-﻿using ModLibrary;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
-using InternalModBot;
-/*
+﻿/*
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class ReplaceParameterWithInstanceAttribute : Attribute
 {
