@@ -12,8 +12,8 @@ public static class Injector
 {
     public static Injection AddCallToMethodInMethod(string path, string className, string methodName, string readPath, string readClassName, string readMethod, int instructionInsertOffset = 0, bool insertAfter = false, bool relativeToEnd = false, string[] argumentTypes = null)
     {
-        HalfInjected halfInjected = injectionFirstStep(path, className, methodName);
-        HalfInjected readModule = injectionFirstStep(readPath, readClassName, readMethod);
+        HalfInjected halfInjected = InjectionFirstStep(path, className, methodName);
+        HalfInjected readModule = InjectionFirstStep(readPath, readClassName, readMethod);
         
         if (halfInjected == null)
         {
@@ -108,15 +108,15 @@ public static class Injector
 
     public static void OverrideMethod(string pathToPasteTo, string pasteClassName, string pasteMethodName, string pathToCopyFrom, string copyClassName, string copyMethodName)
     {
-        HalfInjected paste = injectionFirstStep(pathToPasteTo, pasteClassName, pasteMethodName, "paste: ");
+        HalfInjected paste = InjectionFirstStep(pathToPasteTo, pasteClassName, pasteMethodName, "paste: ");
         if (paste == null)
             return;
 
-        HalfInjected copy = injectionFirstStep(pathToCopyFrom, copyClassName, copyMethodName, "copy: ");
+        HalfInjected copy = InjectionFirstStep(pathToCopyFrom, copyClassName, copyMethodName, "copy: ");
         if (copy == null)
             return;
 
-        overwriteMethodIL(paste.TargetMethod, copy.TargetMethod, pasteClassName, pasteMethodName, paste.Module);
+        OverwriteMethodIL(paste.TargetMethod, copy.TargetMethod, pasteClassName, pasteMethodName, paste.Module);
 
 
         paste.Module.Write();
@@ -128,7 +128,7 @@ public static class Injector
 
     public static void AddMethodToClass(string pathToWriteTo, string classToWriteTo, string newMethodName, string pathToCopyFrom, string classToCopyFrom, string methodToCopyFrom)
     {
-        HalfInjected copy = injectionFirstStep(pathToCopyFrom, classToCopyFrom, methodToCopyFrom, " copy: ");
+        HalfInjected copy = InjectionFirstStep(pathToCopyFrom, classToCopyFrom, methodToCopyFrom, " copy: ");
 
         if (!File.Exists(pathToWriteTo))
         {
@@ -168,7 +168,7 @@ public static class Injector
 
 
 
-        overwriteMethodIL(newMethod, copy.TargetMethod, classToWriteTo, newMethodName, writeModule, typeToWriteTo);
+        OverwriteMethodIL(newMethod, copy.TargetMethod, classToWriteTo, newMethodName, writeModule, typeToWriteTo);
 
 
         typeToWriteTo.Methods.Add(newMethod);
@@ -348,7 +348,7 @@ public static class Injector
         }
         for (int i = 0; i < writeMethods.Length; i++)
         {
-            fixMethodReferences(writeMethods[i], copyMethods[i]);
+            FixMethodReferences(writeMethods[i], copyMethods[i]);
         }
 
         writeSecondTimeModule.Write();
@@ -358,7 +358,7 @@ public static class Injector
         Console.WriteLine("Successfully added all members of class \"" + newClassName + "\" from \"" + classToCopyFullName + "\"");
     }
 
-    static void overwriteMethodIL(MethodDefinition pasteMethod, MethodDefinition copyMethod, string pasteClassName, string pasteMethodName, ModuleDefinition pasteModule, TypeDefinition newClass = null)
+    private static void OverwriteMethodIL(MethodDefinition pasteMethod, MethodDefinition copyMethod, string pasteClassName, string pasteMethodName, ModuleDefinition pasteModule, TypeDefinition newClass = null)
     {
         if (newClass == null)
         {
@@ -434,7 +434,7 @@ public static class Injector
 
         }
     }
-    static HalfInjected injectionFirstStep(string path, string className, string methodName, string debugPre = "")
+    private static HalfInjected InjectionFirstStep(string path, string className, string methodName, string debugPre = "")
     {
         if (!File.Exists(path))
         {
@@ -463,7 +463,7 @@ public static class Injector
         ILProcessor iLProcessor = targetMethod.Body.GetILProcessor();
         return new HalfInjected(module, targetMethod, type, iLProcessor);
     }
-    static void fixMethodReferences(MethodDefinition paste, MethodDefinition copy)
+    private static void FixMethodReferences(MethodDefinition paste, MethodDefinition copy)
     {
         for (int i = 0; i < paste.Body.Instructions.Count; i++)
         {
@@ -859,7 +859,8 @@ public class Injection
         Console.WriteLine("Injected!");
         module.Dispose();
     }
-    bool isNull;
-    ILProcessor Processor;
-    ModuleDefinition module;
+
+    private readonly bool isNull;
+    private ILProcessor Processor;
+    private ModuleDefinition module;
 }

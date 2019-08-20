@@ -22,6 +22,7 @@ namespace InternalModBot
             gameFlowManager.AddComponent<UpdateChecker>();
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManager>();
+            gameFlowManager.AddComponent<UpgradeIconDownloader>();
             
             InitilizeUI();
             
