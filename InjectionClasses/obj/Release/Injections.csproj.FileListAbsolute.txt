@@ -1,17 +1,7 @@
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\InjectionClasses.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\InjectionClasses.pdb
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\Assembly-CSharp-firstpass.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\Assembly-CSharp.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\bolt.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\bolt.user.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\ModLibrary.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.CoreModule.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.ImageConversionModule.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.PhysicsModule.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.UI.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.Physics2DModule.dll
-C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.AnimationModule.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.TextRenderingModule.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\UnityEngine.IMGUIModule.dll
 C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\Pathfinding.Ionic.Zip.Reduced.dll
@@ -132,3 +122,4 @@ C:\Users\efors\Desktop\git\ModBot\InjectionClasses\bin\Release\UnityEngine.Unity
 C:\Users\efors\Desktop\git\ModBot\InjectionClasses\bin\Release\UnityEngine.VideoModule.dll
 C:\Users\efors\Desktop\git\ModBot\InjectionClasses\bin\Release\UnityEngine.WindModule.dll
 C:\Users\efors\Desktop\git\ModBot\InjectionClasses\obj\Release\Injections.csproj.CopyComplete
+C:\Users\justme\Documents\GitHub\ModBot\InjectionClasses\bin\Release\System.Core.dll

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ModLibrary
 {
@@ -123,5 +125,73 @@ namespace ModLibrary
         }
 
         private static string outputText;
+    }
+}
+
+namespace InternalModBot
+{
+    public class Logger : Singleton<Logger>
+    {
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                Flip();
+            }
+            if (!Container.activeSelf)
+            {
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                RunCommand(input.text);
+                input.text = "";
+            }
+        }
+
+        private void Flip()
+        {
+            if (Container.activeSelf)
+            {
+                animator.Play("hideConsole");
+                return;
+            }
+            animator.Play("showConsole");
+        }
+
+        public void Log(string whatToLog)
+        {
+            Text logText = LogText;
+            logText.text = logText.text + "\n" + whatToLog;
+        }
+
+        public void Log(string whatToLog, Color color)
+        {
+            string text = ColorUtility.ToHtmlStringRGB(color);
+            Text logText = LogText;
+            logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
+        }
+
+        public void RunCommand(string command)
+        {
+            try
+            {
+                ConsoleInputManager.OnCommandRan(command);
+                ModsManager.Instance.PassOnMod.OnCommandRan(command);
+            }
+            catch (Exception ex)
+            {
+                Log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
+                Log(ex.StackTrace, Color.red);
+            }
+        }
+
+        public Animator animator;
+
+        public Text LogText;
+
+        public GameObject Container;
+
+        public InputField input;
     }
 }
