@@ -15,33 +15,28 @@ class Program
     public const string InjectionClassesNamespaceName = "InjectionClasses.";
     static void Main(string[] args)
     {
-        //peverify /IL "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed/Assembly-CSharp.dll"
-        string path = "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed/Assembly-CSharp.dll";
-        string path2 = "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed/InjectionClasses.dll";
-        string path3 = "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed/ModLibrary.dll";
-        InstallModBot(path, path2, path3);
+        string installPath = Environment.CurrentDirectory + "/Assembly-CSharp.dll";
+        string sourceToCopyClassesFrom = Environment.CurrentDirectory + "/InjectionClasses.dll";
+        string modlibrary = Environment.CurrentDirectory + "/ ModLibrary.dll";
+        InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary);
         
-
-
-
         Console.WriteLine("All injections completed!");
-
-        Console.ReadLine();
-        //System.Threading.Thread.Sleep(2000);
+        
+        System.Threading.Thread.Sleep(500);
         
 
     }
     
-    static void InstallModBot(string installPath, string injectionSourceDllLocation, string modLibraryPath)
+    static void InstallModBot(string installPath, string sourceToCopyClassesFrom, string modLibraryPath)
     {
         Console.WriteLine("Starting the installation of Mod-Bot...");
-        if (!File.Exists(injectionSourceDllLocation))
+        if (!File.Exists(sourceToCopyClassesFrom))
         {
-            ErrorHandler.Crash("Could not find dll at path \"" + injectionSourceDllLocation + "\"");
+            ErrorHandler.Crash("Could not find dll at path \"" + sourceToCopyClassesFrom + "\"");
             return;
         }
         Console.WriteLine("Finding classes to inject...");
-        ModuleDefinition module = ModuleDefinition.ReadModule(injectionSourceDllLocation, new ReaderParameters()
+        ModuleDefinition module = ModuleDefinition.ReadModule(sourceToCopyClassesFrom, new ReaderParameters()
         {
             ReadWrite = true
         });
@@ -61,7 +56,7 @@ class Program
         
         for (int i = 0; i < typesFullNames.Count; i++)
         {
-            Injector.AddClassToAssembly(installPath, typesNames[i], injectionSourceDllLocation, typesFullNames[i]);
+            Injector.AddClassToAssembly(installPath, typesNames[i], sourceToCopyClassesFrom, typesFullNames[i]);
         }
         Console.WriteLine("Finished injecting classes");
 
@@ -139,36 +134,6 @@ class Program
         ProjectileInjection4.Write();
 
     }
-
-
-
-    static void debugInstall()
-    {
-        /*Injection injection = Injector.AddCallToMethodInMethod(path, "FirstPersonMover", "Awake", typeof(TestInjection).GetMethod("Test4"));
-        if (injection != null)
-        {
-            Instruction instruction = injection.Processor.Create(OpCodes.Ldarg_0);
-            injection.Processor.InsertBefore(injection.Processor.Body.Instructions[0], instruction);
-            injection.Write();
-        }
-
-
-        Injection injection2 = Injector.AddCallToMethodInMethod(path, "FirstPersonMover", "Update", typeof(TestInjection).GetMethod("Test4"));
-        if (injection2 != null)
-        {
-            Instruction instruction = injection.Processor.Create(OpCodes.Ldarg_0);
-            injection2.Processor.InsertBefore(injection2.Processor.Body.Instructions[0], instruction);
-            injection2.Write();
-        }
-
-        Injector.OverrideMethod(path, "Character", "IsAlive", path2, "TestInjection", "IsAlive");
-        Injector.AddMethodToClass(path, "Character", "Test3", path2, "TestInjection", "Test3");
-        Injector.AddFieldToClass(path, "Character", "Player", path2, "TestInjection", "Player");
-        Injector.AddFieldToClass(path, "Character", "a", path2, "TestInjection", "a");
-        Injector.AddFieldToClass(path, "Character", "testField2", path2, "TestInjection", "testField2");
-
-        Injector.AddClassToAssembly(path, "test", path2, "testNamespace.testClass");*/
-    }
 }
 
 
@@ -182,8 +147,10 @@ public static class ErrorHandler
     {
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine("ERROR: " + errorMessage);
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("WARNING: Your game files may have been corrupted, please verify your game files before starting the game!!!");
         Console.ForegroundColor = ConsoleColor.White;
-        System.Threading.Thread.Sleep(10000);
+        System.Threading.Thread.Sleep(30 * 60 * 1000);
         Environment.Exit(1);
     }
 }
