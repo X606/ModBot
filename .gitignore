@@ -3,4 +3,6 @@ Mod Bot/bin/
 Mod Bot/obj/
 InjectionClasses/bin/
 InjectionClasses/obj/
+Injector/bin/
+Injector/obj/
 *.zip
