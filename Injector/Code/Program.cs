@@ -17,7 +17,7 @@ class Program
     {
         string installPath = Environment.CurrentDirectory + "/Assembly-CSharp.dll";
         string sourceToCopyClassesFrom = Environment.CurrentDirectory + "/InjectionClasses.dll";
-        string modlibrary = Environment.CurrentDirectory + "/ ModLibrary.dll";
+        string modlibrary = Environment.CurrentDirectory + "/ModLibrary.dll";
         InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary);
         
         Console.WriteLine("All injections completed!");
