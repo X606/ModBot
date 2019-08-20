@@ -93,10 +93,10 @@ public class ModsManager : Singleton<ModsManager>
     {
         if (Caching.ClearCache())
         {
-            Singleton<Logger>.Instance.Log("Successfully cleared the cache.");
+            Singleton<InternalModBot.Logger>.Instance.Log("Successfully cleared the cache.");
             return;
         }
-        Singleton<Logger>.Instance.Log("Cache is being used.");
+        Singleton<InternalModBot.Logger>.Instance.Log("Cache is being used.");
     }
 
     public List<Mod> Mods = new List<Mod>();

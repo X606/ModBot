@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -27,12 +28,12 @@ namespace ModLibrary
         /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
-            Logger.Instance.Log(_log);
+            InternalModBot.Logger.Instance.Log(_log);
 
-            if (Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
             {
-                string newText = Logger.Instance.LogText.text.Substring(Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
-                Logger.Instance.LogText.text = newText;
+                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
+                InternalModBot.Logger.Instance.LogText.text = newText;
             }
         }
 
@@ -52,7 +53,7 @@ namespace ModLibrary
         /// <param name="_color">The color to write in</param>
         public static void Log(string _log, Color _color)
         {
-            Logger.Instance.Log(_log, _color);
+            InternalModBot.Logger.Instance.Log(_log, _color);
         }
 
         /// <summary>
