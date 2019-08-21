@@ -41,6 +41,7 @@
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
+    <Compile Include="Internal\DoubleValueHolder.cs" />
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
@@ -105,6 +106,10 @@
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
