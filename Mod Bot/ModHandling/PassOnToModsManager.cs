@@ -8,12 +8,16 @@ namespace InternalModBot
     {
         public override string GetModName()
         {
-            return "";
+            return string.Empty;
+        }
+        public override string GetUniqueID()
+        {
+            return string.Empty;
         }
 
         public override void OnFirstPersonMoverSpawned(FirstPersonMover me)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnFirstPersonMoverSpawned(me);
@@ -22,7 +26,7 @@ namespace InternalModBot
 
         public override void OnFirstPersonMoverUpdate(FirstPersonMover me)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnFirstPersonMoverUpdate(me);
@@ -31,7 +35,7 @@ namespace InternalModBot
 
         public override void OnSceneChanged(GameMode gamemode)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnSceneChanged(gamemode);
@@ -40,7 +44,7 @@ namespace InternalModBot
 
         public override void OnModRefreshed()
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnModRefreshed();
@@ -49,7 +53,7 @@ namespace InternalModBot
 
         public override void OnLevelEditorStarted()
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnLevelEditorStarted();
@@ -58,7 +62,7 @@ namespace InternalModBot
 
         public override void OnObjectPlacedInLevelEditor(ObjectPlacedInLevel _obj)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnObjectPlacedInLevelEditor(_obj);
@@ -67,7 +71,7 @@ namespace InternalModBot
 
         public override void OnCommandRan(string command)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnCommandRan(command);
@@ -82,7 +86,7 @@ namespace InternalModBot
                 return;
             }
 
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnUpgradesRefreshed(me, upgrades);
@@ -96,7 +100,7 @@ namespace InternalModBot
                 OnFirstPersonMoverSpawned(me as FirstPersonMover);
             }
 
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnCharacterSpawned(me);
@@ -110,7 +114,7 @@ namespace InternalModBot
                 OnFirstPersonMoverUpdate(me as FirstPersonMover);
             }
 
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnCharacterUpdate(me);
@@ -119,7 +123,7 @@ namespace InternalModBot
 
         public override void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].AfterUpgradesRefreshed(owner, upgrades);
@@ -128,7 +132,7 @@ namespace InternalModBot
 
         public override void OnProjectileCreated(Projectile projectile)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnProjectileCreated(projectile);
@@ -154,7 +158,7 @@ namespace InternalModBot
 
         public override void OnProjectileStartedMoving(Projectile projectile)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnProjectileStartedMoving(projectile);
@@ -180,7 +184,7 @@ namespace InternalModBot
 
         public override void OnProjectileUpdate(Projectile projectile)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnProjectileUpdate(projectile);
@@ -206,7 +210,7 @@ namespace InternalModBot
 
         public override void OnProjectileDestroyed(Projectile projectile)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnProjectileDestroyed(projectile);
@@ -232,7 +236,7 @@ namespace InternalModBot
 
         public override void OnArrowProjectileCreated(ArrowProjectile arrow)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnArrowProjectileCreated(arrow);
@@ -241,7 +245,7 @@ namespace InternalModBot
 
         public override void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnArrowProjectileStartedMoving(arrow);
@@ -250,7 +254,7 @@ namespace InternalModBot
 
         public override void OnArrowProjectileUpdate(ArrowProjectile arrow)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnArrowProjectileUpdate(arrow);
@@ -259,7 +263,7 @@ namespace InternalModBot
 
         public override void OnArrowProjectileDestroyed(ArrowProjectile arrow)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnArrowProjectileDestroyed(arrow);
@@ -268,7 +272,7 @@ namespace InternalModBot
 
         public override void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnBulletProjectileCreated(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
@@ -277,7 +281,7 @@ namespace InternalModBot
 
         public override void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnBulletProjectileStartedMoving(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
@@ -286,7 +290,7 @@ namespace InternalModBot
 
         public override void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
@@ -295,7 +299,7 @@ namespace InternalModBot
 
         public override void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnBulletProjectileDestroyed(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
@@ -304,11 +308,21 @@ namespace InternalModBot
 
         public override void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
         {
-            List<Mod> mods = ModsManager.Instance.Mods;
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType);
             }
         }
+
+        public override void OnModDeactivated()
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnModDeactivated();
+            }
+        }
+
     }
 }

@@ -115,11 +115,13 @@ namespace InternalModBot
             if (ModIDs.Count - 1 < page)
                 return null;
 
-            for (int i = 0; i < ModsManager.Instance.Mods.Count; i++)
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+
+            for (int i = 0; i < mods.Count; i++)
             {
-                if (ModsManager.Instance.Mods[i].GetHashCode() == ModIDs[page])
+                if (mods[i].GetHashCode() == ModIDs[page])
                 {
-                    return ModsManager.Instance.Mods[i];
+                    return mods[i];
                 }
             }
 

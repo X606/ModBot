@@ -85,6 +85,12 @@ namespace ModLibrary
         public abstract string GetModName();
 
         /// <summary>
+        /// Returns a unique ID for every mod
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetUniqueID();
+
+        /// <summary>
         /// Returns the description of the mod, override to change the description of your mod
         /// </summary>
         /// <returns></returns>
@@ -225,5 +231,17 @@ namespace ModLibrary
         public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
         {
         }
+
+        /// <summary>
+        /// Called when the mod is deactivated from the mods menu
+        /// </summary>
+        public virtual void OnModDeactivated()
+        {
+        }
+
+        public virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
+        {
+        }
+
     }
 }
