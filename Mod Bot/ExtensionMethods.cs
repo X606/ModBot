@@ -1,4 +1,5 @@
 ﻿using System;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -15,6 +16,11 @@ namespace ModLibrary
             }
 
             return moddedObject.objects[index] as T;
+        }
+
+        public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
+        {
+            UpgradeIconDownloader.Instance.AddUpgradeIcon(upgradeDescription, url);
         }
     }
 }
