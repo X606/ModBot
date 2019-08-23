@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using ModLibrary;
 
 namespace ModLibrary
 {
@@ -239,6 +240,18 @@ namespace ModLibrary
         {
         }
 
+        /// <summary>
+        /// If this returns true it will active the mod settings button in the mods window for this mod.
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool ImplementsSettingsWindow()
+        {
+            return false;
+        }
+        /// <summary>
+        /// Gets called when the user clicks on the mod settings button in the mods window. Allows you to create a neat little UI that saves the values for you. Get the values set by this with SettingsManager.Instance.GetModdedSettingsBoolValue, GetModdedSettingsStringValue, GetModdedSettingsIntValue and GetModdedSettingsFloatValue
+        /// </summary>
+        /// <param name="builder">The object used to build the UI.</param>
         public virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
         {
         }

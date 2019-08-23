@@ -5,24 +5,37 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    public class ModsPanelManager : MonoBehaviour
+    public class ModsPanelManager : Singleton<ModsPanelManager>
     {
         private void Start()
         {
-            Vector3 buttonOffset = new Vector3(0f, -1f, 0f); // The offset to give buttons to make space for the Mods button
+            Vector3 mainMenuButtonOffset = new Vector3(0f, -1f, 0f); // The offset to give buttons on the main menu to make space for the Mods button
+            Vector3 pauseScreenButtonOffest = new Vector3(0f, 1.2f, 0f); 
 
             GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer;
-            titleScreenContainer.transform.GetChild(5).transform.position += buttonOffset; // Level editor button
-            titleScreenContainer.transform.GetChild(7).transform.position += buttonOffset; // Options button
-            titleScreenContainer.transform.GetChild(8).transform.position += buttonOffset; // Credits button
-            titleScreenContainer.transform.GetChild(9).transform.position += buttonOffset; // Quit button
+            titleScreenContainer.transform.GetChild(5).transform.position += mainMenuButtonOffset; // Level editor button
+            titleScreenContainer.transform.GetChild(7).transform.position += mainMenuButtonOffset; // Options button
+            titleScreenContainer.transform.GetChild(8).transform.position += mainMenuButtonOffset; // Credits button
+            titleScreenContainer.transform.GetChild(9).transform.position += mainMenuButtonOffset; // Quit button
 
             // Copy the options button to make into the Mods button
             GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(7).gameObject;
-            GameObject modsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
+            GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
-            modsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
-            modsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
+            mainMenuModsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
+            mainMenuModsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
+
+
+            GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent);
+            GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffest;
+            GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffest;
+            GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffest;
+            GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffest;
+            GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffest;
+            GameUIRoot.Instance.EscMenu.MainMenuConfirmUI.transform.position -= pauseScreenButtonOffest;
+
+            pauseScreenModsButton.transform.position -= pauseScreenButtonOffest;
+            pauseScreenModsButton.GetComponentInChildren<Text>().text = "MODS";
 
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
             ModsWindow = Instantiate(modsWindowPrefab);
@@ -30,8 +43,11 @@ namespace InternalModBot
             ModsWindowModdedObject = ModsWindow.GetComponent<ModdedObject>();
             ModsWindow.SetActive(false);
 
-            modsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
-            modsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
+            mainMenuModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
+            mainMenuModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
+            pauseScreenModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
+            pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
+
             ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
             
             ReloadModItems();
@@ -49,20 +65,9 @@ namespace InternalModBot
 
         private void OpenModsOptionsWindowForMod(Mod mod)
         {
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder();
-            builder.AddSlider(0, 10, 0, "test stuff0");
-            builder.AddSlider(0, 10, 1, "test stuff1");
-            builder.AddCheckbox(false, "test checkbox1");
-            builder.AddCheckbox(true, "test checkbox2");
-            builder.AddSlider(0, 10, 2, "test stuff2");
-            builder.AddSlider(0, 10, 3, "test stuff3");
-            builder.AddSlider(0, 10, 4, "test stuff4");
-            builder.AddSlider(0, 10, 5, "test stuff5");
-            builder.AddSlider(0, 10, 6, "test stuff6");
-            builder.AddSlider(0, 10, 7, "test stuff7");
-            builder.AddSlider(0, 10, 8, "test stuff8");
-            builder.AddSlider(0, 10, 9, "test stuff9");
-            
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModsWindow, mod);
+            mod.CreateSettingsWindow(builder);
+
         }
 
         private void ToggleIsModDisabled(int ID)
@@ -120,7 +125,7 @@ namespace InternalModBot
             int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
             modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { ToggleIsModDisabled(modId); }); // Add disable button callback
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { OpenModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
-            
+            modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
 
         private void SetImageFromURL(string url)

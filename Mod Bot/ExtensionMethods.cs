@@ -22,5 +22,26 @@ namespace ModLibrary
         {
             UpgradeIconDownloader.Instance.AddUpgradeIcon(upgradeDescription, url);
         }
+        public static string GetModdedSettingsStringValue(this SettingsManager me, Mod mod, string name)
+        {
+            string result = OptionsSaver.LoadString(mod, name);
+            return result;
+        }
+        public static bool? GetModdedSettingsBoolValue(this SettingsManager me, Mod mod, string name)
+        {
+            bool? result = OptionsSaver.LoadBool(mod, name);
+            return result;
+        }
+        public static float? GetModdedSettingsFloatValue(this SettingsManager me, Mod mod, string name)
+        {
+            float? result = OptionsSaver.LoadFloat(mod, name);
+            return result;
+        }
+        public static int? GetModdedSettingsIntValue(this SettingsManager me, Mod mod, string name)
+        {
+            int? result = OptionsSaver.LoadInt(mod, name);
+            return result;
+        }
+
     }
 }
