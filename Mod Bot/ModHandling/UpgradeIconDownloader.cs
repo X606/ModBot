@@ -26,12 +26,11 @@ namespace InternalModBot
             if (!Directory.Exists(UpgradeIconsFolderPath))
             {
                 Directory.CreateDirectory(UpgradeIconsFolderPath);
-                return;
             }
 
+            DownloadAllQueuedIcons();
             DownloadedIcons = GetAllSavedIcons();
             UpdateAllUpgradeIcons();
-            DownloadAllQueuedIcons();
         }
 
         public void AddUpgradeIcon(UpgradeDescription upgradeDescription, string url)
@@ -146,7 +145,6 @@ namespace InternalModBot
         {
             if (eventArgs.Cancelled)
             {
-                debug.Log("Cancelled");
                 return;
             }
             if (eventArgs.Error != null)
@@ -169,7 +167,7 @@ namespace InternalModBot
 
                     string url = iconToDownload.SecondValue;
 
-                    DownloadFileToIconsFolder(url, fileName, DownloadIconDataComplete);
+                    DownloadFileToIconsFolder(url, fileName);
                     IconsToDownload.RemoveAt(0);
                 }
             }
@@ -177,7 +175,7 @@ namespace InternalModBot
             DelegateScheduler.Instance.Schedule(DownloadAllQueuedIcons, TimeToWaitBetweenDownloadingQueue);
         }
 
-        private void DownloadFileToIconsFolder(string url, string fileName, DownloadDataCompletedEventHandler onFileDownloaded)
+        private void DownloadFileToIconsFolder(string url, string fileName)
         {
             ServicePointManager.ServerCertificateValidationCallback = RemoteCertificateValidationCallback;
             byte[] downloadedData;
@@ -188,7 +186,6 @@ namespace InternalModBot
                     "User-Agent: Other"
                 }
             };
-            webClient.DownloadDataCompleted += onFileDownloaded;
             downloadedData = webClient.DownloadData(url);
 
             string filePath = UpgradeIconsFolderPath + fileName + ".png";
