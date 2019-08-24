@@ -143,6 +143,16 @@ namespace ModLibrary
             onChange?.Invoke(dropdown.value);
             dropdown.onValueChanged.AddListener(delegate (int value) { OptionsSaver.SaveInt(OwnerMod, name, value); onChange?.Invoke(value); });
         }
+        public void AddDropDown<T>(int defaultIndex, string name, Action<int> onChange = null) where T : IComparable, IFormattable, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("The generic type T must be an enum type");
+            }
+            List<string> enums = ModTools.EnumTools.GetNames<T>();
+            AddDropdown(enums.ToArray(), defaultIndex, name, onChange);
+
+        }
 
         public void AddButton(string text, UnityEngine.Events.UnityAction callback)
         {
