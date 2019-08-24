@@ -33,15 +33,6 @@ namespace InternalModBot
             }
         }
 
-        public override void OnSceneChanged(GameMode gamemode)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnSceneChanged(gamemode);
-            }
-        }
-
         public override void OnModRefreshed()
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
@@ -57,15 +48,6 @@ namespace InternalModBot
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnLevelEditorStarted();
-            }
-        }
-
-        public override void OnObjectPlacedInLevelEditor(ObjectPlacedInLevel _obj)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnObjectPlacedInLevelEditor(_obj);
             }
         }
 

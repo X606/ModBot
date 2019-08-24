@@ -64,17 +64,7 @@
     <Compile Include="UIBuilder.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="What to add directly to the game\CanBeInjected\CanBeInjected_changed methods.txt" />
-    <Content Include="What to add directly to the game\MembersToAdd\MethodsToAdd\MethodsToAdd_changed methods.txt" />
-    <Content Include="What to add directly to the game\NeedsToBeOverwritten\NeedsToBeOverwritten_changed methods.txt" />
-    <Content Include="What to add directly to the game\NeedsToBeOverwritten\overwritten classes\LevelObjectsLibraryManager.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="What to add directly to the game\CanBeInjected\overwritten classes\" />
-    <Folder Include="What to add directly to the game\MembersToAdd\FieldsToAdd\overwritten classes\" />
-    <Folder Include="What to add directly to the game\MembersToAdd\MethodsToAdd\overwritten classes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

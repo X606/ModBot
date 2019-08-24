@@ -23,12 +23,11 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManager>();
             gameFlowManager.AddComponent<UpgradeIconDownloader>();
-
-            ModsManager.Instance.PassOnMod.OnSceneChanged(GameMode.None);
-
+            
             InitilizeUI();
             
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
             
             IgnoreCrashesManager.Start();
         }

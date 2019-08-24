@@ -9,13 +9,6 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
-        /// <summary>
-        /// Called when the game scene is changed
-        /// </summary>
-        /// <param name="gamemode">The new gamemode</param>
-        public virtual void OnSceneChanged(GameMode gamemode)
-        {
-        }
 
         /// <summary>
         /// Called in <see cref="Character"/>.Start()
@@ -60,14 +53,6 @@ namespace ModLibrary
         /// Called when the level editor is started.
         /// </summary>
         public virtual void OnLevelEditorStarted()
-        {
-        }
-
-        /// <summary>
-        /// Called when any object is placed in the level editor
-        /// </summary>
-        /// <param name="_object">The <see cref="ObjectPlacedInLevel"/> component on the object spawned</param>
-        public virtual void OnObjectPlacedInLevelEditor(ObjectPlacedInLevel _object)
         {
         }
 
