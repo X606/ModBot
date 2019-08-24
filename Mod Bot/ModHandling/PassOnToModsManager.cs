@@ -320,6 +320,14 @@ namespace InternalModBot
 
             return result;
         }
+        public override void GlobalUpdate()
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].GlobalUpdate();
+            }
+        }
 
     }
 }

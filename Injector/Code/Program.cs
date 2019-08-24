@@ -60,6 +60,14 @@ class Program
         }
         Console.WriteLine("Finished injecting classes");
 
+        Console.WriteLine("Injection new methods...");
+
+        Console.WriteLine("Injecting GetPositionForAIToAimAt into MortarWalker");
+        Injector.AddMethodToClass(installPath, "MortarWalker", "GetPositionForAIToAimAt", modLibraryPath, "InternalModBot.FixSpidertrons", "GetPositionForAIToAimAt");
+        Console.WriteLine("Injected!");
+
+        Console.WriteLine("Done injecting new methods!");
+
         Console.WriteLine("Injecting method calls...");
 
         Console.WriteLine("Injecting into GameFlowManager.Start...");
@@ -138,7 +146,6 @@ class Program
         GameUIRoot1.AddInstructionUnderSafe(OpCodes.Ret);
         GameUIRoot1.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
         GameUIRoot1.Write();
-        
     }
 }
 

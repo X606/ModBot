@@ -147,7 +147,9 @@ public static class Injector
             return;
         }
 
-        MethodDefinition newMethod = new MethodDefinition(newMethodName, copy.TargetMethod.Attributes, copy.TargetMethod.ReturnType);
+        TypeReference returnType = writeModule.ImportReference(copy.TargetMethod.ReturnType);
+
+        MethodDefinition newMethod = new MethodDefinition(newMethodName, copy.TargetMethod.Attributes, returnType);
 
         newMethod.Parameters.Clear();
         for (int i = 0; i < copy.TargetMethod.Parameters.Count; i++)

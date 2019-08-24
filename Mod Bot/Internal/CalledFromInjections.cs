@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using InternalModBot;
 using ModLibrary;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -110,6 +111,22 @@ namespace InternalModBot
             {
                 return false;
             }
+        }
+        public static Vector3 FromGetPositionForAIToAimAt(Character me)
+        {
+            List<MechBodyPart> powerCrystals = me.GetBodyParts(MechBodyPartType.PowerCrystal);
+            if (powerCrystals.Count == 0)
+            {
+                return me.transform.position;
+            }
+            return powerCrystals[0].transform.position;
+        }
+    }
+    public class FixSpidertrons : Character
+    {
+        public override Vector3 GetPositionForAIToAimAt()
+        {
+            return CalledFromInjections.FromGetPositionForAIToAimAt(this);
         }
     }
 

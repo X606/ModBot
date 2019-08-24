@@ -57,6 +57,7 @@ namespace InternalModBot
             {
                 ReloadMods();
             }
+            PassOnMod.GlobalUpdate();
         }
 
         public void LoadMod(byte[] assemblyData)

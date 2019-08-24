@@ -240,10 +240,21 @@ namespace ModLibrary
         public virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
         {
         }
-
+        /// <summary>
+        /// If this returns true the cursor will get enabled
+        /// </summary>
+        /// <returns></returns>
         public virtual bool ShouldCursorBeEnabled()
         {
             return false;
+        }
+
+        /// <summary>
+        /// Called every frame
+        /// </summary>
+        public virtual void GlobalUpdate()
+        {
+
         }
 
     }
