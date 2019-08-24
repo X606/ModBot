@@ -324,5 +324,20 @@ namespace InternalModBot
             }
         }
 
+        public override bool ShouldCursorBeEnabled() // if any mod tells the game that the cursor should be enabled, it will be
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            bool result = false;
+            foreach(Mod mod in mods)
+            {
+                if (mod.ShouldCursorBeEnabled())
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
     }
 }

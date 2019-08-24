@@ -256,5 +256,10 @@ namespace ModLibrary
         {
         }
 
+        public virtual bool ShouldCursorBeEnabled()
+        {
+            return false;
+        }
+
     }
 }

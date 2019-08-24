@@ -138,6 +138,17 @@ namespace InternalModBot
 
         private void Update()
         {
+            if (ModsWindow.activeInHierarchy)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    CloseModsMenu();
+                }
+            }
+
+           
+
+
             if (ModImageNetworkConnections.Count == 0)
             {
                 return;

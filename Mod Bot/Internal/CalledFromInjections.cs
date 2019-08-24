@@ -96,5 +96,22 @@ namespace InternalModBot
             }
             ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
+
+        public static bool FromRefreshCursorEnabled()
+        {
+            bool shouldCursorBeEnabled = ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled();
+
+            if (shouldCursorBeEnabled)
+            {
+                InputManager.Instance.SetCursorEnabled(true);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+
+   
 }

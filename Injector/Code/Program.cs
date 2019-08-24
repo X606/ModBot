@@ -133,6 +133,12 @@ class Program
         ProjectileInjection4.AddInstructionOverSafe(OpCodes.Ldarg_0);
         ProjectileInjection4.Write();
 
+        Console.WriteLine("Injecting into GameUIRoot.RefreshCursorEnabled...");
+        Injection GameUIRoot1 = Injector.AddCallToMethodInMethod(installPath, "GameUIRoot", "RefreshCursorEnabled", modLibraryPath, "InternalModBot.CalledFromInjections", "FromRefreshCursorEnabled");
+        GameUIRoot1.AddInstructionUnderSafe(OpCodes.Ret);
+        GameUIRoot1.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
+        GameUIRoot1.Write();
+        
     }
 }
 
