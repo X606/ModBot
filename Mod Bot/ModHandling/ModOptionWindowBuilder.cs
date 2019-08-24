@@ -27,7 +27,7 @@ namespace ModLibrary
             ModdedObject modObject = SpawnedBase.GetComponent<ModdedObject>();
             Content = modObject.GetObject<GameObject>(0);
             XButton = modObject.GetObject<Button>(1);
-            XButton.onClick.AddListener(Destory);
+            XButton.onClick.AddListener(CloseWindow);
 
 
             // Debug stuff
@@ -37,7 +37,7 @@ namespace ModLibrary
             // debug.Log( OptionsSaver.LoadString(OwnerMod, "testStringHaHa") );
         }
 
-        public void AddSlider(float min, float max, float defaultValue, string name)
+        public void AddSlider(float min, float max, float defaultValue, string name, Action<float> onChange = null)
         {
             GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
             ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
@@ -53,9 +53,10 @@ namespace ModLibrary
             {
                 slider.value = loadedFloat.Value;
             }
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveFloat(OwnerMod, name, value); });
+            onChange?.Invoke(slider.value);
+            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveFloat(OwnerMod, name, value); onChange?.Invoke(value); });
         }
-        public void AddIntSlider(int min, int max, int defaultValue, string name)
+        public void AddIntSlider(int min, int max, int defaultValue, string name, Action<int> onChange = null)
         {
             GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
             ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
@@ -72,9 +73,10 @@ namespace ModLibrary
             {
                 slider.value = loadedInt.Value;
             }
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveInt(OwnerMod, name, (int)value); });
+            onChange?.Invoke((int)slider.value);
+            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveInt(OwnerMod, name, (int)value); onChange?.Invoke((int)value); });
         }
-        public void AddCheckbox(bool defaultValue, string name)
+        public void AddCheckbox(bool defaultValue, string name, Action<bool> onChange = null)
         {
             GameObject CheckBoxPrefab = AssetLoader.GetObjectFromFile("modswindow", "Checkbox", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(CheckBoxPrefab);
@@ -89,9 +91,10 @@ namespace ModLibrary
             {
                 toggle.isOn = loadedBool.Value;
             }
-            toggle.onValueChanged.AddListener(delegate (bool value) { OptionsSaver.SaveBool(OwnerMod, name, value); });
+            onChange?.Invoke(toggle.isOn);
+            toggle.onValueChanged.AddListener(delegate (bool value) { OptionsSaver.SaveBool(OwnerMod, name, value); onChange?.Invoke(value); });
         }
-        public void AddInputField(string defaultValue, string name)
+        public void AddInputField(string defaultValue, string name, Action<string> onChange = null)
         {
             GameObject InputFieldPrefab = AssetLoader.GetObjectFromFile("modswindow", "InputField", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedPrefab = GameObject.Instantiate(InputFieldPrefab);
@@ -106,9 +109,10 @@ namespace ModLibrary
             {
                 field.text = loadedString;
             }
-            field.onValueChanged.AddListener(delegate (string value) { OptionsSaver.SaveString(OwnerMod, name, value); });
+            onChange?.Invoke(field.text);
+            field.onValueChanged.AddListener(delegate (string value) { OptionsSaver.SaveString(OwnerMod, name, value); onChange?.Invoke(value); });
         }
-        public void AddDropdown(string[] options, int defaultIndex, string name)
+        public void AddDropdown(string[] options, int defaultIndex, string name, Action<int> onChange = null)
         {
             if (options.Length <= defaultIndex || defaultIndex < 0)
                 return;
@@ -136,7 +140,8 @@ namespace ModLibrary
                 dropdown.value = loadedInt.Value;
                 dropdown.RefreshShownValue();
             }
-            dropdown.onValueChanged.AddListener(delegate (int value) { OptionsSaver.SaveInt(OwnerMod, name, value); });
+            onChange?.Invoke(dropdown.value);
+            dropdown.onValueChanged.AddListener(delegate (int value) { OptionsSaver.SaveInt(OwnerMod, name, value); onChange?.Invoke(value); });
         }
 
         public void AddButton(string text, UnityEngine.Events.UnityAction callback)
@@ -148,7 +153,6 @@ namespace ModLibrary
             spawnedModdedObject.GetObject<Button>(0).onClick.AddListener(callback);
             spawnedModdedObject.GetObject<Text>(1).text = text;
         }
-
         public void AddLabel(string text)
         {
             GameObject labelPrefab = AssetLoader.GetObjectFromFile("modswindow", "Label", "Clone Drone in the Danger Zone_Data/");
@@ -159,7 +163,7 @@ namespace ModLibrary
         }
 
 
-        public void Destory()
+        public void CloseWindow()
         {
             GameObject.Destroy(SpawnedBase);
             Owner.SetActive(true);

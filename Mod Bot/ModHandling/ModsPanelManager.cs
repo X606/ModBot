@@ -26,7 +26,7 @@ namespace InternalModBot
             mainMenuModsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
 
 
-            GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent);
+            GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
             GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffest;
             GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffest;
             GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffest;
