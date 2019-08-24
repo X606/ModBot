@@ -83,9 +83,21 @@ namespace InternalModBot
 
         private void UpdateAllUpgradeIcons()
         {
-            foreach (DoubleValueHolder<UpgradeTypeAndLevel, Sprite> icon in DownloadedIcons)
+            foreach (DoubleValueHolder<UpgradeTypeAndLevel, Sprite> upgradeIconData in DownloadedIcons)
             {
-                GetUpgradeDescription(icon.FirstValue).Icon = icon.SecondValue;
+                UpgradeDescription upgradeDescription = GetUpgradeDescription(upgradeIconData.FirstValue);
+                Sprite icon = upgradeIconData.SecondValue;
+
+                if (upgradeDescription == null)
+                {
+                    continue;
+                }
+                if (icon == null)
+                {
+                    debug.Log("Custom icon for upgrade " + upgradeDescription.UpgradeType.ToString() + " (level " + upgradeDescription.Level + ") could not be loaded! (Sprite was null)", Color.yellow);
+                }
+
+                upgradeDescription.Icon = icon;
             }
         }
 
@@ -141,20 +153,6 @@ namespace InternalModBot
             return downloadedIcons;
         }
 
-        private void DownloadIconDataComplete(object sender, DownloadDataCompletedEventArgs eventArgs)
-        {
-            if (eventArgs.Cancelled)
-            {
-                return;
-            }
-            if (eventArgs.Error != null)
-            {
-                throw eventArgs.Error;
-            }
-
-            UpdateAllUpgradeIcons();
-        }
-
         private void DownloadAllQueuedIcons()
         {
             if (IconsToDownload.Count > 0)
@@ -169,6 +167,12 @@ namespace InternalModBot
 
                     DownloadFileToIconsFolder(url, fileName);
                     IconsToDownload.RemoveAt(0);
+
+                    string filePath = UpgradeIconsFolderPath + fileName + ".png";
+                    Sprite icon = GetIconFromPNG(fileName);
+
+                    DoubleValueHolder<UpgradeTypeAndLevel, Sprite> upgradeIcon = new DoubleValueHolder<UpgradeTypeAndLevel, Sprite>(upgradeTypeAndLevel, icon);
+                    DownloadedIcons.Add(upgradeIcon);
                 }
             }
 
