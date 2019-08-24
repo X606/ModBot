@@ -248,28 +248,21 @@ namespace InternalModBot
             }
             // ======== Standard file downloading code ========
 
-            // Write to path and save to cache when download is completed
-            webClient.DownloadDataCompleted += delegate(object sender, DownloadDataCompletedEventArgs eventArgs)
-            {
-                // Get the raw bytes from the download
-                byte[] rawData = eventArgs.Result;
+            // Download data
+            byte[] data = webClient.DownloadData(url);
 
-                // Create and write to file
-                FileStream fileStream = File.Create(filePath);
-                fileStream.Write(rawData, 0, rawData.Length);
-                fileStream.Close();
+            // Create and write to file
+            FileStream fileStream = File.Create(filePath);
+            fileStream.Write(data, 0, data.Length);
+            fileStream.Close();
 
-                // Get UpgradeTypeAndLevel and icon from file
-                UpgradeTypeAndLevel upgradeTypeAndLevel = GetUpgradeTypeAndLevelFromFileName(fileName);
-                Sprite icon = GetIconFromImagePath(filePath);
+            // Get UpgradeTypeAndLevel and icon from file
+            UpgradeTypeAndLevel upgradeTypeAndLevel = GetUpgradeTypeAndLevelFromFileName(fileName);
+            Sprite icon = GetIconFromImagePath(filePath);
 
-                // Add to cache and update
-                DoubleValueHolder<UpgradeTypeAndLevel, Sprite> upgradeIcon = new DoubleValueHolder<UpgradeTypeAndLevel, Sprite>(upgradeTypeAndLevel, icon);
-                AddAndUpdateIcon(upgradeIcon);
-            };
-
-            // Start asynchronous file download
-            webClient.DownloadDataAsync(new Uri(url));
+            // Add to cache and update
+            DoubleValueHolder<UpgradeTypeAndLevel, Sprite> upgradeIcon = new DoubleValueHolder<UpgradeTypeAndLevel, Sprite>(upgradeTypeAndLevel, icon);
+            AddAndUpdateIcon(upgradeIcon);
         }
 
         // Standard method to use in callback for file downloading
