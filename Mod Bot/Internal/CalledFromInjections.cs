@@ -11,10 +11,19 @@ namespace InternalModBot
     {
         public static void FromRefreshUpgradesStart(FirstPersonMover owner)
         {
-            ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(owner, owner.GetComponent<UpgradeCollection>());
+            if (owner.gameObject == null || !owner.IsAlive() || owner.GetCharacterModel() == null)
+            {
+                return;
+            }
+            UpgradeCollection upgrade = owner.GetComponent<UpgradeCollection>();
+            ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(owner, upgrade);
         }
         public static void FromRefreshUpgradesEnd(FirstPersonMover owner)
         {
+            if (owner.gameObject == null)
+            {
+                return;
+            }
             ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(owner, owner.GetComponent<UpgradeCollection>());
         }
 

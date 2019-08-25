@@ -105,7 +105,7 @@ namespace InternalModBot
 
             if (!string.IsNullOrEmpty(url))
             {
-                SetImageFromURL(url);
+                SetImageFromURL(url, mod);
             }
 
             ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
@@ -128,12 +128,12 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
 
-        private void SetImageFromURL(string url)
+        private void SetImageFromURL(string url, Mod owner)
         {
             if (string.IsNullOrEmpty(url))
                 return;
 
-            ModImageNetworkConnections.Add(new WWW(url));
+            ModImageNetworkConnections.Add(new DoubleValueHolder<Mod,WWW>(owner, new WWW(url)) );
         }
 
         private void Update()
@@ -156,14 +156,14 @@ namespace InternalModBot
 
             for (int i = 0; i < ModImageNetworkConnections.Count;)
             {
-                if (ModImageNetworkConnections[i] != null && ModImageNetworkConnections[i].isDone)
+                if (ModImageNetworkConnections[i].SecondValue != null && ModImageNetworkConnections[i].SecondValue.isDone)
                 {
                     Texture2D modImage = new Texture2D(1, 1);
-                    ModImageNetworkConnections[i].LoadImageIntoTexture(modImage);
+                    ModImageNetworkConnections[i].SecondValue.LoadImageIntoTexture(modImage);
 
                     if (modImage != null)
                     {
-                        ModdedObject modItemModdedObject = ModItems[i].GetComponent<ModdedObject>();
+                        ModdedObject modItemModdedObject = FindModItemWithName(ModImageNetworkConnections[i].FirstValue.GetUniqueID());
                         modItemModdedObject.GetObject<RawImage>(2).texture = modImage; // Set image
                     }
 
@@ -175,7 +175,19 @@ namespace InternalModBot
                 }
             }
         }
-                
+        
+        private ModdedObject FindModItemWithName(string id)
+        {
+            foreach(GameObject moddedObject in ModItems)
+            {
+                if (moddedObject.GetComponent<ModdedObject>().GetObject<Text>(5).text == "Mod ID: " + id)
+                {
+                    return moddedObject.GetComponent<ModdedObject>();
+                }
+            }
+            return null;
+        }
+
         private void ReloadModItems()
         {
             ModItems.Clear();
@@ -199,7 +211,7 @@ namespace InternalModBot
             }
         }
 
-        private List<WWW> ModImageNetworkConnections = new List<WWW>();
+        private List<DoubleValueHolder<Mod,WWW>> ModImageNetworkConnections = new List<DoubleValueHolder<Mod, WWW>>();
 
         private List<GameObject> ModItems = new List<GameObject>();
 
