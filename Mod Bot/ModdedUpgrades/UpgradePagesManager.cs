@@ -7,13 +7,10 @@ namespace InternalModBot
 {
     public static class UpgradePagesManager
     {
-        private static Dictionary<ModdedUpgradeTypeAndLevel, List<int>> UpgradePagesDictionary = new Dictionary<ModdedUpgradeTypeAndLevel, List<int>>();
-
+        private static List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> AllModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>>(); // first string is uniqe ids of mods returned by mod.GetUniqeId(), the second value are all of the upgrades on that page (this also includes disabled mods)
+        
         public static int CurrentPage = 0;
-        private static int MaxPage = 0;
-
-        private static List<int> ModIDs = new List<int>();
-
+        
         public static void Reset()
         {
             for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
@@ -23,115 +20,130 @@ namespace InternalModBot
                     UpgradeManager.Instance.UpgradeDescriptions.RemoveAt(i);
                     i--;
                 }
-            }
+            } // Removes all modded upgrades from the UpgradeDescriptions List
 
-            UpgradePagesDictionary.Clear();
-            ModIDs.Clear();
-            MaxPage = 0;
+            AllModdedUpgradePages.Clear();
             CurrentPage = 0;
         }
 
-        public static bool IsModdedUpgradeType(UpgradeType UpgradeType)
+        public static void RemoveModdedUpgradesFor(Mod mod)
         {
-            return !ModLibrary.ModTools.EnumTools.GetValues<UpgradeType>().Contains(UpgradeType);
-        }
-
-        public static List<int> GetUpgradePages(UpgradeType upgradeType, int level)
-        {
-            if (!UpgradePagesDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
+            foreach (var item in AllModdedUpgradePages)
             {
-                return new List<int>() { 0 };
-            }
-
-            return UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)];
-        }
-
-        public static void AddUpgradePage(UpgradeType upgradeType, int level, int newPage)
-        {
-            if (!UpgradePagesDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
-            {
-                UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)] = new List<int>();
-            }
-
-            if (!IsModdedUpgradeType(upgradeType) && !UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Contains(0))
-            {
-                UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Add(0);
-            }
-
-            UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Add(newPage);
-        }
-
-        public static void AddUpgradeAlreadyInGame(UpgradeType upgradeType, int level, Mod mod)
-        {
-            int page = GetPageForMod(mod);
-
-            if (!UpgradePagesDictionary.ContainsKey(new ModdedUpgradeTypeAndLevel(upgradeType, level)))
-            {
-                UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)] = new List<int>();
-            }
-            if (UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Contains(0))
-            {
-                UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Remove(0);
-            }
-
-            UpgradePagesDictionary[new ModdedUpgradeTypeAndLevel(upgradeType, level)].Add(page);
-        }
-
-        private static int TryAddPage(Mod mod)
-        {
-            for (int i = 0; i < ModIDs.Count; i++)
-            {
-                if (ModIDs[i] == mod.GetHashCode())
+                if (item.Key == mod)
                 {
-                    return i;
+                    foreach (ModdedUpgradeTypeAndLevel upgradeType in item.Value)
+                    {
+                        for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
+                        {
+                            if (UpgradeManager.Instance.UpgradeDescriptions[i].UpgradeType == upgradeType.UpgradeType && UpgradeManager.Instance.UpgradeDescriptions[i].Level == upgradeType.Level && IsModdedUpgradeType(upgradeType.UpgradeType))
+                            {
+                                UpgradeManager.Instance.UpgradeDescriptions.RemoveAt(i);
+                                i--;
+                            }
+                        }
+                    }
+                    return;
                 }
             }
-            MaxPage++;
-
-            while (ModIDs.Count - 1 < MaxPage)
-            {
-                ModIDs.Add(0);
-            }
-
-            ModIDs[MaxPage] = mod.GetHashCode();
-            return MaxPage;
         }
 
+        public static void AddUpgrade(UpgradeType upgradeType, int level, Mod mod)
+        {
+            if (ModAlreadyHasUpgrade(mod, new ModdedUpgradeTypeAndLevel(upgradeType, level))) // we dont want to add the same upgrade twice to the same page
+                return;
+
+
+            TryAddPage(mod);
+            var pages = GenerateModPages();
+            int page = GetPageForMod(pages, mod);
+            pages[page].Value.Add(new ModdedUpgradeTypeAndLevel(upgradeType, level));
+
+        }
+        
+
+        /// <summary>
+        /// If mod already has a page does nothing
+        /// </summary>
+        /// <param name=""></param>
+        public static void TryAddPage(Mod mod)
+        {
+            if (ContainsMod(mod))
+                return;
+
+            List<ModdedUpgradeTypeAndLevel> newList = new List<ModdedUpgradeTypeAndLevel>();
+            AllModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>(mod, newList));
+        }
+
+        /// <summary>
+        /// Generates a list where each instance in the list is a diffrent page, and each list in that list is all the moddedUpgradeTypeAndLevels for that page (only includes active mods)
+        /// </summary>
+        /// <returns></returns>
+        public static List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> GenerateModPages()
+        {
+            List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages = new List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>>();
+            foreach(var page in AllModdedUpgradePages)
+            {
+                if (!page.Key.IsModEnabled())
+                    continue;
+
+                pages.Add(page);
+            }
+
+            return pages;
+        }
+
+
+        /// <summary>
+        /// Generates a list of pages, and then gets the page index of the mod passed
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns></returns>
         public static int GetPageForMod(Mod mod)
         {
-            for (int i = 0; i < ModIDs.Count; i++)
+            var generatedPages = GenerateModPages();
+            int page = GetPageForMod(generatedPages, mod);
+            return page;
+        }
+        /// <summary>
+        /// Gets the page index of the mod passed from the pages list passed
+        /// </summary>
+        /// <param name="pages"></param>
+        /// <param name="mod"></param>
+        /// <returns></returns>
+        public static int GetPageForMod(List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages, Mod mod)
+        {
+            for (int i = 0; i < pages.Count; i++)
             {
-                if (ModIDs[i] == mod.GetHashCode())
-                {
-                    return i;
-                }
+                if (pages[i].Key != mod)
+                    continue;
+
+                return i;
             }
 
-            return TryAddPage(mod);
+            throw new Exception("Didnt find page for mod \"" + mod.GetModName() + "\" with the unique id: \"" + mod.GetUniqueID() + "\""); 
         }
 
-        public static Mod GetModForPage(int page)
+        public static Mod TryGetModForPage(int page)
         {
-            if (ModIDs.Count - 1 < page)
+            page -= 1;
+
+            var pages = GenerateModPages();
+            Mod mod = TryGetModForPage(pages, page);
+            return mod;
+        }
+        public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages, int page)
+        {
+            if (page < 0 || page >= pages.Count)
                 return null;
 
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-
-            for (int i = 0; i < mods.Count; i++)
-            {
-                if (mods[i].GetHashCode() == ModIDs[page])
-                {
-                    return mods[i];
-                }
-            }
-
-            return null;
+            return pages[page].Key;
         }
 
         public static void NextPage()
         {
             CurrentPage++;
-            if (CurrentPage > MaxPage)
+            if (CurrentPage > GetMaxPage())
             {
                 CurrentPage = 0;
             }
@@ -142,13 +154,103 @@ namespace InternalModBot
             CurrentPage--;
             if (CurrentPage < 0)
             {
-                CurrentPage = MaxPage;
+                CurrentPage = GetMaxPage();
             }
         }
 
         public static int GetMaxPage()
         {
-            return MaxPage;
+            var pages = GenerateModPages();
+            return pages.Count;
+        }
+
+        
+        /// <summary>
+        /// Called from FromIsUpgradeCurrentlyVisible and if this returns false the upgrade will not be displayed
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static bool IsUpgradeVisible(UpgradeType type, int level)
+        {
+            if (!IsModdedUpgradeType(type))
+            {
+                if (CurrentPage == 0) // on the normal page the normal upgrades should always display
+                    return true;
+
+                bool state = ForceUpgradeVisible(type, level); // checks if the upgrade should be active acording to ForceUpgradeVisible
+                return state;
+            }
+
+            if (CurrentPage == 0) // on the normal page no modded upgrades should be displayed
+                return false;
+
+            var modPages = GenerateModPages();
+            if (modPages.Count == 0)
+                return true;
+
+            if ((CurrentPage - 1) < 0 || (CurrentPage - 1) >= modPages.Count) // -1 since when the current frame is at 1 the modPages index should be 0
+                return true;
+
+
+
+            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeTypeAndLevel(type, level));
+        }
+        
+        /// <summary>
+        /// If this returns true the upgrade will be displayed no matter what
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public static bool ForceUpgradeVisible(UpgradeType type, int level)
+        {
+            if (IsModdedUpgradeType(type))
+                return false;
+
+            var modPages = GenerateModPages();
+            if (modPages.Count == 0)
+                return false;
+
+            if ((CurrentPage - 1) < 0 || (CurrentPage - 1) >= modPages.Count) // -1 since when the current frame is at 1 the modPages index should be 0
+                return false;
+
+            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeTypeAndLevel(type, level));
+        }
+
+        public static bool IsModdedUpgradeType(UpgradeType UpgradeType)
+        {
+            return !ModLibrary.ModTools.EnumTools.GetValues<UpgradeType>().Contains(UpgradeType);
+        }
+
+        /// <summary>
+        /// returns true if AllModdedUpgradePages contains the passed mod
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns></returns>
+        private static bool ContainsMod(Mod mod)
+        {
+            foreach(var valuePair in AllModdedUpgradePages)
+            {
+                if (valuePair.Key == mod)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static bool ModAlreadyHasUpgrade(Mod mod, ModdedUpgradeTypeAndLevel upgrade)
+        {
+            foreach (var valuePair in AllModdedUpgradePages)
+            {
+                if (valuePair.Key != mod)
+                    continue;
+
+                return valuePair.Value.Contains(upgrade);
+
+            }
+
+            return false;
         }
     }
 }

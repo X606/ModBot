@@ -42,6 +42,16 @@ namespace ModLibrary
             int? result = OptionsSaver.LoadInt(mod, name);
             return result;
         }
+        public static bool IsModEnabled(this Mod mod)
+        {
+            bool? isModDeactivated = ModsManager.Instance.IsModDeactivated(mod);
+
+            if (!isModDeactivated.HasValue)
+                throw new Exception("Mod \"" + mod.GetModName() + "\" with unique id \"" + mod.GetUniqueID() + "\" not found in modsmanager list of mods!");
+
+            return !isModDeactivated.Value;
+
+        }
 
     }
 }

@@ -10,25 +10,23 @@ namespace ModLibrary
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
             upgradeManager.UpgradeDescriptions.Add(upgrade);
-
-            int page = UpgradePagesManager.GetPageForMod(mod);
-            UpgradePagesManager.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
+            
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 
             if (upgrade.Requirement != null)
             {
-                RecursivelyAddRequirments(upgrade, page);
+                RecursivelyAddRequirments(upgrade, mod);
             }
-        }
-
-        public static void AddUpgradeToModPage(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
-        {
-            int page = UpgradePagesManager.GetPageForMod(mod);
-            UpgradePagesManager.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
         }
 
         public static void AddUpgradeAlreadyInGame(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
-            UpgradePagesManager.AddUpgradeAlreadyInGame(upgrade.UpgradeType, upgrade.Level, mod);
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
+
+            if (upgrade.Requirement != null)
+            {
+                RecursivelyAddRequirments(upgrade, mod);
+            }
         }
 
         public static bool IsModdedUpgradeType(this UpgradeDescription upgrade)
@@ -46,20 +44,20 @@ namespace ModLibrary
             return UpgradeCosts.GetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
         }
 
-        private static void RecursivelyAddRequirments(UpgradeDescription upgrade, int page)
+        private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade == null)
                 return;
 
-            UpgradePagesManager.AddUpgradePage(upgrade.UpgradeType, upgrade.Level, page);
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 
 
             if (upgrade.Requirement2 != null)
             {
-                RecursivelyAddRequirments(upgrade.Requirement2, page);
+                RecursivelyAddRequirments(upgrade.Requirement2, mod);
             }
 
-            RecursivelyAddRequirments(upgrade.Requirement, page);
+            RecursivelyAddRequirments(upgrade.Requirement, mod);
         }
     }
 }

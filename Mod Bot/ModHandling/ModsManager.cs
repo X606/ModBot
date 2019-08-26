@@ -154,7 +154,8 @@ namespace InternalModBot
                     break;
                 }
             }
-
+            CustomUpgradeManager.Instance.NextClicked();
+            UpgradePagesManager.RemoveModdedUpgradesFor(mod);
             mod.OnModDeactivated();
         }
         public void EnableMod(Mod mod)

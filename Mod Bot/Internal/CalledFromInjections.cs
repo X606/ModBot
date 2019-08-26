@@ -54,18 +54,28 @@ namespace InternalModBot
         }
         public static bool FromIsUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
-            if (!UpgradePagesManager.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesManager.CurrentPage))
+            if (!UpgradePagesManager.IsUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
             {
                 return false;
             }
+            if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
+            {
+                return true;
+            }
+
             return (GameModeManager.ShowsStoryBlockedUpgrades() || (!UpgradeManager.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.UsesMultiplayerUpgrades() || upgrade.IsAvailableInMultiplayer) && (!GameModeManager.IsBattleRoyale() || !upgrade.IsDisabledInBattleRoyale) && upgrade.IsUpgradeVisible && upgrade.IsCompatibleWithCharacter(CharacterTracker.Instance.GetPlayer());
         }
         public static bool FromIsRepairUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
-            if (!UpgradePagesManager.GetUpgradePages(upgrade.UpgradeType, upgrade.Level).Contains(UpgradePagesManager.CurrentPage))
+            if (!UpgradePagesManager.IsUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
             {
                 return false;
             }
+            if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
+            {
+                return true;
+            }
+
             if (!upgrade.IsUpgradeVisible)
             {
                 return false;

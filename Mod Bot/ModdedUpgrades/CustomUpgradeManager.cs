@@ -46,7 +46,7 @@ namespace ModLibrary
         {
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
 
-            Mod mod = UpgradePagesManager.GetModForPage(UpgradePagesManager.CurrentPage);
+            Mod mod = UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage);
 
             if (mod != null)
             {
