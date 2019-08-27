@@ -1,0 +1,643 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ModLibrary</name>
+    </assembly>
+    <members>
+        <member name="F:ModLibrary.Accessor.InstanceType">
+            <summary>
+            The <see cref="T:System.Type"/> that defines the members that can be accessed
+            </summary>
+        </member>
+        <member name="F:ModLibrary.Accessor.Instance">
+            <summary>
+            The instance of the <see cref="T:System.Type"/> to get members from
+            </summary>
+        </member>
+        <member name="F:ModLibrary.Accessor.Flags">
+            <summary>
+            The <see cref="T:System.Reflection.BindingFlags"/> used to access members
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Accessor.#ctor(System.Type,System.Object)">
+            <summary>
+            Defines a new instance of the <see cref="T:ModLibrary.Accessor"/> class
+            </summary>
+            <param name="_type">The declaring <see cref="T:System.Type"/> that defines the members that should be accessed</param>
+            <param name="_instance">The instance of the given <see cref="T:System.Type"/> to get members from</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.CallPrivateMethod(System.String,System.Object[])">
+            <summary>
+            Calls a private method in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <param name="methodName">The name of the method to call, case-sensitive</param>
+            <param name="args">The arguments to pass to the method, <see langword="null"/> for no arguments</param>
+            <returns>The return value of the method</returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.CallPrivateMethod``1(System.String,System.Object[])">
+            <summary>
+            Calls a private method in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <typeparam name="ReturnType">The <see cref="T:System.Type"/> to cast the method's return value to</typeparam>
+            <param name="methodName">The name of the method to call, case-sensitive</param>
+            <param name="args">The arguments to pass to the method, <see langword="null"/> for no arguments</param>
+            <returns>The return value of the method casted to <typeparamref name="ReturnType"/></returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateField(System.String,System.Object)">
+            <summary>
+            Sets a private field in the <see cref="T:System.Type"/> and instance specified in the constructor to a specified value
+            </summary>
+            <param name="fieldName">The name of the field to set, case-sensitive</param>
+            <param name="value">The value to set the field to</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateField``1(System.String,``0)">
+            <summary>
+            Sets a private field in the <see cref="T:System.Type"/> and instance specified in the constructor to a specified value
+            </summary>
+            <typeparam name="FieldType">The <see cref="T:System.Type"/> of the field</typeparam>
+            <param name="fieldName">The name of the field to set, case-sensitive</param>
+            <param name="value">The value to set the field to</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateField(System.String)">
+            <summary>
+            Gets a private field's value in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <param name="fieldName">The name of the field to get, case-sensitive</param>
+            <returns>The value of the field</returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateField``1(System.String)">
+            <summary>
+            Gets a private field's value in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <typeparam name="FieldType">The <see cref="T:System.Type"/> of the field</typeparam>
+            <param name="fieldName">The name of the field to get, case-sensitive</param>
+            <returns>The value of the field casted to <typeparamref name="FieldType"/></returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateProperty(System.String,System.Object)">
+            <summary>
+            Sets a private property in the <see cref="T:System.Type"/> and instance specified in the constructor to a specified value
+            </summary>
+            <param name="propertyName">The name of the property, case-sensitive</param>
+            <param name="value">The value to set the property to</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateProperty``1(System.String,``0)">
+            <summary>
+            Sets a private property in the <see cref="T:System.Type"/> and instance specified in the constructor to a specified value
+            </summary>
+            <typeparam name="PropertyType">The <see cref="T:System.Type"/> of the property</typeparam>
+            <param name="propertyName">The name of the property, case-sensitive</param>
+            <param name="value">The value to set the property to</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateProperty(System.String)">
+            <summary>
+            Gets a private property's value in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <param name="propertyName">The name of the property to get the value of, case-sensitive</param>
+            <returns>The value of the proerty</returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateProperty``1(System.String)">
+            <summary>
+            Gets a private property's value in the <see cref="T:System.Type"/> and instance specified in the constructor
+            </summary>
+            <typeparam name="PropertyType">The <see cref="T:System.Type"/> of the property</typeparam>
+            <param name="propertyName">The name of the property to get the value of, case-sensitive</param>
+            <returns>The value of the proerty casted to <typeparamref name="PropertyType"/></returns>
+        </member>
+        <member name="M:ModLibrary.Accessor.CallPrivateMethod(System.Type,System.String,System.Object,System.Object[])">
+            <summary>
+            Calls a method even if its private
+            </summary>
+            <param name="type">The type that the method is in. (Get this by typing "<see langword="typeof"/>(Class)" where "Class" is the <see langword="class"/> where the method you want to run is located).</param>
+            <param name="methodName">The name of the method, case sensitive.</param>
+            <param name="instance">The object that the method is attached to.</param>
+            <param name="args">The arguments you want to pass in, if left empty no arguments will be called. Defined like this: <see langword="new object"/>[] { arg1, arg2, arg3 } </param>
+        </member>
+        <member name="M:ModLibrary.Accessor.CallPrivateMethod``2(System.String,``0,System.Object[])">
+            <summary>
+            Calls a method even if its private and returns its return value.
+            </summary>
+            <typeparam name="InstanceType">The type of the class the method is in.</typeparam>
+            <typeparam name="ReturnType">The return type of the method.</typeparam>
+            <param name="methodName">The name of the method.</param>
+            <param name="instance">The instance of the class you want to call the method in.</param>
+            <param name="args">The arguments to pass to the method.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.CallPrivateMethod``1(System.String,``0,System.Object[])">
+            <summary>
+            Calls a method even if its private but does not return its return value. (Use only for methods that have no return value or you dont need it)
+            </summary>
+            <typeparam name="InstanceType">The type of the class the method is in.</typeparam>
+            <param name="methodName">The name of the method.</param>
+            <param name="instance">The instance of the class you want to call the method in.</param>
+            <param name="args">The arguments to pass to the method.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateField(System.Type,System.String,System.Object,System.Object)">
+            <summary>
+            Sets field value even if its private.
+            </summary>
+            <param name="type">The type that the field is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
+            <param name="fieldName">The name of the field.</param>
+            <param name="instance">The object that the field is attached to.</param>
+            <param name="value">The value that the field should be set to.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateField``2(System.String,``0,``1)">
+            <summary>
+            Sets field value even if its private.
+            </summary>
+            <typeparam name="InstanceType">The type of the class the field is in.</typeparam>
+            <typeparam name="FieldType">The type of the field.</typeparam>
+            <param name="fieldName">The name of the field.</param>
+            <param name="instance">The instance of the class the field is in.</param>
+            <param name="value">The value to set the field to</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateField(System.Type,System.String,System.Object)">
+            <summary>
+            Gets field value even if its private.
+            </summary>
+            <param name="type">The type that the field is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
+            <param name="name">The name of the field.</param>
+            <param name="instance">The object that the field is attached to.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateField``2(System.String,``0)">
+            <summary>
+            Gets field value even if its private.
+            </summary>
+            <typeparam name="InstanceType">The type of the class the field is in.</typeparam>
+            <typeparam name="FieldType">The type of the field.</typeparam>
+            <param name="fieldName">The name of the field.</param>
+            <param name="instance">The instance the field is in.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateProperty(System.Type,System.String,System.Object,System.Object)">
+            <summary>
+            Sets property value even if its private.
+            </summary>
+            <param name="type">The type that the property is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
+            <param name="name">The name of the Property.</param>
+            <param name="instance">The object that the property is attached to.</param>
+            <param name="value">The value the property should be set to.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.SetPrivateProperty``2(System.String,``0,``1)">
+            <summary>
+            Sets property value even if its private.
+            </summary>
+            <typeparam name="InstanceType">The type of the class the property is in.</typeparam>
+            <typeparam name="PropertyType">The type of the property.</typeparam>
+            <param name="propertryName">The name of the property.</param>
+            <param name="instance">The instance the property is in.</param>
+            <param name="value">The value to set the property to.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateProperty(System.Type,System.String,System.Object)">
+            <summary>
+            Sets property value even if its private.
+            </summary>
+            <param name="type">The type that the property is in. (Get this by typing "typeof(Class)" where Class is the class where the mathod you want to run is located).</param>
+            <param name="propertyName">The name of the Property.</param>
+            <param name="instance">The object that the property is attached to.</param>
+        </member>
+        <member name="M:ModLibrary.Accessor.GetPrivateProperty``2(System.String,``0)">
+            <summary>
+            Sets property value even if its private.
+            </summary>
+            <typeparam name="InstanceType">The type of the clas the property is in.</typeparam>
+            <typeparam name="PropertyType">The type of the property.</typeparam>
+            <param name="propertyName">The name of the property.</param>
+            <param name="instance">The instance the property is in.</param>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetModsFolderDirectory">
+            <returns>The full directory to the mods folder</returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile(System.String,System.String)">
+            <summary>
+            Gets a <see cref="T:UnityEngine.GameObject"/> from an asset bundle
+            </summary>
+            <param name="assetBundleName">The name of the asset bundle file (Must be located in the 'mods' folder for this method)</param>
+            <param name="objectName">The name of the object you want to get from the asset bundle</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile(System.String,System.String,System.String)">
+            <summary>
+            Gets a <see cref="T:UnityEngine.GameObject"/> from an asset bundle
+            </summary>
+            <param name="assetBundleName">The name of the asset bundle file</param>
+            <param name="objectName">The name of the object you want to get from the asset bundle</param>
+            <param name="customPath">The custom path of the asset bundle, starts from the 'Clone Drone in the Danger Zone' folder</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String)">
+            <summary>
+            Gets an Object of type <typeparamref name="T"/> from an asset bundle
+            </summary>
+            <typeparam name="T">The type of the object</typeparam>
+            <param name="assetBundleName">The name of the asset bundle file</param>
+            <param name="objectName">The name of the object you want to get from the asset bundle</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String,System.String)">
+            <summary>
+            Gets an Object of type <typeparamref name="T"/> from an assetbundle
+            </summary>
+            <typeparam name="T">The type of the object in the assetbundle</typeparam>
+            <param name="assetBundleName">The name of the assetbundle file</param>
+            <param name="objectName">The name of the object you want to get from the assetbundle</param>
+            <param name="customPath">The custom path where the assetbundle is located (goes from <seealso cref="P:UnityEngine.Application.dataPath"/>)</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.TrySaveFileToMods(System.String,System.String)">
+            <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
+            <param name="url">The URL to download the file from.</param>
+            <param name="name">The name of the file that will be created.</param>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.SaveFileToMods(System.String,System.String)">
+            <param name="url">The URL to download the file from.</param>
+            <param name="name">The name of the file that will be created.</param>
+        </member>
+        <member name="T:ModLibrary.debug">
+            <summary>
+            Allows you to write to the in-game console (open it with F1).
+            </summary>
+        </member>
+        <member name="M:ModLibrary.debug.Log(System.String)">
+            <summary>
+            Writes to the in-game console.
+            </summary>
+            <param name="_log">What to write</param>
+        </member>
+        <member name="M:ModLibrary.debug.Log(System.Object)">
+            <summary>
+            Writes the given object's ToString() value to the console
+            </summary>
+            <param name="_log">The object to write</param>
+        </member>
+        <member name="M:ModLibrary.debug.Log(System.String,UnityEngine.Color)">
+            <summary>
+            Writes to the in-game console, in color.
+            </summary>
+            <param name="_log">What to write</param>
+            <param name="_color">The color to write in</param>
+        </member>
+        <member name="M:ModLibrary.debug.PrintAll``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Passes every instance of the given list's 'ToString()' value to 'debug.Log()'
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ModLibrary.debug.PrintAll``1(System.Collections.Generic.IEnumerable{``0},UnityEngine.Color)">
+            <summary>
+            Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:ModLibrary.FirebaseAccessor.ReadFromFirebaseURL(System.String)">
+            <summary>
+            Gets a value from firebase (Do not use in main thread) (Removes all '"' characters)
+            </summary>
+            <param name="URLToRead"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.UpgradeExtensionMethods.AddUpgrade(UpgradeManager,UpgradeDescription,ModLibrary.Mod)">
+            <summary>
+            Adds a upgrade to the page of the specified mod, if the upgrade is a modded upgrade it will also be added to the upgradeManager.UpgradeDescriptions list
+            </summary>
+            <param name="upgradeManager"></param>
+            <param name="upgrade"></param>
+            <param name="mod"></param>
+        </member>
+        <member name="T:ModLibrary.Mod">
+            <summary>
+            Base class for all mods, contains virtual implementations for diffrent events in the game.
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Mod.OnFirstPersonMoverSpawned(FirstPersonMover)">
+            <summary>
+            Called in <see cref="T:Character"/>.Start()
+            </summary>
+            <param name="firstPersonMover">The <see cref="T:FirstPersonMover"/> that was spawned</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnFirstPersonMoverUpdate(FirstPersonMover)">
+            <summary>
+            Called in <see cref="T:Character"/>.Update()
+            </summary>
+            <param name="firstPersonMover">The <see cref="T:FirstPersonMover"/> that was updated</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnCharacterSpawned(Character)">
+            <summary>
+            Called in <see cref="T:Character"/>.Start()
+            </summary>
+            <param name="character">The <see cref="T:Character"/> that was spawned</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnCharacterUpdate(Character)">
+            <summary>
+            Called in <see cref="T:Character"/>.Update()
+            </summary>
+            <param name="character">The <see cref="T:Character"/> that was updated</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnModRefreshed">
+            <summary>
+            Called in <see cref="!:ModsManager"/>.ReloadMods()
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Mod.OnLevelEditorStarted">
+            <summary>
+            Called when the level editor is started.
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Mod.OnCommandRan(System.String)">
+            <summary>
+            Called when you run a command in the console (mostly for debuging).
+            </summary>
+            <param name="command">The text entered into the command field of the console</param>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModName">
+            <summary>
+            Returns the name of the mod, override to set the name of you mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetUniqueID">
+            <summary>
+            Returns a unique ID for every mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModDescription">
+            <summary>
+            Returns the description of the mod, override to change the description of your mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModImageURL">
+            <summary>
+            Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.OnUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
+            <summary>
+            Called at the start <see cref="T:FirstPersonMover"/>.RefreshUpgrades()
+            </summary>
+            <param name="owner"></param>
+            <param name="upgrades">The <see cref="T:UpgradeCollection"/> on the <see cref="T:FirstPersonMover"/> object</param>
+        </member>
+        <member name="M:ModLibrary.Mod.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
+            <summary>
+            Called at the end of <see cref="T:FirstPersonMover"/>.RefreshUpgrades()
+            </summary>
+            <param name="owner"></param>
+            <param name="upgrades">The <see cref="T:UpgradeCollection"/> on the <see cref="T:FirstPersonMover"/> object</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileCreated(Projectile)">
+            <summary>
+            Called when a <see cref="T:Projectile"/> is created
+            </summary>
+            <param name="projectile">6</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileStartedMoving(Projectile)">
+            <summary>
+            Called when a <see cref="T:Projectile"/> starts moving
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileUpdate(Projectile)">
+            <summary>
+            Called every frame since the given <see cref="T:Projectile"/> was created
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileDestroyed(Projectile)">
+            <summary>
+            Called when the given <see cref="T:Projectile"/> is destroyed in any way
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileCreated(ArrowProjectile)">
+            <summary>
+            Called when an <see cref="T:ArrowProjectile"/> is created
+            </summary>
+            <param name="arrow">The created <see cref="T:ArrowProjectile"/></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileStartedMoving(ArrowProjectile)">
+            <summary>
+            Called when an <see cref="T:ArrowProjectile"/> starts moving
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileUpdate(ArrowProjectile)">
+            <summary>
+            Called every frame since the given <see cref="T:ArrowProjectile"/> was created
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileDestroyed(ArrowProjectile)">
+            <summary>
+            Called when the given <see cref="T:ArrowProjectile"/> is destroyed in any way
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileCreated(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called when a <see cref="T:BulletProjectile"/> is created
+            </summary>
+            <param name="bullet">The created <see cref="T:BulletProjectile"/></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileStartedMoving(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called when a <see cref="T:BulletProjectile"/> starts moving
+            </summary>
+            <param name="bullet"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileUpdate(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called every frame since the given <see cref="T:BulletProjectile"/> was created
+            </summary>
+            <param name="bullet"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileDestroyed(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called when the given <see cref="T:BulletProjectile"/> is destroyed in any way
+            </summary>
+            <param name="bullet"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType)">
+            <summary>
+            Called when a <see cref="T:Character"/> is killed
+            </summary>
+            <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
+            <param name="killerCharacter">The killer <see cref="T:Character"/></param>
+            <param name="damageSourceType">The cause of death</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnModDeactivated">
+            <summary>
+            Called when the mod is deactivated from the mods menu
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Mod.ImplementsSettingsWindow">
+            <summary>
+            If this returns true it will active the mod settings button in the mods window for this mod.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.CreateSettingsWindow(ModLibrary.ModOptionsWindowBuilder)">
+            <summary>
+            Gets called when the user clicks on the mod settings button in the mods window. Allows you to create a neat little UI that saves the values for you. Get the values set by this with SettingsManager.Instance.GetModdedSettingsBoolValue, GetModdedSettingsStringValue, GetModdedSettingsIntValue and GetModdedSettingsFloatValue
+            </summary>
+            <param name="builder">The object used to build the UI.</param>
+        </member>
+        <member name="M:ModLibrary.Mod.ShouldCursorBeEnabled">
+            <summary>
+            If this returns true the cursor will get enabled
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GlobalUpdate">
+            <summary>
+            Called every frame
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModTools.EnumTools.GetName``1(``0)">
+            <summary>
+            Gets the name of the given value in an <see langword="enum"/>
+            <para>Exceptions:</para>
+            <para/><see cref="T:System.ArgumentNullException"/>: If value is <see langword="null"/> or <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            <para/><see cref="T:System.ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
+            </summary>
+            <typeparam name="T">The type of <see langword="enum"/> to get the name from</typeparam>
+            <param name="value">The value assigned to an entry in the specified <see langword="enum"/></param>
+            <returns>The name of the entry with the value <paramref name="value"/></returns>
+        </member>
+        <member name="M:ModLibrary.ModTools.EnumTools.GetNames``1">
+            <summary>
+            Gets all names in the given <see langword="enum"/>
+            <para>Exceptions:</para>
+            <para/><see cref="T:System.ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            <para/><see cref="T:System.ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModTools.EnumTools.GetValues``1">
+            <summary>
+            Gets all values of an <see langword="enum"/>
+            <para>Exceptions:</para>
+            <para/><see cref="T:System.ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+            <para/><see cref="T:System.ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModTools.Vector3Tools.GetDirection(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            Gets a direction from one <see cref="T:UnityEngine.Vector3"/> to another
+            </summary>
+            <param name="StartPoint">The position to go from</param>
+            <param name="Destination">The position to go to</param>
+            <returns>The direction between the two points</returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.GetAllEnemyCharactersInRange(CharacterTracker,UnityEngine.Vector3,System.Single)">
+            <summary>
+            Gets all enemy <see cref="T:Character"/>s in the specified range
+            </summary>
+            <param name="characterTracker"></param>
+            <param name="origin">The point to calculate the distance from</param>
+            <param name="radius">The radius to get all enemy <see cref="T:Character"/>s within</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.GetAllCharactersInRange(CharacterTracker,UnityEngine.Vector3,System.Single)">
+            <summary>
+            Gets all <see cref="T:Character"/>s in the specified range
+            </summary>
+            <param name="characterTracker"></param>
+            <param name="origin">The point to calculate the distance from</param>
+            <param name="radius">The radius to get all <see cref="T:Character"/>s within</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.IsUpgradeTypeAndLevelUsed(UpgradeManager,UpgradeType,System.Int32)">
+            <summary>
+            Checks whether or not the given <see cref="T:UpgradeType"/> and level is already in use by an <see cref="T:UpgradeDescription"/>
+            </summary>
+            <param name="ID">The ID of the upgrade</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.GiveUpgrade(FirstPersonMover,UpgradeDescription)">
+            <summary>
+            Gives the specified <see cref="T:UpgradeDescription"/> to a <see cref="T:FirstPersonMover"/>
+            </summary>
+            <param name="Upgrade"></param>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.GetBodyPart(Character,MechBodyPartType)">
+            <summary>
+            Gets the first found <see cref="T:MechBodyPart"/> of the given <see cref="T:MechBodyPartType"/> (Returns <see langword="null"/> if the given <see cref="T:Character"/> does not have the specified <see cref="T:MechBodyPartType"/>)
+            </summary>
+            <param name="character"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.GetBodyParts(Character,MechBodyPartType)">
+            <summary>
+            Gets all <see cref="T:MechBodyPart"/>s of the given <see cref="T:MechBodyPartType"/>
+            </summary>
+            <param name="character"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModToolExtensionMethods.Randomize``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Randomizes the order of elements in the given <see cref="T:System.Collections.Generic.IEnumerable`1"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="enumerable"></param>
+            <returns>The randomized collection</returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(ModLibrary.Mod)">
+            <summary>
+            If mod already has a page does nothing
+            </summary>
+            <param name=""></param>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.GenerateModPages">
+            <summary>
+            Generates a list where each instance in the list is a diffrent page, and each list in that list is all the moddedUpgradeTypeAndLevels for that page (only includes active mods)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(ModLibrary.Mod)">
+            <summary>
+            Generates a list of pages, and then gets the page index of the mod passed
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeTypeAndLevel}}},ModLibrary.Mod)">
+            <summary>
+            Gets the page index of the mod passed from the pages list passed
+            </summary>
+            <param name="pages"></param>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.IsUpgradeVisible(UpgradeType,System.Int32)">
+            <summary>
+            Called from FromIsUpgradeCurrentlyVisible and if this returns false the upgrade will not be displayed
+            </summary>
+            <param name="type"></param>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.ForceUpgradeVisible(UpgradeType,System.Int32)">
+            <summary>
+            If this returns true the upgrade will be displayed no matter what
+            </summary>
+            <param name="type"></param>
+            <param name="level"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.ContainsMod(ModLibrary.Mod)">
+            <summary>
+            returns true if AllModdedUpgradePages contains the passed mod
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
