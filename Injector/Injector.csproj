@@ -49,7 +49,7 @@
       <HintPath>..\UsedDlls\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ModLibrary">
-      <HintPath>..\Mod Bot\bin\Debug\ModLibrary.dll</HintPath>
+      <HintPath>..\UsedDlls\ModLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\UsedDlls\Mono.Cecil.dll</HintPath>
