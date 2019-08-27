@@ -8,13 +8,22 @@ using UnityEngine;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used to load assets from assetbundles (normally placed in the mods folder)
+    /// </summary>
     public static class AssetLoader
     {
         private static Dictionary<string, UnityEngine.Object> cachedObjects = new Dictionary<string, UnityEngine.Object>();
 
+        /// <summary>
+        /// The name of the folder where mods are stored
+        /// </summary>
         public const string ModsFolderName = "mods/";
 
-        /// <returns>The full directory to the mods folder</returns>
+        /// <summary>
+        /// Returns the full directory to the mods folder directory where we expect most of the assetbundles to be
+        /// </summary>
+        /// <returns></returns>
         public static string GetModsFolderDirectory()
         {
             return GetSubdomain(Application.dataPath) + ModsFolderName;
@@ -159,11 +168,19 @@ namespace ModLibrary
             return result;
         }
 
+        /// <summary>
+        /// Clears the cache for loaded assets
+        /// </summary>
         public static void ClearCache()
         {
             cachedObjects.Clear();
         }
 
+        /// <summary>
+        /// Gets the directory 1 step under a spesific directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string GetSubdomain(string path)
         {
             string[] subDomainsArray = path.Split(new char[] { '/' });

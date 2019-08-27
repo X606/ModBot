@@ -7,9 +7,12 @@ using UnityEngine.UI;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used by Mod-Bot to handle the custom upgrade pages. (Does things like handle the next and back buttons)
+    /// </summary>
     public class CustomUpgradeManager : Singleton<CustomUpgradeManager>
     {
-        public void Start()
+        private void Start()
         {
             GameObject button = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
             CreateButtonAt(button, new Vector3(-300, -200, 0), "Back", BackClicked);
@@ -30,12 +33,18 @@ namespace ModLibrary
             spawedButton.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = text;
         }
         
+        /// <summary>
+        /// Should be called when the back button is clicked on the UI.
+        /// </summary>
         public void BackClicked()
         {
             UpgradePagesManager.PreviusPage();
             OnBackOrNextClicked();
         }
 
+        /// <summary>
+        /// Should be called when the next button is clicked on the UI.
+        /// </summary>
         public void NextClicked()
         {
             UpgradePagesManager.NextPage();

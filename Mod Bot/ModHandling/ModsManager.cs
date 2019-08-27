@@ -8,9 +8,12 @@ using UnityEngine;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Handles mod loading, disableing and enableing.
+    /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
-        public void Start()
+        private void Start()
         {
             ReloadMods();
 
@@ -25,12 +28,14 @@ namespace InternalModBot
 
         }
 
+        /// <summary>
+        /// Clears all loaded mods and loads them again
+        /// </summary>
         public void ReloadMods()
         {
             UpgradeCosts.Reset();
             UpgradePagesManager.Reset();
             ClearCache();
-            AssetLoader.ClearCache();
             mods.Clear();
             PassOnMod = new PassOnToModsManager();
             string[] files = Directory.GetFiles(AssetLoader.GetSubdomain(Application.dataPath) + "mods/");
@@ -51,7 +56,7 @@ namespace InternalModBot
             }
         }
 
-        public void Update()
+        private void Update()
         {
             if (Input.GetKey(KeyCode.F3) && Input.GetKeyDown(KeyCode.R))
             {
@@ -60,6 +65,10 @@ namespace InternalModBot
             PassOnMod.GlobalUpdate();
         }
 
+        /// <summary>
+        /// Loads a mod from only the bytes making up the assembly
+        /// </summary>
+        /// <param name="assemblyData"></param>
         public void LoadMod(byte[] assemblyData)
         {
             try
@@ -110,16 +119,24 @@ namespace InternalModBot
             
         }
 
+        /// <summary>
+        /// Clears all mod cache (including the AssetLoader cache)
+        /// </summary>
         public static void ClearCache()
         {
+            AssetLoader.ClearCache();
             if (Caching.ClearCache())
             {
-                Singleton<InternalModBot.Logger>.Instance.Log("Successfully cleared the cache.");
+                Logger.Instance.Log("Successfully cleared the cache.");
                 return;
             }
-            Singleton<InternalModBot.Logger>.Instance.Log("Cache is being used.");
+            Logger.Instance.Log("Cache is being used.");
         }
 
+        /// <summary>
+        /// Gets a list of all mods that should currently be active
+        /// </summary>
+        /// <returns></returns>
         public List<Mod> GetAllLoadedMods()
         {
             List<Mod> mods = new List<Mod>();
@@ -132,6 +149,10 @@ namespace InternalModBot
             }
             return mods;
         }
+        /// <summary>
+        /// Gets a list of all mods currently loaded, even mods that arent currently active
+        /// </summary>
+        /// <returns></returns>
         public List<Mod> GetAllMods()
         {
             List<Mod> mods = new List<Mod>();
@@ -142,6 +163,10 @@ namespace InternalModBot
             return mods;
         }
 
+        /// <summary>
+        /// Disables a mod, this will call on OnModDeactivated on the mod, and Mod-Bot will not make any more calls to the mod until activated again 
+        /// </summary>
+        /// <param name="mod"></param>
         public void DisableMod(Mod mod)
         {
             PlayerPrefs.SetInt(mod.GetUniqueID(), 0);
@@ -158,6 +183,10 @@ namespace InternalModBot
             UpgradePagesManager.RemoveModdedUpgradesFor(mod);
             mod.OnModDeactivated();
         }
+        /// <summary>
+        /// Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
+        /// </summary>
+        /// <param name="mod"></param>
         public void EnableMod(Mod mod)
         {
             PlayerPrefs.SetInt(mod.GetUniqueID(), 1);
@@ -173,6 +202,11 @@ namespace InternalModBot
 
             mod.OnModRefreshed();
         }
+        /// <summary>
+        /// Checks if a mod is deactivated
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns></returns>
         public bool? IsModDeactivated(Mod mod)
         {
             for (int i = 0; i < mods.Count; i++)
@@ -187,18 +221,33 @@ namespace InternalModBot
         }
         private List<LoadedMod> mods = new List<LoadedMod>();
 
+        /// <summary>
+        /// A very special mod that will call all mods the most functions passed to it on all mods
+        /// </summary>
         public Mod PassOnMod = new PassOnToModsManager();
     }
 
+    /// <summary>
+    /// Class used to keep both a mod and bool that decides if the mod is active in same list
+    /// </summary>
     public class LoadedMod
     {
+        /// <summary>
+        /// Sets the mod field to the passed mod, and will not deactivate the mod
+        /// </summary>
+        /// <param name="_mod"></param>
         public LoadedMod(Mod _mod)
         {
             Mod = _mod;
             IsDeactivated = false;
         }
-
+        /// <summary>
+        /// The Mod object the class is holding
+        /// </summary>
         public Mod Mod;
+        /// <summary>
+        /// Decides if the mod is deactivated.
+        /// </summary>
         public bool IsDeactivated;
     }
 }

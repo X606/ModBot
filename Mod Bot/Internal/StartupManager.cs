@@ -5,8 +5,14 @@ using UnityEngine;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Used to start Mod-Bot when the game starts
+    /// </summary>
     public static class StartupManager
     {
+        /// <summary>
+        /// Sets up mod-bot in general, called on game start
+        /// </summary>
         public static void OnStartUp()
         {
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory()))

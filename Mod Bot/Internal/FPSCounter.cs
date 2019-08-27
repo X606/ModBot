@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Controls the FPS counter in the corner of the screen
+    /// </summary>
     public class FPSCount : MonoBehaviour
     {
 
@@ -17,7 +20,9 @@ namespace InternalModBot
             
             counter.text = ((int)FPS).ToString() + " FPS";
         }
-
+        /// <summary>
+        /// The text that displays the numbers
+        /// </summary>
         public Text counter;
     }
 }

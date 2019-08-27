@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Used by Mod-Bot to check if you have the latest version of mod-bot
+    /// </summary>
     public class UpdateChecker : MonoBehaviour
     {
         private void Start()

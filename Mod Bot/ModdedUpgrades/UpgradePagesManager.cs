@@ -5,12 +5,21 @@ using ModLibrary;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Used by Mod-Bot to keep track of what modded upgrades are on what page
+    /// </summary>
     public static class UpgradePagesManager
     {
         private static List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> AllModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>>(); // first string is uniqe ids of mods returned by mod.GetUniqeId(), the second value are all of the upgrades on that page (this also includes disabled mods)
         
+        /// <summary>
+        /// The page that is currently selected
+        /// </summary>
         public static int CurrentPage = 0;
         
+        /// <summary>
+        /// Removes all modded upgrades and sets the current page to 0
+        /// </summary>
         public static void Reset()
         {
             for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
@@ -26,6 +35,10 @@ namespace InternalModBot
             CurrentPage = 0;
         }
 
+        /// <summary>
+        /// Removes all of the upgrades in UpgradeManager.Instance.UpgradeDescriptions placed there by a mod 
+        /// </summary>
+        /// <param name="mod"></param>
         public static void RemoveModdedUpgradesFor(Mod mod)
         {
             foreach (var item in AllModdedUpgradePages)
@@ -48,6 +61,12 @@ namespace InternalModBot
             }
         }
 
+        /// <summary>
+        /// Adds a upgrade to keep track of, this upgrade will be displayed on the page of the mod passed
+        /// </summary>
+        /// <param name="upgradeType"></param>
+        /// <param name="level"></param>
+        /// <param name="mod"></param>
         public static void AddUpgrade(UpgradeType upgradeType, int level, Mod mod)
         {
             if (ModAlreadyHasUpgrade(mod, new ModdedUpgradeTypeAndLevel(upgradeType, level))) // we dont want to add the same upgrade twice to the same page
@@ -60,12 +79,12 @@ namespace InternalModBot
             pages[page].Value.Add(new ModdedUpgradeTypeAndLevel(upgradeType, level));
 
         }
-        
+
 
         /// <summary>
         /// If mod already has a page does nothing
         /// </summary>
-        /// <param name=""></param>
+        /// <param mod=""></param>
         public static void TryAddPage(Mod mod)
         {
             if (ContainsMod(mod))
@@ -124,6 +143,11 @@ namespace InternalModBot
             throw new Exception("Didnt find page for mod \"" + mod.GetModName() + "\" with the unique id: \"" + mod.GetUniqueID() + "\""); 
         }
 
+        /// <summary>
+        /// Tries to get the mod responsable for a page, note that this generates a new pages list and uses that
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public static Mod TryGetModForPage(int page)
         {
             page -= 1;
@@ -132,6 +156,12 @@ namespace InternalModBot
             Mod mod = TryGetModForPage(pages, page);
             return mod;
         }
+        /// <summary>
+        /// Tries to get the mod responsable for a page
+        /// </summary>
+        /// <param name="pages"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages, int page)
         {
             if (page < 0 || page >= pages.Count)
@@ -140,6 +170,9 @@ namespace InternalModBot
             return pages[page].Key;
         }
 
+        /// <summary>
+        /// Moves the page to the next avaliable page
+        /// </summary>
         public static void NextPage()
         {
             CurrentPage++;
@@ -148,7 +181,9 @@ namespace InternalModBot
                 CurrentPage = 0;
             }
         }
-
+        /// <summary>
+        /// Moves the page to the previus avaliable page
+        /// </summary>
         public static void PreviusPage()
         {
             CurrentPage--;
@@ -158,6 +193,10 @@ namespace InternalModBot
             }
         }
 
+        /// <summary>
+        /// Gets the amount of pages avaliable
+        /// </summary>
+        /// <returns></returns>
         public static int GetMaxPage()
         {
             var pages = GenerateModPages();
@@ -218,6 +257,11 @@ namespace InternalModBot
             return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeTypeAndLevel(type, level));
         }
 
+        /// <summary>
+        /// Checks if the upgrade is a modded upgrade
+        /// </summary>
+        /// <param name="UpgradeType"></param>
+        /// <returns></returns>
         public static bool IsModdedUpgradeType(UpgradeType UpgradeType)
         {
             return !ModLibrary.ModTools.EnumTools.GetValues<UpgradeType>().Contains(UpgradeType);

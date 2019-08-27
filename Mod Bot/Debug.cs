@@ -20,7 +20,7 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
-        public const int CONSOLE_CHARACTER_LIMIT = 1000;
+        private const int CONSOLE_CHARACTER_LIMIT = 1000;
 
         /// <summary>
         /// Writes to the in-game console.
@@ -54,6 +54,12 @@ namespace ModLibrary
         public static void Log(string _log, Color _color)
         {
             InternalModBot.Logger.Instance.Log(_log, _color);
+
+            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            {
+                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
+                InternalModBot.Logger.Instance.LogText.text = newText;
+            }
         }
 
         /// <summary>
@@ -74,6 +80,7 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
+        /// <param name="color"></param>
         public static void PrintAll<T>(IEnumerable<T> list, Color color)
         {
             foreach (T item in list)
@@ -82,8 +89,11 @@ namespace ModLibrary
             }
         }
 
-        // TODO : Rewrite this function
-        public static void PrintAllChildren(Transform obj)
+        /// <summary>
+        /// Opens a notepad window with info about the passed transfrom like components and children
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void PrintAllChildren(Transform obj) // TODO : Rewrite this function
         {
             outputText = "";
             WriteToFile(obj.ToString());
@@ -131,6 +141,9 @@ namespace ModLibrary
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Used by Mod-Bot as the low level level of the debug console system
+    /// </summary>
     public class Logger : Singleton<Logger>
     {
         private void Update()
@@ -160,12 +173,20 @@ namespace InternalModBot
             animator.Play("showConsole");
         }
 
+        /// <summary>
+        /// Writes the specified text to the console
+        /// </summary>
+        /// <param name="whatToLog"></param>
         public void Log(string whatToLog)
         {
             Text logText = LogText;
             logText.text = logText.text + "\n" + whatToLog;
         }
-
+        /// <summary>
+        /// Writes the specified text to the console, now in color!
+        /// </summary>
+        /// <param name="whatToLog"></param>
+        /// <param name="color"></param>
         public void Log(string whatToLog, Color color)
         {
             string text = ColorUtility.ToHtmlStringRGB(color);
@@ -173,6 +194,10 @@ namespace InternalModBot
             logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
         }
 
+        /// <summary>
+        /// Gets called when the user types in a command into the input field and presses enter
+        /// </summary>
+        /// <param name="command"></param>
         public void RunCommand(string command)
         {
             try
@@ -186,13 +211,21 @@ namespace InternalModBot
                 Log(ex.StackTrace, Color.red);
             }
         }
-
+        /// <summary>
+        /// The animator containing the animations for opening and closeing the console
+        /// </summary>
         public Animator animator;
-
+        /// <summary>
+        /// The complete text of the console
+        /// </summary>
         public Text LogText;
-
+        /// <summary>
+        /// The GameObject thats holding the console
+        /// </summary>
         public GameObject Container;
-
+        /// <summary>
+        /// the input field that commands are typed into
+        /// </summary>
         public InputField input;
     }
 }

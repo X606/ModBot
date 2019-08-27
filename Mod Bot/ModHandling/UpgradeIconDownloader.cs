@@ -10,6 +10,9 @@ using UnityEngine;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Used by Mod-Bot to download icons and put them in the upgrade icons when done
+    /// </summary>
     public class UpgradeIconDownloader : Singleton<UpgradeIconDownloader>
     {
         private List<DoubleValueHolder<UpgradeTypeAndLevel, Sprite>> DownloadedIcons = new List<DoubleValueHolder<UpgradeTypeAndLevel, Sprite>>();
@@ -35,6 +38,11 @@ namespace InternalModBot
             UpdateAllUpgradeIcons(); // Set all custom upgrade icons
         }
 
+        /// <summary>
+        /// Adds the passed url onto the queue, and puts it unto the image of the passed upgradeDescription
+        /// </summary>
+        /// <param name="upgradeDescription"></param>
+        /// <param name="url"></param>
         public void AddUpgradeIcon(UpgradeDescription upgradeDescription, string url)
         {
             // Display warning message if two icons for the same upgrade and level are registered

@@ -7,6 +7,9 @@ namespace ModLibrary
 {
     namespace ModTools
     {
+        /// <summary>
+        /// General tools to help you when working with enums!
+        /// </summary>
         public static class EnumTools
         {
             /// <summary>
@@ -50,6 +53,9 @@ namespace ModLibrary
             }
         }
 
+        /// <summary>
+        /// General tools to help you when working with Vector3s
+        /// </summary>
         public static class Vector3Tools
         {
             /// <summary>
@@ -65,6 +71,9 @@ namespace ModLibrary
         }
     }
 
+    /// <summary>
+    /// Extention methods implemented by mod tools, don't call these directly.
+    /// </summary>
     public static class ModToolExtensionMethods
     {
         /// <summary>
@@ -114,7 +123,9 @@ namespace ModLibrary
         /// <summary>
         /// Checks whether or not the given <see cref="UpgradeType"/> and level is already in use by an <see cref="UpgradeDescription"/>
         /// </summary>
+        /// <param name="upgradeManager"></param>
         /// <param name="ID">The ID of the upgrade</param>
+        /// <param name="Level"></param>
         /// <returns></returns>
         public static bool IsUpgradeTypeAndLevelUsed(this UpgradeManager upgradeManager, UpgradeType ID, int Level = 1)
         {
@@ -123,7 +134,8 @@ namespace ModLibrary
         /// <summary>
         /// Gives the specified <see cref="UpgradeDescription"/> to a <see cref="FirstPersonMover"/>
         /// </summary>
-        /// <param name="Upgrade"></param>
+        /// <param name="firstPersonMover">The player to target</param>
+        /// <param name="Upgrade">the upgrade to give to the player</param>
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeDescription Upgrade)
         {
             if (firstPersonMover == null)

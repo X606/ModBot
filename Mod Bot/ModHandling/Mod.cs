@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using ModLibrary;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -180,6 +181,9 @@ namespace ModLibrary
         /// Called when a <see cref="BulletProjectile"/> is created
         /// </summary>
         /// <param name="bullet">The created <see cref="BulletProjectile"/></param>
+        /// <param name="isFlameBreath"></param>
+        /// <param name="isMortarShrapnel"></param>
+        /// <param name="isRepairFire"></param>
         public virtual void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -188,6 +192,9 @@ namespace ModLibrary
         /// Called when a <see cref="BulletProjectile"/> starts moving
         /// </summary>
         /// <param name="bullet"></param>
+        /// <param name="isRepairFire"></param>
+        /// <param name="isMortarShrapnel"></param>
+        /// <param name="isFlameBreath"></param>
         public virtual void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -196,6 +203,9 @@ namespace ModLibrary
         /// Called every frame since the given <see cref="BulletProjectile"/> was created
         /// </summary>
         /// <param name="bullet"></param>
+        /// <param name="isFlameBreath"></param>
+        /// <param name="isMortarShrapnel"></param>
+        /// <param name="isRepairFire"></param>
         public virtual void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -204,6 +214,9 @@ namespace ModLibrary
         /// Called when the given <see cref="BulletProjectile"/> is destroyed in any way
         /// </summary>
         /// <param name="bullet"></param>
+        /// <param name="isRepairFire"></param>
+        /// <param name="isMortarShrapnel"></param>
+        /// <param name="isFlameBreath"></param>
         public virtual void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }

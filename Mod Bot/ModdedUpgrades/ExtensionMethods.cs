@@ -5,6 +5,9 @@ using InternalModBot;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used to implement Extension methods for upgrades, dont call these directly from this class.
+    /// </summary>
     public static class UpgradeExtensionMethods
     {
         /// <summary>
@@ -29,16 +32,32 @@ namespace ModLibrary
         }
 
 
+        /// <summary>
+        /// Checks if the upgrade is a modded upgrade
+        /// </summary>
+        /// <param name="upgrade"></param>
+        /// <returns></returns>
         public static bool IsModdedUpgradeType(this UpgradeDescription upgrade)
         {
             return !ModTools.EnumTools.GetValues<UpgradeType>().Contains(upgrade.UpgradeType);
         }
 
-        public static void SetSingleplayerCost(this UpgradeDescription upgradeDescription, int cost)
+        /// <summary>
+        /// Sets the cost of the upgrade in singleplayer (Endless, Twichmode, storymode ect)
+        /// </summary>
+        /// <param name="upgradeDescription"></param>
+        /// <param name="cost"></param>
+        /// <param name="mod"></param>
+        public static void SetSingleplayerCost(this UpgradeDescription upgradeDescription, int cost, Mod mod)
         {
-            UpgradeCosts.SetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level, cost);
+            UpgradeCosts.SetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level, cost, mod);
         }
 
+        /// <summary>
+        /// Gets the cost set by SetSingleplayerCost
+        /// </summary>
+        /// <param name="upgradeDescription"></param>
+        /// <returns></returns>
         public static int GetSinglePlayerCost(this UpgradeDescription upgradeDescription)
         {
             return UpgradeCosts.GetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);

@@ -8,6 +8,11 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+    //TODO: Rewrite this whole class
+
+    /// <summary>
+    /// Used by mod-bot to control the twich mode part of mod-bot
+    /// </summary>
     public class ModSuggestingManager : Singleton<ModSuggestingManager>
     {
         private void Start()
@@ -32,7 +37,9 @@ namespace InternalModBot
                 IsInSuggestMode = false;
             }
         }
-
+        /// <summary>
+        /// Opens the suggested mod menu
+        /// </summary>
         public void SuggestMod()
         {
             Ani.Play("suggestMod");
@@ -41,6 +48,9 @@ namespace InternalModBot
             IsInSuggestMode = true;
         }
 
+        /// <summary>
+        /// Accepts the current suggestion
+        /// </summary>
         public void Accept()
         {
             TwitchManager.Instance.EnqueueChatMessage("Mod accepted. :)");
@@ -63,7 +73,9 @@ namespace InternalModBot
                 Singleton<Logger>.Instance.Log(e.Message, Color.red);
             }
         }
-
+        /// <summary>
+        /// Denies the current mod suggestion
+        /// </summary>
         public void Deny()
         {
             TwitchManager.Instance.EnqueueChatMessage("Mod denied. :(");
@@ -71,6 +83,10 @@ namespace InternalModBot
             IsInSuggestMode = false;
         }
 
+        /// <summary>
+        /// Gets called whenever anyone in twich chat sends a message
+        /// </summary>
+        /// <param name="msg"></param>
         public void OnTwitchChatMessage(ref TwitchChatMessage msg)
         {
             string lowerText = msg.chatMessagePlainText;
@@ -97,7 +113,7 @@ namespace InternalModBot
 
         }
 
-        public bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool isOk = true;
             if (sslPolicyErrors != SslPolicyErrors.None)
@@ -119,20 +135,26 @@ namespace InternalModBot
             }
             return isOk;
         }
-
+        /// <summary>
+        /// The animator that plays the slide in and out animation
+        /// </summary>
         public Animator Ani;
-
-        public bool IsInSuggestMode;
-
+        /// <summary>
+        /// Text text display where the name of the mod to download should be
+        /// </summary>
         public Text ModName;
-
+        /// <summary>
+        /// The text display where the name of the creator of the mod should be displayed
+        /// </summary>
         public Text CreatorName;
 
-        public string Url;
+        private bool IsInSuggestMode;
 
-        public string Suggester;
+        private string Url;
 
-        public string ModNameString;
+        private string Suggester;
+
+        private string ModNameString;
     }
 
 }

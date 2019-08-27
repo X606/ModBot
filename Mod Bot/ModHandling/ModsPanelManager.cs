@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+
+    /// <summary>
+    /// Used by Mod-Bot to control most of the UI in Mod-Bot, this has control over the mod buttons and mods window. Note that all functions and fields on this class are private since they more or less work on their own.
+    /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
         private void Start()
