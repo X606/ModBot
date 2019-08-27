@@ -53,7 +53,28 @@ namespace InternalModBot
             pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
 
             ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
-            
+
+            Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
+            image.gameObject.SetActive(true);
+            image.GetComponent<Image>().sprite = AssetLoader.GetObjectFromFile<Sprite>("modswindow", "modbot", "Clone Drone in the Danger Zone_Data/");
+            image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1);
+            image.GetComponent<RectTransform>().position -= new Vector3(7, 0);
+
+            Transform spawnedObject = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
+            spawnedObject.gameObject.SetActive(true);
+            spawnedObject.GetComponent<Text>().text = "X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>";
+            spawnedObject.GetComponent<RectTransform>().position -= new Vector3(7, -2);
+
+            Transform upperTitle = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
+            upperTitle.gameObject.SetActive(true);
+            upperTitle.GetComponent<Text>().text = "Mod-Bot by:";
+            upperTitle.GetComponent<Text>().color = new Color32(255, 165, 0, 255);
+            upperTitle.GetComponent<RectTransform>().position -= new Vector3(7, -2);
+
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1).GetComponent<RectTransform>().position += new Vector3(7, 0);
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3).GetComponent<RectTransform>().position += new Vector3(7, 0);
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4).GetComponent<RectTransform>().position += new Vector3(7, 0);
+
             ReloadModItems();
         }
 
