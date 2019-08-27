@@ -58,6 +58,7 @@ namespace ModLibrary
             slider.minValue = min;
             slider.maxValue = max;
             slider.value = defaultValue;
+            Text numberDisplay = moddedObject.GetObject<Text>(2);
 
             float? loadedFloat = OptionsSaver.LoadFloat(OwnerMod, name);
             if (loadedFloat.HasValue)
@@ -65,7 +66,8 @@ namespace ModLibrary
                 slider.value = loadedFloat.Value;
             }
             onChange?.Invoke(slider.value);
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveFloat(OwnerMod, name, value); onChange?.Invoke(value); });
+            numberDisplay.text = slider.value.ToString();
+            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveFloat(OwnerMod, name, value); onChange?.Invoke(value); numberDisplay.text = value.ToString(); });
         }
         /// <summary>
         /// Adds a slider to the options window that can only be whole numbers
@@ -86,6 +88,7 @@ namespace ModLibrary
             slider.maxValue = max;
             slider.wholeNumbers = true;
             slider.value = defaultValue;
+            Text numberDisplay = moddedObject.GetObject<Text>(2);
 
             int? loadedInt = OptionsSaver.LoadInt(OwnerMod, name);
             if (loadedInt.HasValue)
@@ -93,7 +96,8 @@ namespace ModLibrary
                 slider.value = loadedInt.Value;
             }
             onChange?.Invoke((int)slider.value);
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveInt(OwnerMod, name, (int)value); onChange?.Invoke((int)value); });
+            numberDisplay.text = slider.value.ToString();
+            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveInt(OwnerMod, name, (int)value); onChange?.Invoke((int)value); numberDisplay.text = value.ToString(); });
         }
         /// <summary>
         /// Adds a checkbox to the mods window
