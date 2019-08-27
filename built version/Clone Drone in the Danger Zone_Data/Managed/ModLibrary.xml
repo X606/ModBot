@@ -1096,19 +1096,9 @@
             Used by mod-bot to control the twich mode part of mod-bot
             </summary>
         </member>
-        <member name="M:InternalModBot.ModSuggestingManager.SuggestMod">
+        <member name="M:InternalModBot.ModSuggestingManager.ShowNextInSuggestedModsQueue">
             <summary>
-            Opens the suggested mod menu
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModSuggestingManager.Accept">
-            <summary>
-            Accepts the current suggestion
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModSuggestingManager.Deny">
-            <summary>
-            Denies the current mod suggestion
+            Shows the next in the suggested mods queue
             </summary>
         </member>
         <member name="M:InternalModBot.ModSuggestingManager.OnTwitchChatMessage(TwitchChatter.TwitchChatMessage@)">
@@ -1117,7 +1107,7 @@
             </summary>
             <param name="msg"></param>
         </member>
-        <member name="F:InternalModBot.ModSuggestingManager.Ani">
+        <member name="F:InternalModBot.ModSuggestingManager.ModSuggestionAnimator">
             <summary>
             The animator that plays the slide in and out animation
             </summary>

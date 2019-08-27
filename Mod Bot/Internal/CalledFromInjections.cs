@@ -18,7 +18,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public static void FromRefreshUpgradesStart(FirstPersonMover owner)
         {
-            if (owner.gameObject == null || !owner.IsAlive() || owner.GetCharacterModel() == null)
+            if (owner == null || owner.gameObject == null || !owner.IsAlive() || owner.GetCharacterModel() == null)
             {
                 return;
             }

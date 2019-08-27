@@ -60,6 +60,7 @@ namespace InternalModBot
         private void OpenModsMenu()
         {
             ModsWindow.SetActive(true);
+            ReloadModItems();
         }
 
         private void CloseModsMenu()

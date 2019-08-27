@@ -5,11 +5,12 @@ using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
 using UnityEngine;
 using UnityEngine.UI;
+using ModLibrary;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace InternalModBot
 {
-    //TODO: Rewrite this whole class
-
     /// <summary>
     /// Used by mod-bot to control the twich mode part of mod-bot
     /// </summary>
@@ -18,69 +19,64 @@ namespace InternalModBot
         private void Start()
         {
             TwitchChatClient.singleton.AddChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
         }
 
-        private void Update()
+        /// <summary>
+        /// Shows the next in the suggested mods queue
+        /// </summary>
+        public void ShowNextInSuggestedModsQueue()
         {
-            if (!IsInSuggestMode)
-            {
+            if (ModSuggestionQueue.Count == 0)
                 return;
-            }
-            if (Input.GetKeyDown(KeyCode.PageUp))
-            {
-                Accept();
-                IsInSuggestMode = false;
-            }
-            if (Input.GetKeyDown(KeyCode.PageDown))
-            {
-                Deny();
-                IsInSuggestMode = false;
-            }
-        }
-        /// <summary>
-        /// Opens the suggested mod menu
-        /// </summary>
-        public void SuggestMod()
-        {
-            Ani.Play("suggestMod");
-            CreatorName.text = "Suggested By: " + Suggester;
-            ModName.text = ModNameString;
-            IsInSuggestMode = true;
-        }
 
-        /// <summary>
-        /// Accepts the current suggestion
-        /// </summary>
-        public void Accept()
-        {
-            TwitchManager.Instance.EnqueueChatMessage("Mod accepted. :)");
-            Ani.Play("AcceptMod");
-            IsInSuggestMode = false;
-            try
-            {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
-                byte[] response = new WebClient
-                {
-                    Headers =
-                {
-                    "User-Agent: Other"
-                }
-                }.DownloadData(Url);
-                Singleton<ModsManager>.Instance.LoadMod(response);
-            }
-            catch (Exception e)
-            {
-                Singleton<Logger>.Instance.Log(e.Message, Color.red);
-            }
+            ModSuggestion nextSuggestedMod = ModSuggestionQueue.Dequeue();
+            StartCoroutine(SuggestMod(nextSuggestedMod));
         }
-        /// <summary>
-        /// Denies the current mod suggestion
-        /// </summary>
-        public void Deny()
+        
+
+        private IEnumerator SuggestMod(ModSuggestion mod)
         {
-            TwitchManager.Instance.EnqueueChatMessage("Mod denied. :(");
-            Ani.Play("DenyMod");
-            IsInSuggestMode = false;
+            ModName.text = mod.ModName;
+            CreatorName.text = "Suggested by: " + mod.SuggesterName;
+            ModSuggestionAnimator.Play("suggestMod");
+            KeyCode clickedKey;
+            while (true)
+            {
+                if (Input.GetKeyDown(KeyCode.PageDown))
+                {
+                    clickedKey = KeyCode.PageDown;
+                    break;
+                }
+                if (Input.GetKeyDown(KeyCode.PageUp))
+                {
+                    clickedKey = KeyCode.PageUp;
+                    break;
+                }
+                yield return 0;
+            }
+
+            if (clickedKey == KeyCode.PageUp)
+            {
+                ModSuggestionAnimator.Play("AcceptMod");
+                TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
+                byte[] data = DownloadData(mod.Url);
+                try
+                {
+                    ModsManager.Instance.LoadMod(data);
+                }
+                catch (Exception e)
+                {
+                    debug.Log("Suggested mod failed to load: \"" + e.ToString() + "\"", Color.red);
+                }
+            }
+            if (clickedKey == KeyCode.PageDown)
+            {
+                ModSuggestionAnimator.Play("DenyMod");
+                TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
+            }
+
+
         }
 
         /// <summary>
@@ -99,10 +95,12 @@ namespace InternalModBot
             {
                 if (subCommands.Length >= 3)
                 {
-                    Url = subCommands[2];
-                    Suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
-                    ModNameString = subCommands[1];
-                    SuggestMod();
+                    string url = subCommands[2];
+                    string suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
+                    string modName = subCommands[1];
+                    ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
+                    ModSuggestionQueue.Enqueue(suggestedMod);
+
                     TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
                 }
                 else
@@ -111,6 +109,27 @@ namespace InternalModBot
                 }
             }
 
+        }
+
+        private byte[] DownloadData(string url)
+        {
+            try
+            {
+                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
+                byte[] response = new WebClient
+                {
+                    Headers =
+                {
+                    "User-Agent: Other"
+                }
+                }.DownloadData(url);
+                return response;
+            }
+            catch (Exception e)
+            {
+                debug.Log(e.Message, Color.red);
+            }
+            return null;
         }
 
         private bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -138,7 +157,7 @@ namespace InternalModBot
         /// <summary>
         /// The animator that plays the slide in and out animation
         /// </summary>
-        public Animator Ani;
+        public Animator ModSuggestionAnimator;
         /// <summary>
         /// Text text display where the name of the mod to download should be
         /// </summary>
@@ -148,13 +167,22 @@ namespace InternalModBot
         /// </summary>
         public Text CreatorName;
 
-        private bool IsInSuggestMode;
+        private Queue<ModSuggestion> ModSuggestionQueue = new Queue<ModSuggestion>();
 
-        private string Url;
+        private struct ModSuggestion
+        {
+            public ModSuggestion(string modName, string suggesterName, string url)
+            {
+                ModName = modName;
+                SuggesterName = suggesterName;
+                Url = url;
+            }
 
-        private string Suggester;
+            public string ModName;
+            public string SuggesterName;
+            public string Url;
 
-        private string ModNameString;
+        }
     }
 
 }

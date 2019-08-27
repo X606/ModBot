@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace InternalModBot
 {
@@ -45,12 +46,18 @@ namespace InternalModBot
 
             Logger logger = spawnedUI.AddComponent<Logger>();
             logger.animator = spawedUIModdedObject.GetObject<Animator>(0);
-            logger.LogText = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(1);
+            logger.LogText = spawedUIModdedObject.GetObject<Text>(1);
             logger.Container = spawedUIModdedObject.GetObject<GameObject>(2);
-            logger.input = spawedUIModdedObject.GetObject<UnityEngine.UI.InputField>(3);
+            logger.input = spawedUIModdedObject.GetObject<InputField>(3);
 
             FPSCount fps = spawnedUI.AddComponent<FPSCount>();
             fps.counter = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(4);
+
+            ModSuggestingManager modSuggestingManager = spawnedUI.AddComponent<ModSuggestingManager>();
+            ModdedObject modSuggestingManagerInfo = spawedUIModdedObject.GetObject<ModdedObject>(5);
+            modSuggestingManager.ModName = modSuggestingManagerInfo.GetObject<Text>(0);
+            modSuggestingManager.CreatorName = modSuggestingManagerInfo.GetObject<Text>(1);
+            modSuggestingManager.ModSuggestionAnimator = modSuggestingManagerInfo.GetObject<Animator>(2);
         }
     }
 }
