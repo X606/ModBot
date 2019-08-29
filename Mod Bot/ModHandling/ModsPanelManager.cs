@@ -16,6 +16,8 @@ namespace InternalModBot
 
             GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(6).gameObject; // Gets the lower buttons container
 
+            titleScreenContainer.GetComponent<VerticalLayoutGroup>().spacing *= 0.3f;
+
             // Copy the options button to make into the Mods button
             GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(0).gameObject; // Gets the options button (we copy it and replace its organs and face)
             GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);

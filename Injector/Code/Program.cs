@@ -15,7 +15,7 @@ class Program
     public const string InjectionClassesNamespaceName = "InjectionClasses.";
     static void Main(string[] args)
     {
-        string path = "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed";//Environment.CurrentDirectory;
+        string path = Environment.CurrentDirectory;
         string installPath = path + "/Assembly-CSharp.dll";
         string sourceToCopyClassesFrom = path + "/InjectionClasses.dll";
         string modlibrary = path + "/ModLibrary.dll";
@@ -48,6 +48,8 @@ class Program
         List<string> typesNames = new List<string>();
         for (int i = 0; i < types.Count; i++)
         {
+            if (types[i].Namespace != "InjectionClasses")
+                continue;
             typesFullNames.Add(types[i].FullName);
             typesNames.Add(types[i].Name);
         }
@@ -65,7 +67,7 @@ class Program
         Console.WriteLine("Injection new methods...");
 
         Console.WriteLine("Injecting GetPositionForAIToAimAt into MortarWalker");
-        Injector.AddMethodToClass(installPath, "MortarWalker", "GetPositionForAIToAimAt", modLibraryPath, "InternalModBot.FixSpidertrons", "GetPositionForAIToAimAt");
+        Injector.AddMethodToClass(installPath, "MortarWalker", "GetPositionForAIToAimAt", sourceToCopyClassesFrom, "FixSpidertrons", "GetPositionForAIToAimAt");
         Console.WriteLine("Injected!");
 
         Console.WriteLine("Done injecting new methods!");
@@ -97,8 +99,8 @@ class Program
         onCharacterDeathInjection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         onCharacterDeathInjection.Write();
 
-        Console.WriteLine("Injecting into UpgradeDescription.GetSkillPointCost...");
-        Injection upgradeDescriptionInjection = Injector.AddCallToMethodInMethod(installPath, "UpgradeDescription", "GetSkillPointCost", modLibraryPath, "InternalModBot.CalledFromInjections", "FromGetSkillPointCost");
+        Console.WriteLine("Injecting into UpgradeDescription.GetAngleOffset...");
+        Injection upgradeDescriptionInjection = Injector.AddCallToMethodInMethod(installPath, "UpgradeDescription", "GetAngleOffset", modLibraryPath, "InternalModBot.CalledFromInjections", "FromGetAngleOffset");
         upgradeDescriptionInjection.AddInstructionUnderSafe(OpCodes.Ret);
         upgradeDescriptionInjection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         upgradeDescriptionInjection.Write();

@@ -33,7 +33,6 @@ namespace InternalModBot
         /// </summary>
         public void ReloadMods()
         {
-            UpgradeCosts.Reset();
             UpgradePagesManager.Reset();
             ClearCache();
             mods.Clear();

@@ -437,20 +437,13 @@
             <param name="upgrade"></param>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.UpgradeExtensionMethods.SetSingleplayerCost(UpgradeDescription,System.Int32,ModLibrary.Mod)">
+        <member name="M:ModLibrary.UpgradeExtensionMethods.SetAngleOffset(UpgradeDescription,System.Single,ModLibrary.Mod)">
             <summary>
-            Sets the cost of the upgrade in singleplayer (Endless, Twichmode, storymode ect)
+            Sets angle offset of this upgrade on the mod page
             </summary>
             <param name="upgradeDescription"></param>
-            <param name="cost"></param>
+            <param name="angle"></param>
             <param name="mod"></param>
-        </member>
-        <member name="M:ModLibrary.UpgradeExtensionMethods.GetSinglePlayerCost(UpgradeDescription)">
-            <summary>
-            Gets the cost set by SetSingleplayerCost
-            </summary>
-            <param name="upgradeDescription"></param>
-            <returns></returns>
         </member>
         <member name="T:ModLibrary.Mod">
             <summary>
@@ -886,7 +879,7 @@
             <param name="killer"></param>
             <param name="damageSource"></param>
         </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromGetSkillPointCost(UpgradeDescription)">
+        <member name="M:InternalModBot.CalledFromInjections.FromGetAngleOffset(UpgradeDescription)">
             <summary>
             Called from GetSkillPointCost and the number this returns will be the cost of the upgrade
             </summary>
@@ -896,13 +889,6 @@
         <member name="M:InternalModBot.CalledFromInjections.FromIsUpgradeCurrentlyVisible(UpgradeDescription)">
             <summary>
             Called from IsUpgradeCurrentlyVisible and if this returns false the upgrade will not be displayed, and if it returns true it will
-            </summary>
-            <param name="upgrade"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromIsRepairUpgradeCurrentlyVisible(UpgradeDescription)">
-            <summary>
-            Called from the repair upgrade, does the same thing as FromIsUpgradeCurrentlyVisible but since repair overrides IsUpgradeCurrentlyVisible we need another function to handle it
             </summary>
             <param name="upgrade"></param>
             <returns></returns>
@@ -942,17 +928,6 @@
             Gets called from character GetPositionForAIToAimAt and is used to fix people aiming at spidertrons
             </summary>
             <param name="me"></param>
-            <returns></returns>
-        </member>
-        <member name="T:InternalModBot.FixSpidertrons">
-            <summary>
-            used to fix spidertrons
-            </summary>
-        </member>
-        <member name="M:InternalModBot.FixSpidertrons.GetPositionForAIToAimAt">
-            <summary>
-            used by the injector to copy the msil from and paste it into the real function
-            </summary>
             <returns></returns>
         </member>
         <member name="T:InternalModBot.Logger">
@@ -1122,19 +1097,31 @@
             The text display where the name of the creator of the mod should be displayed
             </summary>
         </member>
-        <member name="T:InternalModBot.ModdedUpgradeTypeAndLevel">
+        <member name="T:InternalModBot.ModdedUpgradeRepresenter">
             <summary>
             Used to represent  both a UpgradeType and a level (int) in Mod-Bot (the == and != operators compare the contents and not the references)
             </summary>
         </member>
-        <member name="M:InternalModBot.ModdedUpgradeTypeAndLevel.#ctor(UpgradeType,System.Int32)">
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.#ctor(UpgradeType,System.Int32)">
             <summary>
             Constructor, will put the inputs supplied into the values that the object holds
             </summary>
             <param name="type"></param>
             <param name="level"></param>
         </member>
-        <member name="M:InternalModBot.ModdedUpgradeTypeAndLevel.op_Equality(InternalModBot.ModdedUpgradeTypeAndLevel,InternalModBot.ModdedUpgradeTypeAndLevel)">
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.SetCustomAngle(System.Single)">
+            <summary>
+            Sets the custom angle of this upgrade
+            </summary>
+            <param name="newAngle"></param>
+        </member>
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.GetAngleOffset">
+            <summary>
+            Gets the custom angle set to this upgrade, if no custom angle is set it will return the defualt angle
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.op_Equality(InternalModBot.ModdedUpgradeRepresenter,InternalModBot.ModdedUpgradeRepresenter)">
             <summary>
             compares a and b
             </summary>
@@ -1142,7 +1129,7 @@
             <param name="b"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.ModdedUpgradeTypeAndLevel.op_Inequality(InternalModBot.ModdedUpgradeTypeAndLevel,InternalModBot.ModdedUpgradeTypeAndLevel)">
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.op_Inequality(InternalModBot.ModdedUpgradeRepresenter,InternalModBot.ModdedUpgradeRepresenter)">
             <summary>
             Compares a and b, but in inverse
             </summary>
@@ -1150,54 +1137,27 @@
             <param name="b"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.ModdedUpgradeTypeAndLevel.Equals(System.Object)">
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.Equals(System.Object)">
             <summary>
             Compares the input with the object.
             </summary>
             <param name="obj"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.ModdedUpgradeTypeAndLevel.GetHashCode">
+        <member name="M:InternalModBot.ModdedUpgradeRepresenter.GetHashCode">
             <summary>
             Gets the Hash Code for the current object
             </summary>
             <returns></returns>
         </member>
-        <member name="F:InternalModBot.ModdedUpgradeTypeAndLevel.UpgradeType">
+        <member name="F:InternalModBot.ModdedUpgradeRepresenter.UpgradeType">
             <summary>
             The UpgradeType the object holds.
             </summary>
         </member>
-        <member name="F:InternalModBot.ModdedUpgradeTypeAndLevel.Level">
+        <member name="F:InternalModBot.ModdedUpgradeRepresenter.Level">
             <summary>
             The level the object holds
-            </summary>
-        </member>
-        <member name="T:InternalModBot.UpgradeCosts">
-            <summary>
-            Used to manage the cost of upgrades in singleplayer since doborog doesnt have a built in system to do this.
-            </summary>
-        </member>
-        <member name="M:InternalModBot.UpgradeCosts.GetCostOfUpgrade(UpgradeType,System.Int32)">
-            <summary>
-            Gets the cost of the inputed upgrade type and level acording to the system.
-            </summary>
-            <param name="upgradeType"></param>
-            <param name="level"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.UpgradeCosts.SetCostOfUpgrade(UpgradeType,System.Int32,System.Int32,ModLibrary.Mod)">
-            <summary>
-            Sets the cost of the upgrade in the system
-            </summary>
-            <param name="upgradeType"></param>
-            <param name="level"></param>
-            <param name="newCost"></param>
-            <param name="mod">The mod you set this from</param>
-        </member>
-        <member name="M:InternalModBot.UpgradeCosts.Reset">
-            <summary>
-            Removes all set custom upgrade costs
             </summary>
         </member>
         <member name="T:InternalModBot.UpgradePagesManager">
@@ -1229,6 +1189,23 @@
             <param name="level"></param>
             <param name="mod"></param>
         </member>
+        <member name="M:InternalModBot.UpgradePagesManager.SetAngleOfModdedUpgrade(System.Single,UpgradeType,System.Int32,ModLibrary.Mod)">
+            <summary>
+            Sets the angle of a modded upgrade, this method will throw an exeption if the upgrade is not on the page of the mod
+            </summary>
+            <param name="angle"></param>
+            <param name="upgradeType"></param>
+            <param name="upgradeLevel"></param>
+            <param name="mod"></param>
+        </member>
+        <member name="M:InternalModBot.UpgradePagesManager.GetAngleOfUpgrade(UpgradeType,System.Int32)">
+            <summary>
+            Gets the angle offset of a upgrade on the current page, if the upgrade isnt in the modded list, returns the defualt angleOffset of that upgrade
+            </summary>
+            <param name="upgradeType"></param>
+            <param name="upgradeLevel"></param>
+            <returns></returns>
+        </member>
         <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(ModLibrary.Mod)">
             <summary>
             If mod already has a page does nothing
@@ -1248,7 +1225,7 @@
             <param name="mod"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeTypeAndLevel}}},ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},ModLibrary.Mod)">
             <summary>
             Gets the page index of the mod passed from the pages list passed
             </summary>
@@ -1263,7 +1240,7 @@
             <param name="page"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeTypeAndLevel}}},System.Int32)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.Int32)">
             <summary>
             Tries to get the mod responsable for a page
             </summary>

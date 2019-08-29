@@ -39,6 +39,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\UsedDlls\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="bolt">
+      <HintPath>..\UsedDlls\bolt.dll</HintPath>
+    </Reference>
+    <Reference Include="bolt.user">
+      <HintPath>..\UsedDlls\bolt.user.dll</HintPath>
+    </Reference>
+    <Reference Include="ModLibrary">
+      <HintPath>..\UsedDlls\ModLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.dll</HintPath>

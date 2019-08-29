@@ -68,17 +68,9 @@ namespace InternalModBot
         /// </summary>
         /// <param name="upgrade"></param>
         /// <returns></returns>
-        public static int FromGetSkillPointCost(UpgradeDescription upgrade)
+        public static float FromGetAngleOffset(UpgradeDescription upgrade)
         {
-            if (GameModeManager.UsesBattleRoyaleUpgradeCosts() && upgrade.SkillPointCostBattleRoyale > 0)
-            {
-                return upgrade.SkillPointCostBattleRoyale;
-            }
-            if (GameModeManager.UsesMultiplayerUpgrades())
-            {
-                return upgrade.SkillPointCostMultiplayer;
-            }
-            return UpgradeCosts.GetCostOfUpgrade(upgrade.UpgradeType, upgrade.Level);
+            return UpgradePagesManager.GetAngleOfUpgrade(upgrade.UpgradeType, upgrade.Level);
         }
         /// <summary>
         /// Called from IsUpgradeCurrentlyVisible and if this returns false the upgrade will not be displayed, and if it returns true it will
@@ -173,20 +165,6 @@ namespace InternalModBot
                 return me.transform.position;
             }
             return powerCrystals[0].transform.position;
-        }
-    }
-    /// <summary>
-    /// used to fix spidertrons
-    /// </summary>
-    public class FixSpidertrons : Character
-    {
-        /// <summary>
-        /// used by the injector to copy the msil from and paste it into the real function
-        /// </summary>
-        /// <returns></returns>
-        public override Vector3 GetPositionForAIToAimAt()
-        {
-            return CalledFromInjections.FromGetPositionForAIToAimAt(this);
         }
     }
 

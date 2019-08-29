@@ -10,7 +10,7 @@ namespace InternalModBot
     /// </summary>
     public static class UpgradePagesManager
     {
-        private static List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> AllModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>>(); // first string is uniqe ids of mods returned by mod.GetUniqeId(), the second value are all of the upgrades on that page (this also includes disabled mods)
+        private static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> AllModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>(); // first string is uniqe ids of mods returned by mod.GetUniqeId(), the second value are all of the upgrades on that page (this also includes disabled mods)
         
         /// <summary>
         /// The page that is currently selected
@@ -45,7 +45,7 @@ namespace InternalModBot
             {
                 if (item.Key == mod)
                 {
-                    foreach (ModdedUpgradeTypeAndLevel upgradeType in item.Value)
+                    foreach (ModdedUpgradeRepresenter upgradeType in item.Value)
                     {
                         for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
                         {
@@ -69,17 +69,72 @@ namespace InternalModBot
         /// <param name="mod"></param>
         public static void AddUpgrade(UpgradeType upgradeType, int level, Mod mod)
         {
-            if (ModAlreadyHasUpgrade(mod, new ModdedUpgradeTypeAndLevel(upgradeType, level))) // we dont want to add the same upgrade twice to the same page
+            if (ModAlreadyHasUpgrade(mod, new ModdedUpgradeRepresenter(upgradeType, level))) // we dont want to add the same upgrade twice to the same page
                 return;
 
 
             TryAddPage(mod);
             var pages = GenerateModPages();
             int page = GetPageForMod(pages, mod);
-            pages[page].Value.Add(new ModdedUpgradeTypeAndLevel(upgradeType, level));
+            pages[page].Value.Add(new ModdedUpgradeRepresenter(upgradeType, level));
 
         }
 
+        /// <summary>
+        /// Sets the angle of a modded upgrade, this method will throw an exeption if the upgrade is not on the page of the mod
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="upgradeType"></param>
+        /// <param name="upgradeLevel"></param>
+        /// <param name="mod"></param>
+        public static void SetAngleOfModdedUpgrade(float angle, UpgradeType upgradeType, int upgradeLevel, Mod mod)
+        {
+            foreach(var _mod in AllModdedUpgradePages)
+            {
+                if (_mod.Key != mod)
+                    continue;
+                foreach(var _upgrade in _mod.Value)
+                {
+                    if (_upgrade.UpgradeType != upgradeType || _upgrade.Level != upgradeLevel)
+                        continue;
+
+                    _upgrade.SetCustomAngle(angle);
+                    return;
+                }
+            }
+
+            throw new Exception("Cant find upgrade \"" + upgradeType.ToString() + "\" with level " + upgradeLevel + " in upgrades for mod with id: " + mod.GetUniqueID());
+        }
+
+        /// <summary>
+        /// Gets the angle offset of a upgrade on the current page, if the upgrade isnt in the modded list, returns the defualt angleOffset of that upgrade
+        /// </summary>
+        /// <param name="upgradeType"></param>
+        /// <param name="upgradeLevel"></param>
+        /// <returns></returns>
+        public static float GetAngleOfUpgrade(UpgradeType upgradeType, int upgradeLevel)
+        {
+            if (CurrentPage == 0) // if we are on the first page, only display the normal values
+            {
+                UpgradeDescription upgradeInUpgradeList1 = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
+                if (upgradeInUpgradeList1 == null)
+                    return 0;
+
+                return upgradeInUpgradeList1.AngleOffset;
+            }
+
+            var currentMod = GenerateModPages()[CurrentPage - 1];
+            foreach(var upgrade in currentMod.Value)
+            {
+                if (upgrade.UpgradeType != upgradeType || upgrade.Level != upgradeLevel)
+                    continue;
+
+                return upgrade.GetAngleOffset();
+            }
+
+            UpgradeDescription upgradeInUpgradeList2 = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
+            return upgradeInUpgradeList2.AngleOffset;
+        }
 
         /// <summary>
         /// If mod already has a page does nothing
@@ -90,17 +145,17 @@ namespace InternalModBot
             if (ContainsMod(mod))
                 return;
 
-            List<ModdedUpgradeTypeAndLevel> newList = new List<ModdedUpgradeTypeAndLevel>();
-            AllModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>(mod, newList));
+            List<ModdedUpgradeRepresenter> newList = new List<ModdedUpgradeRepresenter>();
+            AllModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, newList));
         }
 
         /// <summary>
         /// Generates a list where each instance in the list is a diffrent page, and each list in that list is all the moddedUpgradeTypeAndLevels for that page (only includes active mods)
         /// </summary>
         /// <returns></returns>
-        public static List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> GenerateModPages()
+        public static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> GenerateModPages()
         {
-            List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages = new List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>>();
+            List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>();
             foreach(var page in AllModdedUpgradePages)
             {
                 if (!page.Key.IsModEnabled())
@@ -130,7 +185,7 @@ namespace InternalModBot
         /// <param name="pages"></param>
         /// <param name="mod"></param>
         /// <returns></returns>
-        public static int GetPageForMod(List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages, Mod mod)
+        public static int GetPageForMod(List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages, Mod mod)
         {
             for (int i = 0; i < pages.Count; i++)
             {
@@ -162,7 +217,7 @@ namespace InternalModBot
         /// <param name="pages"></param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeTypeAndLevel>>> pages, int page)
+        public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages, int page)
         {
             if (page < 0 || page >= pages.Count)
                 return null;
@@ -233,7 +288,7 @@ namespace InternalModBot
 
 
 
-            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeTypeAndLevel(type, level));
+            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeRepresenter(type, level));
         }
         
         /// <summary>
@@ -254,7 +309,7 @@ namespace InternalModBot
             if ((CurrentPage - 1) < 0 || (CurrentPage - 1) >= modPages.Count) // -1 since when the current frame is at 1 the modPages index should be 0
                 return false;
 
-            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeTypeAndLevel(type, level));
+            return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeRepresenter(type, level));
         }
 
         /// <summary>
@@ -283,7 +338,7 @@ namespace InternalModBot
             return false;
         }
 
-        private static bool ModAlreadyHasUpgrade(Mod mod, ModdedUpgradeTypeAndLevel upgrade)
+        private static bool ModAlreadyHasUpgrade(Mod mod, ModdedUpgradeRepresenter upgrade)
         {
             foreach (var valuePair in AllModdedUpgradePages)
             {

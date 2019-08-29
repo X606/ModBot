@@ -143,7 +143,15 @@ public static class Injector
         TypeDefinition typeToWriteTo = writeModule.GetType(classToWriteTo);
         if (typeToWriteTo == null)
         {
+            copy.Module.Dispose();
             Console.WriteLine("Write: Could not find class \"" + classToWriteTo + "\"");
+            return;
+        }
+        if (typeToWriteTo.Methods.Where(a => a.Name == newMethodName).Count() >= 1)
+        {
+            copy.Module.Dispose();
+            writeModule.Dispose();
+            Console.WriteLine("Method \"" + newMethodName + "\" already exists, skipping!");
             return;
         }
 

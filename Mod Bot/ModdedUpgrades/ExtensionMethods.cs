@@ -43,24 +43,14 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Sets the cost of the upgrade in singleplayer (Endless, Twichmode, storymode ect)
+        /// Sets angle offset of this upgrade on the mod page
         /// </summary>
         /// <param name="upgradeDescription"></param>
-        /// <param name="cost"></param>
+        /// <param name="angle"></param>
         /// <param name="mod"></param>
-        public static void SetSingleplayerCost(this UpgradeDescription upgradeDescription, int cost, Mod mod)
+        public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
-            UpgradeCosts.SetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level, cost, mod);
-        }
-
-        /// <summary>
-        /// Gets the cost set by SetSingleplayerCost
-        /// </summary>
-        /// <param name="upgradeDescription"></param>
-        /// <returns></returns>
-        public static int GetSinglePlayerCost(this UpgradeDescription upgradeDescription)
-        {
-            return UpgradeCosts.GetCostOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
+            UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod);
         }
 
         private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
