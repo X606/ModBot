@@ -93,7 +93,8 @@ namespace InternalModBot
             {
                 if (_mod.Key != mod)
                     continue;
-                foreach(var _upgrade in _mod.Value)
+
+                foreach(ModdedUpgradeRepresenter _upgrade in _mod.Value)
                 {
                     if (_upgrade.UpgradeType != upgradeType || _upgrade.Level != upgradeLevel)
                         continue;
@@ -114,13 +115,14 @@ namespace InternalModBot
         /// <returns></returns>
         public static float GetAngleOfUpgrade(UpgradeType upgradeType, int upgradeLevel)
         {
+            UpgradeDescription upgradeInUpgradeList = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
+
             if (CurrentPage == 0) // if we are on the first page, only display the normal values
             {
-                UpgradeDescription upgradeInUpgradeList1 = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
-                if (upgradeInUpgradeList1 == null)
+                if (upgradeInUpgradeList == null)
                     return 0;
 
-                return upgradeInUpgradeList1.AngleOffset;
+                return upgradeInUpgradeList.AngleOffset;
             }
 
             var currentMod = GenerateModPages()[CurrentPage - 1];
@@ -132,8 +134,7 @@ namespace InternalModBot
                 return upgrade.GetAngleOffset();
             }
 
-            UpgradeDescription upgradeInUpgradeList2 = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
-            return upgradeInUpgradeList2.AngleOffset;
+            return upgradeInUpgradeList.AngleOffset;
         }
 
         /// <summary>

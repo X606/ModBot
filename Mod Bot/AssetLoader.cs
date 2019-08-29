@@ -50,10 +50,8 @@ namespace ModLibrary
                 throw new FileNotFoundException("Could not find AssetBundle file", _assetBundleName);
             }
 
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundleFilePath, 1);
-            AssetBundle assetBundle = www.assetBundle;
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
             T result = assetBundle.LoadAssetAsync<T>(_objectName).asset as T;
-            www.Dispose();
             assetBundle.Unload(false);
 
             cachedObjects[key] = result;

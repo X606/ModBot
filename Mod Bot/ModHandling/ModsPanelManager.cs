@@ -1,10 +1,13 @@
 ﻿using ModLibrary;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
+
 namespace InternalModBot
 {
-
     /// <summary>
     /// Used by Mod-Bot to control most of the UI in Mod-Bot, this has control over the mod buttons and mods window. Note that all functions and fields on this class are private since they more or less work on their own.
     /// </summary>
@@ -156,7 +159,32 @@ namespace InternalModBot
             if (string.IsNullOrEmpty(url))
                 return;
 
-            ModImageNetworkConnections.Add(new DoubleValueHolder<Mod,WWW>(owner, new WWW(url)) );
+            StartCoroutine(SetModImageFromURLRoutine(owner, url));
+        }
+
+        private IEnumerator SetModImageFromURLRoutine(Mod mod, string url)
+        {
+            UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+            {
+                debug.Log("Error dowloading preview image for mod: \"" + mod.GetUniqueID() + "\":\n" + webRequest.error, Color.red);
+            }
+            else
+            {
+                ModdedObject modWindowItem = FindModItemWithName(mod.GetUniqueID());
+                if (modWindowItem != null)
+                {
+                    DownloadHandlerTexture textureDownloader = webRequest.downloadHandler as DownloadHandlerTexture;
+                    modWindowItem.GetObject<RawImage>(2).texture = textureDownloader.texture;
+                }
+                else
+                {
+                    debug.Log("Error: Could not find mod item in mods window for mod: \"" + mod.GetUniqueID() + "\"", Color.red);
+                }
+            }
         }
 
         private void Update()
@@ -169,34 +197,6 @@ namespace InternalModBot
                 }
             }
 
-           
-
-
-            if (ModImageNetworkConnections.Count == 0)
-            {
-                return;
-            }
-
-            for (int i = 0; i < ModImageNetworkConnections.Count;)
-            {
-                if (ModImageNetworkConnections[i].SecondValue != null && ModImageNetworkConnections[i].SecondValue.isDone)
-                {
-                    Texture2D modImage = new Texture2D(1, 1);
-                    ModImageNetworkConnections[i].SecondValue.LoadImageIntoTexture(modImage);
-
-                    if (modImage != null)
-                    {
-                        ModdedObject modItemModdedObject = FindModItemWithName(ModImageNetworkConnections[i].FirstValue.GetUniqueID());
-                        modItemModdedObject.GetObject<RawImage>(2).texture = modImage; // Set image
-                    }
-
-                    ModImageNetworkConnections.RemoveAt(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
         }
         
         private ModdedObject FindModItemWithName(string id)
@@ -232,9 +232,8 @@ namespace InternalModBot
             {
                 AddModToList(mods[i], ModsWindowModdedObject.GetObject<GameObject>(0));
             }
-        }
 
-        private List<DoubleValueHolder<Mod,WWW>> ModImageNetworkConnections = new List<DoubleValueHolder<Mod, WWW>>();
+        }
 
         private List<GameObject> ModItems = new List<GameObject>();
 

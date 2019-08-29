@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Cil;
-using System.Reflection;
-using System.IO;
 using Mono.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 public static class Injector
 {
@@ -48,16 +48,15 @@ public static class Injector
                 }
 
             }
+
             if (method != null)
             {
                 halfInjected.TargetMethod = method;
                 halfInjected.IlProcessor = halfInjected.TargetMethod.Body.GetILProcessor();
             }
-                
 
         }
         
-
         foreach(Instruction _instruction in halfInjected.IlProcessor.Body.Instructions)
         {
             if (_instruction.Operand is MethodReference)
@@ -73,10 +72,10 @@ public static class Injector
                 }
 
             }
+
         }
 
         MethodReference methodReference = halfInjected.Module.ImportReference(readModule.TargetMethod);
-
 
         Instruction instruction = halfInjected.IlProcessor.Create(OpCodes.Call, methodReference);
 
@@ -85,11 +84,12 @@ public static class Injector
         {
             int endIndex = halfInjected.TargetMethod.Body.Instructions.Count - 1;
             targetInstruction = halfInjected.TargetMethod.Body.Instructions[endIndex + instructionInsertOffset];
-        } else
+        }
+        else
         {
             targetInstruction = halfInjected.TargetMethod.Body.Instructions[instructionInsertOffset];
         }
-       
+        
         if (insertAfter)
         {
             halfInjected.IlProcessor.InsertAfter(targetInstruction, instruction);
@@ -102,8 +102,6 @@ public static class Injector
         readModule.Module.Dispose();
 
         return new Injection(halfInjected.IlProcessor, halfInjected.Module);
-
-
     }
 
     public static void OverrideMethod(string pathToPasteTo, string pasteClassName, string pasteMethodName, string pathToCopyFrom, string copyClassName, string copyMethodName)
@@ -165,21 +163,15 @@ public static class Injector
             newMethod.Parameters.Add(copy.TargetMethod.Parameters[i]);
         }
 
-
-        
-        
         List<AssemblyNameReference> differance = Util.GetDifferenceBetweenLists(copy.Module.AssemblyReferences.ToList(), writeModule.AssemblyReferences.ToList());
-        Console.WriteLine("Adding references to assemblys:");
+        Console.WriteLine("Adding references to assemblies:");
         for (int i = 0; i < differance.Count; i++)
         {
             Console.WriteLine("\t" + differance[i].FullName);
             copy.Module.AssemblyReferences.Add(differance[i]);
         }
 
-
-
         OverwriteMethodIL(newMethod, copy.TargetMethod, classToWriteTo, newMethodName, writeModule, typeToWriteTo);
-
 
         typeToWriteTo.Methods.Add(newMethod);
 
@@ -399,7 +391,7 @@ public static class Injector
                 FieldReference newFieldReference = null;
                 FieldReference fieldReference = reference as FieldReference;
 
-                Console.WriteLine("\n"+fieldReference.FieldType.FullName+"\n");
+                Console.WriteLine("\n" + fieldReference.FieldType.FullName + "\n");
 
                 TypeReference fieldType = pasteModule.ImportReference(fieldReference.FieldType);
 
@@ -437,13 +429,10 @@ public static class Injector
                 Console.WriteLine("Writing \"" + copyMethod.Body.Instructions[i].OpCode.ToString() + "\" to " + pasteClassName + "." + pasteMethodName);
                 pasteMethod.Body.Instructions.Add(copyMethod.Body.Instructions[i]);
             }
-
-
-
-
-
         }
+
     }
+
     private static HalfInjected InjectionFirstStep(string path, string className, string methodName, string debugPre = "")
     {
         if (!File.Exists(path))
@@ -501,12 +490,9 @@ public static class Injector
 
                 }
             }
-
         }
 
-
     }
-
 
     public class HalfInjected
     {
@@ -550,6 +536,7 @@ public class Injection
     {
         isNull = true;
     }
+
     #region AddInstructionToTopSaves
     public void AddInstructionOverSafe(OpCode instruction, int index = 0)
     {
