@@ -270,5 +270,14 @@ namespace ModLibrary
 
         }
 
+        /// <summary>
+        /// Called whenever we received a <see cref="GenericStringForModdingEvent"/> from a client (including your own if you used <see cref="MultiplayerMessageSender.SendToAllClients(string)"/>)
+        /// </summary>
+        /// <param name="moddedEvent">The received <see cref="GenericStringForModdingEvent"/></param>
+        public virtual void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
+        {
+
+        }
+
     }
 }

@@ -30,6 +30,7 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManager>();
             gameFlowManager.AddComponent<UpgradeIconDownloader>();
+            gameFlowManager.AddComponent<ModdedMultiplayerEventListener>();
             
             InitilizeUI();
             

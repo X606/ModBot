@@ -403,6 +403,7 @@ namespace InternalModBot
                 mods[i].OnModDeactivated();
             }
         }
+
         /// <summary>
         /// Gets the response from this from all loaded mods, and uses the or operator on all of them, then returns
         /// </summary>
@@ -421,6 +422,7 @@ namespace InternalModBot
 
             return result;
         }
+
         /// <summary>
         /// Calls this method on all mods
         /// </summary>
@@ -430,6 +432,19 @@ namespace InternalModBot
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].GlobalUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        /// <param name="moddedEvent"></param>
+        public override void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnMultiplayerEventReceived(moddedEvent);
             }
         }
 

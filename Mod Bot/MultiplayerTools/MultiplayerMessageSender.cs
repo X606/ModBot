@@ -10,11 +10,21 @@ namespace ModLibrary
 {
     public static class MultiplayerMessageSender
     {
+        /// <summary>
+        /// Sends a multiplayer message the owner of a FirstPersonMover
+        /// </summary>
+        /// <param name="owner">Player to send message to</param>
+        /// <param name="message">The message to send</param>
         public static void SendToClient(FirstPersonMover owner, string message)
         {
             GenericStringForModdingEvent genericStringForModdingEvent = GenericStringForModdingEvent.Create(owner.entity.controller);
             SendEvent(genericStringForModdingEvent, message);
         }
+        /// <summary>
+        /// Sends a multiplayer message to a bolt connection
+        /// </summary>
+        /// <param name="owner">The player to send the message to</param>
+        /// <param name="message">The message to send</param>
         public static void SendToClient(BoltConnection owner, string message)
         {
             GenericStringForModdingEvent genericStringForModdingEvent = GenericStringForModdingEvent.Create(owner);

@@ -62,7 +62,8 @@
     <Compile Include="ModHandling\ModTools.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
     <Compile Include="ModHandling\UpgradeIconDownloader.cs" />
-    <Compile Include="MultiplayerMessageSender.cs" />
+    <Compile Include="MultiplayerTools\EventListener.cs" />
+    <Compile Include="MultiplayerTools\MultiplayerMessageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
@@ -87,14 +88,8 @@
     <Reference Include="netstandard">
       <HintPath>..\UsedDlls\netstandard.dll</HintPath>
     </Reference>
-<<<<<<< HEAD
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\UsedDlls\Newtonsoft.Json.dll</HintPath>
-=======
-    <Reference Include="bolt.user, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\games\new\steamapps\common\Clone Drone in the Danger Zone\Clone Drone in the Danger Zone_Data\Managed\bolt.user.dll</HintPath>
->>>>>>> experimentalBuild
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
