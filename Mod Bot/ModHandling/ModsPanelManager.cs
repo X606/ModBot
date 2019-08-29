@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 namespace InternalModBot
 {
 
@@ -13,23 +12,18 @@ namespace InternalModBot
     {
         private void Start()
         {
-            Vector3 mainMenuButtonOffset = new Vector3(0f, -1f, 0f); // The offset to give buttons on the main menu to make space for the Mods button
             Vector3 pauseScreenButtonOffest = new Vector3(0f, 1.2f, 0f); 
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer;
-            titleScreenContainer.transform.GetChild(5).transform.position += mainMenuButtonOffset; // Level editor button
-            titleScreenContainer.transform.GetChild(7).transform.position += mainMenuButtonOffset; // Options button
-            titleScreenContainer.transform.GetChild(8).transform.position += mainMenuButtonOffset; // Credits button
-            titleScreenContainer.transform.GetChild(9).transform.position += mainMenuButtonOffset; // Quit button
+            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(6).gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
-            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(7).gameObject;
+            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(0).gameObject; // Gets the options button (we copy it and replace its organs and face)
             GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
-            mainMenuModsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
+            //mainMenuModsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
             mainMenuModsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
-
-
+            mainMenuModsButton.transform.SetAsFirstSibling();
+            
             GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
             GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffest;
             GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffest;
@@ -53,13 +47,14 @@ namespace InternalModBot
             pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
 
             ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
+            
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
             image.GetComponent<Image>().sprite = AssetLoader.GetObjectFromFile<Sprite>("modswindow", "modbot", "Clone Drone in the Danger Zone_Data/");
             image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1);
             image.GetComponent<RectTransform>().position -= new Vector3(7, 0);
-
+            
             Transform spawnedObject = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             spawnedObject.gameObject.SetActive(true);
             spawnedObject.GetComponent<Text>().text = "X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>";

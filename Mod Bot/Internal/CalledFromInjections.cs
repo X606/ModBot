@@ -96,34 +96,7 @@ namespace InternalModBot
                 return true;
             }
 
-            return (GameModeManager.ShowsStoryBlockedUpgrades() || (!UpgradeManager.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.UsesMultiplayerUpgrades() || upgrade.IsAvailableInMultiplayer) && (!GameModeManager.IsBattleRoyale() || !upgrade.IsDisabledInBattleRoyale) && upgrade.IsUpgradeVisible && upgrade.IsCompatibleWithCharacter(CharacterTracker.Instance.GetPlayer());
-        }
-        /// <summary>
-        /// Called from the repair upgrade, does the same thing as FromIsUpgradeCurrentlyVisible but since repair overrides IsUpgradeCurrentlyVisible we need another function to handle it
-        /// </summary>
-        /// <param name="upgrade"></param>
-        /// <returns></returns>
-        public static bool FromIsRepairUpgradeCurrentlyVisible(UpgradeDescription upgrade)
-        {
-            if (!UpgradePagesManager.IsUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
-                return false;
-            }
-            if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
-                return true;
-            }
-
-            if (!upgrade.IsUpgradeVisible)
-            {
-                return false;
-            }
-            if (GameModeManager.Is(GameMode.LevelEditor))
-            {
-                return true;
-            }
-            FirstPersonMover player = Singleton<CharacterTracker>.Instance.GetPlayer();
-            return !(player == null) && player.HasLimbDamage();
+            return (GameModeManager.ShowsStoryBlockedUpgrades() || (!Singleton<UpgradeManager>.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsEndlessCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(Singleton<CharacterTracker>.Instance.GetPlayer());
         }
         /// <summary>
         /// Called when a projectile is created

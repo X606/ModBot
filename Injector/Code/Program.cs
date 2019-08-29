@@ -15,13 +15,15 @@ class Program
     public const string InjectionClassesNamespaceName = "InjectionClasses.";
     static void Main(string[] args)
     {
-        string installPath = Environment.CurrentDirectory + "/Assembly-CSharp.dll";
-        string sourceToCopyClassesFrom = Environment.CurrentDirectory + "/InjectionClasses.dll";
-        string modlibrary = Environment.CurrentDirectory + "/ModLibrary.dll";
+        string path = "D:/games/new/steamapps/common/Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed";//Environment.CurrentDirectory;
+        string installPath = path + "/Assembly-CSharp.dll";
+        string sourceToCopyClassesFrom = path + "/InjectionClasses.dll";
+        string modlibrary = path + "/ModLibrary.dll";
         InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary);
         
         Console.WriteLine("All injections completed!");
-        
+
+        Console.ReadLine();
         System.Threading.Thread.Sleep(500);
         
 
@@ -106,12 +108,6 @@ class Program
         upgradeDescriptionInjection2.AddInstructionUnderSafe(OpCodes.Ret,0);
         upgradeDescriptionInjection2.AddInstructionOverSafe(OpCodes.Ldarg_0);
         upgradeDescriptionInjection2.Write();
-
-        Console.WriteLine("Injecting into RepairUpgrade.IsUpgradeCurrentlyVisible...");
-        Injection upgradeDescriptionInjection3 = Injector.AddCallToMethodInMethod(installPath, "RepairUpgrade", "IsUpgradeCurrentlyVisible", modLibraryPath, "InternalModBot.CalledFromInjections", "FromIsRepairUpgradeCurrentlyVisible");
-        upgradeDescriptionInjection3.AddInstructionUnderSafe(OpCodes.Ret);
-        upgradeDescriptionInjection3.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        upgradeDescriptionInjection3.Write();
 
         Console.WriteLine("Injecting into ErrorManager.HandleLog...");
         Injection errorManagerInjection = Injector.AddCallToMethodInMethod(installPath, "ErrorManager", "HandleLog", modLibraryPath, "InternalModBot.IgnoreCrashesManager", "GetIsIgnoringCrashes");
