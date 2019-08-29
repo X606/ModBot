@@ -48,6 +48,7 @@
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
+<<<<<<< HEAD
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\TwitchMode.cs" />
@@ -62,7 +63,13 @@
     <Compile Include="ModHandling\ModTools.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
     <Compile Include="ModHandling\UpgradeIconDownloader.cs" />
+=======
+    <Compile Include="Mod.cs" />
+    <Compile Include="ModsPanelManager.cs" />
+    <Compile Include="ModTools.cs" />
     <Compile Include="MultiplayerMessageSender.cs" />
+    <Compile Include="PassOnToModsManager.cs" />
+>>>>>>> experimentalBuild
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
