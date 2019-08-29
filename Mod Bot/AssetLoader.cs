@@ -8,138 +8,22 @@ using UnityEngine;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used to load assets from assetbundles (normally placed in the mods folder)
+    /// </summary>
     public static class AssetLoader
     {
         private static Dictionary<string, UnityEngine.Object> cachedObjects = new Dictionary<string, UnityEngine.Object>();
 
-        #region Obsolete methods
         /// <summary>
-        /// Gets a GameObject from a file.
+        /// The name of the folder where mods are stored
         /// </summary>
-        /// <param name="file">The asset file (loaded from the mods folder)</param>
-        /// <param name="name">Name of the GamObject to get</param>
-        /// <returns</returns>
-        [Obsolete("Use GetObjectFromFile instead")]
-        public static GameObject getObjectFromFile(string file, string name)
-        {
-            string key = file + ":" + name;
-            if (cachedObjects.ContainsKey(key))
-            {
-                return (GameObject)cachedObjects[key];
-            }
-
-            string path = getSubdomain(Application.dataPath) + "mods/";
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("getObjectFromFile: This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(name).asset as GameObject;
-            www.Dispose();
-            assetBundle.Unload(false);
-            cachedObjects[key] = result;
-
-            return result;
-        }
-
-        [Obsolete("Use GetObjectFromFile instead")]
-        public static GameObject getObjectFromFile(string file, string name, string _path)
-        {
-            string key = file + ":" + name;
-            if (cachedObjects.ContainsKey(key))
-            {
-                return (GameObject)cachedObjects[key];
-            }
-
-            string path = getSubdomain(Application.dataPath) + _path;
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("getObjectFromFile + This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            GameObject result = assetBundle.LoadAssetAsync<GameObject>(name).asset as GameObject;
-            www.Dispose();
-            assetBundle.Unload(false);
-            cachedObjects[key] = result;
-
-            return result;
-        }
-
-        [Obsolete("Use GetObjectFromFile instead")]
-        public static T getObjectFromFile<T>(string file, string name) where T : UnityEngine.Object
-        {
-            string key = file + ":" + name;
-            if (cachedObjects.ContainsKey(key))
-            {
-                return (T)cachedObjects[key];
-            }
-
-            string path = getSubdomain(Application.dataPath) + "mods/";
-            if (!Directory.Exists(path))
-            {
-                Debug.LogError("getObjectFromFile<T> + This should never, ever, ever happen. If it does something is terribly wrong (there is no mods directory, but you are running a mod)" + path);
-                return null;
-            }
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + path + file, 1);
-            AssetBundle assetBundle = www.assetBundle;
-            T result = assetBundle.LoadAssetAsync<T>(name).asset as T;
-            www.Dispose();
-            assetBundle.Unload(false);
-            cachedObjects[key] = result;
-
-            return result;
-        }
-
-        /// <summary>
-        /// If it there is already a file named the same thing as name, this wont do anything
-        /// </summary>
-        [Obsolete("Use TrySaveFileToMods instead")]
-        public static void trySaveFileToMods(string url, string name)
-        {
-            string path = getSubdomain(Application.dataPath) + "mods/" + name;
-            if (File.Exists(path))
-            {
-                return;
-            }
-            saveFileToMods(url, name);
-        }
-
-        [Obsolete("Use SaveFileToMods instead")]
-        public static void saveFileToMods(string url, string name)
-        {
-            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
-            byte[] file = new WebClient
-            {
-                Headers =
-                {
-                    "User-Agent: Other"
-                }
-            }.DownloadData(url);
-            string path = getSubdomain(Application.dataPath) + "mods/";
-            var a = File.Create(path + name);
-            a.Close();
-            File.WriteAllBytes(path + name, file);
-        }
-
-        [Obsolete("Use GetSubdomain instead")]
-        public static string getSubdomain(string path)
-        {
-            string[] subDomainsArray = path.Split(new char[] { '/' });
-
-            List<string> subDomainsList = new List<string>(subDomainsArray);
-            subDomainsList.RemoveAt(subDomainsList.Count - 1);
-
-            return subDomainsList.Join("/") + "/";
-        }
-        #endregion
-
         public const string ModsFolderName = "mods/";
 
-        /// <returns>The full directory to the mods folder</returns>
+        /// <summary>
+        /// Returns the full directory to the mods folder directory where we expect most of the assetbundles to be
+        /// </summary>
+        /// <returns></returns>
         public static string GetModsFolderDirectory()
         {
             return GetSubdomain(Application.dataPath) + ModsFolderName;
@@ -166,10 +50,8 @@ namespace ModLibrary
                 throw new FileNotFoundException("Could not find AssetBundle file", _assetBundleName);
             }
 
-            WWW www = WWW.LoadFromCacheOrDownload("file:///" + assetBundleFilePath, 1);
-            AssetBundle assetBundle = www.assetBundle;
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
             T result = assetBundle.LoadAssetAsync<T>(_objectName).asset as T;
-            www.Dispose();
             assetBundle.Unload(false);
 
             cachedObjects[key] = result;
@@ -284,11 +166,19 @@ namespace ModLibrary
             return result;
         }
 
+        /// <summary>
+        /// Clears the cache for loaded assets
+        /// </summary>
         public static void ClearCache()
         {
             cachedObjects.Clear();
         }
 
+        /// <summary>
+        /// Gets the directory 1 step under a spesific directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static string GetSubdomain(string path)
         {
             string[] subDomainsArray = path.Split(new char[] { '/' });

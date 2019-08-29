@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used to get / set / call private values and methods on objects
+    /// </summary>
     public class Accessor
     {
         /// <summary>
@@ -46,7 +49,7 @@ namespace ModLibrary
 
             MethodInfo method = InstanceType.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
             }
@@ -70,7 +73,7 @@ namespace ModLibrary
 
             MethodInfo method = InstanceType.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
             }
@@ -87,7 +90,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -105,7 +108,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -122,7 +125,7 @@ namespace ModLibrary
         {
             FieldInfo field = InstanceType.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
             }
@@ -157,7 +160,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -192,7 +195,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -210,7 +213,7 @@ namespace ModLibrary
         {
             PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
             }
@@ -234,7 +237,7 @@ namespace ModLibrary
 
             MethodInfo method = type.GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(type.FullName, methodName);
             }
@@ -259,7 +262,7 @@ namespace ModLibrary
 
             MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
             }
@@ -283,7 +286,7 @@ namespace ModLibrary
 
             MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
 
-            if (object.Equals(method, null))
+            if (Equals(method, null))
             {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
             }
@@ -302,7 +305,7 @@ namespace ModLibrary
         {
             FieldInfo field = type.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(type.FullName, fieldName);
             }
@@ -322,25 +325,25 @@ namespace ModLibrary
         {
             FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
             }
 
             field.SetValue(instance, value);
         }
-        
+
         /// <summary>
         /// Gets field value even if its private.
         /// </summary>
         /// <param name="type">The type that the field is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
-        /// <param name="name">The name of the field.</param>
+        /// <param name="fieldName">The name of the field.</param>
         /// <param name="instance">The object that the field is attached to.</param>
         public static object GetPrivateField(Type type, string fieldName, object instance)
         {
             FieldInfo field = type.GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(type.FullName, fieldName);
             }
@@ -359,26 +362,26 @@ namespace ModLibrary
         {
             FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
 
-            if (object.Equals(field, null))
+            if (Equals(field, null))
             {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
             }
 
             return (FieldType)field.GetValue(instance);
         }
-        
+
         /// <summary>
         /// Sets property value even if its private.
         /// </summary>
         /// <param name="type">The type that the property is in. (Get this by typing "typeof(Class)" where Class is the class where the method you want to run is located).</param>
-        /// <param name="name">The name of the Property.</param>
+        /// <param name="propertyName">The name of the Property.</param>
         /// <param name="instance">The object that the property is attached to.</param>
         /// <param name="value">The value the property should be set to.</param>
         public static void SetPrivateProperty(Type type, string propertyName, object instance, object value)
         {
             PropertyInfo property = type.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(type.FullName, propertyName);
             }
@@ -391,14 +394,14 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="InstanceType">The type of the class the property is in.</typeparam>
         /// <typeparam name="PropertyType">The type of the property.</typeparam>
-        /// <param name="propertryName">The name of the property.</param>
+        /// <param name="propertyName">The name of the property.</param>
         /// <param name="instance">The instance the property is in.</param>
         /// <param name="value">The value to set the property to.</param>
         public static void SetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, PropertyType value)
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
             }
@@ -416,7 +419,7 @@ namespace ModLibrary
         {
             PropertyInfo property = type.GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(type.FullName, propertyName);
             }
@@ -435,7 +438,7 @@ namespace ModLibrary
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
 
-            if (object.Equals(property, null))
+            if (Equals(property, null))
             {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
             }

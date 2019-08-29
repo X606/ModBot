@@ -1,6 +1,4 @@
 .vs/
-Mod Bot/bin/
-Mod Bot/obj/
-InjectionClasses/bin/
-InjectionClasses/obj/
+bin/
+obj/
 *.zip

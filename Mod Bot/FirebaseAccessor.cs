@@ -5,6 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace ModLibrary
 {
+    /// <summary>
+    /// Used to get values from a firebase
+    /// </summary>
     public static class FirebaseAccessor
     {
         /// <summary>

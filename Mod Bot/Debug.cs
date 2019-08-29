@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -17,50 +20,58 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
+        private const int CONSOLE_CHARACTER_LIMIT = 1000;
+
         /// <summary>
         /// Writes to the in-game console.
         /// </summary>
-        /// <param name="_log"></param>
+        /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
-            //Console.WriteLine(_log);
-            if (Logger.Instance.LogText.text.Length > 200) {
-                string newText = Logger.Instance.LogText.text.Substring(Logger.Instance.LogText.text.Length - 200);
-                Logger.Instance.LogText.text = newText;
-            }
+            InternalModBot.Logger.Instance.Log(_log);
 
-            Logger.Instance.log(_log);
-            
+            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            {
+                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
+                InternalModBot.Logger.Instance.LogText.text = newText;
+            }
         }
 
-
+        /// <summary>
+        /// Writes the given object's ToString() value to the console
+        /// </summary>
+        /// <param name="_log">The object to write</param>
         public static void Log(object _log)
         {
-            //Console.WriteLine(_log);
-            Logger.Instance.log(_log.ToString());
-            
+            Log(_log.ToString());
         }
 
         /// <summary>
         /// Writes to the in-game console, in color.
         /// </summary>
-        /// <param name="_log"></param>
-        /// <param name="_color"></param>
+        /// <param name="_log">What to write</param>
+        /// <param name="_color">The color to write in</param>
         public static void Log(string _log, Color _color)
         {
-            Logger.Instance.log(_log, _color);
+            InternalModBot.Logger.Instance.Log(_log, _color);
+
+            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            {
+                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
+                InternalModBot.Logger.Instance.LogText.text = newText;
+            }
         }
 
         /// <summary>
-        /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+        /// Passes every instance of the given list's 'ToString()' value to 'debug.Log()'
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void PrintAll<T>(List<T> list)
+        public static void PrintAll<T>(IEnumerable<T> list)
         {
-            for (int i = 0; i < list.Count; i++)
+            foreach (T item in list)
             {
-                Logger.Instance.log(list[i].ToString());
+                Log(item.ToString());
             }
         }
 
@@ -69,15 +80,20 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        public static void PrintAll<T>(List<T> list, Color _color)
+        /// <param name="color"></param>
+        public static void PrintAll<T>(IEnumerable<T> list, Color color)
         {
-            for (int i = 0; i < list.Count; i++)
+            foreach (T item in list)
             {
-                Logger.Instance.log(list[i].ToString(), _color);
+                Log(item.ToString(), color);
             }
         }
 
-        public static void PrintAllChildren(Transform obj)
+        /// <summary>
+        /// Opens a notepad window with info about the passed transfrom like components and children
+        /// </summary>
+        /// <param name="obj"></param>
+        public static void PrintAllChildren(Transform obj) // TODO : Rewrite this function
         {
             outputText = "";
             WriteToFile(obj.ToString());
@@ -120,5 +136,96 @@ namespace ModLibrary
         }
 
         private static string outputText;
+    }
+}
+
+namespace InternalModBot
+{
+    /// <summary>
+    /// Used by Mod-Bot as the low level level of the debug console system
+    /// </summary>
+    public class Logger : Singleton<Logger>
+    {
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                Flip();
+            }
+            if (!Container.activeSelf)
+            {
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                RunCommand(input.text);
+                input.text = "";
+            }
+        }
+
+        private void Flip()
+        {
+            if (Container.activeSelf)
+            {
+                animator.Play("hideConsole");
+                return;
+            }
+            animator.Play("showConsole");
+        }
+
+        /// <summary>
+        /// Writes the specified text to the console
+        /// </summary>
+        /// <param name="whatToLog"></param>
+        public void Log(string whatToLog)
+        {
+            Text logText = LogText;
+            logText.text = logText.text + "\n" + whatToLog;
+        }
+        /// <summary>
+        /// Writes the specified text to the console, now in color!
+        /// </summary>
+        /// <param name="whatToLog"></param>
+        /// <param name="color"></param>
+        public void Log(string whatToLog, Color color)
+        {
+            string text = ColorUtility.ToHtmlStringRGB(color);
+            Text logText = LogText;
+            logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
+        }
+
+        /// <summary>
+        /// Gets called when the user types in a command into the input field and presses enter
+        /// </summary>
+        /// <param name="command"></param>
+        public void RunCommand(string command)
+        {
+            try
+            {
+                ConsoleInputManager.OnCommandRan(command);
+                ModsManager.Instance.PassOnMod.OnCommandRan(command);
+            }
+            catch (Exception ex)
+            {
+                Log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
+                Log(ex.StackTrace, Color.red);
+            }
+        }
+        /// <summary>
+        /// The animator containing the animations for opening and closeing the console
+        /// </summary>
+        public Animator animator;
+        /// <summary>
+        /// The complete text of the console
+        /// </summary>
+        public Text LogText;
+        /// <summary>
+        /// The GameObject thats holding the console
+        /// </summary>
+        public GameObject Container;
+        /// <summary>
+        /// the input field that commands are typed into
+        /// </summary>
+        public InputField input;
     }
 }
