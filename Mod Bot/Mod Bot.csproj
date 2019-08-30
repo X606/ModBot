@@ -62,7 +62,8 @@
     <Compile Include="ModHandling\ModTools.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
     <Compile Include="ModHandling\UpgradeIconDownloader.cs" />
-    <Compile Include="MultiplayerTools\EventListener.cs" />
+    <Compile Include="MultiplayerTools\MultiplayerEventCallback.cs" />
+    <Compile Include="MultiplayerTools\MultiplayerEventListener.cs" />
     <Compile Include="MultiplayerTools\MultiplayerMessageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
