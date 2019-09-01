@@ -40,7 +40,9 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
+    <Compile Include="ExtensionMethods\ModSettingsExtensions.cs" />
+    <Compile Include="ExtensionMethods\SingleExtensions.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
@@ -52,7 +54,7 @@
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\TwitchMode.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
-    <Compile Include="ModdedUpgrades\ExtensionMethods.cs" />
+    <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="ModHandling\Mod.cs" />
