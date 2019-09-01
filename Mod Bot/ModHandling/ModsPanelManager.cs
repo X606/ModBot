@@ -148,10 +148,45 @@ namespace InternalModBot
                 disableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
             }
 
+            Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
+            BroadcastButton.onClick.AddListener( delegate { OnBroadcastButtonClicked(mod); } );
+            BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
+
+            Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
+            DownloadButton.onClick.AddListener(delegate { OnDownloadButtonClicked(mod); });
+            bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
+            DownloadButton.gameObject.SetActive(hasNoFile);
+
             int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
             modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { ToggleIsModDisabled(modId); }); // Add disable button callback
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { OpenModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
+        }
+
+        private void OnBroadcastButtonClicked(Mod mod)
+        {
+            Generic2ButtonDialoge dialoge = new Generic2ButtonDialoge("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
+                "No",
+                delegate { },
+                "Yes",
+                delegate {
+                    ModSharingManager.Instance.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
+            });
+           
+        }
+        private void OnDownloadButtonClicked(Mod mod)
+        {
+            Generic2ButtonDialoge dialoge = new Generic2ButtonDialoge("This will place " + mod.GetModName() + " in your mod folder as a .dll file, are you sure you want to do this?", 
+                "No", 
+                delegate { }, 
+                "Yes", 
+                delegate 
+                {
+                    ModsManager.Instance.WriteDllFileToModFolder(mod);
+                    ReloadModItems();
+                }
+            );
+            
         }
 
         private void SetImageFromURL(string url, Mod owner)

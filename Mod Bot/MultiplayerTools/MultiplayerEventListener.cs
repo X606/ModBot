@@ -334,6 +334,8 @@ namespace InternalModBot
         /// <param name="evnt"></param>
         public override void OnEvent(GenericStringForModdingEvent evnt)
         {
+            ModSharingManager.Instance.OnModdedEvent(evnt);
+            ModBotUserIdentifier.Instance.OnEvent(evnt);
             ModsManager.Instance.PassOnMod.OnMultiplayerEventReceived(evnt);
         }
 
