@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using ModLibrary;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.Networking;
 
 namespace InternalModBot
 {
@@ -34,11 +35,70 @@ namespace InternalModBot
             StartCoroutine(SuggestMod(nextSuggestedMod));
         }
         
+        /// <summary>
+        /// Brings up the suggest dialoge for a multiplayer suggested mod
+        /// </summary>
+        /// <param name="suggesterPlayfabID"></param>
+        /// <param name="modName"></param>
+        /// <param name="data"></param>
+        public void SuggestModMultiplayer(string suggesterPlayfabID, string modName, byte[] data)
+        {
+            StartCoroutine(SuggestModMultiplayerIEnumerator(suggesterPlayfabID, modName, data));
+        }
+
+        private IEnumerator SuggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
+        {
+            string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
+            if (displayName == null)
+                displayName = "";
+            
+            displayText.text = "Mod download request!\n" +
+                displayName + " wants to share a mod with you!\n" +
+                "Mod name: \"" + modName + "\"";
+
+            ModSuggestionAnimator.Play("suggestMod");
+
+            KeyCode clickedKey;
+            while (true)
+            {
+                if (Input.GetKeyDown(KeyCode.PageDown))
+                {
+                    clickedKey = KeyCode.PageDown;
+                    break;
+                }
+                if (Input.GetKeyDown(KeyCode.PageUp))
+                {
+                    clickedKey = KeyCode.PageUp;
+                    break;
+                }
+                yield return 0;
+            }
+
+            if (clickedKey == KeyCode.PageUp)
+            {
+                ModSuggestionAnimator.Play("AcceptMod");
+                try
+                {
+                    ModsManager.Instance.LoadMod(data, false);
+                    debug.Log("Mod loaded from suggestion!", Color.green);
+                }
+                catch
+                {
+                    debug.Log("ERROR: Could not load mod loaded from multiplayer network");
+                }
+            }
+            else if (clickedKey == KeyCode.PageDown)
+            {
+                ModSuggestionAnimator.Play("DenyMod");
+            }
+
+        }
 
         private IEnumerator SuggestMod(ModSuggestion mod)
         {
-            ModName.text = mod.ModName;
-            CreatorName.text = "Suggested by: " + mod.SuggesterName;
+            displayText.text = "Mod suggested!\n"
+                + mod.ModName + "\n" 
+                + "Suggested by: " + mod.SuggesterName;
             ModSuggestionAnimator.Play("suggestMod");
             KeyCode clickedKey;
             while (true)
@@ -60,14 +120,20 @@ namespace InternalModBot
             {
                 ModSuggestionAnimator.Play("AcceptMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
-                byte[] data = DownloadData(mod.Url);
+                UnityWebRequest webRequest = UnityWebRequest.Get(mod.Url);
+
+                yield return webRequest.SendWebRequest();
+
+                byte[] data = webRequest.downloadHandler.data;
+                
                 try
                 {
-                    ModsManager.Instance.LoadMod(data);
+                    ModsManager.Instance.LoadMod(data, false);
                 }
-                catch (Exception e)
+                catch
                 {
-                    debug.Log("Suggested mod failed to load: \"" + e.ToString() + "\"", Color.red);
+                    debug.Log("Suggested mod failed to load", Color.red);
+                    TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");
                 }
             }
             if (clickedKey == KeyCode.PageDown)
@@ -100,6 +166,12 @@ namespace InternalModBot
                     string modName = subCommands[1];
                     ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
                     ModSuggestionQueue.Enqueue(suggestedMod);
+
+                    if (!GameFlowManager.Instance.IsInCombat())
+                    {
+                        ModSuggestion modSuggestion = ModSuggestionQueue.Dequeue();
+                        StartCoroutine(SuggestMod(modSuggestion));
+                    }
 
                     TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
                 }
@@ -159,13 +231,9 @@ namespace InternalModBot
         /// </summary>
         public Animator ModSuggestionAnimator;
         /// <summary>
-        /// Text text display where the name of the mod to download should be
+        /// Text text display where all info will be displayed
         /// </summary>
-        public Text ModName;
-        /// <summary>
-        /// The text display where the name of the creator of the mod should be displayed
-        /// </summary>
-        public Text CreatorName;
+        public Text displayText;
 
         private Queue<ModSuggestion> ModSuggestionQueue = new Queue<ModSuggestion>();
 

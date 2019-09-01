@@ -32,6 +32,11 @@ namespace InternalModBot
         /// <param name="me"></param>
         public override void OnFirstPersonMoverSpawned(FirstPersonMover me)
         {
+            if (me.IsMainPlayer() && BoltNetwork.isRunning)
+            {
+                ModBotUserIdentifier.Instance.RequestIds(me);
+            }
+
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
@@ -420,7 +425,7 @@ namespace InternalModBot
                 }
             }
 
-            return result;
+            return result || Generic2ButtonDialoge.IsWindowOpen;
         }
 
         /// <summary>

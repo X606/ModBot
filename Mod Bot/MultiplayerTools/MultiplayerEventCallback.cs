@@ -60,6 +60,11 @@ namespace ModLibrary
             eventListeners[typeof(T)].Remove(callback);
         }
 
+        /// <summary>
+        /// Called from inside Mod-Bot whenever we recive an event
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="_event"></param>
         internal static void OnEventRecieved<T>(T _event) where T : Event
         {
             if (!eventListeners.ContainsKey(typeof(T)))
@@ -81,6 +86,9 @@ namespace ModLibrary
 
                 callbackAction(_event);
             }
+
         }
+
+
     }
 }

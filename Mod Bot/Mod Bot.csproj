@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
+    <Compile Include="Generic2ButtonDialoge.cs" />
     <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="ExtensionMethods\ModSettingsExtensions.cs" />
     <Compile Include="ExtensionMethods\SingleExtensions.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\StartupManager.cs" />
-    <Compile Include="Internal\TwitchMode.cs" />
+    <Compile Include="Internal\ModSuggestingManager.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
     <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="ModHandling\ModTools.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
     <Compile Include="ModHandling\UpgradeIconDownloader.cs" />
+    <Compile Include="MultiplayerTools\ModBotUserIdentifier.cs" />
+    <Compile Include="MultiplayerTools\ModSharingManager.cs" />
     <Compile Include="MultiplayerTools\MultiplayerEventCallback.cs" />
     <Compile Include="MultiplayerTools\MultiplayerEventListener.cs" />
     <Compile Include="MultiplayerTools\MultiplayerMessageSender.cs" />

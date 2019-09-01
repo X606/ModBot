@@ -37,7 +37,7 @@ namespace InternalModBot
             ClearCache();
             mods.Clear();
             PassOnMod = new PassOnToModsManager();
-            string[] files = Directory.GetFiles(AssetLoader.GetSubdomain(Application.dataPath) + "mods/");
+            string[] files = Directory.GetFiles(GetModsFolderPath());
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].EndsWith(".dll"))
@@ -45,7 +45,7 @@ namespace InternalModBot
                     try
                     {
                         byte[] modData = File.ReadAllBytes(files[i]);
-                        LoadMod(modData);
+                        LoadMod(modData, true);
                     }
                     catch (Exception ex)
                     {
@@ -62,13 +62,15 @@ namespace InternalModBot
                 ReloadMods();
             }
             PassOnMod.GlobalUpdate();
+
         }
 
         /// <summary>
         /// Loads a mod from only the bytes making up the assembly
         /// </summary>
         /// <param name="assemblyData"></param>
-        public void LoadMod(byte[] assemblyData)
+        /// <param name="hasFile"></param>
+        public void LoadMod(byte[] assemblyData, bool hasFile)
         {
             try
             {
@@ -97,7 +99,7 @@ namespace InternalModBot
                     }
                 });
 
-                mods.Add(new LoadedMod((Mod)obj));
+                mods.Add(new LoadedMod((Mod)obj, assemblyData, hasFile));
 
                 bool isActive = PlayerPrefs.GetInt(loadedMod.GetUniqueID(), 1) != 0;
                 if (!isActive)
@@ -116,6 +118,46 @@ namespace InternalModBot
             }
 
             
+        }
+
+
+        /// <summary>
+        /// Adds the mod to the mods folder
+        /// </summary>
+        /// <param name="mod"></param>
+        public void WriteDllFileToModFolder(Mod mod)
+        {
+            if (GetIsModOnlyLoadedInMemory(mod) == false)
+                return;
+
+            string filename = VerifyName(mod.GetModName());
+            string fullPath = GetModsFolderPath() + filename + ".dll";
+            if (File.Exists(fullPath))
+            {
+                debug.Log("The file \"" + fullPath + "\" already existed", Color.red);
+                return;
+            }
+
+            File.WriteAllBytes(fullPath, GetModData(mod));
+
+            foreach (LoadedMod _mod in mods)
+            {
+                if (_mod.Mod == mod)
+                {
+                    _mod.IsOnlyLoadedInMemory = false;
+                    return;
+                }
+            }
+        }
+
+        private string GetModsFolderPath()
+        {
+            return AssetLoader.GetSubdomain(Application.dataPath) + "mods/";
+        }
+
+        private string VerifyName(string oldName)
+        {
+            return oldName.Trim("<>:\"\\/|?*".ToCharArray());
         }
 
         /// <summary>
@@ -218,6 +260,36 @@ namespace InternalModBot
 
             return null;
         }
+
+        internal byte[] GetModData(Mod mod)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                if (mods[i].Mod == mod)
+                {
+                    return mods[i].RawAssemblyData;
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// Returns true if the passed mod doesnt have a file to load from
+        /// </summary>
+        /// <param name="mod"></param>
+        /// <returns></returns>
+        public bool GetIsModOnlyLoadedInMemory(Mod mod)
+        {
+            for (int i = 0; i < mods.Count; i++)
+            {
+                if (mods[i].Mod == mod)
+                {
+                    return mods[i].IsOnlyLoadedInMemory;
+                }
+            }
+            return false;
+        }
+
+
         private List<LoadedMod> mods = new List<LoadedMod>();
 
         /// <summary>
@@ -231,14 +303,21 @@ namespace InternalModBot
     /// </summary>
     public class LoadedMod
     {
+        private LoadedMod() // this will prevent people from createing now LoadedMod instances in mods
+        {
+        }
         /// <summary>
         /// Sets the mod field to the passed mod, and will not deactivate the mod
         /// </summary>
         /// <param name="_mod"></param>
-        public LoadedMod(Mod _mod)
+        /// <param name="_rawAssemblyData"></param>
+        /// <param name="isLoadedFromFile"></param>
+        internal LoadedMod(Mod _mod, byte[] _rawAssemblyData, bool isLoadedFromFile)
         {
             Mod = _mod;
             IsDeactivated = false;
+            RawAssemblyData = _rawAssemblyData;
+            IsOnlyLoadedInMemory = !isLoadedFromFile;
         }
         /// <summary>
         /// The Mod object the class is holding
@@ -248,5 +327,12 @@ namespace InternalModBot
         /// Decides if the mod is deactivated.
         /// </summary>
         public bool IsDeactivated;
+
+        /// <summary>
+        /// If this mod doesnt have a file
+        /// </summary>
+        public bool IsOnlyLoadedInMemory;
+
+        internal readonly byte[] RawAssemblyData;
     }
 }
