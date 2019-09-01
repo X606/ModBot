@@ -5,23 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using InternalModBot;
 
-namespace ModLibrary.ExtensionMethods
+namespace ModLibrary
 {
     /// <summary>
     /// Extension methods for mod settings handling
     /// </summary>
     public static class ModSettingsExtensions
     {
-        /// <summary>
-        /// Sets the icon of the upgrade to a image from a url, this needs a internet connection (NOTE: this has a cache so if you want to change picture you might want to remove the cache in the mods directory)
-        /// </summary>
-        /// <param name="upgradeDescription"></param>
-        /// <param name="url">the url of the image you want to set the object to</param>
-        public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
-        {
-            UpgradeIconDownloader.Instance.AddUpgradeIcon(upgradeDescription, url);
-        }
-
         /// <summary>
         /// Gets the settings saved in the loaded settings
         /// </summary>

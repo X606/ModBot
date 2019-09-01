@@ -45,5 +45,6 @@ namespace ModLibrary
 
             return !isModDeactivated.Value;
         }
+
     }
 }

@@ -53,6 +53,16 @@ namespace ModLibrary
             UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod);
         }
 
+        /// <summary>
+        /// Sets the icon of the upgrade to a image from a url, this needs a internet connection (NOTE: this has a cache so if you want to change picture you might want to remove the cache in the mods directory)
+        /// </summary>
+        /// <param name="upgradeDescription"></param>
+        /// <param name="url">the url of the image you want to set the object to</param>
+        public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
+        {
+            UpgradeIconDownloader.Instance.AddUpgradeIcon(upgradeDescription, url);
+        }
+
         private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade == null)
