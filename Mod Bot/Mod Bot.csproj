@@ -49,7 +49,6 @@
     <Compile Include="Internal\ConsoleInputManager.cs" />
     <Compile Include="Internal\DoubleValueHolder.cs" />
     <Compile Include="Internal\ErrorChanger.cs" />
-    <Compile Include="FirebaseAccessor.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\StartupManager.cs" />

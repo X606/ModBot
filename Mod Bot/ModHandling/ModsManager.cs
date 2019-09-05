@@ -13,7 +13,10 @@ namespace InternalModBot
     /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
-        private void Start()
+        /// <summary>
+        /// Loads all mods from the mods directory and deactivates remembered deactivated mods
+        /// </summary>
+        public void Initialize()
         {
             ReloadMods();
 

@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+#pragma warning disable IDE1005
+
 namespace ModLibrary
 {
     /// <summary>
@@ -14,8 +16,8 @@ namespace ModLibrary
     /// </summary>
     public class Generic2ButtonDialoge
     {
-        private Action OnButton1ClieckedCallback;
-        private Action OnButton2ClieckedCallback;
+        private Action OnButton1ClickedCallback;
+        private Action OnButton2ClickedCallback;
 
         private Text DisplayText;
         private Button Button1;
@@ -52,8 +54,8 @@ namespace ModLibrary
             Button1.onClick.AddListener(OnButton1Clicked);
             Button2.onClick.AddListener(OnButton2Clicked);
 
-            OnButton1ClieckedCallback = onPressButton1;
-            OnButton2ClieckedCallback = onPressButton2;
+            OnButton1ClickedCallback = onPressButton1;
+            OnButton2ClickedCallback = onPressButton2;
 
             IsWindowOpen = true;
         }
@@ -86,12 +88,20 @@ namespace ModLibrary
 
         private void OnButton1Clicked()
         {
-            OnButton1ClieckedCallback();
+            if (OnButton1ClickedCallback != null)
+            {
+                OnButton1ClickedCallback();
+            }
+
             Close();
         }
         private void OnButton2Clicked()
         {
-            OnButton2ClieckedCallback();
+            if (OnButton2ClickedCallback != null)
+            {
+                OnButton2ClickedCallback();
+            }
+
             Close();
         }
 

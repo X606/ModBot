@@ -16,16 +16,19 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
+            ErrorChanger.ChangeError();
+
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory()))
             {
                 throw new DirectoryNotFoundException("Mods folder not found!");
             }
 
-            ErrorChanger.ChangeError();
+            
 
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
-            gameFlowManager.AddComponent<ModsManager>();
+            
+
             gameFlowManager.AddComponent<UpdateChecker>();
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManager>();
@@ -33,9 +36,20 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModdedMultiplayerEventListener>();
             gameFlowManager.AddComponent<ModSharingManager>();
             gameFlowManager.AddComponent<ModBotUserIdentifier>();
-            
-            InitilizeUI();
-            
+
+            try
+            {
+                InitilizeUI();
+
+                ModsManager modsManager = gameFlowManager.AddComponent<ModsManager>();
+                modsManager.Initialize();
+            }
+            catch (Exception e)
+            {
+                debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
+                Logger.Instance.animator.Play("hideConsole");
+            }
+
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
             
@@ -54,7 +68,7 @@ namespace InternalModBot
             logger.input = spawedUIModdedObject.GetObject<InputField>(3);
 
             FPSCount fps = spawnedUI.AddComponent<FPSCount>();
-            fps.counter = spawedUIModdedObject.GetObject<UnityEngine.UI.Text>(4);
+            fps.counter = spawedUIModdedObject.GetObject<Text>(4);
 
             ModSuggestingManager modSuggestingManager = spawnedUI.AddComponent<ModSuggestingManager>();
             ModdedObject modSuggestingManagerInfo = spawedUIModdedObject.GetObject<ModdedObject>(5);

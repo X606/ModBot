@@ -163,7 +163,7 @@ namespace InternalModBot
             }
         }
 
-        private void Flip()
+        internal void Flip()
         {
             if (Container.activeSelf)
             {
