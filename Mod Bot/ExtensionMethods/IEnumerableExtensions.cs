@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace ModLibrary
 {
@@ -12,6 +13,33 @@ namespace ModLibrary
     /// </summary>
     public static class IEnumerableExtensions
     {
+        /// <summary>
+        /// Gets all the <see cref="Component"/>s of the given type in each instance of the <see cref="IEnumerable{T}"/>
+        /// </summary>
+        /// <typeparam name="ComponentType">The type of the <see cref="Component"/> to get, must enherit from <see cref="Component"/></typeparam>
+        /// <param name="collection"></param>
+        /// <returns>All components gotten from the <see cref="IEnumerable{T}"/></returns>
+        public static IEnumerable<ComponentType> GetComponents<ComponentType>(this IEnumerable<Component> collection) where ComponentType : Component
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            ComponentType[] components = new ComponentType[collection.Count()];
+
+            int currentIndex = 0;
+            foreach (Component item in collection)
+            {
+                ComponentType component = item.GetComponent<ComponentType>();
+                components[currentIndex] = component;
+
+                currentIndex++;
+            }
+
+            return components;
+        }
+
         /// <summary>
         /// Gets all fields of the given name in the given <see cref="IEnumerable{T}"/>
         /// </summary>
@@ -23,6 +51,15 @@ namespace ModLibrary
         /// <returns>A new <see cref="IEnumerable{T}"/> that contains all the found fields with the given name casted to the given <typeparamref name="FieldType"/></returns>
         public static IEnumerable<FieldType> GetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(fieldName))
+            {
+                throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
+            }
+
             FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
 
             if (field == null)
@@ -43,6 +80,77 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Sets all fields of the given name in the given <see cref="IEnumerable{T}"/> to the given value
+        /// </summary>
+        /// <typeparam name="CollectionType">The type if the original <see cref="IEnumerable{T}"/></typeparam>
+        /// <typeparam name="FieldType">The type of the field</typeparam>
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> to set all the fields in</param>
+        /// <param name="fieldName">The name of the field to set from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
+        /// <param name="value">The value to set all the fields to</param>
+        /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, FieldType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(fieldName))
+            {
+                throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
+            }
+
+            FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
+
+            if (field == null)
+            {
+                throw new MissingFieldException("Field \"" + typeof(CollectionType).Name + "." + fieldName + "\" could not be found!");
+            }
+
+            foreach (CollectionType item in collection)
+            {
+                field.SetValue(item, value);
+            }
+        }
+
+        /// <summary>
+        /// Sets all fields of the given name in the given <see cref="IEnumerable{T}"/> to the value gotten by calling the given <see cref="Func{T, TResult}"/>
+        /// </summary>
+        /// <typeparam name="CollectionType">The type if the original <see cref="IEnumerable{T}"/></typeparam>
+        /// <typeparam name="FieldType">The type of the field</typeparam>
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> to set all the fields in</param>
+        /// <param name="fieldName">The name of the field to set from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
+        /// <param name="valueFunction">The <see cref="Func{T, TResult}"/> used to get the value for each instance of the <see cref="IEnumerable{T}"/></param>
+        /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, Func<CollectionType, FieldType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(fieldName))
+            {
+                throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
+            }
+            if (valueFunction == null)
+            {
+                throw new ArgumentNullException(nameof(valueFunction));
+            }
+
+            FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
+
+            if (field == null)
+            {
+                throw new MissingFieldException("Field \"" + typeof(CollectionType).Name + "." + fieldName + "\" could not be found!");
+            }
+
+            foreach (CollectionType item in collection)
+            {
+                FieldType value = valueFunction(item);
+                field.SetValue(item, value);
+            }
+        }
+
+        /// <summary>
         /// Gets all properties of the given name in the given <see cref="IEnumerable{T}"/>
         /// </summary>
         /// <typeparam name="CollectionType">The type if the original <see cref="IEnumerable{T}"/></typeparam>
@@ -53,7 +161,16 @@ namespace ModLibrary
         /// <returns>A new <see cref="IEnumerable{T}"/> that contains all the found properties with the given name casted to the given <typeparamref name="PropertyType"/></returns>
         public static IEnumerable<PropertyType> GetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
-            PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags);
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
+            }
+
+            PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
 
             if (property == null)
             {
@@ -73,6 +190,77 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Sets all properties of the given name in the given <see cref="IEnumerable{T}"/> to the given value
+        /// </summary>
+        /// <typeparam name="CollectionType">The type if the original <see cref="IEnumerable{T}"/></typeparam>
+        /// <typeparam name="PropertyType">The type of the property</typeparam>
+        /// <param name="collection">The <see cref="IEnumerable{T}"/> to set the properties in</param>
+        /// <param name="propertyName">The name of the property to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
+        /// <param name="value">The value to set all the fields to</param>
+        /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, PropertyType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
+            }
+
+            PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
+
+            if (property == null)
+            {
+                throw new MissingMemberException("Property \"" + typeof(CollectionType).Name + "." + propertyName + "\" could not be found!");
+            }
+
+            foreach (CollectionType item in collection)
+            {
+                property.SetValue(item, value);
+            }
+        }
+
+        /// <summary>
+        /// Sets all properties of the given name in the given <see cref="IEnumerable{T}"/> to the value gotten by calling the given <see cref="Func{T, TResult}"/>
+        /// </summary>
+        /// <typeparam name="CollectionType">The type if the original <see cref="IEnumerable{T}"/></typeparam>
+        /// <typeparam name="PropertyType">The type of the property</typeparam>
+        /// <param name="collection">>The <see cref="IEnumerable{T}"/> to set the properties in</param>
+        /// <param name="propertyName">The name of the property to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
+        /// <param name="valueFunction">The <see cref="Func{T, TResult}"/> used to get the value for each instance of the <see cref="IEnumerable{T}"/></param>
+        /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, Func<CollectionType, PropertyType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
+            }
+            if (valueFunction == null)
+            {
+                throw new ArgumentNullException(nameof(valueFunction));
+            }
+
+            PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
+
+            if (property == null)
+            {
+                throw new MissingMemberException("Property \"" + typeof(CollectionType).Name + "." + propertyName + "\" could not be found!");
+            }
+
+            foreach (CollectionType item in collection)
+            {
+                PropertyType value = valueFunction(item);
+                property.SetValue(item, value);
+            }
+        }
+
+        /// <summary>
         /// Calls a method in all instances of the given <see cref="IEnumerable{T}"/>
         /// </summary>
         /// <typeparam name="CollectionType">The type of the <see cref="IEnumerable{T}"/> to call the methods in</typeparam>
@@ -81,6 +269,15 @@ namespace ModLibrary
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+
             CallMethods(collection, methodName, arguments: null, bindingFlags: bindingFlags);
         }
 
@@ -90,10 +287,19 @@ namespace ModLibrary
         /// <typeparam name="CollectionType">The type of the <see cref="IEnumerable{T}"/> to call the methods in</typeparam>
         /// <param name="collection">The <see cref="IEnumerable{T}"/> to iterate through</param>
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
-        /// <param name="arguments">The arguments to pass to the method</param>
+        /// <param name="arguments">The arguments to pass to the method, pass <see langword="null"/> for no arguments</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+
             Type[] argumentTypes;
             if (arguments != null)
             {
@@ -126,10 +332,23 @@ namespace ModLibrary
         /// <typeparam name="CollectionType">The type of the <see cref="IEnumerable{T}"/> to call the methods in</typeparam>
         /// <param name="collection">The <see cref="IEnumerable{T}"/> to iterate through</param>
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
-        /// <param name="argumentFunction">The <see cref="Func{T, TResult}"/> used to get the argument values for each instance if the <see cref="IEnumerable{T}"/></param>
+        /// <param name="argumentFunction">The <see cref="Func{T, TResult}"/> used to get the argument values for each instance of the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+            if (argumentFunction == null)
+            {
+                throw new ArgumentNullException(nameof(argumentFunction));
+            }
+
             foreach (CollectionType item in collection)
             {
                 object[] arguments = argumentFunction(item);
@@ -157,8 +376,17 @@ namespace ModLibrary
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
-        public static IEnumerable<KeyValuePair<CollectionType, ReturnType>> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+
             return CallMethods<CollectionType, ReturnType>(collection, methodName, arguments: null, bindingFlags: bindingFlags);
         }
 
@@ -169,11 +397,20 @@ namespace ModLibrary
         /// <typeparam name="ReturnType">The return type of the method called</typeparam>
         /// <param name="collection">The <see cref="IEnumerable{T}"/> to iterate through</param>
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
-        /// <param name="arguments">The arguments to pass to all methods called</param>
+        /// <param name="arguments">The arguments to pass to all methods called, pass <see langword="null"/> for no arguments</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
-        public static IEnumerable<KeyValuePair<CollectionType, ReturnType>> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+
             Type[] argumentTypes;
             if (arguments != null)
             {
@@ -194,13 +431,13 @@ namespace ModLibrary
                 throw new MissingMethodException("Method \"" + typeof(CollectionType).Name + "." + methodName + "(" + typeNames + ")\" could not be found!");
             }
 
-            KeyValuePair<CollectionType, ReturnType>[] returnValues = new KeyValuePair<CollectionType, ReturnType>[collection.Count()];
+            ReturnType[] returnValues = new ReturnType[collection.Count()];
 
             int currentIndex = 0;
             foreach (CollectionType item in collection)
             {
                 object returnValue = methodInfo.Invoke(item, arguments);
-                returnValues[currentIndex] = new KeyValuePair<CollectionType, ReturnType>(item, (ReturnType)returnValue);
+                returnValues[currentIndex] = (ReturnType)returnValue;
 
                 currentIndex++;
             }
@@ -218,9 +455,22 @@ namespace ModLibrary
         /// <param name="argumentFunction">The <see cref="Func{T, TResult}"/> used to get the argument values for each instance if the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
-        public static IEnumerable<KeyValuePair<CollectionType, ReturnType>> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
+        public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
-            KeyValuePair<CollectionType, ReturnType>[] returnValues = new KeyValuePair<CollectionType, ReturnType>[collection.Count()];
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (string.IsNullOrEmpty(methodName))
+            {
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+            }
+            if (argumentFunction == null)
+            {
+                throw new ArgumentNullException(nameof(argumentFunction));
+            }
+
+            ReturnType[] returnValues = new ReturnType[collection.Count()];
 
             int currentIndex = 0;
             foreach (CollectionType item in collection)
@@ -238,12 +488,13 @@ namespace ModLibrary
                 }
 
                 object returnValue = methodInfo.Invoke(item, arguments);
-                returnValues[currentIndex] = new KeyValuePair<CollectionType, ReturnType>(item, (ReturnType)returnValue);
+                returnValues[currentIndex] = (ReturnType)returnValue;
 
                 currentIndex++;
             }
 
             return returnValues;
         }
+
     }
 }

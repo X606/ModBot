@@ -43,7 +43,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Sets angle offset of this upgrade on the mod page
+        /// Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="UpgradeManager"/>.AddUpgrade(<see cref="UpgradeDescription"/>, <see cref="Mod"/>) is called
         /// </summary>
         /// <param name="upgradeDescription"></param>
         /// <param name="angle"></param>

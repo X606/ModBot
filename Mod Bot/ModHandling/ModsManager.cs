@@ -89,7 +89,6 @@ namespace InternalModBot
                 }
                 object obj = Activator.CreateInstance(type);
                 
-
                 Mod loadedMod = obj as Mod;
                 mods.ForEach(delegate (LoadedMod mod)
                 {
@@ -99,15 +98,23 @@ namespace InternalModBot
                     }
                 });
 
-                mods.Add(new LoadedMod((Mod)obj, assemblyData, hasFile));
+                mods.Add(new LoadedMod(loadedMod, assemblyData, hasFile));
 
                 bool isActive = PlayerPrefs.GetInt(loadedMod.GetUniqueID(), 1) != 0;
                 if (!isActive)
                 {
                     DisableMod(loadedMod);
-                } else
+                }
+                else
                 {
-                    ((Mod)obj).OnModRefreshed();
+                    try
+                    {
+                        loadedMod.OnModRefreshed();
+                    }
+                    catch(Exception exception)
+                    {
+                        throw new Exception("Caught exception in OnModRefreshed for mod \"" + loadedMod.GetModName() + "\" with ID \"" + loadedMod.GetUniqueID() + "\": " + exception.Message);
+                    }
                 }
 
                 
