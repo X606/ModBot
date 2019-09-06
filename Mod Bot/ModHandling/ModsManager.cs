@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using System.Collections;
 
 namespace InternalModBot
 {
@@ -112,7 +113,7 @@ namespace InternalModBot
                 {
                     try
                     {
-                        loadedMod.OnModRefreshed();
+                        StartCoroutine(CallOnModRefreshed1Frame(loadedMod));
                     }
                     catch(Exception exception)
                     {
@@ -130,6 +131,11 @@ namespace InternalModBot
             
         }
 
+        private IEnumerator CallOnModRefreshed1Frame(Mod mod)
+        {
+            yield return 0;
+            mod.OnModRefreshed();
+        }
 
         /// <summary>
         /// Adds the mod to the mods folder

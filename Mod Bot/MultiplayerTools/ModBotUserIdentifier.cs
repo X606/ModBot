@@ -33,7 +33,6 @@ namespace ModLibrary
         /// </summary>
         internal void RequestIds(FirstPersonMover player)
         {
-
             string message = REQUEST_MESSAGE_PREFIX + SEPARATOR_CHAR + player.GetPlayFabID();
             MultiplayerMessageSender.SendToAllClients(message);
         }

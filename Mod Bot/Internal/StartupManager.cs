@@ -22,13 +22,9 @@ namespace InternalModBot
             {
                 throw new DirectoryNotFoundException("Mods folder not found!");
             }
-
             
-
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
-            
-
             gameFlowManager.AddComponent<UpdateChecker>();
             gameFlowManager.AddComponent<ModsPanelManager>();
             gameFlowManager.AddComponent<CustomUpgradeManager>();

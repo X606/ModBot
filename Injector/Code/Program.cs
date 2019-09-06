@@ -22,9 +22,8 @@ class Program
         InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary);
         
         Console.WriteLine("All injections completed!");
-
-        Console.ReadLine();
-        System.Threading.Thread.Sleep(500);
+        
+        System.Threading.Thread.Sleep(2000);
         
 
     }
