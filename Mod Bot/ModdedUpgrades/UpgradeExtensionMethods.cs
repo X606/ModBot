@@ -18,7 +18,7 @@ namespace ModLibrary
         /// <param name="mod"></param>
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
-            if (UpgradePagesManager.IsModdedUpgradeType(upgrade.UpgradeType))
+            if (UpgradePagesManager.IsModdedUpgradeType(upgrade.UpgradeType) || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
             {
                 upgradeManager.UpgradeDescriptions.Add(upgrade);
             }
