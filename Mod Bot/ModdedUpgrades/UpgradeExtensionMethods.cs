@@ -25,6 +25,12 @@ namespace ModLibrary
             
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 
+            if (upgrade is AbilityUpgrade)
+            {
+                Dictionary<UpgradeType, bool> _abilityUpgradeTypes = Accessor.GetPrivateField<UpgradeManager, Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes", UpgradeManager.Instance);
+                _abilityUpgradeTypes[upgrade.UpgradeType] = true;
+            }
+
             if (upgrade.Requirement != null)
             {
                 RecursivelyAddRequirments(upgrade, mod);
