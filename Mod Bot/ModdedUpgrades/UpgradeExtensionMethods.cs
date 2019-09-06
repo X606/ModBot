@@ -66,7 +66,7 @@ namespace ModLibrary
         /// <param name="url">the url of the image you want to set the object to</param>
         public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
         {
-            UpgradeIconDownloader.Instance.AddUpgradeIcon(upgradeDescription, url);
+            UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
         }
 
         private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
