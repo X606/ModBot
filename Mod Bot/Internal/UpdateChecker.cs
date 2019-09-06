@@ -20,34 +20,20 @@ namespace InternalModBot
                 return;
             }
 
-            //GameObject prefab = AssetLoader.GetObjectFromFile("newversionalert", "Canvas", "Clone Drone in the Danger Zone_Data/");
-            //GameObject spawnedObject = Instantiate(prefab);
-            //spawnedModdedObject = spawnedObject.GetComponent<ModdedObject>();
-
-            //spawnedModdedObject.gameObject.SetActive(false);
-
             StartCoroutine(ThreadSequence());
-
-            //Thread updateThread = new Thread(ThreadSequence); // In separate thread because it waits for a web response
-            //updateThread.Start();
         }
 
         private IEnumerator ThreadSequence()
         {
-            string installedGameVersion = VersionNumberManager.Instance.GetVersionString(); // Current game version
             string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
-
-            UnityWebRequest gameVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/cloneDroneVer/.json");
-            yield return gameVersionRequest.SendWebRequest();
-            string newestModBotGameVersion = gameVersionRequest.downloadHandler.text.Replace("\"", ""); // The latest version ModBot is updated for
-
+            
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
             string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
 
             GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nMod-Bot Version: " + installedModBotVersion; // Add ModBot version in corner
             
-            if (installedGameVersion != newestModBotGameVersion || installedModBotVersion == newestModBotVersion)
+            if (installedModBotVersion == newestModBotVersion)
             {
                 debug.Log("Mod-Bot version '" + installedModBotVersion + "' up to date!", Color.green);
                 yield break;
