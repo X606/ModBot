@@ -6,19 +6,19 @@ using InternalModBot;
 namespace ModLibrary
 {
     /// <summary>
-    /// Used to implement Extension methods for upgrades, dont call these directly from this class.
+    /// Implements Extension methods for upgrades
     /// </summary>
     public static class UpgradeExtensionMethods
     {
         /// <summary>
-        /// Adds a upgrade to the page of the specified mod, if the upgrade is a modded upgrade it will also be added to the upgradeManager.UpgradeDescriptions list
+        /// Adds a upgrade to the page of the specified mod, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
         /// </summary>
         /// <param name="upgradeManager"></param>
         /// <param name="upgrade"></param>
         /// <param name="mod"></param>
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
-            if (UpgradePagesManager.IsModdedUpgradeType(upgrade.UpgradeType) || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
+            if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
             {
                 upgradeManager.UpgradeDescriptions.Add(upgrade);
             }
@@ -72,7 +72,9 @@ namespace ModLibrary
         private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade == null)
+            {
                 return;
+            }
 
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 

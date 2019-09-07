@@ -36,6 +36,7 @@ namespace ModLibrary
             string message = REQUEST_MESSAGE_PREFIX + SEPARATOR_CHAR + player.GetPlayFabID();
             MultiplayerMessageSender.SendToAllClients(message);
         }
+
         private void Respond(string playfabIDTarget)
         {
             FirstPersonMover player = CharacterTracker.Instance.GetPlayer();
@@ -44,8 +45,7 @@ namespace ModLibrary
                 DelegateScheduler.Instance.Schedule(delegate { Respond(playfabIDTarget); }, 1);
                 return;
             }
-                
-
+            
             string message = RESPONSE_MESSAGE_PREFIX + SEPARATOR_CHAR + playfabIDTarget + SEPARATOR_CHAR + player.GetPlayFabID();
             MultiplayerMessageSender.SendToAllClients(message);
         }
@@ -56,7 +56,6 @@ namespace ModLibrary
         /// <param name="moddedEvent"></param>
         internal void OnEvent(GenericStringForModdingEvent moddedEvent)
         {
-
             string message = moddedEvent.EventData;
 
             if (message.StartsWith(REQUEST_MESSAGE_PREFIX))
@@ -84,9 +83,10 @@ namespace ModLibrary
                     PlayFabIDs.Add(subMessages[2]);
 
                 }
+
             }
 
-
         }
+
     }
 }

@@ -14,7 +14,7 @@ namespace ModLibrary
     /// <summary>
     /// Used to bring up a dialoge with 2 buttons
     /// </summary>
-    public class Generic2ButtonDialoge
+    public class Generic2ButtonDialogue
     {
         private Action OnButton1ClickedCallback;
         private Action OnButton2ClickedCallback;
@@ -26,7 +26,7 @@ namespace ModLibrary
         private ModdedObject SpawnedObject;
 
         /// <summary>
-        /// If this is true there is currently a <see cref="Generic2ButtonDialoge"/> open
+        /// If this is true there is currently a <see cref="Generic2ButtonDialogue"/> open
         /// </summary>
         public static bool IsWindowOpen;
 
@@ -38,7 +38,7 @@ namespace ModLibrary
         /// <param name="onPressButton1">Will be called when the user clicks on the first button</param>
         /// <param name="button2Text">The text on the second button</param>
         /// <param name="onPressButton2">Will be called when the user clicks on the second button</param>
-        public Generic2ButtonDialoge(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
+        public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
         {
             GameObject prefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Generic2ButtonDialoge", "Clone Drone in the Danger Zone_Data/");
             SpawnedObject = GameObject.Instantiate(prefab).GetComponent<ModdedObject>();
@@ -106,7 +106,7 @@ namespace ModLibrary
         }
 
 
-        private Generic2ButtonDialoge() // to make sure that you cant create one of these without arguments
+        private Generic2ButtonDialogue() // to make sure that you cant create one of these without arguments
         {
         }
 

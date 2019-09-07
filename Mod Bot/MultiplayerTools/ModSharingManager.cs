@@ -93,6 +93,7 @@ namespace InternalModBot {
             ModSuggestingManager.Instance.SuggestModMultiplayer(senderPlayfabID, modName, fullData);
             DownloadingData.Remove(id);
         }
+
         private bool HasDownloadedAllParts(string[] data)
         {
             for (int i = 0; i < data.Length; i++)
@@ -111,11 +112,10 @@ namespace InternalModBot {
         /// </summary>
         public Dictionary<string, string[]> DownloadingData = new Dictionary<string, string[]>();
 
-
-        private string GenerateID(int lenght)
+        private string GenerateID(int length)
         {
             string returnValue = "";
-            for (int i = 0; i < lenght; i++)
+            for (int i = 0; i < length; i++)
             {
                 char randomCharacter = CHARACTERS_TO_USE_IN_IDS[UnityEngine.Random.Range(0, CHARACTERS_TO_USE_IN_IDS.Length)];
                 returnValue += randomCharacter;

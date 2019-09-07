@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using ModLibrary;
 using InternalModBot;
 
+#pragma warning disable IDE1005 // Delegate invocation can be simplefied
+
 namespace ModLibrary
 {
     /// <summary>
@@ -31,13 +33,6 @@ namespace ModLibrary
             Content = modObject.GetObject<GameObject>(0);
             XButton = modObject.GetObject<Button>(1);
             XButton.onClick.AddListener(CloseWindow);
-
-
-            // Debug stuff
-            // int RandomNumber = UnityEngine.Random.Range(0, 40);
-
-            // OptionsSaver.SaveString(OwnerMod, "test" + RandomNumber, DEBUG_RandomString(10) );
-            // debug.Log( OptionsSaver.LoadString(OwnerMod, "testStringHaHa") );
         }
 
         /// <summary>
@@ -65,10 +60,27 @@ namespace ModLibrary
             {
                 slider.value = loadedFloat.Value;
             }
-            onChange?.Invoke(slider.value);
+
+            if (onChange != null)
+            {
+                onChange(slider.value);
+            }
+
             numberDisplay.text = slider.value.ToString();
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveFloat(OwnerMod, name, value); onChange?.Invoke(value); numberDisplay.text = value.ToString(); });
+
+            slider.onValueChanged.AddListener(delegate (float value)
+            {
+                OptionsSaver.SaveFloat(OwnerMod, name, value);
+
+                if (onChange != null)
+                {
+                    onChange(value);
+                }
+
+                numberDisplay.text = value.ToString();
+            });
         }
+
         /// <summary>
         /// Adds a slider to the options window that can only be whole numbers
         /// </summary>
@@ -95,10 +107,26 @@ namespace ModLibrary
             {
                 slider.value = loadedInt.Value;
             }
-            onChange?.Invoke((int)slider.value);
+
+            if (onChange != null)
+            {
+                onChange((int)slider.value);
+            }
+
             numberDisplay.text = slider.value.ToString();
-            slider.onValueChanged.AddListener(delegate (float value) { OptionsSaver.SaveInt(OwnerMod, name, (int)value); onChange?.Invoke((int)value); numberDisplay.text = value.ToString(); });
+            slider.onValueChanged.AddListener(delegate (float value)
+            {
+                OptionsSaver.SaveInt(OwnerMod, name, (int)value);
+
+                if (onChange != null)
+                {
+                    onChange((int)slider.value);
+                }
+
+                numberDisplay.text = value.ToString();
+            });
         }
+
         /// <summary>
         /// Adds a checkbox to the mods window
         /// </summary>
@@ -120,9 +148,23 @@ namespace ModLibrary
             {
                 toggle.isOn = loadedBool.Value;
             }
-            onChange?.Invoke(toggle.isOn);
-            toggle.onValueChanged.AddListener(delegate (bool value) { OptionsSaver.SaveBool(OwnerMod, name, value); onChange?.Invoke(value); });
+
+            if (onChange != null)
+            {
+                onChange(toggle.isOn);
+            }
+
+            toggle.onValueChanged.AddListener(delegate (bool value)
+            {
+                OptionsSaver.SaveBool(OwnerMod, name, value);
+
+                if (onChange != null)
+                {
+                    onChange(value);
+                }
+            });
         }
+
         /// <summary>
         /// Adds a input field to the mods window
         /// </summary>
@@ -144,9 +186,23 @@ namespace ModLibrary
             {
                 field.text = loadedString;
             }
-            onChange?.Invoke(field.text);
-            field.onValueChanged.AddListener(delegate (string value) { OptionsSaver.SaveString(OwnerMod, name, value); onChange?.Invoke(value); });
+
+            if (onChange != null)
+            {
+                onChange(field.text);
+            }
+
+            field.onValueChanged.AddListener(delegate (string value)
+            {
+                OptionsSaver.SaveString(OwnerMod, name, value);
+
+                if (onChange != null)
+                {
+                    onChange(value);
+                }
+            });
         }
+
         /// <summary>
         /// Adds a dropdown to the mods window
         /// </summary>
@@ -157,7 +213,9 @@ namespace ModLibrary
         public void AddDropdown(string[] options, int defaultIndex, string name, Action<int> onChange = null)
         {
             if (options.Length <= defaultIndex || defaultIndex < 0)
+            {
                 return;
+            }
 
             GameObject dropdownPrefab = AssetLoader.GetObjectFromFile("modswindow", "DropDown", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedPrefab = GameObject.Instantiate(dropdownPrefab);
@@ -182,13 +240,27 @@ namespace ModLibrary
                 dropdown.value = loadedInt.Value;
                 dropdown.RefreshShownValue();
             }
-            onChange?.Invoke(dropdown.value);
-            dropdown.onValueChanged.AddListener(delegate (int value) { OptionsSaver.SaveInt(OwnerMod, name, value); onChange?.Invoke(value); });
+
+            if (onChange != null)
+            {
+                onChange(dropdown.value);
+            }
+
+            dropdown.onValueChanged.AddListener(delegate (int value)
+            {
+                OptionsSaver.SaveInt(OwnerMod, name, value);
+
+                if (onChange != null)
+                {
+                    onChange(value);
+                }
+            });
         }
+
         /// <summary>
         /// Adds a dropdown to the options window
         /// </summary>
-        /// <typeparam name="T">Must be a enum, the options of this enum will be displayed as the options of the dropdown</typeparam>
+        /// <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
         /// <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
         /// <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
         /// <param name="onChange"></param>
@@ -200,8 +272,8 @@ namespace ModLibrary
             }
             List<string> enums = ModTools.EnumTools.GetNames<T>();
             AddDropdown(enums.ToArray(), defaultIndex, name, onChange);
-
         }
+
         /// <summary>
         /// Adds a button to the options window
         /// </summary>
@@ -212,10 +284,12 @@ namespace ModLibrary
             GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedPrefab = GameObject.Instantiate(buttonPrefab);
             spawnedPrefab.transform.parent = Content.transform;
+
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Button>(0).onClick.AddListener(callback);
             spawnedModdedObject.GetObject<Text>(1).text = text;
         }
+
         /// <summary>
         /// Adds a plain text to the options window
         /// </summary>
@@ -225,6 +299,7 @@ namespace ModLibrary
             GameObject labelPrefab = AssetLoader.GetObjectFromFile("modswindow", "Label", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedPrefab = GameObject.Instantiate(labelPrefab);
             spawnedPrefab.transform.parent = Content.transform;
+
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = text;
         }
@@ -245,8 +320,7 @@ namespace ModLibrary
         {
             GameObject.Destroy(SpawnedBase);
         }
-
-
+        
     }
 }
 namespace InternalModBot {
@@ -270,6 +344,7 @@ namespace InternalModBot {
                 Load(json);
             }
         }
+
         /// <summary>
         /// Sets the loaded options from an input json string
         /// </summary>
@@ -277,11 +352,13 @@ namespace InternalModBot {
         public static void Load(string json)
         {
             Loadedkeys = JsonConvert.DeserializeObject<List<KeyValuePair<string, object>>>(json);
+
             if (Loadedkeys == null)
             {
                 Loadedkeys = new List<KeyValuePair<string, object>>();
             }
         }
+
         /// <summary>
         /// Saves the current loaded options to a file
         /// </summary>
@@ -354,16 +431,19 @@ namespace InternalModBot {
         {
             string key = GenerateSaveFormatString(mod, SaveFormats.String, name);
             int? index = GetIndexOfKey(key);
-            if (index != null)
+
+            if (index.HasValue)
             {
                 Loadedkeys[index.Value] = new KeyValuePair<string, object>(key, _string);
-            } else
+            }
+            else
             {
                 Loadedkeys.Add(new KeyValuePair<string, object>(key, _string));
             }
 
             Save();
         }
+
         /// <summary>
         /// Loads a string from the loaded options
         /// </summary>
@@ -373,7 +453,9 @@ namespace InternalModBot {
         public static string LoadString(Mod mod, string name)
         {
             if (Loadedkeys == null)
+            {
                 return null;
+            }
 
             string outputString = null;
             foreach (KeyValuePair<string, object> value in Loadedkeys)
@@ -381,7 +463,6 @@ namespace InternalModBot {
                 if (value.Key == GenerateSaveFormatString(mod, SaveFormats.String, name))
                 {
                     outputString = value.Value as string;
-                    debug.Log("setting string stuff a \"" + outputString + "\"");
                     break;
                 }
             }
@@ -399,7 +480,8 @@ namespace InternalModBot {
         {
             string key = GenerateSaveFormatString(mod, SaveFormats.Int, name);
             int? index = GetIndexOfKey(key);
-            if (index != null)
+
+            if (index.HasValue)
             {
                 Loadedkeys[index.Value] = new KeyValuePair<string, object>(key, _int);
             }
@@ -410,6 +492,7 @@ namespace InternalModBot {
             
             Save();
         }
+
         /// <summary>
         /// loads an int from the loaded options
         /// </summary>
@@ -419,7 +502,9 @@ namespace InternalModBot {
         public static int? LoadInt(Mod mod, string name)
         {
             if (Loadedkeys == null)
+            {
                 return null;
+            }
 
             int? outputInt = null;
             foreach (KeyValuePair<string, object> value in Loadedkeys)
@@ -444,7 +529,8 @@ namespace InternalModBot {
         {
             string key = GenerateSaveFormatString(mod, SaveFormats.Float, name);
             int? index = GetIndexOfKey(key);
-            if (index != null)
+
+            if (index.HasValue)
             {
                 Loadedkeys[index.Value] = new KeyValuePair<string, object>(key, _float);
             }
@@ -455,6 +541,7 @@ namespace InternalModBot {
 
             Save();
         }
+
         /// <summary>
         /// loads a float from the loaded options
         /// </summary>
@@ -464,7 +551,9 @@ namespace InternalModBot {
         public static float? LoadFloat(Mod mod, string name)
         {
             if (Loadedkeys == null)
+            {
                 return null;
+            }
 
             float? outputFloat = null;
             foreach (KeyValuePair<string, object> value in Loadedkeys)
@@ -489,7 +578,8 @@ namespace InternalModBot {
         {
             string key = GenerateSaveFormatString(mod, SaveFormats.Bool, name);
             int? index = GetIndexOfKey(key);
-            if (index != null)
+
+            if (index.HasValue)
             {
                 Loadedkeys[index.Value] = new KeyValuePair<string, object>(key, _bool);
             }
@@ -500,6 +590,7 @@ namespace InternalModBot {
 
             Save();
         }
+
         /// <summary>
         /// loads a bool from the loaded options
         /// </summary>
@@ -509,7 +600,9 @@ namespace InternalModBot {
         public static bool? LoadBool(Mod mod, string name)
         {
             if (Loadedkeys == null)
+            {
                 return null;
+            }
 
             bool? outputBool = null;
             foreach (KeyValuePair<string, object> value in Loadedkeys)

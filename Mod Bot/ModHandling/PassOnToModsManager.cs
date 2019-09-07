@@ -425,7 +425,7 @@ namespace InternalModBot
                 }
             }
 
-            return result || Generic2ButtonDialoge.IsWindowOpen;
+            return result || Generic2ButtonDialogue.IsWindowOpen;
         }
 
         /// <summary>

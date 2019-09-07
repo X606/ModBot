@@ -12,7 +12,7 @@ namespace InternalModBot
     public static class StartupManager
     {
         /// <summary>
-        /// Sets up mod-bot in general, called on game start
+        /// Sets up Mod-Mot in general, called on game start
         /// </summary>
         public static void OnStartUp()
         {

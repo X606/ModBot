@@ -6,7 +6,7 @@ using InternalModBot;
 namespace ModLibrary
 {
     /// <summary>
-    /// Base class for all mods, contains virtual implementations for diffrent events in the game.
+    /// Base class for all mods, contains virtual implementations for different events in the game.
     /// </summary>
     public abstract class Mod
     {
@@ -246,6 +246,7 @@ namespace ModLibrary
         {
             return false;
         }
+
         /// <summary>
         /// Gets called when the user clicks on the mod settings button in the mods window. Allows you to create a neat little UI that saves the values for you. Get the values set by this with SettingsManager.Instance.GetModdedSettingsBoolValue, GetModdedSettingsStringValue, GetModdedSettingsIntValue and GetModdedSettingsFloatValue
         /// </summary>
@@ -253,6 +254,7 @@ namespace ModLibrary
         public virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
         {
         }
+
         /// <summary>
         /// If this returns true the cursor will get enabled
         /// </summary>
@@ -267,7 +269,6 @@ namespace ModLibrary
         /// </summary>
         public virtual void GlobalUpdate()
         {
-
         }
 
         /// <summary>
@@ -276,7 +277,6 @@ namespace ModLibrary
         /// <param name="moddedEvent">The received <see cref="GenericStringForModdingEvent"/></param>
         public virtual void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
         {
-
         }
 
     }

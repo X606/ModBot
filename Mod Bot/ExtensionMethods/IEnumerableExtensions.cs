@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 using UnityEngine;
 
 namespace ModLibrary
@@ -19,6 +19,7 @@ namespace ModLibrary
         /// <typeparam name="ComponentType">The type of the <see cref="Component"/> to get, must enherit from <see cref="Component"/></typeparam>
         /// <param name="collection"></param>
         /// <returns>All components gotten from the <see cref="IEnumerable{T}"/></returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
         public static IEnumerable<ComponentType> GetComponents<ComponentType>(this IEnumerable<Component> collection) where ComponentType : Component
         {
             if (collection == null)
@@ -49,6 +50,9 @@ namespace ModLibrary
         /// <param name="fieldName">The name of the field to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
         /// <returns>A new <see cref="IEnumerable{T}"/> that contains all the found fields with the given name casted to the given <typeparamref name="FieldType"/></returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingFieldException">If the field could not be found</exception>
         public static IEnumerable<FieldType> GetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -88,6 +92,9 @@ namespace ModLibrary
         /// <param name="fieldName">The name of the field to set from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="value">The value to set all the fields to</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingFieldException">If the field could not be found</exception>
         public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, FieldType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -121,6 +128,9 @@ namespace ModLibrary
         /// <param name="fieldName">The name of the field to set from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="valueFunction">The <see cref="Func{T, TResult}"/> used to get the value for each instance of the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingFieldException">If the field could not be found</exception>
         public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, Func<CollectionType, FieldType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -159,6 +169,9 @@ namespace ModLibrary
         /// <param name="propertyName">The name of the property to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
         /// <returns>A new <see cref="IEnumerable{T}"/> that contains all the found properties with the given name casted to the given <typeparamref name="PropertyType"/></returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMemberException">If the property could not be found</exception>
         public static IEnumerable<PropertyType> GetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -198,6 +211,9 @@ namespace ModLibrary
         /// <param name="propertyName">The name of the property to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="value">The value to set all the fields to</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMemberException">If the property could not be found</exception>
         public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, PropertyType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -231,6 +247,9 @@ namespace ModLibrary
         /// <param name="propertyName">The name of the property to get from the <typeparamref name="CollectionType"/>, case-sensitive by default</param>
         /// <param name="valueFunction">The <see cref="Func{T, TResult}"/> used to get the value for each instance of the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the fields</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMemberException">If the property could not be found</exception>
         public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, Func<CollectionType, PropertyType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -267,6 +286,9 @@ namespace ModLibrary
         /// <param name="collection">The <see cref="IEnumerable{T}"/> to iterate through</param>
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -289,6 +311,9 @@ namespace ModLibrary
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
         /// <param name="arguments">The arguments to pass to the method, pass <see langword="null"/> for no arguments</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -334,6 +359,9 @@ namespace ModLibrary
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
         /// <param name="argumentFunction">The <see cref="Func{T, TResult}"/> used to get the argument values for each instance of the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/>, or the <paramref name="argumentFunction"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -376,6 +404,9 @@ namespace ModLibrary
         /// <param name="methodName">The name of the method to call, case-sesitive by default</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -400,6 +431,9 @@ namespace ModLibrary
         /// <param name="arguments">The arguments to pass to all methods called, pass <see langword="null"/> for no arguments</param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
@@ -455,6 +489,9 @@ namespace ModLibrary
         /// <param name="argumentFunction">The <see cref="Func{T, TResult}"/> used to get the argument values for each instance if the <see cref="IEnumerable{T}"/></param>
         /// <param name="bindingFlags">The <see cref="BindingFlags"/> used to find the methods</param>
         /// <returns>The return values of all the methods called</returns>
+        /// <exception cref="ArgumentNullException">If the given collection is <see langword="null"/>, or the <paramref name="argumentFunction"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given name string is empty, or <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">If the method could not be found</exception>
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)

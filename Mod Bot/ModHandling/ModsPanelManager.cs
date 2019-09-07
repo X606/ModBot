@@ -93,7 +93,6 @@ namespace InternalModBot
         {
             ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModsWindow, mod);
             mod.CreateSettingsWindow(builder);
-
         }
 
         private void ToggleIsModDisabled(int ID)
@@ -106,7 +105,8 @@ namespace InternalModBot
             if (isNotActive.Value)
             {
                 ModsManager.Instance.EnableMod(mod);
-            } else
+            }
+            else
             {
                 ModsManager.Instance.DisableMod(mod);
             }
@@ -119,7 +119,9 @@ namespace InternalModBot
         {
             bool? isModNotActive = ModsManager.Instance.IsModDeactivated(mod);
             if (!isModNotActive.HasValue)
+            {
                 return;
+            }
 
             GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
             GameObject modItem = Instantiate(modItemPrefab, parent.transform);
@@ -165,20 +167,21 @@ namespace InternalModBot
 
         private void OnBroadcastButtonClicked(Mod mod)
         {
-            Generic2ButtonDialoge dialoge = new Generic2ButtonDialoge("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
+            Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
                 "No",
-                delegate { },
+                null,
                 "Yes",
-                delegate {
+                delegate
+                {
                     ModSharingManager.Instance.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
-            });
-           
+                }
+            );
         }
         private void OnDownloadButtonClicked(Mod mod)
         {
-            Generic2ButtonDialoge dialoge = new Generic2ButtonDialoge("This will place " + mod.GetModName() + " in your mod folder as a .dll file, are you sure you want to do this?", 
+            Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will place " + mod.GetModName() + " in your mod folder as a .dll file, are you sure you want to do this?", 
                 "No", 
-                delegate { }, 
+                null, 
                 "Yes", 
                 delegate 
                 {

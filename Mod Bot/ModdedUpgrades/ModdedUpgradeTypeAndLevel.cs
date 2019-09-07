@@ -5,7 +5,7 @@ using System.Text;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used to represent  both a UpgradeType and a level (int) in Mod-Bot (the == and != operators compare the contents and not the references)
+    /// Used to represent both a UpgradeType and a level (int) in Mod-Bot (the == and != operators compare the contents and not the references)
     /// </summary>
     public class ModdedUpgradeRepresenter
     {

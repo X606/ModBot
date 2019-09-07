@@ -10,8 +10,6 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.Networking;
 
-#pragma warning disable IDE0025
-
 namespace InternalModBot
 {
     /// <summary>

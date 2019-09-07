@@ -17,6 +17,13 @@ namespace ModLibrary
             GameObject button = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
             CreateButtonAt(button, new Vector3(-300, -200, 0), "Back", BackClicked);
             CreateButtonAt(button, new Vector3(300, -200, 0), "Next", NextClicked);
+
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.PlayerGrabbedForUpgrade, RefreshPageTitle);
+        }
+
+        private void OnDestroy()
+        {
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.PlayerGrabbedForUpgrade, RefreshPageTitle);
         }
 
         private void CreateButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
@@ -38,8 +45,8 @@ namespace ModLibrary
         /// </summary>
         public void BackClicked()
         {
-            UpgradePagesManager.PreviusPage();
-            OnBackOrNextClicked();
+            UpgradePagesManager.PreviousPage();
+            RefreshPageTitle();
         }
 
         /// <summary>
@@ -48,10 +55,10 @@ namespace ModLibrary
         public void NextClicked()
         {
             UpgradePagesManager.NextPage();
-            OnBackOrNextClicked();
+            RefreshPageTitle();
         }
 
-        private void OnBackOrNextClicked()
+        private void RefreshPageTitle()
         {
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
 

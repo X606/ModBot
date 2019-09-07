@@ -1,19 +1,19 @@
-﻿using System;
+﻿using InternalModBot;
+using ModLibrary;
 using System.Collections.Generic;
 using System.Text;
-using InternalModBot;
-using ModLibrary;
+using System;
 using UnityEngine;
 
 namespace InternalModBot
 {
     /// <summary>
-    /// Contains a lot of methods that get called from injections into the game itself
+    /// Contains methods that get called from the game itself
     /// </summary>
     public static class CalledFromInjections
     {
         /// <summary>
-        /// Called From RefreshUpgrade at the start of the method
+        /// Called at the start of <see cref="FirstPersonMover.RefreshUpgrades"/>
         /// </summary>
         /// <param name="owner"></param>
         public static void FromRefreshUpgradesStart(FirstPersonMover owner)
@@ -22,11 +22,13 @@ namespace InternalModBot
             {
                 return;
             }
+
             UpgradeCollection upgrade = owner.GetComponent<UpgradeCollection>();
             ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(owner, upgrade);
         }
+
         /// <summary>
-        /// Called after upgrades get refreshed
+        /// Called at the end of <see cref="FirstPersonMover.RefreshUpgrades"/>
         /// </summary>
         /// <param name="owner"></param>
         public static void FromRefreshUpgradesEnd(FirstPersonMover owner)
@@ -35,26 +37,30 @@ namespace InternalModBot
             {
                 return;
             }
+
             ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(owner, owner.GetComponent<UpgradeCollection>());
         }
+
         /// <summary>
-        /// Gets called in character Start
+        /// Called from <see cref="Character.Start"/>
         /// </summary>
         /// <param name="owner"></param>
         public static void FromOnCharacterStart(Character owner)
         {
             ModsManager.Instance.PassOnMod.OnCharacterSpawned(owner);
         }
+
         /// <summary>
-        /// Gets called in character Update
+        /// Called from <see cref="Character.Update"/>
         /// </summary>
         /// <param name="owner"></param>
         public static void FromOnCharacterUpdate(Character owner)
         {
             ModsManager.Instance.PassOnMod.OnCharacterUpdate(owner);
         }
+
         /// <summary>
-        /// Called from OnDeath in Character
+        /// Called from <see cref="Character.onDeath(Character, DamageSourceType)"/>
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="killer"></param>
@@ -63,8 +69,9 @@ namespace InternalModBot
         {
             ModsManager.Instance.PassOnMod.OnCharacterKilled(owner, killer, damageSource);
         }
+
         /// <summary>
-        /// Called from GetSkillPointCost and the number this returns will be the cost of the upgrade
+        /// Called from <see cref="UpgradeDescription.GetAngleOffset"/> and returns the angle the upgrade should be on the current page
         /// </summary>
         /// <param name="upgrade"></param>
         /// <returns></returns>
@@ -72,8 +79,9 @@ namespace InternalModBot
         {
             return UpgradePagesManager.GetAngleOfUpgrade(upgrade.UpgradeType, upgrade.Level);
         }
+
         /// <summary>
-        /// Called from IsUpgradeCurrentlyVisible and if this returns false the upgrade will not be displayed, and if it returns true it will
+        /// Called from <see cref="UpgradeDescription.IsUpgradeCurrentlyVisible"/> and returns if the upgrade should be visible on the current page
         /// </summary>
         /// <param name="upgrade"></param>
         /// <returns></returns>
@@ -90,32 +98,36 @@ namespace InternalModBot
 
             return (GameModeManager.ShowsStoryBlockedUpgrades() || (!Singleton<UpgradeManager>.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsEndlessCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(Singleton<CharacterTracker>.Instance.GetPlayer());
         }
+
         /// <summary>
-        /// Called when a projectile is created
+        /// Called from <see cref="Projectile.SetInactive"/>
         /// </summary>
         /// <param name="arrow"></param>
         public static void FromSetInactive(Projectile arrow)
         {
             ModsManager.Instance.PassOnMod.OnProjectileCreated(arrow);
         }
+
         /// <summary>
-        /// Called when a arrow starts flying
+        /// Called from <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character)"/>
         /// </summary>
         /// <param name="arrow"></param>
         public static void FromStartFlying(Projectile arrow)
         {
             ModsManager.Instance.PassOnMod.OnProjectileStartedMoving(arrow);
         }
+
         /// <summary>
-        /// Called when a projectile gets destroyed
+        /// Called from <see cref="Projectile.DestroyProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
         public static void FromDestroyProjectile(Projectile arrow)
         {
             ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
+
         /// <summary>
-        /// Gets called when a projectile collides with the enviorment
+        /// Gets from <see cref="Projectile.OnEnvironmentCollided(bool)"/>
         /// </summary>
         /// <param name="arrow"></param>
         public static void FromOnEnvironmentCollided(Projectile arrow)
@@ -132,41 +144,41 @@ namespace InternalModBot
             {
                 arrow.MainCollider.enabled = false;
             }
+
             ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
+
         /// <summary>
-        /// If this method returns true the cursor will be enabled and the player will not be able to move
+        /// Called from <see cref="GameUIRoot.RefreshCursorEnabled"/> and returns if the cursor has been disabled by a mod
         /// </summary>
         /// <returns></returns>
         public static bool FromRefreshCursorEnabled()
         {
-            bool shouldCursorBeEnabled = ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled();
-
-            if (shouldCursorBeEnabled)
+            if (ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
             {
                 InputManager.Instance.SetCursorEnabled(true);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
+
         /// <summary>
-        /// Gets called from character GetPositionForAIToAimAt and is used to fix people aiming at spidertrons
+        /// Called from <see cref="MortarWalker.GetPositionForAIToAimAt"/>
         /// </summary>
-        /// <param name="me"></param>
+        /// <param name="character"></param>
         /// <returns></returns>
-        public static Vector3 FromGetPositionForAIToAimAt(Character me)
+        public static Vector3 FromGetPositionForAIToAimAt(Character character)
         {
-            List<MechBodyPart> powerCrystals = me.GetBodyParts(MechBodyPartType.PowerCrystal);
+            List<MechBodyPart> powerCrystals = character.GetBodyParts(MechBodyPartType.PowerCrystal);
             if (powerCrystals.Count == 0)
             {
-                return me.transform.position;
+                return character.transform.position;
             }
+
             return powerCrystals[0].transform.position;
         }
+
     }
 
-   
 }

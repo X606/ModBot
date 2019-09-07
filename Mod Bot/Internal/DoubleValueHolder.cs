@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
+using System;
 
 namespace InternalModBot
 {
@@ -12,19 +12,21 @@ namespace InternalModBot
     public struct DoubleValueHolder<T1, T2>
     {
         /// <summary>
-        /// Sets the first value to the first argument and the second value to the second argument
+        /// Initializes a new instance of the <see cref="DoubleValueHolder{T1, T2}"/> struct
         /// </summary>
-        /// <param name="_first"></param>
-        /// <param name="_second"></param>
+        /// <param name="_first">The first value to store</param>
+        /// <param name="_second">The second value to hold</param>
         public DoubleValueHolder(T1 _first, T2 _second)
         {
             FirstValue = _first;
             SecondValue = _second;
         }
+
         /// <summary>
         /// The first value held by this object
         /// </summary>
         public T1 FirstValue;
+
         /// <summary>
         /// The second value held by this object
         /// </summary>

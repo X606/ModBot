@@ -65,8 +65,8 @@ namespace InternalModBot
             {
                 ReloadMods();
             }
-            PassOnMod.GlobalUpdate();
 
+            PassOnMod.GlobalUpdate();
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace InternalModBot
                 {
                     try
                     {
-                        StartCoroutine(CallOnModRefreshed1Frame(loadedMod));
+                        StartCoroutine(CallOnModRefreshedNextFrame(loadedMod));
                     }
                     catch(Exception exception)
                     {
@@ -128,10 +128,9 @@ namespace InternalModBot
                 throw new Exception("The mod you are trying to load isn't valid: " + e.Message);
             }
 
-            
         }
 
-        private IEnumerator CallOnModRefreshed1Frame(Mod mod)
+        private IEnumerator CallOnModRefreshedNextFrame(Mod mod)
         {
             yield return 0;
             mod.OnModRefreshed();
@@ -206,6 +205,7 @@ namespace InternalModBot
             }
             return mods;
         }
+
         /// <summary>
         /// Gets a list of all mods currently loaded, even mods that arent currently active
         /// </summary>
@@ -240,6 +240,7 @@ namespace InternalModBot
             UpgradePagesManager.RemoveModdedUpgradesFor(mod);
             mod.OnModDeactivated();
         }
+
         /// <summary>
         /// Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
         /// </summary>
@@ -259,6 +260,7 @@ namespace InternalModBot
 
             mod.OnModRefreshed();
         }
+
         /// <summary>
         /// Checks if a mod is deactivated
         /// </summary>
@@ -288,6 +290,7 @@ namespace InternalModBot
             }
             return null;
         }
+
         /// <summary>
         /// Returns true if the passed mod doesnt have a file to load from
         /// </summary>
@@ -305,7 +308,6 @@ namespace InternalModBot
             return false;
         }
 
-
         private List<LoadedMod> mods = new List<LoadedMod>();
 
         /// <summary>
@@ -322,6 +324,7 @@ namespace InternalModBot
         private LoadedMod() // this will prevent people from createing now LoadedMod instances in mods
         {
         }
+
         /// <summary>
         /// Sets the mod field to the passed mod, and will not deactivate the mod
         /// </summary>
@@ -335,10 +338,12 @@ namespace InternalModBot
             RawAssemblyData = _rawAssemblyData;
             IsOnlyLoadedInMemory = !isLoadedFromFile;
         }
+
         /// <summary>
         /// The Mod object the class is holding
         /// </summary>
         public Mod Mod;
+
         /// <summary>
         /// Decides if the mod is deactivated.
         /// </summary>

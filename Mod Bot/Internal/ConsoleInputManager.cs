@@ -5,28 +5,42 @@ using UnityEngine;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used by mod-bot to define some commands that already exist without any extra mods
+    /// Used by Mod-Bot to define commands
     /// </summary>
     public static class ConsoleInputManager
     {
         /// <summary>
-        /// The same as OnCommandRan on mods, but called in mod-bot
+        /// The same as <see cref="Mod.OnCommandRan(string)"/>, but called in Mod-Bot
         /// </summary>
         /// <param name="command"></param>
         public static void OnCommandRan(string command)
         {
-            command = command.ToLower();
-            string[] subCommands = command.Split(' ');
+            string[] subCommands = command.ToLower().Split(' ');
 
             if (subCommands[0] == "ignoreallcrashes")
             {
-                if (subCommands.Length <= 1)
+                if (subCommands.Length < 2)
                 {
-                    debug.Log("Usage: ignoreallcrashes <number 0-1>");
+                    debug.Log("Usage: ignoreallcrashes [1 - 0], [on - off], [true, false]");
                     return;
                 }
 
-                IgnoreCrashesManager.SetIsIgnoringCrashes(subCommands[1] == "1");
+                bool value;
+                if (subCommands[1] == "1" || subCommands[1] == "on" || subCommands[1] == "true")
+                {
+                    value = true;
+                }
+                else if (subCommands[1] == "0" || subCommands[1] == "off" || subCommands[1] == "false")
+                {
+                    value = false;
+                }
+                else
+                {
+                    debug.Log("Usage: ignoreallcrashes[1 - 0], [on - off], [true, false]");
+                    return;
+                }
+
+                IgnoreCrashesManager.SetIsIgnoringCrashes(value);
             }
 
             if (subCommands[0] == "crash")
@@ -36,7 +50,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Crashes the game, called when someone enters the command "crash"
+        /// Crashes the game
         /// </summary>
         public static void Crash()
         {
@@ -57,7 +71,21 @@ namespace InternalModBot
         public static void Start()
         {
             int isIgnoringCrashesInt = PlayerPrefs.GetInt("IgnoreCrashes", 0);
-            isIgnoringCrashes = isIgnoringCrashesInt == 1;
+
+            if (isIgnoringCrashesInt == 0)
+            {
+                isIgnoringCrashes = false;
+            }
+            else if (isIgnoringCrashesInt == 1)
+            {
+                isIgnoringCrashes = true;
+            }
+            else
+            {
+                debug.Log("IgnoreCrashes playerpref value out of range, resetting to default value");
+                PlayerPrefs.SetInt("IgnoreCrashes", 0);
+                isIgnoringCrashes = false;
+            }
 
             if (isIgnoringCrashes)
             {
@@ -78,7 +106,7 @@ namespace InternalModBot
         {
             isIgnoringCrashes = state;
             int ignoreCrashesIntValue = isIgnoringCrashes ? 1 : 0;
-            
+
             PlayerPrefs.SetInt("IgnoreCrashes", ignoreCrashesIntValue);
             
             if (state)
@@ -92,7 +120,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Gets if we are currently ignoreing crashes
+        /// Gets if we are currently ignoring crashes
         /// </summary>
         /// <returns></returns>
         public static bool GetIsIgnoringCrashes()

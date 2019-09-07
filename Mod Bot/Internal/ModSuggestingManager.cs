@@ -1,19 +1,19 @@
-﻿using System;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using TwitchChatter;
-using UnityEngine;
-using UnityEngine.UI;
-using ModLibrary;
+﻿using ModLibrary;
 using System.Collections.Generic;
 using System.Collections;
+using System.Net.Security;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System;
+using TwitchChatter;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using UnityEngine;
 
 namespace InternalModBot
 {
     /// <summary>
-    /// Used by mod-bot to control the twich mode part of mod-bot
+    /// Used by Mod-Bot to control the Twich mode mod suggesting
     /// </summary>
     public class ModSuggestingManager : Singleton<ModSuggestingManager>
     {
@@ -29,14 +29,16 @@ namespace InternalModBot
         public void ShowNextInSuggestedModsQueue()
         {
             if (ModSuggestionQueue.Count == 0)
+            {
                 return;
+            }
 
             ModSuggestion nextSuggestedMod = ModSuggestionQueue.Dequeue();
             StartCoroutine(SuggestMod(nextSuggestedMod));
         }
         
         /// <summary>
-        /// Brings up the suggest dialoge for a multiplayer suggested mod
+        /// Brings up the suggest window for a multiplayer suggested mod
         /// </summary>
         /// <param name="suggesterPlayfabID"></param>
         /// <param name="modName"></param>
@@ -49,9 +51,12 @@ namespace InternalModBot
         private IEnumerator SuggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
         {
             string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
+
             if (displayName == null)
+            {
                 displayName = "";
-            
+            }
+
             displayText.text = "Mod download request!\n" +
                 displayName + " wants to share a mod with you!\n" +
                 "Mod name: \"" + modName + "\"";
@@ -71,6 +76,7 @@ namespace InternalModBot
                     clickedKey = KeyCode.PageUp;
                     break;
                 }
+
                 yield return 0;
             }
 
@@ -100,6 +106,7 @@ namespace InternalModBot
                 + mod.ModName + "\n" 
                 + "Suggested by: " + mod.SuggesterName;
             ModSuggestionAnimator.Play("suggestMod");
+
             KeyCode clickedKey;
             while (true)
             {
@@ -113,6 +120,7 @@ namespace InternalModBot
                     clickedKey = KeyCode.PageUp;
                     break;
                 }
+
                 yield return 0;
             }
 
@@ -142,7 +150,6 @@ namespace InternalModBot
                 TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
             }
 
-
         }
 
         /// <summary>
@@ -156,29 +163,30 @@ namespace InternalModBot
             {
                 return;
             }
+
             string[] subCommands = lowerText.Split(' ');
+
             if (subCommands[0].ToLower() == "!modsuggest")
             {
-                if (subCommands.Length >= 3)
-                {
-                    string url = subCommands[2];
-                    string suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
-                    string modName = subCommands[1];
-                    ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
-                    ModSuggestionQueue.Enqueue(suggestedMod);
-
-                    if (!GameFlowManager.Instance.IsInCombat())
-                    {
-                        ModSuggestion modSuggestion = ModSuggestionQueue.Dequeue();
-                        StartCoroutine(SuggestMod(modSuggestion));
-                    }
-
-                    TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
-                }
-                else
+                if (subCommands.Length < 3)
                 {
                     TwitchManager.Instance.EnqueueChatMessage("Usage: !modsuggest <mod_name> <mod_link>");
+                    return;
                 }
+
+                string url = subCommands[2];
+                string suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
+                string modName = subCommands[1];
+                ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
+                ModSuggestionQueue.Enqueue(suggestedMod);
+
+                if (!GameFlowManager.Instance.IsInCombat())
+                {
+                    ModSuggestion modSuggestion = ModSuggestionQueue.Dequeue();
+                    StartCoroutine(SuggestMod(modSuggestion));
+                }
+
+                TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
             }
 
         }
@@ -191,16 +199,18 @@ namespace InternalModBot
                 byte[] response = new WebClient
                 {
                     Headers =
-                {
+                    {
                     "User-Agent: Other"
-                }
+                    }
                 }.DownloadData(url);
+
                 return response;
             }
             catch (Exception e)
             {
                 debug.Log(e.Message, Color.red);
             }
+
             return null;
         }
 
@@ -226,10 +236,12 @@ namespace InternalModBot
             }
             return isOk;
         }
+
         /// <summary>
         /// The animator that plays the slide in and out animation
         /// </summary>
         public Animator ModSuggestionAnimator;
+
         /// <summary>
         /// Text text display where all info will be displayed
         /// </summary>

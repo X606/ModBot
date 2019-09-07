@@ -1,8 +1,8 @@
-﻿using System;
+﻿using InternalModBot;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using InternalModBot;
+using System;
 using UnityEngine;
 
 namespace ModLibrary
@@ -13,7 +13,7 @@ namespace ModLibrary
     public static class SingleMethodExtensions
     {
         /// <summary>
-        /// Instead of having to filter the object array yourself you can use this method to get the object at a specific index in a much safer way
+        /// Gets an object at the specified index and casts it to the specified type
         /// </summary>
         /// <typeparam name="T">The type of the object at the index</typeparam>
         /// <param name="moddedObject"></param>
@@ -22,27 +22,32 @@ namespace ModLibrary
         public static T GetObject<T>(this ModdedObject moddedObject, int index) where T : UnityEngine.Object
         {
             if (index < 0 || index >= moddedObject.objects.Count)
-                return null;
+            {
+                throw new IndexOutOfRangeException("Given index was not in the range of the objects list:\tMin: 0 " + "Max: " + (moddedObject.objects.Count - 1) + " Recieved: " + index);
+            }
 
             if (!(moddedObject.objects[index] is T))
             {
-                throw new InvalidCastException("Object at index " + index + " was not of type " + typeof(T).ToString());
+                throw new InvalidCastException("Object at index " + index + " could not be casted to type " + typeof(T).ToString());
             }
 
             return moddedObject.objects[index] as T;
         }
 
         /// <summary>
-        /// Returns true of the mod is enbaled, false if its disabled
+        /// Checks in the given <see cref="Mod"/> is currently activated
         /// </summary>
         /// <param name="mod"></param>
-        /// <returns></returns>
+        /// <returns><see langword="true"/> of the mod is enabled, <see langword="false"/> if it's disabled</returns>
+        /// <exception cref="Exception">If the <see cref="Mod"/> has not been loaded by <see cref="ModsManager"/></exception>
         public static bool IsModEnabled(this Mod mod)
         {
             bool? isModDeactivated = ModsManager.Instance.IsModDeactivated(mod);
 
             if (!isModDeactivated.HasValue)
-                throw new Exception("Mod \"" + mod.GetModName() + "\" with unique id \"" + mod.GetUniqueID() + "\" could not found in modsmanager's list of mods!");
+            {
+                throw new Exception("Mod \"" + mod.GetModName() + "\" with unique id \"" + mod.GetUniqueID() + "\" could not found in ModsManager's list of mods!");
+            }
 
             return !isModDeactivated.Value;
         }

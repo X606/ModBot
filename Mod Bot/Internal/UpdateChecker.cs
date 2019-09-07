@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used by Mod-Bot to check if you have the latest version of mod-bot
+    /// Used by Mod-Bot to check if there is a newer version available
     /// </summary>
     public class UpdateChecker : MonoBehaviour
     {
@@ -20,10 +20,10 @@ namespace InternalModBot
                 return;
             }
 
-            StartCoroutine(ThreadSequence());
+            StartCoroutine(CheckVersion());
         }
 
-        private IEnumerator ThreadSequence()
+        private IEnumerator CheckVersion()
         {
             string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
             
@@ -41,26 +41,14 @@ namespace InternalModBot
 
             string message = "New Mod-Bot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
 
-            Generic2ButtonDialoge generic = new Generic2ButtonDialoge(message, "Dismiss", null, "Install", OnInstallButtonClicked);
+            Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, "Dismiss", null, "Install", OnInstallButtonClicked);
             generic.SetColorOfFirstButton(Color.red);
             generic.SetColorOfSecondButton(Color.green);
-
-            /*spawnedModdedObject.GetObject<Text>(0).text = "New Mod-Bot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
-            spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(OnInstallButtonClicked);
-            spawnedModdedObject.GetObject<Button>(2).onClick.AddListener(OnDismissButtonClicked);
-            spawnedModdedObject.gameObject.SetActive(true);*/
         }
 
         private void OnInstallButtonClicked()
         {
             Application.OpenURL("http://clonedronemodbot.com/");
         }
-
-        private void OnDismissButtonClicked()
-        {
-            //spawnedModdedObject.gameObject.SetActive(false);
-        }
-
-        //private ModdedObject spawnedModdedObject;
     }
 }
