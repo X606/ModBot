@@ -18,12 +18,12 @@ namespace ModLibrary
             CreateButtonAt(button, new Vector3(-300, -200, 0), "Back", BackClicked);
             CreateButtonAt(button, new Vector3(300, -200, 0), "Next", NextClicked);
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.PlayerGrabbedForUpgrade, RefreshPageTitle);
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageTitle);
         }
 
         private void OnDestroy()
         {
-            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.PlayerGrabbedForUpgrade, RefreshPageTitle);
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageTitle);
         }
 
         private void CreateButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
