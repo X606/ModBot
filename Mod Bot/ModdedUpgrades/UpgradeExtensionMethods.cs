@@ -11,7 +11,7 @@ namespace ModLibrary
     public static class UpgradeExtensionMethods
     {
         /// <summary>
-        /// Adds a upgrade to the page of the specified mod, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
+        /// Adds a upgrade to the page of the specified <see cref="Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
         /// </summary>
         /// <param name="upgradeManager"></param>
         /// <param name="upgrade"></param>
@@ -45,7 +45,17 @@ namespace ModLibrary
         /// <returns></returns>
         public static bool IsModdedUpgradeType(this UpgradeDescription upgrade)
         {
-            return !ModTools.EnumTools.GetValues<UpgradeType>().Contains(upgrade.UpgradeType);
+            return upgrade.UpgradeType.IsModdedUpgradeType();
+        }
+
+        /// <summary>
+        /// Checks if the <see cref="UpgradeType"/> is a modded type, by checking if the type is in the <see cref="UpgradeType"/> <see langword="enum"/>
+        /// </summary>
+        /// <param name="upgradeType"></param>
+        /// <returns></returns>
+        public static bool IsModdedUpgradeType(this UpgradeType upgradeType)
+        {
+            return !ModTools.EnumTools.GetValues<UpgradeType>().Contains(upgradeType);
         }
 
         /// <summary>

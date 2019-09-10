@@ -115,8 +115,6 @@ class Program
         errorManagerInjection.AddInstructionUnderSafe(OpCodes.Ret);
         errorManagerInjection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
         errorManagerInjection.Write();
-
-        // TODO: reminder to add MultiplayerMatchManager.OnEvent(GenericStringForModdingEvent genericModdingEvent) here when the update comes out
         
         Console.WriteLine("Injecting into Projectile.SetInactive...");
         Injection ProjectileInjection1 = Injector.AddCallToMethodInMethod(installPath, "Projectile", "SetInactive", modLibraryPath, "InternalModBot.CalledFromInjections", "FromSetInactive");

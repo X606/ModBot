@@ -9,7 +9,7 @@ using UnityEngine;
 namespace ModLibrary
 {
     /// <summary>
-    /// Extension methods for <see cref="IEnumerable{T}"/>
+    /// Defines extension methods for <see cref="IEnumerable{T}"/>
     /// </summary>
     public static class IEnumerableExtensions
     {
@@ -533,5 +533,50 @@ namespace ModLibrary
             return returnValues;
         }
 
+        /// <summary>
+        /// Gets a random item from the collection, or the default value for the type if the collection is empty
+        /// </summary>
+        /// <typeparam name="CollectionType">The type of the collection</typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if the collection is <see langword="null"/></exception>
+        public static CollectionType GetRandomOrDefault<CollectionType>(this IEnumerable<CollectionType> collection)
+        {
+            if (collection == null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            CollectionType[] collectionArray = collection.ToArray();
+
+            if (collectionArray.Length == 0)
+            {
+                return default(CollectionType);
+            }
+
+            return collectionArray[UnityEngine.Random.Range(0, collectionArray.Length)];
+        }
+
+        /// <summary>
+        /// Randomizes the order of elements in the given <see cref="IEnumerable{T}"/>
+        /// </summary>
+        /// <typeparam name="CollectionType">The type of the collection to randomize</typeparam>
+        /// <param name="enumerable"></param>
+        /// <returns>The randomized collection</returns>
+        public static IEnumerable<CollectionType> Randomize<CollectionType>(this IEnumerable<CollectionType> enumerable)
+        {
+            List<CollectionType> enumerableCopyList = enumerable.ToList();
+            List<CollectionType> randomizedList = new List<CollectionType>();
+
+            while (enumerableCopyList.Count > 0)
+            {
+                int index = UnityEngine.Random.Range(0, enumerableCopyList.Count);
+
+                randomizedList.Add(enumerableCopyList[index]);
+                enumerableCopyList.RemoveAt(index);
+            }
+
+            return randomizedList;
+        }
     }
 }

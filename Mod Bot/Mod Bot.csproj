@@ -40,6 +40,8 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
+    <Compile Include="ExtensionMethods\FirstPersonMoverExtensions.cs" />
+    <Compile Include="ExtensionMethods\Vector3Extensions.cs" />
     <Compile Include="Generic2ButtonDialoge.cs" />
     <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="ExtensionMethods\ModSettingsExtensions.cs" />

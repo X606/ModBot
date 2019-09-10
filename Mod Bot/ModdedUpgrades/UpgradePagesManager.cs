@@ -36,7 +36,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Removes all of the upgrades in UpgradeManager.Instance.UpgradeDescriptions placed there by a mod 
+        /// Removes all of the upgrades in <see cref="UpgradeManager.UpgradeDescriptions"/> placed there by a mod 
         /// </summary>
         /// <param name="mod"></param>
         public static void RemoveModdedUpgradesFor(Mod mod)

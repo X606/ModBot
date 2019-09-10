@@ -200,7 +200,7 @@ namespace InternalModBot
                 {
                     Headers =
                     {
-                    "User-Agent: Other"
+                        "User-Agent: Other"
                     }
                 }.DownloadData(url);
 

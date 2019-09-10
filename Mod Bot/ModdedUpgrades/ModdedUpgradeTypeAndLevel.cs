@@ -5,15 +5,15 @@ using System.Text;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used to represent both a UpgradeType and a level (int) in Mod-Bot (the == and != operators compare the contents and not the references)
+    /// Used to represent both an <see cref="global::UpgradeType"/> and a level (<see cref="Int32"/>) in Mod-Bot (the == and != operators compare the contents and not the references)
     /// </summary>
     public class ModdedUpgradeRepresenter
     {
         /// <summary>
-        /// Constructor, will put the inputs supplied into the values that the object holds
+        /// Creates a new instance of the <see cref="ModdedUpgradeRepresenter"/> class
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="level"></param>
+        /// <param name="type">The <see cref="global::UpgradeType"/> to store</param>
+        /// <param name="level">The level of the upgrade to store</param>
         public ModdedUpgradeRepresenter(UpgradeType type, int level)
         {
             UpgradeType = type;
@@ -21,9 +21,9 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Sets the custom angle of this upgrade
+        /// Sets the angle of this upgrade
         /// </summary>
-        /// <param name="newAngle"></param>
+        /// <param name="newAngle">The new angle</param>
         public void SetCustomAngle(float newAngle)
         {
             CustomAngle = newAngle;
@@ -46,7 +46,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// compares a and b
+        /// Compares two instances of the <see cref="ModdedUpgradeRepresenter"/> class by comparing their <see cref="global::UpgradeType"/> and level
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -57,7 +57,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Compares a and b, but in inverse
+        /// Compares two instances of the <see cref="ModdedUpgradeRepresenter"/> class by comparing their <see cref="global::UpgradeType"/> and level, and negates the result
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -68,7 +68,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Compares the input with the object.
+        /// Compares the current instance to the given <see cref="object"/>
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
