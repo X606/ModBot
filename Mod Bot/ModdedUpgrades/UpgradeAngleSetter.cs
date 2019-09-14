@@ -24,7 +24,7 @@ namespace InternalModBot
 
         private void Start()
         {
-            DebugModeEnabled = true;
+            DebugModeEnabled = false;
 
             changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
 
