@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModLibrary.ExtensionMethods
+namespace ModLibrary
 {
     /// <summary>
     /// Defines extension methods for <see cref="Vector3"/>
