@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,18 +24,18 @@ namespace InternalModBot
 
         private void Start()
         {
-            DebugModeEnabled = false;
+            DebugModeEnabled = true;
 
             changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, delegate { RefreshIconEventTriggers(false); });
         }
 
         private void OnDestroy()
         {
             changedIconAngles.Clear();
 
-            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, delegate { RefreshIconEventTriggers(false); });
 
             if (saveButtonObject != null)
             {
@@ -48,38 +49,38 @@ namespace InternalModBot
 
             saveButtonObject = Instantiate(buttonPrefab);
             saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-            saveButtonObject.GetComponent<RectTransform>().localPosition -= new Vector3(50f, 0f, 0f);
+            saveButtonObject.GetComponent<RectTransform>().localPosition -= new Vector3(0f, 40f, 0f);
 
             Button saveButton = saveButtonObject.GetComponentInChildren<Button>();
 
             saveButton.onClick = new Button.ButtonClickedEvent();
             saveButton.onClick.AddListener(SaveAngleChangesToFile);
 
-            saveButton.GetComponentInChildren<Text>().text = "Save changes";
+            saveButton.GetComponentInChildren<Text>().text = "Generate";
         }
 
         private void SaveAngleChangesToFile()
         {
-            string modsDirectory = AssetLoader.GetModsFolderDirectory();
             string fileName = "UpgradeAnglesCode.txt";
-            string fullFilePath = Path.Combine(modsDirectory, fileName);
+            string fullFilePath = Path.Combine(Application.persistentDataPath, fileName);
 
             List<string> lines = new List<string>();
-            foreach (KeyValuePair<ModdedUpgradeRepresenter, float> changedIconAngle in changedIconAngles)
+            foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in changedIconAngles)
             {
-                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}";
+                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
 
-                string arg0 = ConvertUpgradeTypeToString(changedIconAngle.Key.UpgradeType);
-                string arg1 = changedIconAngle.Key.Level.ToString();
-                string arg2 = changedIconAngle.Value.ToString();
-                string arg3 = GetUpgradeName(changedIconAngle.Key);
+                string upgradeType = ConvertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
+                string level = upgradeAngle.Key.Level.ToString();
+                string angle = upgradeAngle.Value.ToString();
+                string upgradeName = GetUpgradeName(upgradeAngle.Key);
 
-                string formatted = string.Format(item, arg0, arg1, arg2, arg3);
+                string formatted = string.Format(item, upgradeType, level, angle, upgradeName);
 
                 lines.Add(formatted);
             }
 
             File.WriteAllLines(fullFilePath, lines);
+            Process.Start("notepad.exe", fullFilePath);
         }
 
         private string GetUpgradeName(ModdedUpgradeRepresenter upgrade)
@@ -114,7 +115,7 @@ namespace InternalModBot
             return prefix + upgradeType.ToString();
         }
 
-        internal void RefreshIconEventTriggers()
+        internal void RefreshIconEventTriggers(bool saveButtonState = true)
         {
             if (DebugModeEnabled && saveButtonObject == null)
             {
@@ -123,8 +124,7 @@ namespace InternalModBot
 
             if (saveButtonObject != null)
             {
-                bool shouldBeActive = UpgradePagesManager.CurrentPage != 0;
-                saveButtonObject.SetActive(shouldBeActive);
+                saveButtonObject.SetActive(saveButtonState);
             }
 
             if (!DebugModeEnabled || UpgradePagesManager.CurrentPage == 0)

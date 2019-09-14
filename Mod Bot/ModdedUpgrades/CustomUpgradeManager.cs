@@ -75,6 +75,8 @@ namespace ModLibrary
             {
                 GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade";
                 GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
+
+                UpgradeAngleSetter.Instance.RefreshIconEventTriggers(false);
             }
         }
     }
