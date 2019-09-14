@@ -37,6 +37,24 @@ namespace ModLibrary
             }
         }
 
+        /// <summary>
+        /// Sets the angle of an upgrade with the specified <see cref="UpgradeType"/> and level
+        /// </summary>
+        /// <param name="upgradeManager"></param>
+        /// <param name="upgradeType">The <see cref="UpgradeType"/> of the <see cref="UpgradeDescription"/> to set the angle on</param>
+        /// <param name="level">The level of the <see cref="UpgradeDescription"/> to set the angle on</param>
+        /// <param name="angle">The new angle to set</param>
+        /// <param name="mod"></param>
+        public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, Mod mod)
+        {
+            UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
+            if (upgradeDescription == null)
+            {
+                return;
+            }
+
+            upgradeDescription.SetAngleOffset(angle, mod);
+        }
 
         /// <summary>
         /// Checks if the upgrade is a modded upgrade
@@ -95,6 +113,15 @@ namespace ModLibrary
             }
 
             RecursivelyAddRequirments(upgrade.Requirement, mod);
+        }
+
+        /// <summary>
+        /// Enables setting the angles in the upgrade UI by dragging the icons around
+        /// </summary>
+        /// <param name="upgradeManager"></param>
+        public static void EnterUpgradeIconAngleDebugMode(this UpgradeManager upgradeManager)
+        {
+            UpgradeAngleSetter.Instance.DebugModeEnabled = true;
         }
     }
 }

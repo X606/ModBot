@@ -68,6 +68,8 @@ namespace ModLibrary
             {
                 GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade\n[" + mod.GetModName() + "]";
                 GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
+
+                UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
             }
             else
             {

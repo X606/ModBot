@@ -56,6 +56,7 @@
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\ModSuggestingManager.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
+    <Compile Include="ModdedUpgrades\UpgradeAngleSetter.cs" />
     <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />

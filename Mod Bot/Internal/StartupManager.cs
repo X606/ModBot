@@ -32,6 +32,7 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModdedMultiplayerEventListener>();
             gameFlowManager.AddComponent<ModSharingManager>();
             gameFlowManager.AddComponent<ModBotUserIdentifier>();
+            gameFlowManager.AddComponent<UpgradeAngleSetter>();
 
             try
             {

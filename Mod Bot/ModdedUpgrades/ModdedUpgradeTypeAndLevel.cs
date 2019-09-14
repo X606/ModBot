@@ -53,6 +53,11 @@ namespace InternalModBot
         /// <returns></returns>
         public static bool operator ==(ModdedUpgradeRepresenter a, ModdedUpgradeRepresenter b)
         {
+            if (Equals(a, null) || Equals(b, null))
+            {
+                return Equals(a, null) && Equals(b, null);
+            }
+
             return a.Level == b.Level && a.UpgradeType == b.UpgradeType;
         }
 
