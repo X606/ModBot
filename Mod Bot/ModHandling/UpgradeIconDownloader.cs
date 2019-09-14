@@ -50,7 +50,7 @@ namespace InternalModBot
             {
                 byte[] imageData = File.ReadAllBytes(UpgradeIconsFolderPath + fileName);
 
-                Texture2D texture = new Texture2D(0, 0);
+                Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
                 texture.LoadImage(imageData);
 
                 upgrade.Icon = GetSpriteFromTexture(texture);
