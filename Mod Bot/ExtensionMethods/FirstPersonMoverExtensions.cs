@@ -42,13 +42,7 @@ namespace ModLibrary
                 throw new ArgumentNullException(nameof(firstPersonMover));
             }
 
-            if (firstPersonMover.IsMainPlayer())
-            {
-                GameDataManager.Instance.SetUpgradeLevel(upgradeType, level);
-                UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
-                GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
-            }
-            else
+            if (firstPersonMover.GetComponent<PreconfiguredUpgradeCollection>() != null)
             {
                 UpgradeCollection upgradeCollection = firstPersonMover.GetComponent<UpgradeCollection>();
 
@@ -68,6 +62,12 @@ namespace ModLibrary
                 ((PreconfiguredUpgradeCollection)upgradeCollection).InitializeUpgrades();
 
                 firstPersonMover.RefreshUpgrades();
+            }
+            else if (firstPersonMover.GetComponent<PlayerUpgradeCollection>() != null)
+            {
+                GameDataManager.Instance.SetUpgradeLevel(upgradeType, level);
+                UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
+                GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
             }
 
             firstPersonMover.SetUpgradesNeedsRefreshing();
