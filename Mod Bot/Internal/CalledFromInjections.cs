@@ -100,12 +100,17 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Called from <see cref="Projectile.SetInactive"/>
+        /// Called from <see cref="Projectile.FixedUpdate"/>
         /// </summary>
-        /// <param name="arrow"></param>
-        public static void FromSetInactive(Projectile arrow)
+        /// <param name="projectile"></param>
+        public static void FromFixedUpdate(Projectile projectile)
         {
-            ModsManager.Instance.PassOnMod.OnProjectileCreated(arrow);
+            if (!projectile.IsFlying())
+            {
+                return;
+            }
+
+            ModsManager.Instance.PassOnMod.OnProjectileUpdate(projectile);
         }
 
         /// <summary>

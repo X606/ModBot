@@ -116,8 +116,8 @@ class Program
         errorManagerInjection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
         errorManagerInjection.Write();
         
-        Console.WriteLine("Injecting into Projectile.SetInactive...");
-        Injection ProjectileInjection1 = Injector.AddCallToMethodInMethod(installPath, "Projectile", "SetInactive", modLibraryPath, "InternalModBot.CalledFromInjections", "FromSetInactive");
+        Console.WriteLine("Injecting into Projectile.FixedUpdate...");
+        Injection ProjectileInjection1 = Injector.AddCallToMethodInMethod(installPath, "Projectile", "FixedUpdate", modLibraryPath, "InternalModBot.CalledFromInjections", "FromFixedUpdate");
         ProjectileInjection1.AddInstructionOverSafe(OpCodes.Ldarg_0);
         ProjectileInjection1.Write();
 

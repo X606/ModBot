@@ -114,14 +114,6 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when a <see cref="Projectile"/> is created
-        /// </summary>
-        /// <param name="projectile">6</param>
-        public virtual void OnProjectileCreated(Projectile projectile)
-        {
-        }
-
-        /// <summary>
         /// Called when a <see cref="Projectile"/> starts moving
         /// </summary>
         /// <param name="projectile"></param>
@@ -146,14 +138,6 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when an <see cref="ArrowProjectile"/> is created
-        /// </summary>
-        /// <param name="arrow">The created <see cref="ArrowProjectile"/></param>
-        public virtual void OnArrowProjectileCreated(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
         /// Called when an <see cref="ArrowProjectile"/> starts moving
         /// </summary>
         /// <param name="arrow"></param>
@@ -174,17 +158,6 @@ namespace ModLibrary
         /// </summary>
         /// <param name="arrow"></param>
         public virtual void OnArrowProjectileDestroyed(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
-        /// Called when a <see cref="BulletProjectile"/> is created
-        /// </summary>
-        /// <param name="bullet">The created <see cref="BulletProjectile"/></param>
-        /// <param name="isFlameBreath"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isRepairFire"></param>
-        public virtual void OnBulletProjectileCreated(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
 
