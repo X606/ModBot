@@ -28,14 +28,14 @@ namespace InternalModBot
 
             changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, delegate { RefreshIconEventTriggers(false); });
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
         }
 
         private void OnDestroy()
         {
             changedIconAngles.Clear();
 
-            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, delegate { RefreshIconEventTriggers(false); });
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
 
             if (saveButtonObject != null)
             {
@@ -115,42 +115,6 @@ namespace InternalModBot
             return prefix + upgradeType.ToString();
         }
 
-        internal void RefreshIconEventTriggers(bool saveButtonState = true)
-        {
-            if (DebugModeEnabled && saveButtonObject == null)
-            {
-                CreateSaveButton();
-            }
-
-            if (saveButtonObject != null)
-            {
-                saveButtonObject.SetActive(saveButtonState);
-            }
-
-            if (!DebugModeEnabled || UpgradePagesManager.CurrentPage == 0)
-            {
-                return;
-            }
-
-            List<UpgradeUIIcon> icons = Accessor.GetPrivateField<UpgradeUI, List<UpgradeUIIcon>>("_icons", GameUIRoot.Instance.UpgradeUI);
-
-            foreach (UpgradeUIIcon icon in icons)
-            {
-                EventTrigger eventTrigger = icon.GetComponent<EventTrigger>();
-
-                eventTrigger.triggers.RemoveAll(item => item.eventID == EventTriggerType.PointerClick);
-
-                EventTrigger.Entry scrollCallback = new EventTrigger.Entry
-                {
-                    eventID = EventTriggerType.Scroll,
-                    callback = new EventTrigger.TriggerEvent()
-                };
-                scrollCallback.callback.AddListener(delegate (BaseEventData eventData) { UpdateIcon(icon, eventData); });
-
-                eventTrigger.triggers.Add(scrollCallback);
-            }
-        }
-
         private float GetAngleForIconAtCurrentPage(UpgradeUIIcon icon)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
@@ -182,6 +146,56 @@ namespace InternalModBot
 
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
             RefreshIconEventTriggers();
+        }
+
+        private bool CanCurrentlyEditIconAngles()
+        {
+            return DebugModeEnabled && UpgradePagesManager.CurrentPage != 0 && GameModeManager.IsSinglePlayer();
+        }
+
+        internal void UpdateSaveButtonState()
+        {
+            if (saveButtonObject == null)
+            {
+                return;
+            }
+
+            saveButtonObject.SetActive(CanCurrentlyEditIconAngles());
+        }
+
+        internal void RefreshIconEventTriggers()
+        {
+            if (!CanCurrentlyEditIconAngles())
+            {
+                if (saveButtonObject != null)
+                {
+                    saveButtonObject.SetActive(false);
+                }
+
+                return;
+            }
+            else if (saveButtonObject == null)
+            {
+                CreateSaveButton();
+            }
+
+            List<UpgradeUIIcon> icons = Accessor.GetPrivateField<UpgradeUI, List<UpgradeUIIcon>>("_icons", GameUIRoot.Instance.UpgradeUI);
+
+            foreach (UpgradeUIIcon icon in icons)
+            {
+                EventTrigger eventTrigger = icon.GetComponent<EventTrigger>();
+
+                eventTrigger.triggers.RemoveAll(item => item.eventID == EventTriggerType.PointerClick);
+
+                EventTrigger.Entry scrollCallback = new EventTrigger.Entry
+                {
+                    eventID = EventTriggerType.Scroll,
+                    callback = new EventTrigger.TriggerEvent()
+                };
+                scrollCallback.callback.AddListener(delegate (BaseEventData eventData) { UpdateIcon(icon, eventData); });
+
+                eventTrigger.triggers.Add(scrollCallback);
+            }
         }
     }
 }
