@@ -76,6 +76,7 @@ namespace InternalModBot
         /// <param name="hasFile"></param>
         public void LoadMod(byte[] assemblyData, bool hasFile)
         {
+            LoadedMod loadedMod = null;
             try
             {
                 Type[] types = Assembly.Load(assemblyData).GetTypes();
@@ -93,31 +94,32 @@ namespace InternalModBot
                 }
                 object obj = Activator.CreateInstance(type);
                 
-                Mod loadedMod = obj as Mod;
+                Mod modToLoad = obj as Mod;
                 mods.ForEach(delegate (LoadedMod mod)
                 {
-                    if (mod.Mod.GetUniqueID() == loadedMod.GetUniqueID())
+                    if (mod.Mod.GetUniqueID() == modToLoad.GetUniqueID())
                     {
-                        throw new Exception("2 or more mods (\"" + mod.Mod.GetModName() + "\" and \"" + loadedMod.GetModName() + "\" have the same UniqueID!");
+                        throw new Exception("2 or more mods (\"" + mod.Mod.GetModName() + "\" and \"" + modToLoad.GetModName() + "\" have the same UniqueID!");
                     }
                 });
 
-                mods.Add(new LoadedMod(loadedMod, assemblyData, hasFile));
+                loadedMod = new LoadedMod(modToLoad, assemblyData, hasFile);
+                mods.Add(loadedMod);
 
-                bool isActive = PlayerPrefs.GetInt(loadedMod.GetUniqueID(), 1) != 0;
+                bool isActive = PlayerPrefs.GetInt(modToLoad.GetUniqueID(), 1) != 0;
                 if (!isActive)
                 {
-                    DisableMod(loadedMod);
+                    DisableMod(modToLoad);
                 }
                 else
                 {
                     try
                     {
-                        StartCoroutine(CallOnModRefreshedNextFrame(loadedMod));
+                        StartCoroutine(CallOnModRefreshedNextFrame(modToLoad));
                     }
                     catch(Exception exception)
                     {
-                        throw new Exception("Caught exception in OnModRefreshed for mod \"" + loadedMod.GetModName() + "\" with ID \"" + loadedMod.GetUniqueID() + "\": " + exception.Message);
+                        throw new Exception("Caught exception in OnModRefreshed for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
                     }
                 }
 
@@ -125,6 +127,16 @@ namespace InternalModBot
             }
             catch(Exception e)
             {
+                if (!hasFile && loadedMod != null)
+                {
+                    if (loadedMod.Mod != null) // Just in case
+                    {
+                        loadedMod.Mod.OnModDeactivated(); // Called so that the mod will (hopefully) clean up anything it has already done
+                    }
+
+                    mods.Remove(loadedMod); // If the mod was sent over the network and something went wrong, unload the mod
+                }
+
                 throw new Exception("The mod you are trying to load isn't valid: " + e.Message);
             }
 

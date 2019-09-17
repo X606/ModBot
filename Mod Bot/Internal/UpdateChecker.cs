@@ -15,12 +15,12 @@ namespace InternalModBot
     {
         private void Start()
         {
-            if (!GameModeManager.Is(GameMode.None))
+            if (!GameModeManager.Is(GameMode.None)) // If the user is currently playing any game mode, dont even check for updates
             {
                 return;
             }
 
-            StartCoroutine(CheckVersion());
+            StartCoroutine(CheckVersion()); // Needs to be a Coroutine since the web requests are not asynchronous
         }
 
         private IEnumerator CheckVersion()
