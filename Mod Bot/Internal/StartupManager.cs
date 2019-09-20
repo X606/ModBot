@@ -33,6 +33,7 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModSharingManager>();
             gameFlowManager.AddComponent<ModBotUserIdentifier>();
             gameFlowManager.AddComponent<UpgradeAngleSetter>();
+            gameFlowManager.AddComponent<DebugLineDrawingManager>();
 
             try
             {
