@@ -42,26 +42,27 @@ namespace ModLibrary
         /// <param name="max">The maximum value of the slider</param>
         /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
         /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+        /// <param name="slider">A reference that is set to the created slider</param>
         /// <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
-        public void AddSlider(float min, float max, float defaultValue, string name, Action<float> onChange = null)
+        public void AddSlider(float min, float max, float defaultValue, string name, out Slider slider, Action<float> onChange = null)
         {
             GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
             ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
             moddedObject.transform.parent = Content.transform;
             moddedObject.GetObject<Text>(0).text = name;
-            Slider slider = moddedObject.GetObject<Slider>(1);
+            slider = moddedObject.GetObject<Slider>(1);
             slider.minValue = min;
             slider.maxValue = max;
             slider.value = defaultValue;
             Text numberDisplay = moddedObject.GetObject<Text>(2);
 
             float? loadedFloat = OptionsSaver.LoadFloat(OwnerMod, name);
-            if (loadedFloat.HasValue)
+            if(loadedFloat.HasValue)
             {
                 slider.value = loadedFloat.Value;
             }
 
-            if (onChange != null)
+            if(onChange != null)
             {
                 onChange(slider.value);
             }
@@ -72,7 +73,7 @@ namespace ModLibrary
             {
                 OptionsSaver.SaveFloat(OwnerMod, name, value);
 
-                if (onChange != null)
+                if(onChange != null)
                 {
                     onChange(value);
                 }
@@ -81,6 +82,68 @@ namespace ModLibrary
             });
         }
 
+        /// <summary>
+        /// Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
+        /// </summary>
+        /// <param name="min">The minimum value of the slider</param>
+        /// <param name="max">The maximum value of the slider</param>
+        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+        /// <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
+        public void AddSlider(float min, float max, float defaultValue, string name, Action<float> onChange = null)
+        {
+            AddSlider(min, max, defaultValue, name, out Slider slider, onChange);
+        }
+
+        /// <summary>
+        /// Adds a slider to the options window that can only be whole numbers
+        /// </summary>
+        /// <param name="min">The minimum value of the slider</param>
+        /// <param name="max">That maximum value of the slider</param>
+        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+        /// <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
+        /// <param name="slider">A reference that is set to the created slider</param>
+        /// <param name="onChange">Called when the value is changed, if null does nothing</param>
+        public void AddIntSlider(int min, int max, int defaultValue, string name, out Slider slider, Action<int> onChange = null)
+        {
+            GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
+            ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
+            moddedObject.transform.parent = Content.transform;
+            moddedObject.GetObject<Text>(0).text = name;
+            Slider _slider = moddedObject.GetObject<Slider>(1);
+            _slider.minValue = min;
+            _slider.maxValue = max;
+            _slider.wholeNumbers = true;
+            _slider.value = defaultValue;
+            Text numberDisplay = moddedObject.GetObject<Text>(2);
+
+            int? loadedInt = OptionsSaver.LoadInt(OwnerMod, name);
+            if(loadedInt.HasValue)
+            {
+                _slider.value = loadedInt.Value;
+            }
+
+            if(onChange != null)
+            {
+                onChange((int)_slider.value);
+            }
+
+            numberDisplay.text = _slider.value.ToString();
+            _slider.onValueChanged.AddListener(delegate (float value)
+            {
+                OptionsSaver.SaveInt(OwnerMod, name, (int)value);
+
+                if(onChange != null)
+                {
+                    onChange((int)_slider.value);
+                }
+
+                numberDisplay.text = value.ToString();
+            });
+
+            slider = _slider;
+        }
+        
         /// <summary>
         /// Adds a slider to the options window that can only be whole numbers
         /// </summary>
@@ -91,55 +154,22 @@ namespace ModLibrary
         /// <param name="onChange">Called when the value is changed, if null does nothing</param>
         public void AddIntSlider(int min, int max, int defaultValue, string name, Action<int> onChange = null)
         {
-            GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
-            ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
-            moddedObject.transform.parent = Content.transform;
-            moddedObject.GetObject<Text>(0).text = name;
-            Slider slider = moddedObject.GetObject<Slider>(1);
-            slider.minValue = min;
-            slider.maxValue = max;
-            slider.wholeNumbers = true;
-            slider.value = defaultValue;
-            Text numberDisplay = moddedObject.GetObject<Text>(2);
-
-            int? loadedInt = OptionsSaver.LoadInt(OwnerMod, name);
-            if (loadedInt.HasValue)
-            {
-                slider.value = loadedInt.Value;
-            }
-
-            if (onChange != null)
-            {
-                onChange((int)slider.value);
-            }
-
-            numberDisplay.text = slider.value.ToString();
-            slider.onValueChanged.AddListener(delegate (float value)
-            {
-                OptionsSaver.SaveInt(OwnerMod, name, (int)value);
-
-                if (onChange != null)
-                {
-                    onChange((int)slider.value);
-                }
-
-                numberDisplay.text = value.ToString();
-            });
+            AddIntSlider(min, max, defaultValue, name, out Slider slider, onChange);
         }
-
         /// <summary>
         /// Adds a checkbox to the mods window
         /// </summary>
         /// <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
         /// <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
+        /// <param name="toggle">>A reference that is set to the created toggle</param>
         /// <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
-        public void AddCheckbox(bool defaultValue, string name, Action<bool> onChange = null)
+        public void AddCheckbox(bool defaultValue, string name, out Toggle toggle, Action<bool> onChange = null)
         {
             GameObject CheckBoxPrefab = AssetLoader.GetObjectFromFile("modswindow", "Checkbox", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedObject = GameObject.Instantiate(CheckBoxPrefab);
             spawnedObject.transform.parent = Content.transform;
             ModdedObject moddedObject = spawnedObject.GetComponent<ModdedObject>();
-            Toggle toggle = moddedObject.GetObject<Toggle>(0);
+            toggle = moddedObject.GetObject<Toggle>(0);
             toggle.isOn = defaultValue;
             moddedObject.GetObject<GameObject>(1).GetComponent<Text>().text = name;
 
@@ -164,35 +194,46 @@ namespace ModLibrary
                 }
             });
         }
+        /// <summary>
+        /// Adds a checkbox to the mods window
+        /// </summary>
+        /// <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
+        /// <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
+        /// <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
+        public void AddCheckbox(bool defaultValue, string name, Action<bool> onChange = null)
+        {
+            AddCheckbox(defaultValue, name, out Toggle toggle, onChange);
+        }
 
         /// <summary>
         /// Adds a input field to the mods window
         /// </summary>
         /// <param name="defaultValue">The defualt value before it is edited by the user</param>
         /// <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
+        /// <param name="inputField">A reference to the created InputField</param>
         /// <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
-        public void AddInputField(string defaultValue, string name, Action<string> onChange = null)
+        public void AddInputField(string defaultValue, string name, out InputField inputField, Action<string> onChange = null)
         {
             GameObject InputFieldPrefab = AssetLoader.GetObjectFromFile("modswindow", "InputField", "Clone Drone in the Danger Zone_Data/");
             GameObject spawnedPrefab = GameObject.Instantiate(InputFieldPrefab);
             spawnedPrefab.transform.parent = Content.transform;
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = name;
-            InputField field = spawnedModdedObject.GetObject<InputField>(1);
-            field.text = defaultValue;
+            inputField = spawnedModdedObject.GetObject<InputField>(1);
+            inputField.text = defaultValue;
 
             string loadedString = OptionsSaver.LoadString(OwnerMod, name);
             if (loadedString != null)
             {
-                field.text = loadedString;
+                inputField.text = loadedString;
             }
 
             if (onChange != null)
             {
-                onChange(field.text);
+                onChange(inputField.text);
             }
 
-            field.onValueChanged.AddListener(delegate (string value)
+            inputField.onValueChanged.AddListener(delegate (string value)
             {
                 OptionsSaver.SaveString(OwnerMod, name, value);
 
@@ -204,16 +245,30 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Adds a input field to the mods window
+        /// </summary>
+        /// <param name="defaultValue">The defualt value before it is edited by the user</param>
+        /// <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
+        /// <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
+        public void AddInputField(string defaultValue, string name, Action<string> onChange = null)
+        {
+            AddInputField(defaultValue, name, out InputField inputField, onChange);
+        }
+
+
+        /// <summary>
         /// Adds a dropdown to the mods window
         /// </summary>
         /// <param name="options">The diffrent options that should be selectable</param>
         /// <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
         /// <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
+        /// <param name="dropdown">a reference to the dropdown created, null if defaultIndex is not in the bounds of options</param>
         /// <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
-        public void AddDropdown(string[] options, int defaultIndex, string name, Action<int> onChange = null)
+        public void AddDropdown(string[] options, int defaultIndex, string name, out Dropdown dropdown, Action<int> onChange = null)
         {
             if (options.Length <= defaultIndex || defaultIndex < 0)
             {
+                dropdown = null;
                 return;
             }
 
@@ -223,7 +278,7 @@ namespace ModLibrary
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = name;
 
-            Dropdown dropdown = spawnedModdedObject.GetObject<Dropdown>(1);
+            dropdown = spawnedModdedObject.GetObject<Dropdown>(1);
             dropdown.options.Clear();
             
             foreach (string option in options)
@@ -258,6 +313,37 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Adds a dropdown to the mods window
+        /// </summary>
+        /// <param name="options">The diffrent options that should be selectable</param>
+        /// <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
+        /// <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
+        /// <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
+        public void AddDropdown(string[] options, int defaultIndex, string name, Action<int> onChange = null)
+        {
+            AddDropdown(options, defaultIndex, name, out Dropdown dropdown, onChange);
+        }
+
+        /// <summary>
+        /// Adds a dropdown to the options window
+        /// </summary>
+        /// <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
+        /// <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
+        /// <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
+        /// <param name="dropdown">a refrence to the dropdown created</param>
+        /// <param name="onChange"></param>
+        public void AddDropDown<T>(int defaultIndex, string name, out Dropdown dropdown, Action<int> onChange = null) where T : IComparable, IFormattable, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("The generic type T must be an enum type");
+            }
+            List<string> enums = ModTools.EnumTools.GetNames<T>();
+            AddDropdown(enums.ToArray(), defaultIndex, name, out dropdown, onChange);
+        }
+
+
+        /// <summary>
         /// Adds a dropdown to the options window
         /// </summary>
         /// <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
@@ -266,12 +352,25 @@ namespace ModLibrary
         /// <param name="onChange"></param>
         public void AddDropDown<T>(int defaultIndex, string name, Action<int> onChange = null) where T : IComparable, IFormattable, IConvertible
         {
-            if (!typeof(T).IsEnum)
-            {
-                throw new ArgumentException("The generic type T must be an enum type");
-            }
-            List<string> enums = ModTools.EnumTools.GetNames<T>();
-            AddDropdown(enums.ToArray(), defaultIndex, name, onChange);
+            AddDropDown<T>(defaultIndex, name, out Dropdown dropdown, onChange);
+        }
+
+        /// <summary>
+        /// Adds a button to the options window
+        /// </summary>
+        /// <param name="text">The text displayed on the button</param>
+        /// <param name="button">a refrence to the created button</param>
+        /// <param name="callback">Called when the user clicks the button</param>
+        public void AddButton(string text, out Button button, UnityEngine.Events.UnityAction callback)
+        {
+            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");
+            GameObject spawnedPrefab = GameObject.Instantiate(buttonPrefab);
+            spawnedPrefab.transform.parent = Content.transform;
+
+            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
+            button = spawnedModdedObject.GetObject<Button>(0);
+            button.onClick.AddListener(callback);
+            spawnedModdedObject.GetObject<Text>(1).text = text;
         }
 
         /// <summary>
@@ -281,13 +380,23 @@ namespace ModLibrary
         /// <param name="callback">Called when the user clicks the button</param>
         public void AddButton(string text, UnityEngine.Events.UnityAction callback)
         {
-            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(buttonPrefab);
+            AddButton(text, out Button button, callback);
+        }
+
+        /// <summary>
+        /// Adds a plain text to the options window
+        /// </summary>
+        /// <param name="text">string that will be displayed</param>
+        /// <param name="_text">a refrence to the created text</param>
+        public void AddLabel(string text, out Text _text)
+        {
+            GameObject labelPrefab = AssetLoader.GetObjectFromFile("modswindow", "Label", "Clone Drone in the Danger Zone_Data/");
+            GameObject spawnedPrefab = GameObject.Instantiate(labelPrefab);
             spawnedPrefab.transform.parent = Content.transform;
 
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            spawnedModdedObject.GetObject<Button>(0).onClick.AddListener(callback);
-            spawnedModdedObject.GetObject<Text>(1).text = text;
+            _text = spawnedModdedObject.GetObject<Text>(0);
+            _text.text = text;
         }
 
         /// <summary>
@@ -296,12 +405,7 @@ namespace ModLibrary
         /// <param name="text">string that will be displayed</param>
         public void AddLabel(string text)
         {
-            GameObject labelPrefab = AssetLoader.GetObjectFromFile("modswindow", "Label", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(labelPrefab);
-            spawnedPrefab.transform.parent = Content.transform;
-
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            spawnedModdedObject.GetObject<Text>(0).text = text;
+            AddLabel(text, out Text _text);
         }
 
         /// <summary>
