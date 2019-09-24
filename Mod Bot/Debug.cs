@@ -90,6 +90,30 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Draws a line for the main camera, and if thats null for the player camera between point1 and point2 in the color of color for one frame.
+        /// </summary>
+        /// <param name="point1">Point to draw from</param>
+        /// <param name="point2">Point to draw to</param>
+        /// <param name="color">The color to draw in</param>
+        /// <param name="timeToStay">The amount of unscaledTime in seconds to render the line</param>
+        public static void DrawLine(Vector3 point1, Vector3 point2, Color color, float timeToStay = 0)
+        {
+            DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point1, point2, color, Time.unscaledTime + timeToStay));
+        }
+        /// <summary>
+        /// Draws a ray for the main camera, and if thats null for the players camera from point in the direction of direction in the color color for one frame.
+        /// </summary>
+        /// <param name="point">The point to draw from</param>
+        /// <param name="direction">The direction to draw in</param>
+        /// <param name="color">The color to draw in</param>
+        /// <param name="timeToStay">The amount of unscaledTime in seconds to render the line</param>
+        public static void DrawRay(Vector3 point, Vector3 direction, Color color, float timeToStay = 0)
+        {
+            Vector3 otherPoint = point + (direction.normalized * 1000);
+            DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point, otherPoint, color, Time.unscaledTime + timeToStay));
+        }
+
+        /// <summary>
         /// Opens a notepad window with info about the passed transfrom like components and children
         /// </summary>
         /// <param name="obj"></param>

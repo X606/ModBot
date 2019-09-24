@@ -1,2 +1,2 @@
 Game: 0.15.0.202
-Modbot: 1.0.2
+Modbot: 1.1

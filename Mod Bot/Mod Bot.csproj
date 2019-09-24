@@ -49,6 +49,7 @@
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
+    <Compile Include="Internal\DebugLineDrawing.cs" />
     <Compile Include="Internal\DoubleValueHolder.cs" />
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="Injector.cs" />
