@@ -205,7 +205,10 @@ namespace InternalModBot
         {
             Text logText = LogText;
             logText.text = logText.text + "\n" + whatToLog;
+
+            Console.WriteLine(whatToLog);
         }
+
         /// <summary>
         /// Writes the specified text to the console, now in color!
         /// </summary>
@@ -216,6 +219,8 @@ namespace InternalModBot
             string text = ColorUtility.ToHtmlStringRGB(color);
             Text logText = LogText;
             logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
+
+            Console.WriteLine(whatToLog);
         }
 
         /// <summary>
