@@ -14,7 +14,7 @@ NOTE: Make sure to include the '.NET Library' package during installation.
 
 <div class="programSeperator">
 
-2\. [Unity 2017.3](https://unity3d.com/get-unity/download/archive)
+2\. [Unity 2018.3.11](https://unity3d.com/get-unity/download/archive)
 
 You will need to install the same version of Unity that Clone Drone has if you want to include custom assets in your mod (i.e. A custom model, animation, etc.).  
 
