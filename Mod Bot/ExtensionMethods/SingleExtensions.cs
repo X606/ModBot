@@ -13,14 +13,22 @@ namespace ModLibrary
     public static class SingleMethodExtensions
     {
         /// <summary>
-        /// Gets an object at the specified index and casts it to the specified type
+        /// Gets the <see cref="UnityEngine.Object"/> at the specified index and casts it to type <typeparamref name="T"/>
         /// </summary>
         /// <typeparam name="T">The type of the object at the index</typeparam>
         /// <param name="moddedObject"></param>
-        /// <param name="index">The index of the object you want to get</param>
-        /// <returns>The object at the specified index, casted to type <typeparamref name="T"/></returns>
+        /// <param name="index">The index of the <see cref="ModdedObject.objects"/> <see cref="List{T}"/></param>
+        /// <returns>The <see cref="UnityEngine.Object"/> at the specified index, casted to type <typeparamref name="T"/></returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="moddedObject"/> is <see langword="null"/></exception>
+        /// <exception cref="IndexOutOfRangeException">If the given index is outside the range of <see cref="ModdedObject.objects"/></exception>
+        /// <exception cref="InvalidCastException">If the <see cref="UnityEngine.Object"/> at index <paramref name="index"/> is not of type <typeparamref name="T"/></exception>
         public static T GetObject<T>(this ModdedObject moddedObject, int index) where T : UnityEngine.Object
         {
+            if (moddedObject == null)
+            {
+                throw new ArgumentNullException(nameof(moddedObject));
+            }
+
             if (index < 0 || index >= moddedObject.objects.Count)
             {
                 throw new IndexOutOfRangeException("Given index was not in the range of the objects list:\tMin: 0 " + "Max: " + (moddedObject.objects.Count - 1) + " Recieved: " + index);

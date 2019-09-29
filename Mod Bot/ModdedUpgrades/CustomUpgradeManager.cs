@@ -12,21 +12,46 @@ namespace ModLibrary
     /// </summary>
     public class CustomUpgradeManager : Singleton<CustomUpgradeManager>
     {
+        private GameObject backButton;
+        private GameObject nextButton;
+
         private void Start()
         {
-            GameObject button = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
-            CreateButtonAt(button, new Vector3(-300, -200, 0), "Back", BackClicked);
-            CreateButtonAt(button, new Vector3(300, -200, 0), "Next", NextClicked);
+            GameObject prefab = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
+            backButton = CreateButtonAt(prefab, new Vector3(-300, -200, 0), "Back", BackClicked);
+            nextButton = CreateButtonAt(prefab, new Vector3(300, -200, 0), "Next", NextClicked);
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageTitle);
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageContents);
         }
 
         private void OnDestroy()
         {
-            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageTitle);
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshPageContents);
+
+            if (backButton != null)
+            {
+                Destroy(backButton);
+            }
+            if (nextButton != null)
+            {
+                Destroy(nextButton);
+            }
         }
 
-        private void CreateButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
+        private void Update()
+        {
+            if (backButton == null || nextButton == null)
+            {
+                return;
+            }
+
+            bool state = GameModeManager.IsSinglePlayer();
+            backButton.SetActive(state);
+            nextButton.SetActive(state);
+            UpgradeAngleSetter.Instance.UpdateSaveButtonState();
+        }
+
+        private GameObject CreateButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
         {
             GameObject spawedButton = Instantiate(prefab);
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
@@ -38,6 +63,8 @@ namespace ModLibrary
             button.onClick.AddListener(call);
 
             spawedButton.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = text;
+
+            return spawedButton;
         }
         
         /// <summary>
@@ -46,7 +73,7 @@ namespace ModLibrary
         public void BackClicked()
         {
             UpgradePagesManager.PreviousPage();
-            RefreshPageTitle();
+            RefreshPageContents();
         }
 
         /// <summary>
@@ -55,10 +82,10 @@ namespace ModLibrary
         public void NextClicked()
         {
             UpgradePagesManager.NextPage();
-            RefreshPageTitle();
+            RefreshPageContents();
         }
 
-        private void RefreshPageTitle()
+        private void RefreshPageContents()
         {
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
 
@@ -75,8 +102,6 @@ namespace ModLibrary
             {
                 GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade";
                 GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
-
-                UpgradeAngleSetter.Instance.RefreshIconEventTriggers(false);
             }
         }
     }

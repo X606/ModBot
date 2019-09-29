@@ -35,6 +35,7 @@ namespace ModLibrary
         /// <param name="upgradeType">The <see cref="UpgradeType"/> to give</param>
         /// <param name="level">The level of the upgrade</param>
         /// <exception cref="ArgumentNullException">If the given <see cref="FirstPersonMover"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException">If the given <see cref="UpgradeType"/> and level has not been defined in <see cref="UpgradeManager.UpgradeDescriptions"/></exception>
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeType upgradeType, int level)
         {
             if (firstPersonMover == null)
@@ -42,30 +43,27 @@ namespace ModLibrary
                 throw new ArgumentNullException(nameof(firstPersonMover));
             }
 
-            if (firstPersonMover.GetComponent<PreconfiguredUpgradeCollection>() != null)
+            if (UpgradeManager.Instance.GetUpgrade(upgradeType, level) == null)
             {
-                UpgradeCollection upgradeCollection = firstPersonMover.GetComponent<UpgradeCollection>();
+                throw new ArgumentException("The upgrade with type \"" + upgradeType + "\" and level " + level + " has not been defined!");
+            }
 
-                if (upgradeCollection == null)
-                {
-                    debug.Log("Failed to give upgrade '" + upgradeType.ToString() + "' (Level: " + level + ") to " + firstPersonMover.CharacterName + " (UpgradeCollection is null)", Color.red);
-                    return;
-                }
-
+            if (firstPersonMover.GetComponent<PreconfiguredUpgradeCollection>() != null) // If we are giving an upgrade to an enemy/ally
+            {
+                PreconfiguredUpgradeCollection upgradeCollection = firstPersonMover.GetComponent<PreconfiguredUpgradeCollection>();
                 UpgradeTypeAndLevel upgradeToGive = new UpgradeTypeAndLevel { UpgradeType = upgradeType, Level = level };
 
-                List<UpgradeTypeAndLevel> upgrades = ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades.ToList();
-
+                List<UpgradeTypeAndLevel> upgrades = upgradeCollection.Upgrades.ToList();
                 upgrades.Add(upgradeToGive);
+                upgradeCollection.Upgrades = upgrades.ToArray();
 
-                ((PreconfiguredUpgradeCollection)upgradeCollection).Upgrades = upgrades.ToArray();
-                ((PreconfiguredUpgradeCollection)upgradeCollection).InitializeUpgrades();
+                upgradeCollection.InitializeUpgrades();
 
                 firstPersonMover.RefreshUpgrades();
             }
-            else if (firstPersonMover.GetComponent<PlayerUpgradeCollection>() != null)
+            else if (firstPersonMover.GetComponent<PlayerUpgradeCollection>() != null) // If we are giving it to the player
             {
-                GameDataManager.Instance.SetUpgradeLevel(upgradeType, level);
+                GameDataManager.Instance.SetUpgradeLevel(upgradeType, level); // Set the level of the upgrade to the given one
                 UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
                 GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
             }

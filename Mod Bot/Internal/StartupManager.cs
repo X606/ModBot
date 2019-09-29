@@ -16,31 +16,31 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
-            ErrorChanger.ChangeError();
+            ErrorChanger.ChangeError(); // Change error message so that crashes are sent to us and/or the developers of any mods installed instead of the actual game developers
 
-            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory()))
+            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something went wrong during installation
             {
                 throw new DirectoryNotFoundException("Mods folder not found!");
             }
             
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
-            gameFlowManager.AddComponent<UpdateChecker>();
-            gameFlowManager.AddComponent<ModsPanelManager>();
-            gameFlowManager.AddComponent<CustomUpgradeManager>();
-            gameFlowManager.AddComponent<UpgradeIconDownloader>();
-            gameFlowManager.AddComponent<ModdedMultiplayerEventListener>();
-            gameFlowManager.AddComponent<ModSharingManager>();
-            gameFlowManager.AddComponent<ModBotUserIdentifier>();
-            gameFlowManager.AddComponent<UpgradeAngleSetter>();
-            gameFlowManager.AddComponent<DebugLineDrawingManager>();
+            gameFlowManager.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
+            gameFlowManager.AddComponent<ModsPanelManager>();                  // Adds the mods button in the main menu and pause screen
+            gameFlowManager.AddComponent<CustomUpgradeManager>();              // Handles modded upgrades
+            gameFlowManager.AddComponent<UpgradeIconDownloader>();             // Downloads images from a URL to be used as an upgrade icon
+            gameFlowManager.AddComponent<ModdedMultiplayerEventListener>();    // Recieves all multiplayer events and sends them to any mods that has configured to recieve them
+            gameFlowManager.AddComponent<ModSharingManager>();                 // Handles sharing of mods to all clients on the same server
+            gameFlowManager.AddComponent<ModBotUserIdentifier>();              // Keeps track of what users are currently using Mod-Bot
+            gameFlowManager.AddComponent<UpgradeAngleSetter>();                // Handles setting upgrade angles while in-game
+            gameFlowManager.AddComponent<DebugLineDrawingManager>();           // Handels drawing lines on screen
 
-            try
+            try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
-                InitilizeUI();
+                InitilizeUI(); // Initialize all custom UI
 
                 ModsManager modsManager = gameFlowManager.AddComponent<ModsManager>();
-                modsManager.Initialize();
+                modsManager.Initialize(); // Loads all mods in the mods folder
             }
             catch (Exception e)
             {

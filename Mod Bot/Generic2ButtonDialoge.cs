@@ -16,8 +16,8 @@ namespace ModLibrary
     /// </summary>
     public class Generic2ButtonDialogue
     {
-        private Action OnButton1ClickedCallback;
-        private Action OnButton2ClickedCallback;
+        private readonly Action OnButton1ClickedCallback;
+        private readonly Action OnButton2ClickedCallback;
 
         private Text DisplayText;
         private Button Button1;
@@ -26,18 +26,18 @@ namespace ModLibrary
         private ModdedObject SpawnedObject;
 
         /// <summary>
-        /// If this is true there is currently a <see cref="Generic2ButtonDialogue"/> open
+        /// If this is <see langword="true"/> there is currently a <see cref="Generic2ButtonDialogue"/> open
         /// </summary>
-        public static bool IsWindowOpen;
+        public static bool IsWindowOpen { get; private set; }
 
         /// <summary>
         /// Creates a dialoge where the user can select one of 2 options
         /// </summary>
         /// <param name="message">The text that will be displayed on screen</param>
         /// <param name="button1Text">The text on the first button</param>
-        /// <param name="onPressButton1">Will be called when the user clicks on the first button</param>
+        /// <param name="onPressButton1">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         /// <param name="button2Text">The text on the second button</param>
-        /// <param name="onPressButton2">Will be called when the user clicks on the second button</param>
+        /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
         {
             GameObject prefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Generic2ButtonDialoge", "Clone Drone in the Danger Zone_Data/");
