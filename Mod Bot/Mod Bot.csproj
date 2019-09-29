@@ -75,6 +75,9 @@
     <Compile Include="MultiplayerTools\MultiplayerMessageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
+    <Compile Include="YieldInstructions\WaitForCharacterModelAndUpgradeInitialization.cs" />
+    <Compile Include="YieldInstructions\WaitForCharacterModelInitialization.cs" />
+    <Compile Include="YieldInstructions\WaitUntilTrue.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
