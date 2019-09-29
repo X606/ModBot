@@ -59,8 +59,10 @@ namespace ModLibrary
             float? loadedFloat = OptionsSaver.LoadFloat(OwnerMod, name);
             if(loadedFloat.HasValue)
             {
+                debug.Log("has value:" + loadedFloat.Value);
                 slider.value = loadedFloat.Value;
             }
+            debug.Log("adding slider man");
 
             if(onChange != null)
             {
@@ -446,7 +448,15 @@ namespace InternalModBot {
             {
                 string json = System.IO.File.ReadAllText(Path);
                 Load(json);
+                Console.WriteLine("loading stuff");
             }
+
+            Console.WriteLine("Stuff:");
+            for(int i = 0; i < Loadedkeys.Count; i++)
+            {
+                Console.Write(Loadedkeys[i].Key.ToString() + " : " + Loadedkeys[i].Value.ToString() + "\n");
+            }
+
         }
 
         /// <summary>
@@ -560,18 +570,16 @@ namespace InternalModBot {
             {
                 return null;
             }
-
-            string outputString = null;
+            
             foreach (KeyValuePair<string, object> value in Loadedkeys)
             {
                 if (value.Key == GenerateSaveFormatString(mod, SaveFormats.String, name))
                 {
-                    outputString = value.Value as string;
-                    break;
+                    return value.Value as string;
                 }
             }
 
-            return outputString;
+            return null;
         }
 
         /// <summary>
@@ -609,18 +617,29 @@ namespace InternalModBot {
             {
                 return null;
             }
-
-            int? outputInt = null;
+            
             foreach (KeyValuePair<string, object> value in Loadedkeys)
             {
                 if (value.Key == GenerateSaveFormatString(mod, SaveFormats.Int, name))
                 {
-                    outputInt = value.Value as int?;
-                    break;
+                    if (value.Value is int)
+                    {
+                        return (int)value.Value;
+                    }
+                    else if (value.Value is long)
+                    {
+                        return (int)(long)value.Value;
+                    } else
+                    {
+                        throw new Exception("Unrecognized Type \"" + value.Value.GetType().FullName + "\"");
+                    }
+                    
+                    
                 }
+
             }
             
-            return outputInt;
+            return null;
         }
 
         /// <summary>
@@ -654,22 +673,35 @@ namespace InternalModBot {
         /// <returns></returns>
         public static float? LoadFloat(Mod mod, string name)
         {
-            if (Loadedkeys == null)
+            if(Loadedkeys == null)
             {
                 return null;
             }
 
-            float? outputFloat = null;
-            foreach (KeyValuePair<string, object> value in Loadedkeys)
+            foreach(KeyValuePair<string, object> value in Loadedkeys)
             {
-                if (value.Key == GenerateSaveFormatString(mod, SaveFormats.Float, name))
+                string generated = GenerateSaveFormatString(mod, SaveFormats.Float, name);
+
+                if(value.Key == generated)
                 {
-                    outputFloat = value.Value as float?;
-                    break;
+                    if(value.Value is float)
+                    {
+                        return (float)value.Value;
+                    }
+                    else if(value.Value is double)
+                    {
+                        return (float)(double)value.Value;
+                    }
+                    else
+                    {
+                        throw new Exception("Unrecognized Type \"" + value.Value.GetType().FullName + "\"");
+                    }
+
+
                 }
             }
 
-            return outputFloat;
+            return null;
         }
 
         /// <summary>
