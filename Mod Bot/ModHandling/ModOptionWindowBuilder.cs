@@ -448,13 +448,6 @@ namespace InternalModBot {
             {
                 string json = System.IO.File.ReadAllText(Path);
                 Load(json);
-                Console.WriteLine("loading stuff");
-            }
-
-            Console.WriteLine("Stuff:");
-            for(int i = 0; i < Loadedkeys.Count; i++)
-            {
-                Console.Write(Loadedkeys[i].Key.ToString() + " : " + Loadedkeys[i].Value.ToString() + "\n");
             }
 
         }
