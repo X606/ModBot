@@ -69,7 +69,9 @@ namespace InternalModBot
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                throw new Exception(webRequest.error);
+                debug.Log(webRequest.error, Color.red);
+                upgrade.Icon = null;
+                yield break;
             }
 
             Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
