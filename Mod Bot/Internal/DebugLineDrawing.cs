@@ -111,12 +111,12 @@ namespace InternalModBot
             }
         }
         /// <summary>
-        /// Used by mod-bot to describe lines before they are rendered
+        /// Describes a line in 3D space
         /// </summary>
         public class LineInfo
         {
             /// <summary>
-            /// Sets all values in the <see cref="LineInfo"/>
+            /// Initializes a new instance of the <see cref="LineInfo"/> class
             /// </summary>
             /// <param name="point1"></param>
             /// <param name="point2"></param>
@@ -129,18 +129,22 @@ namespace InternalModBot
                 Color = color;
                 EndTime = endTime;
             }
+
             /// <summary>
-            /// The point we draw from
+            /// The start point of the line
             /// </summary>
             public Vector3 Point1;
+
             /// <summary>
-            /// the point we draw to
+            /// The end point of the line
             /// </summary>
             public Vector3 Point2;
+
             /// <summary>
-            /// the color of the line drawn
+            /// The <see cref="UnityEngine.Color"/> of the line
             /// </summary>
             public Color Color;
+
             /// <summary>
             /// The time we want to stop displaying the line
             /// </summary>

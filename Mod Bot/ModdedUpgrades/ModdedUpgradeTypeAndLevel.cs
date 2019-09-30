@@ -5,7 +5,7 @@ using System.Text;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used to represent both an <see cref="global::UpgradeType"/> and a level (<see cref="Int32"/>) in Mod-Bot (the == and != operators compare the contents and not the references)
+    /// Used to represent both an <see cref="global::UpgradeType"/> and a level (<see cref="int"/>) in Mod-Bot (the == and != operators compare the contents and not the references)
     /// </summary>
     public class ModdedUpgradeRepresenter
     {

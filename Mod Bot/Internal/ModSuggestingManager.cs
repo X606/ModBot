@@ -1,14 +1,14 @@
 ﻿using ModLibrary;
-using System.Collections.Generic;
-using System.Collections;
-using System.Net.Security;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
+using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEngine;
 
 namespace InternalModBot
 {

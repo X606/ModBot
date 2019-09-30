@@ -42,7 +42,7 @@ namespace ModLibrary
         {
             AddEventTypeToDictionary(typeof(T));
 
-            if (!HasCallbackDefined(callback))
+            if (allowDuplicate || !HasCallbackDefined(callback))
             {
                 eventListeners[typeof(T)].Add(callback);
             }

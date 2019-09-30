@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -17,8 +18,9 @@ namespace InternalModBot
             }
 
             float FPS = 1f / Time.unscaledDeltaTime;
-            
-            counter.text = ((int)FPS).ToString() + " FPS";
+            int FPSInt = Convert.ToInt32(FPS);
+
+            counter.text = FPSInt + " FPS";
         }
 
         /// <summary>

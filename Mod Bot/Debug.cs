@@ -38,7 +38,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Writes the given object's ToString() value to the console
+        /// Writes the given object's <see cref="object.ToString"/> value to the console
         /// </summary>
         /// <param name="_log">The object to write</param>
         public static void Log(object _log)
@@ -63,7 +63,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Passes every instance of the given list's 'ToString()' value to 'debug.Log()'
+        /// Passes every instance of the given <see cref="IEnumerable{T}"/>s <see cref="object.ToString"/> value to <see cref="debug.Log(string)"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
@@ -76,7 +76,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Passes every instance of the given list's 'ToString()' value to: 'debug.Log()'
+        /// Passes every instance of the given <see cref="IEnumerable{T}"/>s <see cref="object.ToString"/> value to <see cref="debug.Log(string)"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
@@ -100,6 +100,7 @@ namespace ModLibrary
         {
             DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point1, point2, color, Time.unscaledTime + timeToStay));
         }
+
         /// <summary>
         /// Draws a ray for the main camera, and if thats null for the players camera from point in the direction of direction in the color color for one frame.
         /// </summary>
