@@ -146,6 +146,7 @@ namespace InternalModBot
         {
             yield return 0;
             mod.OnModRefreshed();
+            mod.OnModEnabled();
         }
 
         /// <summary>
@@ -270,7 +271,7 @@ namespace InternalModBot
                 }
             }
 
-            mod.OnModRefreshed();
+            mod.OnModEnabled();
         }
 
         /// <summary>

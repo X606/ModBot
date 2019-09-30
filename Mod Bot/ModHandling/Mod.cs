@@ -10,9 +10,8 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
-
         /// <summary>
-        /// Called in <see cref="Character"/>.Start()
+        /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
         /// </summary>
         /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was spawned</param>
         public virtual void OnFirstPersonMoverSpawned(FirstPersonMover firstPersonMover)
@@ -20,7 +19,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="Character"/>.Update()
+        /// Called in <see cref="Character.Update"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
         /// </summary>
         /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was updated</param>
         public virtual void OnFirstPersonMoverUpdate(FirstPersonMover firstPersonMover)
@@ -28,7 +27,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="Character"/>.Start()
+        /// Called in <see cref="Character.Start"/>
         /// </summary>
         /// <param name="character">The <see cref="Character"/> that was spawned</param>
         public virtual void OnCharacterSpawned(Character character)
@@ -36,7 +35,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="Character"/>.Update()
+        /// Called in <see cref="Character.Update"/>
         /// </summary>
         /// <param name="character">The <see cref="Character"/> that was updated</param>
         public virtual void OnCharacterUpdate(Character character)
@@ -44,7 +43,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="ModsManager"/>.ReloadMods()
+        /// Called in <see cref="ModsManager.ReloadMods"/>
         /// </summary>
         public virtual void OnModRefreshed()
         {
@@ -96,7 +95,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called at the start <see cref="FirstPersonMover"/>.RefreshUpgrades()
+        /// Called at the start <see cref="FirstPersonMover.RefreshUpgrades"/>
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
@@ -105,7 +104,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called at the end of <see cref="FirstPersonMover"/>.RefreshUpgrades()
+        /// Called at the end of <see cref="FirstPersonMover.RefreshUpgrades"/>
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
@@ -114,7 +113,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when a <see cref="Projectile"/> starts moving
+        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/>
         /// </summary>
         /// <param name="projectile"></param>
         public virtual void OnProjectileStartedMoving(Projectile projectile)
@@ -122,7 +121,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called every frame since the given <see cref="Projectile"/> was created
+        /// Called in <see cref="Projectile.FixedUpdate"/>
         /// </summary>
         /// <param name="projectile"></param>
         public virtual void OnProjectileUpdate(Projectile projectile)
@@ -130,7 +129,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when the given <see cref="Projectile"/> is destroyed in any way
+        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/>
         /// </summary>
         /// <param name="projectile"></param>
         public virtual void OnProjectileDestroyed(Projectile projectile)
@@ -138,7 +137,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when an <see cref="ArrowProjectile"/> starts moving
+        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
         public virtual void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
@@ -146,7 +145,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called every frame since the given <see cref="ArrowProjectile"/> was created
+        /// Called in <see cref="Projectile.FixedUpdate"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
         public virtual void OnArrowProjectileUpdate(ArrowProjectile arrow)
@@ -154,7 +153,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when the given <see cref="ArrowProjectile"/> is destroyed in any way
+        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
         public virtual void OnArrowProjectileDestroyed(ArrowProjectile arrow)
@@ -162,7 +161,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when a <see cref="BulletProjectile"/> starts moving
+        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
         /// </summary>
         /// <param name="bullet"></param>
         /// <param name="isRepairFire"></param>
@@ -173,7 +172,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called every frame since the given <see cref="BulletProjectile"/> was created
+        /// Called in <see cref="Projectile.FixedUpdate"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
         /// </summary>
         /// <param name="bullet"></param>
         /// <param name="isFlameBreath"></param>
@@ -184,7 +183,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when the given <see cref="BulletProjectile"/> is destroyed in any way
+        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
         /// </summary>
         /// <param name="bullet"></param>
         /// <param name="isRepairFire"></param>
@@ -195,7 +194,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when a <see cref="Character"/> is killed
+        /// Called in <see cref="Character.onDeath(Character, DamageSourceType)"/>
         /// </summary>
         /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
         /// <param name="killerCharacter">The killer <see cref="Character"/></param>
@@ -205,14 +204,14 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when the mod is deactivated from the mods menu
+        /// Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically removed when the owner mod is disabled
         /// </summary>
         public virtual void OnModDeactivated()
         {
         }
 
         /// <summary>
-        /// If this returns true it will active the mod settings button in the mods window for this mod.
+        /// If this returns <see langword="true"/> it will active the mod settings button in the mods window for this mod.
         /// </summary>
         /// <returns></returns>
         public virtual bool ImplementsSettingsWindow()
@@ -249,6 +248,13 @@ namespace ModLibrary
         /// </summary>
         /// <param name="moddedEvent">The received <see cref="GenericStringForModdingEvent"/></param>
         public virtual void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
+        {
+        }
+
+        /// <summary>
+        /// Called when the mod gets loaded or enabled after previously being disabled
+        /// </summary>
+        public virtual void OnModEnabled()
         {
         }
 
