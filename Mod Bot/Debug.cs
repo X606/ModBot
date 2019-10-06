@@ -48,10 +48,20 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Writes the given object's <see cref="object.ToString"/> value to the console with the specified <see cref="Color"/>
+        /// </summary>
+        /// <param name="_log">The <see cref="object"/> to log</param>
+        /// <param name="color">The <see cref="Color"/> to write in</param>
+        public static void Log(object _log, Color color)
+        {
+            Log(_log.ToString(), color);
+        }
+
+        /// <summary>
         /// Writes to the in-game console, in color.
         /// </summary>
         /// <param name="_log">What to write</param>
-        /// <param name="_color">The color to write in</param>
+        /// <param name="_color">The <see cref="Color"/> to write in</param>
         public static void Log(string _log, Color _color)
         {
             InternalModBot.Logger.Instance.Log(_log, _color);
@@ -64,10 +74,10 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Passes every instance of the given <see cref="IEnumerable{T}"/>s <see cref="object.ToString"/> value to <see cref="debug.Log(string)"/>
+        /// Passes every instance of the given <see cref="IEnumerable{T}"/>s <see cref="object.ToString"/> value to <see cref="Log(string)"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
+        /// <typeparam name="T">The type of the collection to write</typeparam>
+        /// <param name="list">The <see cref="IEnumerable{T}"/> to write</param>
         public static void PrintAll<T>(IEnumerable<T> list)
         {
             foreach (T item in list)
@@ -79,9 +89,9 @@ namespace ModLibrary
         /// <summary>
         /// Passes every instance of the given <see cref="IEnumerable{T}"/>s <see cref="object.ToString"/> value to <see cref="debug.Log(string)"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="color"></param>
+        /// <typeparam name="T">The type of the collection to write</typeparam>
+        /// <param name="list">The <see cref="IEnumerable{T}"/> to write</param>
+        /// <param name="color">The <see cref="Color"/> to write in</param>
         public static void PrintAll<T>(IEnumerable<T> list, Color color)
         {
             foreach (T item in list)

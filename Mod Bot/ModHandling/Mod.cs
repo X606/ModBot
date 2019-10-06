@@ -204,7 +204,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically removed when the owner mod is disabled
+        /// Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically hidden when the owner mod is disabled
         /// </summary>
         public virtual void OnModDeactivated()
         {
@@ -228,7 +228,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// If this returns true the cursor will get enabled
+        /// If this returns <see langword="true"/> the cursor will get enabled
         /// </summary>
         /// <returns></returns>
         public virtual bool ShouldCursorBeEnabled()
@@ -259,7 +259,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Will be called just before anything tries to load something from the Resources folder. If this returns null it will continue like normal, but if this returns anything else than null that will be returned by <see cref="Resources.Load(string)"/> instead.
+        /// Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="Resources.Load(string)"/> instead.
         /// </summary>
         /// <param name="path">The path specified</param>
         /// <returns></returns>

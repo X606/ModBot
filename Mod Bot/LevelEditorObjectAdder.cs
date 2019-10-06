@@ -16,7 +16,7 @@ namespace ModLibrary
         private const string TEXTURE_PREFIX = "Images/modded/";
 
         /// <summary>
-        /// Adds a object to the editor
+        /// Adds an object to the editor
         /// </summary>
         /// <param name="folderName">The name of the folder you want to add item to, if the folder doesnt already exist a new one will be created.</param>
         /// <param name="itemName">The name of the new item in the assets list.</param>
@@ -65,7 +65,7 @@ namespace ModLibrary
             List<LevelObjectEntry> levelObjects = LevelObjectsLibraryManager.Instance.GetLevelObjectsInLibrary();
             List<LevelObjectEntry> visibleLevelObjects = LevelObjectsLibraryManager.Instance.GetVisibleLevelEditorObjects();
 
-            foreach(var item in ModdedLevelObjects)
+            foreach(DoubleValueHolder<string, string> item in ModdedLevelObjects)
             {
                 LevelObjectEntry entry = new LevelObjectEntry();
                 string[] subStrings = item.FirstValue.Split("/".ToArray());
