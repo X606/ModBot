@@ -75,6 +75,7 @@ namespace InternalModBot
         /// </summary>
         public override void OnLevelEditorStarted()
         {
+            LevelEditorObjectAdder.OnLevelEditorStarted();
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
@@ -405,6 +406,23 @@ namespace InternalModBot
             {
                 mods[i].OnMultiplayerEventReceived(moddedEvent);
             }
+        }
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public override Object OnResourcesLoad(string path)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            for(int i = 0; i < mods.Count; i++)
+            {
+                UnityEngine.Object obj = mods[i].OnResourcesLoad(path);
+                if(obj != null)
+                    return obj;
+            }
+
+            return null;
         }
 
     }

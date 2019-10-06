@@ -258,5 +258,14 @@ namespace ModLibrary
         {
         }
 
+        /// <summary>
+        /// Will be called just before anything tries to load something from the Resources folder. If this returns null it will continue like normal, but if this returns anything else than null that will be returned by <see cref="Resources.Load(string)"/> instead.
+        /// </summary>
+        /// <param name="path">The path specified</param>
+        /// <returns></returns>
+        public virtual UnityEngine.Object OnResourcesLoad(string path)
+        {
+            return null;
+        }
     }
 }

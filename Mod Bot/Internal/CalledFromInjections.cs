@@ -161,7 +161,7 @@ namespace InternalModBot
         {
             if (ModsManager.Instance == null)
                 return true;
-
+            
             if (ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
             {
                 InputManager.Instance.SetCursorEnabled(true);
@@ -185,6 +185,24 @@ namespace InternalModBot
             }
 
             return powerCrystals[0].transform.position;
+        }
+
+        /// <summary>
+        /// Called from <see cref="Resources.Load(string)"/>, <see cref="Resources.Load{T}(string)"/> and <see cref="ResourceRequest.asset"/>
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static UnityEngine.Object FromResourcesLoad(string path)
+        {
+            UnityEngine.Object obj = LevelEditorObjectAdder.GetObjectData(path);
+            if (obj != null)
+            {
+                return obj;
+            }
+
+            if(ModsManager.Instance == null)
+                return null;
+            return ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
         }
 
     }

@@ -53,7 +53,12 @@ namespace InternalModBot
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogError("Mod '" + files[i] + "' is not working, make sure that it is set up right: " + ex.Message);
+                        string file = files[i];
+                        DelegateScheduler.Instance.Schedule(delegate
+                        {
+                            Debug.LogError("Mod '" + file + "' is not working, make sure that it is set up right: " + ex.Message);
+                        }, 0.5f);
+                        
                     }
                 }
             }

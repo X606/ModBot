@@ -14,6 +14,7 @@ namespace ModLibrary
      * lot problems for people making mods (most people will use both this namespace and UnityEngine)
      * 
     */
+#pragma warning disable IDE1006 // Disables the warning about the lower case name
 
     /// <summary>
     /// Allows you to write to the in-game console (open it with F1).

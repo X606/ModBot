@@ -10,9 +10,9 @@ using System.Text;
 
 public static class Injector
 {
-    public static Injection AddCallToMethodInMethod(string path, string className, string methodName, string readPath, string readClassName, string readMethod, int instructionInsertOffset = 0, bool insertAfter = false, bool relativeToEnd = false, string[] argumentTypes = null)
+    public static Injection AddCallToMethodInMethod(string path, string className, string methodName, string readPath, string readClassName, string readMethod, int instructionInsertOffset = 0, bool insertAfter = false, bool relativeToEnd = false, string[] argumentTypes = null, bool isWriteMethodGeneric = false)
     {
-        HalfInjected halfInjected = InjectionFirstStep(path, className, methodName);
+        HalfInjected halfInjected = InjectionFirstStep(path, className, methodName, "", isWriteMethodGeneric);
         HalfInjected readModule = InjectionFirstStep(readPath, readClassName, readMethod);
         
         if (halfInjected == null)
@@ -101,7 +101,7 @@ public static class Injector
 
         readModule.Module.Dispose();
 
-        return new Injection(halfInjected.IlProcessor, halfInjected.Module);
+        return new Injection(halfInjected.IlProcessor, halfInjected.Module, halfInjected.Type);
     }
 
     public static void OverrideMethod(string pathToPasteTo, string pasteClassName, string pasteMethodName, string pathToCopyFrom, string copyClassName, string copyMethodName)
@@ -433,7 +433,7 @@ public static class Injector
 
     }
 
-    private static HalfInjected InjectionFirstStep(string path, string className, string methodName, string debugPre = "")
+    private static HalfInjected InjectionFirstStep(string path, string className, string methodName, string debugPre = "", bool isGeneric = false)
     {
         if (!File.Exists(path))
         {
@@ -452,7 +452,7 @@ public static class Injector
             module.Dispose();
             return null;
         }
-        MethodDefinition targetMethod = type.Methods.FirstOrDefault(method => method.Name == methodName);
+        MethodDefinition targetMethod = type.Methods.FirstOrDefault(method => method.Name == methodName && method.ContainsGenericParameter == isGeneric);
         if (targetMethod == null)
         {
             Console.WriteLine(debugPre + "Could not find Method \"" + methodName + "\" in class \"" + className + "\"");
@@ -527,10 +527,11 @@ public static class Injector
 
 public class Injection
 {
-    public Injection(ILProcessor _processor, ModuleDefinition _module)
+    public Injection(ILProcessor _processor, ModuleDefinition _module, TypeDefinition type)
     {
         Processor = _processor;
         module = _module;
+        Type = type;
     }
     public Injection()
     {
@@ -581,7 +582,7 @@ public class Injection
         if (index < 0 || index >= Processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction, operand));
     }
     public void AddInstructionOverSafe(OpCode instruction, float operand, int index = 0)
     {
@@ -857,7 +858,20 @@ public class Injection
         module.Dispose();
     }
 
+    public FieldReference GetFieldReferenceOnSameType(string name)
+    {
+        foreach(FieldDefinition field in Type.Fields)
+        {
+            if (field.Name == name)
+            {
+                return module.ImportReference(field);
+            }
+        }
+        return null;
+    }
+
     private readonly bool isNull;
     private ILProcessor Processor;
     private ModuleDefinition module;
+    private TypeDefinition Type;
 }

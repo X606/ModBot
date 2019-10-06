@@ -32,6 +32,6 @@ namespace ModLibrary.YieldInstructions
             }
         }
 
-        FirstPersonMover firstPersonMover;
+        readonly FirstPersonMover firstPersonMover;
     }
 }

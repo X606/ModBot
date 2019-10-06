@@ -187,6 +187,25 @@ namespace InternalModBot
                 }
 
                 TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
+                return;
+            }
+            if (subCommands[0].ToLower() == "!mods")
+            {
+                List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+                string allMods = "";
+                for(int i = 0; i < mods.Count; i++)
+                {
+                    Mod mod = mods[i];
+                    allMods += mod.GetModName();
+                    if (i != mods.Count-1)
+                    {
+                        allMods += ", ";
+                    }
+                    
+                }
+
+                TwitchManager.Instance.EnqueueChatMessage("MrDestructoid " + msg.userName + " Loaded mods: " + allMods + " MrDestructoid");
+                return;
             }
 
         }

@@ -15,20 +15,25 @@ class Program
     public const string InjectionClassesNamespaceName = "InjectionClasses.";
     static void Main(string[] args)
     {
-        string path = Environment.CurrentDirectory;
-        string installPath = path + "/Assembly-CSharp.dll";
-        string sourceToCopyClassesFrom = path + "/InjectionClasses.dll";
-        string modlibrary = path + "/ModLibrary.dll";
-        InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary);
-        
-        Console.WriteLine("All injections completed!");
-        
-        System.Threading.Thread.Sleep(2000);
-        
+        try
+        {
+            string path = Environment.CurrentDirectory;
+            string installPath = path + "/Assembly-CSharp.dll";
+            string sourceToCopyClassesFrom = path + "/InjectionClasses.dll";
+            string modlibrary = path + "/ModLibrary.dll";
+            InstallModBot(installPath, sourceToCopyClassesFrom, modlibrary, path);
+
+            Console.WriteLine("All injections completed!");
+
+            System.Threading.Thread.Sleep(2000);
+        } catch(Exception e)
+        {
+            ErrorHandler.Crash(e.Message + ": " + e.StackTrace);
+        }
 
     }
     
-    static void InstallModBot(string installPath, string sourceToCopyClassesFrom, string modLibraryPath)
+    static void InstallModBot(string installPath, string sourceToCopyClassesFrom, string modLibraryPath, string baseManagedPath)
     {
         Console.WriteLine("Starting the installation of Mod-Bot...");
         if (!File.Exists(sourceToCopyClassesFrom))
@@ -141,6 +146,37 @@ class Program
         GameUIRoot1.AddInstructionUnderSafe(OpCodes.Ret);
         GameUIRoot1.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
         GameUIRoot1.Write();
+
+        Console.WriteLine("Injecting into Resources.Load...");
+        Injection ResourcesLoad = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.Resources", "Load", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad");
+        ResourcesLoad.AddInstructionUnderSafe(OpCodes.Ret);
+        ResourcesLoad.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourcesLoad.AddInstructionUnderSafe(OpCodes.Brfalse_S, 4, 0, true);
+        ResourcesLoad.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourcesLoad.AddInstructionUnderSafe(OpCodes.Stloc_0);
+        ResourcesLoad.AddInstructionOverSafe(OpCodes.Ldarg_0);
+        ResourcesLoad.Write();
+
+        Console.WriteLine("Injecting into Resources.Load<T>...");
+        Injection ResourcesLoadT = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.Resources", "Load", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad", 0, false, false, null, true);
+        ResourcesLoadT.AddInstructionUnderSafe(OpCodes.Ret);
+        ResourcesLoadT.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourcesLoadT.AddInstructionUnderSafe(OpCodes.Brfalse_S, 4, 0, true);
+        ResourcesLoadT.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourcesLoadT.AddInstructionUnderSafe(OpCodes.Stloc_0);
+        ResourcesLoadT.AddInstructionOverSafe(OpCodes.Ldarg_0);
+        ResourcesLoadT.Write();
+
+        Console.WriteLine("Injecting into ResourceRequest.get_asset...");
+        Injection ResourceRequestGetAsset = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.ResourceRequest", "get_asset", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad");
+        ResourceRequestGetAsset.AddInstructionUnderSafe(OpCodes.Ret);
+        ResourceRequestGetAsset.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourceRequestGetAsset.AddInstructionUnderSafe(OpCodes.Brfalse_S, 4, 0, true);
+        ResourceRequestGetAsset.AddInstructionUnderSafe(OpCodes.Ldloc_0);
+        ResourceRequestGetAsset.AddInstructionUnderSafe(OpCodes.Stloc_0);
+        ResourceRequestGetAsset.AddInstructionOverSafe(OpCodes.Ldfld, ResourceRequestGetAsset.GetFieldReferenceOnSameType("m_Path"));
+        ResourceRequestGetAsset.AddInstructionOverSafe(OpCodes.Ldarg_0);
+        ResourceRequestGetAsset.Write();
     }
 }
 
