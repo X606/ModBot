@@ -18,7 +18,7 @@ NOTE: Make sure to include the '.NET Library' package during installation.
 
 You will need to install the same version of Unity that Clone Drone has if you want to include custom assets in your mod (i.e. A custom model, animation, etc.).  
 
-NOTE: It needs to be the exact version of Unity that Clone Drone uses (2017.3) or the game will crash when trying to import the custom assets.
+NOTE: It needs to be the exact version of Unity that Clone Drone uses (2018.3.11) or the game will crash when trying to import the custom assets.
 
 </div>
 
@@ -66,6 +66,6 @@ You now have a blank canvas for a mod, to see a list of methods you can override
 
 ![setup main class](https://cdn.discordapp.com/attachments/418510776215535640/524965033269133342/unknown.png)
 
-Finaly, all mods should override GetModName, this is to make sure that the user can see what mod is what in game.
+Finaly, all mods should override GetModName and GetUniqueID, this is to make sure that the user can see what mod is what in game.
 
 And of course if you have any questions ask away in the discord!
