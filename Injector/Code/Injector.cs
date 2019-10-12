@@ -523,6 +523,31 @@ public static class Injector
 
         return null;
     }
+
+    public static void MelonPatch(string path)
+    {
+        HalfInjected halfInjected = InjectionFirstStep(path, "TwitchWhoIsLiveManager", "onGameLiveStreamRequestFinished", "", false);
+        bool injectedPatch = false;
+        foreach(var item in halfInjected.IlProcessor.Body.Instructions)
+        {
+            if (item.Operand is int && ((int)item.Operand) == 42863452)
+            {
+                item.Operand = -1;
+                injectedPatch = true;
+            }
+        } 
+
+        if (injectedPatch)
+        {
+            halfInjected.Module.Write();
+            Console.WriteLine("Applied MelonPatch");
+        } else
+        {
+            Console.WriteLine("Melon is not banned, skipping");
+        }
+        halfInjected.Module.Dispose();
+
+    }
 }
 
 public class Injection
@@ -860,8 +885,14 @@ public class Injection
 
     public FieldReference GetFieldReferenceOnSameType(string name)
     {
+        if(Type == null)
+            return null;
+
         foreach(FieldDefinition field in Type.Fields)
         {
+            if(field == null)
+                continue;
+
             if (field.Name == name)
             {
                 return module.ImportReference(field);

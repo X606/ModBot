@@ -7,8 +7,6 @@ using Mono.Cecil.Cil;
 using System.Reflection;
 using System.IO;
 using Mono.Collections.Generic;
-using ModLibrary;
-using InternalModBot;
 
 class Program
 {
@@ -177,6 +175,9 @@ class Program
         ResourceRequestGetAsset.AddInstructionOverSafe(OpCodes.Ldfld, ResourceRequestGetAsset.GetFieldReferenceOnSameType("m_Path"));
         ResourceRequestGetAsset.AddInstructionOverSafe(OpCodes.Ldarg_0);
         ResourceRequestGetAsset.Write();
+
+        Console.WriteLine("Appying the melon patch (unbans melon)");
+        Injector.MelonPatch(installPath); // unbans melon
     }
 }
 
