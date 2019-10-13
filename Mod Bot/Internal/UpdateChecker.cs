@@ -29,6 +29,9 @@ namespace InternalModBot
             
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
+            if(modBotVersionRequest.isNetworkError || modBotVersionRequest.isHttpError)
+                yield break;
+
             string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
 
             GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nMod-Bot Version: " + installedModBotVersion; // Add ModBot version in corner
