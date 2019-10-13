@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using System.Collections;
+using UnityEngine.Networking;
 
 namespace ModLibrary
 {
@@ -143,6 +145,37 @@ namespace ModLibrary
             File.WriteAllBytes(path + name, fileData);
         }
 
+        /// <summary>
+        /// Saves a file into the mods folder, but does so asynchronously, returns a <see cref="AsyncDownload"/> that can be awaited in a corutine with yield return
+        /// </summary>
+        /// <param name="url">The url to download.</param>
+        /// <param name="fileName">The name you want to give the file once you have downloaded it.</param>
+        /// <returns>A <see cref="AsyncDownload"/> that can be awaited in corutines with yield return</returns>
+        public static AsyncDownload SaveFileToModsAsync(string url, string fileName)
+        {
+            AsyncDownload async = null;
+            StaticCoroutineRunner.StartStaticCoroutine(SaveFileToModsAsyncCorutine(url, fileName, async));
+            return async;
+        }
+
+        static IEnumerator SaveFileToModsAsyncCorutine(string url, string fileName, AsyncDownload asyncDownload)
+        {
+            asyncDownload = new AsyncDownload();
+
+            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+
+            yield return webRequest.SendWebRequest();
+            if (webRequest.isHttpError || webRequest.isNetworkError)
+            {
+                asyncDownload.IsDone = true;
+                asyncDownload.isError = true;
+                yield break;
+            }
+
+            string fullPath = GetModsFolderDirectory() + fileName;
+            File.WriteAllBytes(fullPath, webRequest.downloadHandler.data);
+            asyncDownload.IsDone = true;
+        }
         private static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool result = true;
@@ -187,6 +220,24 @@ namespace ModLibrary
             subDomainsList.RemoveAt(subDomainsList.Count - 1);
             
             return subDomainsList.Join("/") + "/";
+        }
+
+        /// <summary>
+        /// A download handeler than can be awaited in corutines with yield return
+        /// </summary>
+        public class AsyncDownload : CustomYieldInstruction
+        {
+            /// <summary>
+            /// If this return true, the download is not done yet
+            /// </summary>
+            public override bool keepWaiting { get { return !IsDone; } }
+            /// <summary>
+            /// If this return true, there was an error during downloading
+            /// </summary>
+            public bool IsError { get { return isError; } }
+
+            internal bool isError = false;
+            internal bool IsDone = false;
         }
     }
 }

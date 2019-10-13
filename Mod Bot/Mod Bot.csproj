@@ -64,6 +64,7 @@
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="ModHandling\Mod.cs" />
+    <Compile Include="ModHandling\ModDownloadInfoItem.cs" />
     <Compile Include="ModHandling\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\ModsManager.cs" />
     <Compile Include="ModHandling\ModsPanelManager.cs" />

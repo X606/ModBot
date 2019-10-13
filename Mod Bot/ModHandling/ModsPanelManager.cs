@@ -52,7 +52,7 @@ namespace InternalModBot
             pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
 
             ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
-            
+            ModsWindowModdedObject.GetObject<Button>(2).onClick.AddListener(OnGetMoreModsClicked); // Add more mods clicked callback
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
@@ -87,6 +87,49 @@ namespace InternalModBot
         private void CloseModsMenu()
         {
             ModsWindow.SetActive(false);
+        }
+
+        private void OnGetMoreModsClicked()
+        {
+            GameObject modDownloadsPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Mod downloads", "Clone Drone in the Danger Zone_Data/");
+            
+
+            ModdedObject spawnedModdedObject = Instantiate(modDownloadsPrefab).GetComponent<ModdedObject>();
+            GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
+            spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
+            {
+                Destroy(spawnedModdedObject.gameObject);
+            });
+
+            spawnedModdedObject.StartCoroutine(DownloadModData(content));
+
+        }
+
+        IEnumerator DownloadModData(GameObject content)
+        {
+            GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
+            
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/mods/.json");
+
+            yield return webRequest.SendWebRequest(); // wait for the web request to send
+
+            if(webRequest.isNetworkError || webRequest.isHttpError)
+                yield break;
+
+            TransformUtils.DestroyAllChildren(content.transform);
+
+            ModsHolder mods = Newtonsoft.Json.JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+
+            foreach(ModsHolder.ModHolder mod in mods.Mods)
+            {
+                if(!mod.Checked) // do not want unchecked mods to come up in-game.
+                    continue;
+
+                GameObject holder = Instantiate(modDownloadInfoPrefab);
+                holder.transform.parent = content.transform;
+                holder.AddComponent<ModDownloadInfoItem>().Init(mod);
+            }
+
         }
 
         private void OpenModsOptionsWindowForMod(Mod mod)
@@ -249,7 +292,10 @@ namespace InternalModBot
             return null;
         }
 
-        private void ReloadModItems()
+        /// <summary>
+        /// Refereshes what mods should be displayed in the mods menu
+        /// </summary>
+        public void ReloadModItems()
         {
             ModItems.Clear();
 

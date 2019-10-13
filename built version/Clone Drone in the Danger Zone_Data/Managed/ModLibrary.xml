@@ -269,6 +269,14 @@
             <param name="url">The URL to download the file from.</param>
             <param name="name">The name of the file that will be created.</param>
         </member>
+        <member name="M:ModLibrary.AssetLoader.SaveFileToModsAsync(System.String,System.String)">
+            <summary>
+            Saves a file into the mods folder, but does so asynchronously, returns a <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in a corutine with yield return
+            </summary>
+            <param name="url">The url to download.</param>
+            <param name="fileName">The name you want to give the file once you have downloaded it.</param>
+            <returns>A <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in corutines with yield return</returns>
+        </member>
         <member name="M:ModLibrary.AssetLoader.ClearCache">
             <summary>
             Clears the cache for loaded assets
@@ -280,6 +288,21 @@
             </summary>
             <param name="path"></param>
             <returns></returns>
+        </member>
+        <member name="T:ModLibrary.AssetLoader.AsyncDownload">
+            <summary>
+            A download handeler than can be awaited in corutines with yield return
+            </summary>
+        </member>
+        <member name="P:ModLibrary.AssetLoader.AsyncDownload.keepWaiting">
+            <summary>
+            If this return true, the download is not done yet
+            </summary>
+        </member>
+        <member name="P:ModLibrary.AssetLoader.AsyncDownload.IsError">
+            <summary>
+            If this return true, there was an error during downloading
+            </summary>
         </member>
         <member name="T:ModLibrary.FirstPersonMoverExtensions">
             <summary>
@@ -648,27 +671,34 @@
             </summary>
             <param name="_log">The object to write</param>
         </member>
+        <member name="M:ModLibrary.debug.Log(System.Object,UnityEngine.Color)">
+            <summary>
+            Writes the given object's <see cref="M:System.Object.ToString"/> value to the console with the specified <see cref="T:UnityEngine.Color"/>
+            </summary>
+            <param name="_log">The <see cref="T:System.Object"/> to log</param>
+            <param name="color">The <see cref="T:UnityEngine.Color"/> to write in</param>
+        </member>
         <member name="M:ModLibrary.debug.Log(System.String,UnityEngine.Color)">
             <summary>
             Writes to the in-game console, in color.
             </summary>
             <param name="_log">What to write</param>
-            <param name="_color">The color to write in</param>
+            <param name="_color">The <see cref="T:UnityEngine.Color"/> to write in</param>
         </member>
         <member name="M:ModLibrary.debug.PrintAll``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Passes every instance of the given <see cref="T:System.Collections.Generic.IEnumerable`1"/>s <see cref="M:System.Object.ToString"/> value to <see cref="M:ModLibrary.debug.Log(System.String)"/>
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
+            <typeparam name="T">The type of the collection to write</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to write</param>
         </member>
         <member name="M:ModLibrary.debug.PrintAll``1(System.Collections.Generic.IEnumerable{``0},UnityEngine.Color)">
             <summary>
             Passes every instance of the given <see cref="T:System.Collections.Generic.IEnumerable`1"/>s <see cref="M:System.Object.ToString"/> value to <see cref="M:ModLibrary.debug.Log(System.String)"/>
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <param name="color"></param>
+            <typeparam name="T">The type of the collection to write</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to write</param>
+            <param name="color">The <see cref="T:UnityEngine.Color"/> to write in</param>
         </member>
         <member name="M:ModLibrary.debug.DrawLine(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
             <summary>
@@ -701,7 +731,7 @@
         </member>
         <member name="M:ModLibrary.LevelEditorObjectAdder.AddObject(System.String,System.String,UnityEngine.Transform,UnityEngine.Texture2D)">
             <summary>
-            Adds a object to the editor
+            Adds an object to the editor
             </summary>
             <param name="folderName">The name of the folder you want to add item to, if the folder doesnt already exist a new one will be created.</param>
             <param name="itemName">The name of the new item in the assets list.</param>
@@ -937,7 +967,7 @@
         </member>
         <member name="M:ModLibrary.Mod.OnModDeactivated">
             <summary>
-            Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically removed when the owner mod is disabled
+            Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically hidden when the owner mod is disabled
             </summary>
         </member>
         <member name="M:ModLibrary.Mod.ImplementsSettingsWindow">
@@ -954,7 +984,7 @@
         </member>
         <member name="M:ModLibrary.Mod.ShouldCursorBeEnabled">
             <summary>
-            If this returns true the cursor will get enabled
+            If this returns <see langword="true"/> the cursor will get enabled
             </summary>
             <returns></returns>
         </member>
@@ -976,7 +1006,7 @@
         </member>
         <member name="M:ModLibrary.Mod.OnResourcesLoad(System.String)">
             <summary>
-            Will be called just before anything tries to load something from the Resources folder. If this returns null it will continue like normal, but if this returns anything else than null that will be returned by <see cref="M:UnityEngine.Resources.Load(System.String)"/> instead.
+            Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="M:UnityEngine.Resources.Load(System.String)"/> instead.
             </summary>
             <param name="path">The path specified</param>
             <returns></returns>
@@ -1882,6 +1912,62 @@
             <param name="mod"></param>
             <returns></returns>
         </member>
+        <member name="T:InternalModBot.ModDownloadInfoItem">
+            <summary>
+            Controlls a item in the get more mods menu
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModDownloadInfoItem.Init(InternalModBot.ModsHolder.ModHolder)">
+            <summary>
+            Initilizes the <see cref="T:InternalModBot.ModDownloadInfoItem"/>
+            </summary>
+            <param name="holder"></param>
+        </member>
+        <member name="T:InternalModBot.ModsHolder">
+            <summary>
+            Used when deserilizing data from the site
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.Mods">
+            <summary>
+            A list of all the mods downloaded.
+            </summary>
+        </member>
+        <member name="T:InternalModBot.ModsHolder.ModHolder">
+            <summary>
+            Used when deserilizing data from the site and represents 1 mod
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.Checked">
+            <summary>
+            Whether or not the mod is "checked", this means that its working and is checked so that it doesnt have any viruses in it.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.CreatorID">
+            <summary>
+            The name of the creator.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.Description">
+            <summary>
+            The description of the mod.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.DownloadLink">
+            <summary>
+            The download link for the mod.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.ImageLink">
+            <summary>
+            The link to the image that should be displayed.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModsHolder.ModHolder.ModName">
+            <summary>
+            The name of the mod.
+            </summary>
+        </member>
         <member name="T:InternalModBot.OptionsSaver">
             <summary>
             Used by Mod-Bot to save mod options
@@ -2083,6 +2169,11 @@
         <member name="T:InternalModBot.ModsPanelManager">
             <summary>
             Used by Mod-Bot to control most of the UI in Mod-Bot, this has control over the mod buttons and mods window. Note that all functions and fields on this class are private since they more or less work on their own.
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsPanelManager.ReloadModItems">
+            <summary>
+            Refereshes what mods should be displayed in the mods menu
             </summary>
         </member>
         <member name="T:InternalModBot.PassOnToModsManager">
