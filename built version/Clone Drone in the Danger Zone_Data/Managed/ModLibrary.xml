@@ -1666,6 +1666,29 @@
             The text that displays the numbers
             </summary>
         </member>
+        <member name="T:InternalModBot.RegisterShouldCursorBeEnabledDelegate">
+            <summary>
+            Used internally in mod-bot for telling if the cursor should be enabled or not
+            </summary>
+        </member>
+        <member name="M:InternalModBot.RegisterShouldCursorBeEnabledDelegate.Register(System.Func{System.Boolean})">
+            <summary>
+            Registers a new handler, if this handeler returns true the cursor will be unlocked
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:InternalModBot.RegisterShouldCursorBeEnabledDelegate.UnRegister(System.Func{System.Boolean})">
+            <summary>
+            Removes a handler
+            </summary>
+            <param name="handler"></param>
+        </member>
+        <member name="M:InternalModBot.RegisterShouldCursorBeEnabledDelegate.ShouldMouseBeEnabled">
+            <summary>
+            Returns true if any of the registerd handelers return true
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:InternalModBot.StartupManager">
             <summary>
             Used to start Mod-Bot when the game starts
@@ -2061,6 +2084,17 @@
             <param name="mod"></param>
             <param name="name"></param>
             <returns></returns>
+        </member>
+        <member name="T:InternalModBot.CloseModOptionsWindowOnEscapeKey">
+            <summary>
+            Attaced to mod options windows to close the window when the user clicks escape
+            </summary>
+        </member>
+        <member name="M:InternalModBot.CloseModOptionsWindowOnEscapeKey.Init(ModLibrary.ModOptionsWindowBuilder)">
+            <summary>
+            Sets the owner to the value passed
+            </summary>
+            <param name="owner"></param>
         </member>
         <member name="T:InternalModBot.ModsManager">
             <summary>
