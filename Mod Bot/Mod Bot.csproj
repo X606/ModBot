@@ -55,6 +55,7 @@
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
+    <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\ModSuggestingManager.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />

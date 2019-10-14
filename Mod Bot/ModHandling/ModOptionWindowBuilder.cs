@@ -24,11 +24,16 @@ namespace ModLibrary
 
         internal ModOptionsWindowBuilder(GameObject owner, Mod ownerMod)
         {
+            GameUIRoot.Instance.SetEscMenuDisabled(true);
+            RegisterShouldCursorBeEnabledDelegate.Register(ShouldCurorBeEnabled);
+            GameUIRoot.Instance.RefreshCursorEnabled();
+
             owner.SetActive(false);
             Owner = owner;
             OwnerMod = ownerMod;
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModOptionsCanvas", "Clone Drone in the Danger Zone_Data/");
             SpawnedBase = GameObject.Instantiate(modsWindowPrefab);
+            SpawnedBase.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
             ModdedObject modObject = SpawnedBase.GetComponent<ModdedObject>();
             Content = modObject.GetObject<GameObject>(0);
             XButton = modObject.GetObject<Button>(1);
@@ -415,8 +420,13 @@ namespace ModLibrary
         /// </summary>
         public void CloseWindow()
         {
+            RegisterShouldCursorBeEnabledDelegate.UnRegister(ShouldCurorBeEnabled);
+
+            GameUIRoot.Instance.SetEscMenuDisabled(false);
             GameObject.Destroy(SpawnedBase);
             Owner.SetActive(true);
+
+            GameUIRoot.Instance.RefreshCursorEnabled();
         }
 
         /// <summary>
@@ -424,7 +434,17 @@ namespace ModLibrary
         /// </summary>
         public void ForceCloseWindow()
         {
+            RegisterShouldCursorBeEnabledDelegate.UnRegister(ShouldCurorBeEnabled);
+
             GameObject.Destroy(SpawnedBase);
+            GameUIRoot.Instance.SetEscMenuDisabled(false);
+
+            GameUIRoot.Instance.RefreshCursorEnabled();
+        }
+
+        private bool ShouldCurorBeEnabled()
+        {
+            return true;
         }
         
     }
@@ -747,4 +767,28 @@ namespace InternalModBot {
         }
     }
 
+
+    /// <summary>
+    /// Attaced to mod options windows to close the window when the user clicks escape
+    /// </summary>
+    public class CloseModOptionsWindowOnEscapeKey : MonoBehaviour
+    {
+        ModOptionsWindowBuilder Owner;
+        /// <summary>
+        /// Sets the owner to the value passed
+        /// </summary>
+        /// <param name="owner"></param>
+        public void Init(ModOptionsWindowBuilder owner)
+        {
+            Owner = owner;
+        }
+
+        void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                Owner.ForceCloseWindow();
+            }
+        }
+    }
 }
