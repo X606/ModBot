@@ -153,15 +153,13 @@ namespace ModLibrary
         /// <returns>A <see cref="AsyncDownload"/> that can be awaited in corutines with yield return</returns>
         public static AsyncDownload SaveFileToModsAsync(string url, string fileName)
         {
-            AsyncDownload async = null;
+            AsyncDownload async = new AsyncDownload();
             StaticCoroutineRunner.StartStaticCoroutine(SaveFileToModsAsyncCorutine(url, fileName, async));
             return async;
         }
 
         static IEnumerator SaveFileToModsAsyncCorutine(string url, string fileName, AsyncDownload asyncDownload)
         {
-            asyncDownload = new AsyncDownload();
-
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
 
             yield return webRequest.SendWebRequest();
