@@ -26,7 +26,7 @@ namespace InternalModBot
         /// <param name="newAngle">The new angle</param>
         public void SetCustomAngle(float newAngle)
         {
-            CustomAngle = newAngle;
+            _customAngle = newAngle;
         }
 
         /// <summary>
@@ -37,10 +37,8 @@ namespace InternalModBot
         {
             float angle = UpgradeManager.Instance.GetUpgrade(UpgradeType, Level).AngleOffset;
 
-            if (CustomAngle.HasValue)
-            {
-                angle = CustomAngle.Value;
-            }
+            if (_customAngle.HasValue)
+                angle = _customAngle.Value;
 
             return angle;
         }
@@ -54,9 +52,7 @@ namespace InternalModBot
         public static bool operator ==(ModdedUpgradeRepresenter a, ModdedUpgradeRepresenter b)
         {
             if (Equals(a, null) || Equals(b, null))
-            {
                 return Equals(a, null) && Equals(b, null);
-            }
 
             return a.Level == b.Level && a.UpgradeType == b.UpgradeType;
         }
@@ -79,12 +75,10 @@ namespace InternalModBot
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (!(obj is ModdedUpgradeRepresenter))
-            {
-                return false;
-            }
+            if (obj is ModdedUpgradeRepresenter)
+                return this == (obj as ModdedUpgradeRepresenter);
 
-            return this == (obj as ModdedUpgradeRepresenter);
+            return false;
         }
 
         /// <summary>
@@ -109,6 +103,6 @@ namespace InternalModBot
         /// </summary>
         public int Level = 1;
 
-        private float? CustomAngle = 0;
+        float? _customAngle = 0;
     }
 }

@@ -17,7 +17,7 @@ namespace InternalModBot
     /// </summary>
     public class ModSuggestingManager : Singleton<ModSuggestingManager>
     {
-        private void Start()
+        void Start()
         {
             TwitchChatClient.singleton.AddChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
@@ -28,13 +28,11 @@ namespace InternalModBot
         /// </summary>
         public void ShowNextInSuggestedModsQueue()
         {
-            if (ModSuggestionQueue.Count == 0)
-            {
+            if (_modSuggestionQueue.Count == 0)
                 return;
-            }
 
-            ModSuggestion nextSuggestedMod = ModSuggestionQueue.Dequeue();
-            StartCoroutine(SuggestMod(nextSuggestedMod));
+            ModSuggestion nextSuggestedMod = _modSuggestionQueue.Dequeue();
+            StartCoroutine(suggestMod(nextSuggestedMod));
         }
         
         /// <summary>
@@ -45,19 +43,17 @@ namespace InternalModBot
         /// <param name="data"></param>
         public void SuggestModMultiplayer(string suggesterPlayfabID, string modName, byte[] data)
         {
-            StartCoroutine(SuggestModMultiplayerIEnumerator(suggesterPlayfabID, modName, data));
+            StartCoroutine(suggestModMultiplayerIEnumerator(suggesterPlayfabID, modName, data));
         }
 
-        private IEnumerator SuggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
+        IEnumerator suggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
         {
             string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
 
             if (displayName == null)
-            {
                 displayName = "";
-            }
 
-            displayText.text = "Mod download request!\n" +
+            DisplayText.text = "Mod download request!\n" +
                 displayName + " wants to share a mod with you!\n" +
                 "Mod name: \"" + modName + "\"";
 
@@ -100,9 +96,9 @@ namespace InternalModBot
 
         }
 
-        private IEnumerator SuggestMod(ModSuggestion mod)
+        IEnumerator suggestMod(ModSuggestion mod)
         {
-            displayText.text = "Mod suggested!\n"
+            DisplayText.text = "Mod suggested!\n"
                 + mod.ModName + "\n" 
                 + "Suggested by: " + mod.SuggesterName;
             ModSuggestionAnimator.Play("suggestMod");
@@ -160,9 +156,7 @@ namespace InternalModBot
         {
             string lowerText = msg.chatMessagePlainText;
             if (!lowerText.StartsWith("!"))
-            {
                 return;
-            }
 
             string[] subCommands = lowerText.Split(' ');
 
@@ -178,12 +172,12 @@ namespace InternalModBot
                 string suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
                 string modName = subCommands[1];
                 ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
-                ModSuggestionQueue.Enqueue(suggestedMod);
+                _modSuggestionQueue.Enqueue(suggestedMod);
 
                 if (!GameFlowManager.Instance.IsInCombat())
                 {
-                    ModSuggestion modSuggestion = ModSuggestionQueue.Dequeue();
-                    StartCoroutine(SuggestMod(modSuggestion));
+                    ModSuggestion modSuggestion = _modSuggestionQueue.Dequeue();
+                    StartCoroutine(suggestMod(modSuggestion));
                 }
 
                 TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
@@ -210,52 +204,6 @@ namespace InternalModBot
 
         }
 
-        private byte[] DownloadData(string url)
-        {
-            try
-            {
-                ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
-                byte[] response = new WebClient
-                {
-                    Headers =
-                    {
-                        "User-Agent: Other"
-                    }
-                }.DownloadData(url);
-
-                return response;
-            }
-            catch (Exception e)
-            {
-                debug.Log(e.Message, Color.red);
-            }
-
-            return null;
-        }
-
-        private bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            bool isOk = true;
-            if (sslPolicyErrors != SslPolicyErrors.None)
-            {
-                for (int i = 0; i < chain.ChainStatus.Length; i++)
-                {
-                    if (chain.ChainStatus[i].Status != X509ChainStatusFlags.RevocationStatusUnknown)
-                    {
-                        chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
-                        chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-                        chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
-                        chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllFlags;
-                        if (!chain.Build((X509Certificate2)certificate))
-                        {
-                            isOk = false;
-                        }
-                    }
-                }
-            }
-            return isOk;
-        }
-
         /// <summary>
         /// The animator that plays the slide in and out animation
         /// </summary>
@@ -264,11 +212,11 @@ namespace InternalModBot
         /// <summary>
         /// Text text display where all info will be displayed
         /// </summary>
-        public Text displayText;
+        public Text DisplayText;
 
-        private Queue<ModSuggestion> ModSuggestionQueue = new Queue<ModSuggestion>();
+        Queue<ModSuggestion> _modSuggestionQueue = new Queue<ModSuggestion>();
 
-        private struct ModSuggestion
+        struct ModSuggestion
         {
             public ModSuggestion(string modName, string suggesterName, string url)
             {

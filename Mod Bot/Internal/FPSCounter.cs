@@ -10,22 +10,22 @@ namespace InternalModBot
     /// </summary>
     public class FPSCount : MonoBehaviour
     {
-        private void Update()
+        void Update()
         {
             if (Input.GetKeyDown(KeyCode.F3))
             {
-                counter.gameObject.SetActive(!counter.gameObject.activeSelf);
+                Counter.gameObject.SetActive(!Counter.gameObject.activeSelf);
             }
 
             float FPS = 1f / Time.unscaledDeltaTime;
             int FPSInt = Convert.ToInt32(FPS);
 
-            counter.text = FPSInt + " FPS";
+            Counter.text = FPSInt + " FPS";
         }
 
         /// <summary>
         /// The text that displays the numbers
         /// </summary>
-        public Text counter;
+        internal Text Counter;
     }
 }

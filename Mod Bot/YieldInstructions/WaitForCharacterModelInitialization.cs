@@ -15,10 +15,10 @@ namespace ModLibrary.YieldInstructions
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitForCharacterModelInitialization"/> instruction
         /// </summary>
-        /// <param name="_firstPersonMover">The <see cref="FirstPersonMover"/> to check</param>
-        public WaitForCharacterModelInitialization(FirstPersonMover _firstPersonMover)
+        /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> to check</param>
+        public WaitForCharacterModelInitialization(FirstPersonMover firstPersonMover)
         {
-            firstPersonMover = _firstPersonMover;
+            _firstPersonMover = firstPersonMover;
         }
 
         /// <summary>
@@ -28,10 +28,10 @@ namespace ModLibrary.YieldInstructions
         {
             get
             {
-                return !firstPersonMover.HasCharacterModel();
+                return !_firstPersonMover.HasCharacterModel();
             }
         }
 
-        FirstPersonMover firstPersonMover;
+        FirstPersonMover _firstPersonMover;
     }
 }

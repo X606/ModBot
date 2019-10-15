@@ -25,37 +25,29 @@ namespace ModLibrary
         public static T GetObject<T>(this ModdedObject moddedObject, int index) where T : UnityEngine.Object
         {
             if (moddedObject == null)
-            {
                 throw new ArgumentNullException(nameof(moddedObject));
-            }
 
             if (index < 0 || index >= moddedObject.objects.Count)
-            {
-                throw new IndexOutOfRangeException("Given index was not in the range of the objects list:\tMin: 0 " + "Max: " + (moddedObject.objects.Count - 1) + " Recieved: " + index);
-            }
+                throw new IndexOutOfRangeException("Given index was not in the range of the objects list:\tMin: 0 " + "Max: " + (moddedObject.objects.Count - 1) + ", Recieved: " + index);
 
-            if (!(moddedObject.objects[index] is T))
-            {
-                throw new InvalidCastException("Object at index " + index + " could not be casted to type " + typeof(T).ToString());
-            }
+            if (moddedObject.objects[index] is T)
+                return moddedObject.objects[index] as T;
 
-            return moddedObject.objects[index] as T;
+            throw new InvalidCastException("Object at index " + index + " could not be casted to type " + typeof(T).ToString());
         }
 
         /// <summary>
-        /// Checks in the given <see cref="Mod"/> is currently activated
+        /// Checks if the given <see cref="Mod"/> is currently activated
         /// </summary>
         /// <param name="mod"></param>
-        /// <returns><see langword="true"/> of the mod is enabled, <see langword="false"/> if it's disabled</returns>
+        /// <returns><see langword="true"/> of the <see cref="Mod"/> is enabled, <see langword="false"/> if it's disabled</returns>
         /// <exception cref="Exception">If the <see cref="Mod"/> has not been loaded by <see cref="ModsManager"/></exception>
         public static bool IsModEnabled(this Mod mod)
         {
             bool? isModDeactivated = ModsManager.Instance.IsModDeactivated(mod);
 
             if (!isModDeactivated.HasValue)
-            {
                 throw new Exception("Mod \"" + mod.GetModName() + "\" with unique id \"" + mod.GetUniqueID() + "\" could not found in ModsManager's list of mods!");
-            }
 
             return !isModDeactivated.Value;
         }

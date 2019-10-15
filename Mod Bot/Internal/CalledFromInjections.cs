@@ -19,9 +19,7 @@ namespace InternalModBot
         public static void FromRefreshUpgradesStart(FirstPersonMover owner)
         {
             if (owner == null || owner.gameObject == null || !owner.IsAlive() || owner.GetCharacterModel() == null)
-            {
                 return;
-            }
 
             UpgradeCollection upgrade = owner.GetComponent<UpgradeCollection>();
             ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(owner, upgrade);
@@ -34,9 +32,7 @@ namespace InternalModBot
         public static void FromRefreshUpgradesEnd(FirstPersonMover owner)
         {
             if (owner.gameObject == null)
-            {
                 return;
-            }
 
             ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(owner, owner.GetComponent<UpgradeCollection>());
         }
@@ -88,13 +84,10 @@ namespace InternalModBot
         public static bool FromIsUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
             if (!UpgradePagesManager.IsUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
                 return false;
-            }
+
             if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
                 return true;
-            }
 
             return (GameModeManager.ShowsStoryBlockedUpgrades() || (!Singleton<UpgradeManager>.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsEndlessCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(Singleton<CharacterTracker>.Instance.GetPlayer());
         }
@@ -106,9 +99,7 @@ namespace InternalModBot
         public static void FromFixedUpdate(Projectile projectile)
         {
             if (!projectile.IsFlying())
-            {
                 return;
-            }
 
             ModsManager.Instance.PassOnMod.OnProjectileUpdate(projectile);
         }
@@ -138,17 +129,13 @@ namespace InternalModBot
         public static void FromOnEnvironmentCollided(Projectile arrow)
         {
             if (arrow.PassThroughEnvironment)
-            {
                 return;
-            }
+
             if (!arrow.IsFlying())
-            {
                 return;
-            }
+
             if (arrow.MainCollider != null)
-            {
                 arrow.MainCollider.enabled = false;
-            }
 
             ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
@@ -180,9 +167,7 @@ namespace InternalModBot
         {
             List<MechBodyPart> powerCrystals = character.GetBodyParts(MechBodyPartType.PowerCrystal);
             if (powerCrystals.Count == 0)
-            {
                 return character.transform.position;
-            }
 
             return powerCrystals[0].transform.position;
         }
@@ -194,14 +179,14 @@ namespace InternalModBot
         /// <returns></returns>
         public static UnityEngine.Object FromResourcesLoad(string path)
         {
-            UnityEngine.Object obj = LevelEditorObjectAdder.GetObjectData(path);
-            if (obj != null)
-            {
-                return obj;
-            }
+            UnityEngine.Object levelEditorObject = LevelEditorObjectAdder.GetObjectData(path);
+
+            if (levelEditorObject != null)
+                return levelEditorObject;
 
             if(ModsManager.Instance == null)
                 return null;
+
             return ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
         }
 

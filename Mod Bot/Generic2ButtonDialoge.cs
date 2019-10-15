@@ -16,14 +16,18 @@ namespace ModLibrary
     /// </summary>
     public class Generic2ButtonDialogue
     {
-        private readonly Action OnButton1ClickedCallback;
-        private readonly Action OnButton2ClickedCallback;
+        private Generic2ButtonDialogue() // to make sure that you cant create one of these without arguments
+        {
+        }
 
-        private Text DisplayText;
-        private Button Button1;
-        private Button Button2;
+        Action _onButton1ClickedCallback;
+        Action _onButton2ClickedCallback;
 
-        private ModdedObject SpawnedObject;
+        Text _displayText;
+        Button _button1;
+        Button _button2;
+
+        ModdedObject _spawnedObject;
 
         /// <summary>
         /// If this is <see langword="true"/> there is currently a <see cref="Generic2ButtonDialogue"/> open
@@ -41,21 +45,21 @@ namespace ModLibrary
         public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
         {
             GameObject prefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Generic2ButtonDialoge", "Clone Drone in the Danger Zone_Data/");
-            SpawnedObject = GameObject.Instantiate(prefab).GetComponent<ModdedObject>();
+            _spawnedObject = GameObject.Instantiate(prefab).GetComponent<ModdedObject>();
 
-            DisplayText = SpawnedObject.GetObject<Text>(0);
-            Button1 = SpawnedObject.GetObject<Button>(1);
-            Button2 = SpawnedObject.GetObject<Button>(2);
+            _displayText = _spawnedObject.GetObject<Text>(0);
+            _button1 = _spawnedObject.GetObject<Button>(1);
+            _button2 = _spawnedObject.GetObject<Button>(2);
 
-            Button1.GetComponentInChildren<Text>().text = button1Text;
-            Button2.GetComponentInChildren<Text>().text = button2Text;
+            _button1.GetComponentInChildren<Text>().text = button1Text;
+            _button2.GetComponentInChildren<Text>().text = button2Text;
 
-            DisplayText.text = message;
-            Button1.onClick.AddListener(OnButton1Clicked);
-            Button2.onClick.AddListener(OnButton2Clicked);
+            _displayText.text = message;
+            _button1.onClick.AddListener(onButton1Clicked);
+            _button2.onClick.AddListener(onButton2Clicked);
 
-            OnButton1ClickedCallback = onPressButton1;
-            OnButton2ClickedCallback = onPressButton2;
+            _onButton1ClickedCallback = onPressButton1;
+            _onButton2ClickedCallback = onPressButton2;
 
             IsWindowOpen = true;
         }
@@ -66,7 +70,7 @@ namespace ModLibrary
         /// <param name="color">The color to set the button to</param>
         public void SetColorOfFirstButton(Color color)
         {
-            Button1.GetComponent<Image>().color = color;
+            _button1.GetComponent<Image>().color = color;
         }
         /// <summary>
         /// Sets the color of the second button
@@ -74,7 +78,7 @@ namespace ModLibrary
         /// <param name="color">The color to set the button to</param>
         public void SetColorOfSecondButton(Color color)
         {
-            Button2.GetComponent<Image>().color = color;
+            _button2.GetComponent<Image>().color = color;
         }
 
         /// <summary>
@@ -82,32 +86,28 @@ namespace ModLibrary
         /// </summary>
         public void Close()
         {
-            GameObject.Destroy(SpawnedObject.gameObject);
+            GameObject.Destroy(_spawnedObject.gameObject);
             IsWindowOpen = false;
         }
 
-        private void OnButton1Clicked()
+        void onButton1Clicked()
         {
-            if (OnButton1ClickedCallback != null)
+            if (_onButton1ClickedCallback != null)
             {
-                OnButton1ClickedCallback();
-            }
-
-            Close();
-        }
-        private void OnButton2Clicked()
-        {
-            if (OnButton2ClickedCallback != null)
-            {
-                OnButton2ClickedCallback();
+                _onButton1ClickedCallback();
             }
 
             Close();
         }
 
-
-        private Generic2ButtonDialogue() // to make sure that you cant create one of these without arguments
+        void onButton2Clicked()
         {
+            if (_onButton2ClickedCallback != null)
+            {
+                _onButton2ClickedCallback();
+            }
+
+            Close();
         }
 
     }

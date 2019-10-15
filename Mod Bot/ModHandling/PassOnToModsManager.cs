@@ -375,9 +375,7 @@ namespace InternalModBot
             foreach(Mod mod in mods)
             {
                 if (mod.ShouldCursorBeEnabled())
-                {
                     result = true;
-                }
             }
 
             return result || Generic2ButtonDialogue.IsWindowOpen;
@@ -407,6 +405,7 @@ namespace InternalModBot
                 mods[i].OnMultiplayerEventReceived(moddedEvent);
             }
         }
+
         /// <summary>
         /// Calls this method on all mods
         /// </summary>

@@ -5,71 +5,49 @@ using UnityEngine;
 
 namespace ModLibrary
 {
-    namespace ModTools
+    /// <summary>
+    /// General tools to help you when working with enums!
+    /// </summary>
+    public static class EnumTools
     {
         /// <summary>
-        /// General tools to help you when working with enums!
+        /// Gets the name of the given value in an <see langword="enum"/>
+        /// <para>Exceptions:</para>
+        /// <para/><see cref="ArgumentNullException"/>: If value is <see langword="null"/> or <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+        /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
         /// </summary>
-        public static class EnumTools
+        /// <typeparam name="T">The type of <see langword="enum"/> to get the name from</typeparam>
+        /// <param name="value">The value assigned to an entry in the specified <see langword="enum"/></param>
+        /// <returns>The name of the entry with the value <paramref name="value"/></returns>
+        public static string GetName<T>(T value)
         {
-            /// <summary>
-            /// Gets the name of the given value in an <see langword="enum"/>
-            /// <para>Exceptions:</para>
-            /// <para/><see cref="ArgumentNullException"/>: If value is <see langword="null"/> or <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
-            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
-            /// </summary>
-            /// <typeparam name="T">The type of <see langword="enum"/> to get the name from</typeparam>
-            /// <param name="value">The value assigned to an entry in the specified <see langword="enum"/></param>
-            /// <returns>The name of the entry with the value <paramref name="value"/></returns>
-            public static string GetName<T>(T value)
-            {
-                return Enum.GetName(typeof(T), value);
-            }
-
-            /// <summary>
-            /// Gets all names in the given <see langword="enum"/>
-            /// <para>Exceptions:</para>
-            /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
-            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <returns></returns>
-            public static List<string> GetNames<T>()
-            {
-                return Enum.GetNames(typeof(T)).ToList();
-            }
-
-            /// <summary>
-            /// Gets all values of an <see langword="enum"/>
-            /// <para>Exceptions:</para>
-            /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
-            /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
-            /// </summary>
-            /// <typeparam name="T"></typeparam>
-            /// <returns></returns>
-            public static List<T> GetValues<T>()
-            {
-                return ((T[])Enum.GetValues(typeof(T))).ToList();
-            }
+            return Enum.GetName(typeof(T), value);
         }
 
         /// <summary>
-        /// General tools to help you when working with Vector3s
+        /// Gets all names in the given <see langword="enum"/>
+        /// <para>Exceptions:</para>
+        /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+        /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
         /// </summary>
-        [Obsolete("All methods in this class have been moved to extension methods")]
-        public static class Vector3Tools
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<string> GetNames<T>()
         {
-            /// <summary>
-            /// Gets a direction from one <see cref="Vector3"/> to another
-            /// </summary>
-            /// <param name="StartPoint">The position to go from</param>
-            /// <param name="Destination">The position to go to</param>
-            /// <returns>The direction between the two points</returns>
-            [Obsolete("Use the Vector3.GetDirectionTo(Vector3, Vector3) extension method instead")]
-            public static Vector3 GetDirection(Vector3 StartPoint, Vector3 Destination)
-            {
-                return Destination - StartPoint;
-            }
+            return Enum.GetNames(typeof(T)).ToList();
+        }
+
+        /// <summary>
+        /// Gets all values of an <see langword="enum"/>
+        /// <para>Exceptions:</para>
+        /// <para/><see cref="ArgumentNullException"/>: If <see langword="typeof"/>(<typeparamref name="T"/>) is <see langword="null"/>
+        /// <para/><see cref="ArgumentException"/>: <typeparamref name="T"/> is not an <see langword="enum"/> type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> GetValues<T>()
+        {
+            return ((T[])Enum.GetValues(typeof(T))).ToList();
         }
     }
 
@@ -152,6 +130,7 @@ namespace ModLibrary
 
             return null;
         }
+
         /// <summary>
         /// Gets all <see cref="MechBodyPart"/>s of the given <see cref="MechBodyPartType"/>
         /// </summary>
@@ -165,9 +144,7 @@ namespace ModLibrary
             for (int i = 0; i < character.GetAllBodyParts().Count; i++)
             {
                 if (character.GetAllBodyParts()[i].PartType == type)
-                {
                     bodyParts.Add(character.GetAllBodyParts()[i]);
-                }
             }
 
             return bodyParts;

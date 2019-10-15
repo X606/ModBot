@@ -18,14 +18,14 @@ namespace InternalModBot
     /// </summary>
     public class ModDownloadInfoItem : MonoBehaviour
     {
-        Image ModImage;
-        Text NameDisplay;
-        Text DesciptionDisplay;
-        Text CreatorText;
-        Button DownloadButton;
-        Button LoadButton;
+        Image _modImage;
+        Text _nameDisplay;
+        Text _desciptionDisplay;
+        Text _creatorText;
+        Button _downloadButton;
+        Button _loadButton;
 
-        string ModDownloadUrl;
+        string _modDownloadUrl;
 
         /// <summary>
         /// Initilizes the <see cref="ModDownloadInfoItem"/>
@@ -34,26 +34,26 @@ namespace InternalModBot
         public void Init(ModsHolder.ModHolder holder)
         {
             ModdedObject moddedObject = GetComponent<ModdedObject>();
-            ModImage = moddedObject.GetObject<Image>(0);
-            NameDisplay = moddedObject.GetObject<Text>(1);
-            DesciptionDisplay = moddedObject.GetObject<Text>(2);
-            CreatorText = moddedObject.GetObject<Text>(3);
-            DownloadButton = moddedObject.GetObject<Button>(4);
-            LoadButton = moddedObject.GetObject<Button>(5);
+            _modImage = moddedObject.GetObject<Image>(0);
+            _nameDisplay = moddedObject.GetObject<Text>(1);
+            _desciptionDisplay = moddedObject.GetObject<Text>(2);
+            _creatorText = moddedObject.GetObject<Text>(3);
+            _downloadButton = moddedObject.GetObject<Button>(4);
+            _loadButton = moddedObject.GetObject<Button>(5);
 
-            ModDownloadUrl = holder.DownloadLink;
+            _modDownloadUrl = holder.DownloadLink;
 
-            DownloadButton.onClick.AddListener(OnDownloadButtonClicked);
-            LoadButton.onClick.AddListener(OnLoadButtonClicked);
+            _downloadButton.onClick.AddListener(onDownloadButtonClicked);
+            _loadButton.onClick.AddListener(onLoadButtonClicked);
 
-            NameDisplay.text = holder.ModName.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
-            DesciptionDisplay.text = holder.Description.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
-            CreatorText.text = "by: " + holder.CreatorID.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;";
+            _nameDisplay.text = holder.ModName.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
+            _desciptionDisplay.text = holder.Description.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
+            _creatorText.text = "by: " + holder.CreatorID.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;";
 
-            StartCoroutine(DownloadImageAsync(holder.ImageLink));
+            StartCoroutine(downloadImageAsync(holder.ImageLink));
         }
 
-        IEnumerator DownloadImageAsync(string url)
+        IEnumerator downloadImageAsync(string url)
         {
             UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
 
@@ -63,37 +63,35 @@ namespace InternalModBot
 
             Texture2D texture = (webRequest.downloadHandler as DownloadHandlerTexture).texture;
 
-            ModImage.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width/2, texture.height/2));
+            _modImage.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width/2, texture.height/2));
         }
 
-        void OnDownloadButtonClicked()
+        void onDownloadButtonClicked()
         {
-            new Generic2ButtonDialogue("You are about to download " + NameDisplay.text + ". This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?",
-                "No", delegate
-                {
-
-                }
-            , "Yes", delegate
+            new Generic2ButtonDialogue("You are about to download " + _nameDisplay.text + ". This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?",
+            "No", delegate
             {
-                StartCoroutine(DownloadModFileAndLoadAsyc(ModDownloadUrl));
+
+            },
+            "Yes", delegate
+            {
+                StartCoroutine(downloadModFileAndLoadAsyc(_modDownloadUrl));
 
             });
         }
-        void OnLoadButtonClicked()
+
+        void onLoadButtonClicked()
         {
-            new Generic2ButtonDialogue("You are about to load in " + NameDisplay.text + " temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?",
-                "No", delegate
+            new Generic2ButtonDialogue("You are about to load in " + _nameDisplay.text + " temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?",
+            "No", null,
+            "Yes", delegate
             {
-
-            }
-            , "Yes", delegate
-            {
-                StartCoroutine(DownloadModBytesAndLoadAsyc(ModDownloadUrl));
-
+                StartCoroutine(downloadModBytesAndLoadAsyc(_modDownloadUrl));
             });
 
         }
-        IEnumerator DownloadModFileAndLoadAsyc(string url)
+
+        IEnumerator downloadModFileAndLoadAsyc(string url)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
@@ -111,7 +109,8 @@ namespace InternalModBot
 
             ModsPanelManager.Instance.ReloadModItems();
         }
-        IEnumerator DownloadModBytesAndLoadAsyc(string url)
+
+        IEnumerator downloadModBytesAndLoadAsyc(string url)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();

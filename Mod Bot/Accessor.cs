@@ -21,7 +21,7 @@ namespace ModLibrary
         /// <summary>
         /// The <see cref="BindingFlags"/> used to access members
         /// </summary>
-        public const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        public const BindingFlags FLAGS = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
         /// <summary>
         /// Defines a new instance of the <see cref="Accessor"/> class
@@ -43,16 +43,12 @@ namespace ModLibrary
         public object CallPrivateMethod(string methodName, object[] args = null)
         {
             if (args == null)
-            {
                 args = new object[] { };
-            }
 
-            MethodInfo method = InstanceType.GetMethod(methodName, Flags);
+            MethodInfo method = InstanceType.GetMethod(methodName, FLAGS);
 
             if (Equals(method, null))
-            {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
-            }
 
             return method.Invoke(Instance, args);
         }
@@ -67,16 +63,12 @@ namespace ModLibrary
         public ReturnType CallPrivateMethod<ReturnType>(string methodName, object[] args = null)
         {
             if (args == null)
-            {
                 args = new object[] { };
-            }
 
-            MethodInfo method = InstanceType.GetMethod(methodName, Flags);
+            MethodInfo method = InstanceType.GetMethod(methodName, FLAGS);
 
             if (Equals(method, null))
-            {
                 throw new MissingMethodException(InstanceType.FullName, methodName);
-            }
 
             return (ReturnType)method.Invoke(Instance, args);
         }
@@ -88,12 +80,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the field to</param>
         public void SetPrivateField(string fieldName, object value)
         {
-            FieldInfo field = InstanceType.GetField(fieldName, Flags);
+            FieldInfo field = InstanceType.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
-            }
 
             field.SetValue(Instance, value);
         }
@@ -106,12 +96,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the field to</param>
         public void SetPrivateField<FieldType>(string fieldName, FieldType value)
         {
-            FieldInfo field = InstanceType.GetField(fieldName, Flags);
+            FieldInfo field = InstanceType.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
-            }
 
             field.SetValue(Instance, value);
         }
@@ -123,12 +111,10 @@ namespace ModLibrary
         /// <returns>The value of the field</returns>
         public object GetPrivateField(string fieldName)
         {
-            FieldInfo field = InstanceType.GetField(fieldName, Flags);
+            FieldInfo field = InstanceType.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
-            }
 
             return field.GetValue(Instance);
         }
@@ -141,12 +127,10 @@ namespace ModLibrary
         /// <returns>The value of the field casted to <typeparamref name="FieldType"/></returns>
         public FieldType GetPrivateField<FieldType>(string fieldName)
         {
-            FieldInfo field = InstanceType.GetField(fieldName, Flags);
+            FieldInfo field = InstanceType.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(InstanceType.FullName, fieldName);
-            }
 
             return (FieldType)field.GetValue(Instance);
         }
@@ -158,12 +142,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the property to</param>
         public void SetPrivateProperty(string propertyName, object value)
         {
-            PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
+            PropertyInfo property = InstanceType.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
-            }
 
             property.SetValue(Instance, value, null);
         }
@@ -176,12 +158,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the property to</param>
         public void SetPrivateProperty<PropertyType>(string propertyName, PropertyType value)
         {
-            PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
+            PropertyInfo property = InstanceType.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
-            }
 
             property.SetValue(Instance, value, null);
         }
@@ -193,12 +173,10 @@ namespace ModLibrary
         /// <returns>The value of the proerty</returns>
         public object GetPrivateProperty(string propertyName)
         {
-            PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
+            PropertyInfo property = InstanceType.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
-            }
 
             return property.GetValue(Instance, null);
         }
@@ -211,12 +189,10 @@ namespace ModLibrary
         /// <returns>The value of the proerty casted to <typeparamref name="PropertyType"/></returns>
         public PropertyType GetPrivateProperty<PropertyType>(string propertyName)
         {
-            PropertyInfo property = InstanceType.GetProperty(propertyName, Flags);
+            PropertyInfo property = InstanceType.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(InstanceType.FullName, propertyName);
-            }
 
             return (PropertyType)property.GetValue(Instance, null);
         }
@@ -231,16 +207,12 @@ namespace ModLibrary
         public static object CallPrivateMethod(Type type, string methodName, object instance, object[] args = null)
         {
             if (args == null)
-            {
                 args = new object[] { };
-            }
 
-            MethodInfo method = type.GetMethod(methodName, Flags);
+            MethodInfo method = type.GetMethod(methodName, FLAGS);
 
             if (Equals(method, null))
-            {
                 throw new MissingMethodException(type.FullName, methodName);
-            }
 
             return method.Invoke(instance, args);
         }
@@ -256,16 +228,12 @@ namespace ModLibrary
         public static ReturnType CallPrivateMethod<InstanceType, ReturnType>(string methodName, InstanceType instance, object[] args = null)
         {
             if (args == null)
-            {
                 args = new object[] { };
-            }
 
-            MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
+            MethodInfo method = typeof(InstanceType).GetMethod(methodName, FLAGS);
 
             if (Equals(method, null))
-            {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
-            }
 
             return (ReturnType)method.Invoke(instance, args);
         }
@@ -280,16 +248,12 @@ namespace ModLibrary
         public static void CallPrivateMethod<InstanceType>(string methodName, InstanceType instance, object[] args = null)
         {
             if (args == null)
-            {
                 args = new object[] { };
-            }
 
-            MethodInfo method = typeof(InstanceType).GetMethod(methodName, Flags);
+            MethodInfo method = typeof(InstanceType).GetMethod(methodName, FLAGS);
 
             if (Equals(method, null))
-            {
                 throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
-            }
 
             method.Invoke(instance, args);
         }
@@ -303,12 +267,10 @@ namespace ModLibrary
         /// <param name="value">The value that the field should be set to.</param>
         public static void SetPrivateField(Type type, string fieldName, object instance, object value)
         {
-            FieldInfo field = type.GetField(fieldName, Flags);
+            FieldInfo field = type.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(type.FullName, fieldName);
-            }
 
             field.SetValue(instance, value);
         }
@@ -323,12 +285,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the field to</param>
         public static void SetPrivateField<InstanceType, FieldType>(string fieldName, InstanceType instance, FieldType value)
         {
-            FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
+            FieldInfo field = typeof(InstanceType).GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
-            }
 
             field.SetValue(instance, value);
         }
@@ -341,12 +301,10 @@ namespace ModLibrary
         /// <param name="instance">The object that the field is attached to.</param>
         public static object GetPrivateField(Type type, string fieldName, object instance)
         {
-            FieldInfo field = type.GetField(fieldName, Flags);
+            FieldInfo field = type.GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(type.FullName, fieldName);
-            }
 
             return field.GetValue(instance);
         }
@@ -360,12 +318,10 @@ namespace ModLibrary
         /// <param name="instance">The instance the field is in.</param>
         public static FieldType GetPrivateField<InstanceType, FieldType>(string fieldName, InstanceType instance)
         {
-            FieldInfo field = typeof(InstanceType).GetField(fieldName, Flags);
+            FieldInfo field = typeof(InstanceType).GetField(fieldName, FLAGS);
 
             if (Equals(field, null))
-            {
                 throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
-            }
 
             return (FieldType)field.GetValue(instance);
         }
@@ -379,12 +335,10 @@ namespace ModLibrary
         /// <param name="value">The value the property should be set to.</param>
         public static void SetPrivateProperty(Type type, string propertyName, object instance, object value)
         {
-            PropertyInfo property = type.GetProperty(propertyName, Flags);
+            PropertyInfo property = type.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(type.FullName, propertyName);
-            }
 
             property.SetValue(instance, value, null);
         }
@@ -399,12 +353,10 @@ namespace ModLibrary
         /// <param name="value">The value to set the property to.</param>
         public static void SetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, PropertyType value)
         {
-            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
+            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
-            }
 
             property.SetValue(instance, value, null);
         }
@@ -417,12 +369,10 @@ namespace ModLibrary
         /// <param name="instance">The object that the property is attached to.</param>
         public static object GetPrivateProperty(Type type, string propertyName, object instance)
         {
-            PropertyInfo property = type.GetProperty(propertyName, Flags);
+            PropertyInfo property = type.GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(type.FullName, propertyName);
-            }
 
             return property.GetValue(instance, null);
         }
@@ -436,12 +386,10 @@ namespace ModLibrary
         /// <param name="instance">The instance the property is in.</param>
         public static PropertyType GetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance)
         {
-            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, Flags);
+            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, FLAGS);
 
             if (Equals(property, null))
-            {
                 throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
-            }
 
             return (PropertyType)property.GetValue(instance, null);
         }

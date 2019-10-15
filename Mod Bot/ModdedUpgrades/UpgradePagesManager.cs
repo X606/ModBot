@@ -10,8 +10,8 @@ namespace InternalModBot
     /// </summary>
     public static class UpgradePagesManager
     {
-        private static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> AllModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>(); // first string is uniqe ids of mods returned by mod.GetUniqeId(), the second value are all of the upgrades on that page (this also includes disabled mods)
-        
+        static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> _allModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>();
+
         /// <summary>
         /// The page that is currently selected
         /// </summary>
@@ -31,7 +31,7 @@ namespace InternalModBot
                 }
             } // Removes all modded upgrades from the UpgradeDescriptions List
 
-            AllModdedUpgradePages.Clear();
+            _allModdedUpgradePages.Clear();
             CurrentPage = 0;
         }
 
@@ -41,7 +41,7 @@ namespace InternalModBot
         /// <param name="mod"></param>
         public static void RemoveModdedUpgradesFor(Mod mod)
         {
-            foreach (var item in AllModdedUpgradePages)
+            foreach (var item in _allModdedUpgradePages)
             {
                 if (item.Key == mod)
                 {
@@ -56,6 +56,7 @@ namespace InternalModBot
                             }
                         }
                     }
+
                     return;
                 }
             }
@@ -69,10 +70,8 @@ namespace InternalModBot
         /// <param name="mod"></param>
         public static void AddUpgrade(UpgradeType upgradeType, int level, Mod mod)
         {
-            if (ModAlreadyHasUpgrade(mod, new ModdedUpgradeRepresenter(upgradeType, level))) // If the mod has already defined the upgrade on its page
-            {
+            if (modAlreadyHasUpgrade(mod, new ModdedUpgradeRepresenter(upgradeType, level))) // If the mod has already defined the upgrade on its page
                 return;
-            }
 
             TryAddPage(mod);
             var pages = GenerateModPages();
@@ -89,19 +88,15 @@ namespace InternalModBot
         /// <param name="mod"></param>
         public static void SetAngleOfModdedUpgrade(float angle, UpgradeType upgradeType, int upgradeLevel, Mod mod)
         {
-            foreach(var _mod in AllModdedUpgradePages)
+            foreach(var _mod in _allModdedUpgradePages)
             {
                 if (_mod.Key != mod)
-                {
                     continue;
-                }
 
                 foreach (ModdedUpgradeRepresenter _upgrade in _mod.Value)
                 {
                     if (_upgrade.UpgradeType != upgradeType || _upgrade.Level != upgradeLevel)
-                    {
                         continue;
-                    }
 
                     _upgrade.SetCustomAngle(angle);
                     return;
@@ -122,17 +117,13 @@ namespace InternalModBot
             UpgradeDescription upgradeInUpgradeList = UpgradeManager.Instance.GetUpgrade(upgradeType, upgradeLevel);
 
             if (CurrentPage == 0) // If we are on the first page, only display the normal values
-            {
                 return upgradeInUpgradeList != null ? upgradeInUpgradeList.AngleOffset : 0f;
-            }
 
             var currentMod = GenerateModPages()[CurrentPage - 1];
             foreach(ModdedUpgradeRepresenter upgrade in currentMod.Value)
             {
                 if (upgrade.UpgradeType != upgradeType || upgrade.Level != upgradeLevel)
-                {
                     continue;
-                }
 
                 return upgrade.GetAngleOffset();
             }
@@ -146,13 +137,11 @@ namespace InternalModBot
         /// <param mod=""></param>
         public static void TryAddPage(Mod mod)
         {
-            if (ContainsMod(mod))
-            {
+            if (containsMod(mod))
                 return;
-            }
 
             List<ModdedUpgradeRepresenter> newList = new List<ModdedUpgradeRepresenter>();
-            AllModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, newList));
+            _allModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, newList));
         }
 
         /// <summary>
@@ -162,12 +151,10 @@ namespace InternalModBot
         public static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> GenerateModPages()
         {
             List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>();
-            foreach(var page in AllModdedUpgradePages)
+            foreach(var page in _allModdedUpgradePages)
             {
                 if (!page.Key.IsModEnabled())
-                {
                     continue;
-                }
 
                 pages.Add(page);
             }
@@ -198,9 +185,7 @@ namespace InternalModBot
             for (int i = 0; i < pages.Count; i++)
             {
                 if (pages[i].Key != mod)
-                {
                     continue;
-                }
 
                 return i;
             }
@@ -231,9 +216,7 @@ namespace InternalModBot
         public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages, int page)
         {
             if (page < 0 || page >= pages.Count)
-            {
                 return null;
-            }
 
             return pages[page].Key;
         }
@@ -244,21 +227,20 @@ namespace InternalModBot
         public static void NextPage()
         {
             CurrentPage++;
+
             if (CurrentPage > GetMaxPage())
-            {
                 CurrentPage = 0;
-            }
         }
+
         /// <summary>
         /// Moves the page to the previus avaliable page
         /// </summary>
         public static void PreviousPage()
         {
             CurrentPage--;
+
             if (CurrentPage < 0)
-            {
                 CurrentPage = GetMaxPage();
-            }
         }
 
         /// <summary>
@@ -283,29 +265,21 @@ namespace InternalModBot
             if (!IsModdedUpgradeType(type))
             {
                 if (CurrentPage == 0) // If the current page is the normal page, upgrade should always be visible
-                {
                     return true;
-                }
 
                 bool state = ForceUpgradeVisible(type, level); // Checks if the upgrade should be active acording to ForceUpgradeVisible
                 return state;
             }
 
             if (CurrentPage == 0) // If the current page is the normal page, upgrade should never be visible, since it is a modded upgrade
-            {
                 return false;
-            }
 
             var modPages = GenerateModPages();
             if (modPages.Count == 0)
-            {
                 return true;
-            }
 
             if ((CurrentPage - 1) < 0 || (CurrentPage - 1) >= modPages.Count) // -1 since when the current frame is at 1 the modPages index should be 0
-            {
                 return true;
-            }
 
             return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeRepresenter(type, level));
         }
@@ -319,20 +293,14 @@ namespace InternalModBot
         public static bool ForceUpgradeVisible(UpgradeType type, int level)
         {
             if (IsModdedUpgradeType(type))
-            {
                 return false;
-            }
 
             var modPages = GenerateModPages();
             if (modPages.Count == 0)
-            {
                 return false;
-            }
 
             if ((CurrentPage - 1) < 0 || (CurrentPage - 1) >= modPages.Count) // -1 since when the current frame is at 1 the modPages index should be 0
-            {
                 return false;
-            }
 
             return modPages[CurrentPage - 1].Value.Contains(new ModdedUpgradeRepresenter(type, level));
         }
@@ -344,7 +312,7 @@ namespace InternalModBot
         /// <returns></returns>
         public static bool IsModdedUpgradeType(UpgradeType UpgradeType)
         {
-            return !ModLibrary.ModTools.EnumTools.GetValues<UpgradeType>().Contains(UpgradeType);
+            return !EnumTools.GetValues<UpgradeType>().Contains(UpgradeType);
         }
 
         /// <summary>
@@ -352,30 +320,25 @@ namespace InternalModBot
         /// </summary>
         /// <param name="mod"></param>
         /// <returns></returns>
-        private static bool ContainsMod(Mod mod)
+        static bool containsMod(Mod mod)
         {
-            foreach(var valuePair in AllModdedUpgradePages)
+            foreach(var valuePair in _allModdedUpgradePages)
             {
                 if (valuePair.Key == mod)
-                {
                     return true;
-                }
             }
 
             return false;
         }
 
-        private static bool ModAlreadyHasUpgrade(Mod mod, ModdedUpgradeRepresenter upgrade)
+        static bool modAlreadyHasUpgrade(Mod mod, ModdedUpgradeRepresenter upgrade)
         {
-            foreach (var valuePair in AllModdedUpgradePages)
+            foreach (var valuePair in _allModdedUpgradePages)
             {
                 if (valuePair.Key != mod)
-                {
                     continue;
-                }
 
                 return valuePair.Value.Contains(upgrade);
-
             }
 
             return false;

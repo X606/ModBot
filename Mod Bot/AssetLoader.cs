@@ -15,12 +15,12 @@ namespace ModLibrary
     /// </summary>
     public static class AssetLoader
     {
-        private static Dictionary<string, UnityEngine.Object> cachedObjects = new Dictionary<string, UnityEngine.Object>();
+        static Dictionary<string, UnityEngine.Object> _cachedObjects = new Dictionary<string, UnityEngine.Object>();
 
         /// <summary>
         /// The name of the folder where mods are stored
         /// </summary>
-        public const string ModsFolderName = "mods/";
+        public const string MODS_FOLDER_NAME = "mods/";
 
         /// <summary>
         /// Returns the full directory to the mods folder directory where we expect most of the assetbundles to be
@@ -28,35 +28,30 @@ namespace ModLibrary
         /// <returns></returns>
         public static string GetModsFolderDirectory()
         {
-            return GetSubdomain(Application.dataPath) + ModsFolderName;
+            return GetSubdomain(Application.dataPath) + MODS_FOLDER_NAME;
         }
 
-        private static T GetObjectFromFileInternal<T>(string _assetBundleName, string _objectName, string _customPathFromDataPath = ModsFolderName) where T : UnityEngine.Object
+        static T getObjectFromFileInternal<T>(string _assetBundleName, string _objectName, string _customPathFromDataPath = MODS_FOLDER_NAME) where T : UnityEngine.Object
         {
             string key = _assetBundleName + ":" + _objectName;
 
-            if (cachedObjects.ContainsKey(key))
-            {
-                return cachedObjects[key] as T;
-            }
+            if (_cachedObjects.ContainsKey(key))
+                return _cachedObjects[key] as T;
 
             string assetBundleDirectory = GetSubdomain(Application.dataPath) + _customPathFromDataPath;
             string assetBundleFilePath = assetBundleDirectory + _assetBundleName;
 
             if (!Directory.Exists(assetBundleDirectory))
-            {
                 throw new DirectoryNotFoundException("Could not find directory " + assetBundleDirectory);
-            }
+
             if (!File.Exists(assetBundleFilePath))
-            {
                 throw new FileNotFoundException("Could not find AssetBundle file", _assetBundleName);
-            }
 
             AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
             T result = assetBundle.LoadAssetAsync<T>(_objectName).asset as T;
             assetBundle.Unload(false);
 
-            cachedObjects[key] = result;
+            _cachedObjects[key] = result;
 
             return result;
         }
@@ -69,7 +64,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
         {
-            return GetObjectFromFileInternal<GameObject>(assetBundleName, objectName);
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName);
         }
 
         /// <summary>
@@ -81,7 +76,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
-            return GetObjectFromFileInternal<GameObject>(assetBundleName, objectName, customPath);
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, customPath);
         }
 
         /// <summary>
@@ -93,7 +88,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
-            return GetObjectFromFileInternal<T>(assetBundleName, objectName);
+            return getObjectFromFileInternal<T>(assetBundleName, objectName);
         }
 
         /// <summary>
@@ -106,7 +101,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
         {
-            return GetObjectFromFileInternal<T>(assetBundleName, objectName, customPath);
+            return getObjectFromFileInternal<T>(assetBundleName, objectName, customPath);
         }
 
         /// <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
@@ -117,9 +112,7 @@ namespace ModLibrary
             string path = GetSubdomain(Application.dataPath) + "mods/" + name;
 
             if (File.Exists(path))
-            {
                 return;
-            }
 
             SaveFileToMods(url, name);
         }
@@ -128,14 +121,17 @@ namespace ModLibrary
         /// <param name="name">The name of the file that will be created.</param>
         public static void SaveFileToMods(string url, string name)
         {
-            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(MyRemoteCertificateValidationCallback);
-            byte[] fileData = new WebClient
+            ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(myRemoteCertificateValidationCallback);
+            WebClient webClient = new WebClient
             {
                 Headers =
                 {
                     "User-Agent: Other"
                 }
-            }.DownloadData(url);
+            };
+
+            byte[] fileData = webClient.DownloadData(url);
+            webClient.Dispose();
 
             string path = GetSubdomain(Application.dataPath) + "mods/";
 
@@ -154,11 +150,11 @@ namespace ModLibrary
         public static AsyncDownload SaveFileToModsAsync(string url, string fileName)
         {
             AsyncDownload async = new AsyncDownload();
-            StaticCoroutineRunner.StartStaticCoroutine(SaveFileToModsAsyncCorutine(url, fileName, async));
+            StaticCoroutineRunner.StartStaticCoroutine(saveFileToModsAsyncCorutine(url, fileName, async));
             return async;
         }
 
-        static IEnumerator SaveFileToModsAsyncCorutine(string url, string fileName, AsyncDownload asyncDownload)
+        static IEnumerator saveFileToModsAsyncCorutine(string url, string fileName, AsyncDownload asyncDownload)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
 
@@ -174,7 +170,8 @@ namespace ModLibrary
             File.WriteAllBytes(fullPath, webRequest.downloadHandler.data);
             asyncDownload.IsDone = true;
         }
-        private static bool MyRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+
+        static bool myRemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             bool result = true;
             if (sslPolicyErrors != SslPolicyErrors.None)
@@ -187,10 +184,9 @@ namespace ModLibrary
                         chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
                         chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
                         chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllFlags;
+
                         if (!chain.Build((X509Certificate2)certificate))
-                        {
                             result = false;
-                        }
                     }
                 }
             }
@@ -202,7 +198,7 @@ namespace ModLibrary
         /// </summary>
         public static void ClearCache()
         {
-            cachedObjects.Clear();
+            _cachedObjects.Clear();
         }
 
         /// <summary>

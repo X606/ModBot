@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace ModLibrary
 {
@@ -20,9 +17,7 @@ namespace ModLibrary
         public static WeaponModel GetEquippedWeaponModel(this FirstPersonMover firstPersonMover)
         {
             if (!firstPersonMover.HasCharacterModel() || firstPersonMover.GetEquippedWeaponType() == WeaponType.None)
-            {
                 return null;
-            }
 
             WeaponType equippedWeaponType = firstPersonMover.GetEquippedWeaponType();
             return firstPersonMover.GetCharacterModel().GetWeaponModel(equippedWeaponType);
@@ -39,14 +34,10 @@ namespace ModLibrary
         public static void GiveUpgrade(this FirstPersonMover firstPersonMover, UpgradeType upgradeType, int level)
         {
             if (firstPersonMover == null)
-            {
                 throw new ArgumentNullException(nameof(firstPersonMover));
-            }
 
             if (UpgradeManager.Instance.GetUpgrade(upgradeType, level) == null)
-            {
                 throw new ArgumentException("The upgrade with type \"" + upgradeType + "\" and level " + level + " has not been defined!");
-            }
 
             if (firstPersonMover.GetComponent<PreconfiguredUpgradeCollection>() != null) // If we are giving an upgrade to an enemy/ally
             {

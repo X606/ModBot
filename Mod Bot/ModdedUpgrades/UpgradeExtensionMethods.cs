@@ -11,17 +11,15 @@ namespace ModLibrary
     public static class UpgradeExtensionMethods
     {
         /// <summary>
-        /// Adds a upgrade to the page of the specified <see cref="Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
+        /// Adds an upgrade to the page of the specified <see cref="Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
         /// </summary>
         /// <param name="upgradeManager"></param>
-        /// <param name="upgrade"></param>
-        /// <param name="mod"></param>
+        /// <param name="upgrade">The <see cref="UpgradeDescription"/> of the upgrade to add</param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
-            {
                 upgradeManager.UpgradeDescriptions.Add(upgrade);
-            }
             
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 
@@ -32,9 +30,7 @@ namespace ModLibrary
             }
 
             if (upgrade.Requirement != null)
-            {
-                RecursivelyAddRequirments(upgrade, mod);
-            }
+                recursivelyAddRequirments(upgrade, mod);
         }
 
         /// <summary>
@@ -44,14 +40,12 @@ namespace ModLibrary
         /// <param name="upgradeType">The <see cref="UpgradeType"/> of the <see cref="UpgradeDescription"/> to set the angle on</param>
         /// <param name="level">The level of the <see cref="UpgradeDescription"/> to set the angle on</param>
         /// <param name="angle">The new angle to set</param>
-        /// <param name="mod"></param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, Mod mod)
         {
             UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
             if (upgradeDescription == null)
-            {
                 return;
-            }
 
             upgradeDescription.SetAngleOffset(angle, mod);
         }
@@ -73,50 +67,45 @@ namespace ModLibrary
         /// <returns></returns>
         public static bool IsModdedUpgradeType(this UpgradeType upgradeType)
         {
-            return !ModTools.EnumTools.GetValues<UpgradeType>().Contains(upgradeType);
+            return !EnumTools.GetValues<UpgradeType>().Contains(upgradeType);
         }
 
         /// <summary>
         /// Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="UpgradeManager"/>.AddUpgrade(<see cref="UpgradeDescription"/>, <see cref="Mod"/>) is called
         /// </summary>
         /// <param name="upgradeDescription"></param>
-        /// <param name="angle"></param>
-        /// <param name="mod"></param>
+        /// <param name="angle">The new angle of the <see cref="UpgradeDescription"/></param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
             UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod);
         }
 
         /// <summary>
-        /// Sets the icon of the upgrade to a image from a url, this needs a internet connection (NOTE: this has a cache so if you want to change picture you might want to remove the cache in the mods directory)
+        /// Sets the icon of the upgrade to an image, this needs a internet connection (NOTE: This has a cache so if you want to change the icon you'll want to remove it from the cache in the data folder first)
         /// </summary>
         /// <param name="upgradeDescription"></param>
-        /// <param name="url">the url of the image you want to set the object to</param>
+        /// <param name="url">The url to get the image from</param>
         public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
         {
             UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
         }
 
-        private static void RecursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
+        static void recursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade == null)
-            {
                 return;
-            }
 
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
 
-
             if (upgrade.Requirement2 != null)
-            {
-                RecursivelyAddRequirments(upgrade.Requirement2, mod);
-            }
+                recursivelyAddRequirments(upgrade.Requirement2, mod);
 
-            RecursivelyAddRequirments(upgrade.Requirement, mod);
+            recursivelyAddRequirments(upgrade.Requirement, mod);
         }
 
         /// <summary>
-        /// Enables setting the angles in the upgrade UI by dragging the icons around
+        /// Enables setting the angles in the upgrade UI by scrolling on them and generating the code to set the angles again
         /// </summary>
         /// <param name="upgradeManager"></param>
         public static void EnterUpgradeIconAngleDebugMode(this UpgradeManager upgradeManager)
