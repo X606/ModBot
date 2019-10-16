@@ -200,14 +200,37 @@ namespace InternalModBot
         {
             FPMoveCommand moveCommand = (FPMoveCommand)command;
 
+            if (!CharacterInputRestrictor.HasAnyRestrictions(owner))
+                return moveCommand;
+
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.Jump))
                 moveCommand.Input.Jump = false;
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovement))
+            {
                 moveCommand.Input.VerticalCursorMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovementUp) && moveCommand.Input.VerticalCursorMovement > 0f)
+                    moveCommand.Input.VerticalCursorMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovementDown) && moveCommand.Input.VerticalCursorMovement < 0f)
+                    moveCommand.Input.VerticalCursorMovement = 0f;
+            }
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovement))
+            {
                 moveCommand.Input.HorizontalCursorMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovementLeft) && moveCommand.Input.HorizontalCursorMovement < 0f)
+                    moveCommand.Input.HorizontalCursorMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovementRight) && moveCommand.Input.HorizontalCursorMovement > 0f)
+                    moveCommand.Input.HorizontalCursorMovement = 0f;
+            }
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.AttackKeyDown))
                 moveCommand.Input.AttackKeyDown = false;
@@ -267,10 +290,30 @@ namespace InternalModBot
                 moveCommand.Input.NextWeapon = false;
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovement))
+            {
                 moveCommand.Input.VerticalMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovementForward) && moveCommand.Input.VerticalMovement > 0f)
+                    moveCommand.Input.VerticalMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovementBackwards) && moveCommand.Input.VerticalMovement < 0f)
+                    moveCommand.Input.VerticalMovement = 0f;
+            }
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovement))
+            {
                 moveCommand.Input.HorizontalMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovementLeft) && moveCommand.Input.HorizontalMovement < 0f)
+                    moveCommand.Input.HorizontalMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovementRight) && moveCommand.Input.HorizontalMovement > 0f)
+                    moveCommand.Input.HorizontalMovement = 0f;
+            }
 
             if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.EmoteKeyHeld))
                 moveCommand.Input.IsEmoteKeyHeld = false;
