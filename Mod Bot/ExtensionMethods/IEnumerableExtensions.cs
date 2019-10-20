@@ -32,11 +32,47 @@ namespace ModLibrary
             {
                 ComponentType component = item.GetComponent<ComponentType>();
                 components[currentIndex] = component;
-
                 currentIndex++;
             }
 
             return components;
+        }
+
+        /// <summary>
+        /// Destroys all the objects in a collection of <see cref="UnityEngine.Object"/>
+        /// </summary>
+        /// <typeparam name="ObjectType">The type of object to destroy, must derive from <see cref="UnityEngine.Object"/></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="waitBeforeDestroy">An optional wait in seconds before destroying the objects</param>
+        public static void DestroyAll<ObjectType>(this IEnumerable<ObjectType> objects, float waitBeforeDestroy = 0f) where ObjectType : UnityEngine.Object
+        {
+            if (objects == null)
+                throw new ArgumentNullException(nameof(objects));
+
+            if (waitBeforeDestroy < 0f)
+                throw new ArgumentOutOfRangeException("Wait before destroy argument must be greater than of equal to 0!");
+
+            foreach (ObjectType obj in objects)
+            {
+                UnityEngine.Object.Destroy(obj, waitBeforeDestroy);
+            }
+        }
+
+        /// <summary>
+        /// Immediately destroys all the objects in a collection of <see cref="UnityEngine.Object"/>
+        /// </summary>
+        /// <typeparam name="ObjectType">The type of object to destroy, must derive from <see cref="UnityEngine.Object"/></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="allowDestroyingAssets">An optional argument to determine if destroying assets is allowed</param>
+        public static void DestroyAllImmediate<ObjectType>(this IEnumerable<ObjectType> objects, bool allowDestroyingAssets = false) where ObjectType : UnityEngine.Object
+        {
+            if (objects == null)
+                throw new ArgumentNullException(nameof(objects));
+
+            foreach (ObjectType obj in objects)
+            {
+                UnityEngine.Object.DestroyImmediate(obj, allowDestroyingAssets);
+            }
         }
 
         /// <summary>

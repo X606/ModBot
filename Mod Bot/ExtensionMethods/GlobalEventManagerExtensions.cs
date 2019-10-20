@@ -50,6 +50,7 @@ namespace ModLibrary
         public static void TryAddEventListener<T>(this GlobalEventManager globalEventManager, string eventName, Action<T> callback)
         {
             List<object> callbackList = Accessor.CallPrivateMethod<GlobalEventManager, List<object>>("getCallbackList", GlobalEventManager.Instance, new object[] { eventName });
+
             if (!callbackList.Contains(callback))
                 callbackList.Add(callback);
         }
@@ -63,6 +64,7 @@ namespace ModLibrary
         public static void TryAddEventListener(this GlobalEventManager globalEventManager, string eventName, Action callback)
         {
             List<object> callbackList = Accessor.CallPrivateMethod<GlobalEventManager, List<object>>("getCallbackList", GlobalEventManager.Instance, new object[] { eventName });
+
             if (!callbackList.Contains(callback))
                 callbackList.Add(callback);
         }
