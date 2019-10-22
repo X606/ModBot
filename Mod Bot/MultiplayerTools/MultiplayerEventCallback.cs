@@ -12,24 +12,20 @@ namespace ModLibrary
     /// </summary>
     public static class MultiplayerEventCallback
     {
-        private static Dictionary<Type, List<object>> eventListeners = new Dictionary<Type, List<object>>();
+        static Dictionary<Type, List<object>> _eventListeners = new Dictionary<Type, List<object>>();
 
-        private static void AddEventTypeToDictionary(Type eventType)
+        static void addEventTypeToDictionary(Type eventType)
         {
-            if (!eventListeners.ContainsKey(eventType))
-            {
-                eventListeners.Add(eventType, new List<object>());
-            }
+            if (!_eventListeners.ContainsKey(eventType))
+                _eventListeners.Add(eventType, new List<object>());
         }
 
-        private static bool HasCallbackDefined<T>(Action<T> callback) where T : Event
+        static bool hasCallbackDefined<T>(Action<T> callback) where T : Event
         {
-            if (eventListeners[typeof(T)] == null)
-            {
+            if (_eventListeners[typeof(T)] == null)
                 return false;
-            }
 
-            return eventListeners[typeof(T)].Contains(callback);
+            return _eventListeners[typeof(T)].Contains(callback);
         }
 
         /// <summary>
@@ -40,12 +36,10 @@ namespace ModLibrary
         /// <param name="allowDuplicate">Determines if multiple callbacks to the same method should be allowed</param>
         public static void AddEventListener<T>(Action<T> callback, bool allowDuplicate = false) where T : Event
         {
-            AddEventTypeToDictionary(typeof(T));
+            addEventTypeToDictionary(typeof(T));
 
-            if (allowDuplicate || !HasCallbackDefined(callback))
-            {
-                eventListeners[typeof(T)].Add(callback);
-            }
+            if (allowDuplicate || !hasCallbackDefined(callback))
+                _eventListeners[typeof(T)].Add(callback);
         }
 
         /// <summary>
@@ -55,9 +49,9 @@ namespace ModLibrary
         /// <param name="callback">The <see cref="Action{T}"/> to remove from the callback list</param>
         public static void RemoveEventListener<T>(Action<T> callback) where T : Event
         {
-            AddEventTypeToDictionary(typeof(T));
+            addEventTypeToDictionary(typeof(T));
             
-            eventListeners[typeof(T)].Remove(callback);
+            _eventListeners[typeof(T)].Remove(callback);
         }
 
         /// <summary>
@@ -67,12 +61,10 @@ namespace ModLibrary
         /// <param name="_event"></param>
         internal static void OnEventRecieved<T>(T _event) where T : Event
         {
-            if (!eventListeners.ContainsKey(typeof(T)))
-            {
+            if (!_eventListeners.ContainsKey(typeof(T)))
                 return;
-            }
 
-            List<object> callbacks = eventListeners[typeof(T)];
+            List<object> callbacks = _eventListeners[typeof(T)];
             for (int i = 0; i < callbacks.Count; i++)
             {
                 Action<T> callbackAction = callbacks[i] as Action<T>;
@@ -88,7 +80,6 @@ namespace ModLibrary
             }
 
         }
-
 
     }
 }

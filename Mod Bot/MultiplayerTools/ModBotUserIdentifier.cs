@@ -12,11 +12,11 @@ namespace ModLibrary
     /// </summary>
     public class ModBotUserIdentifier : Singleton<ModBotUserIdentifier>
     {
-        private List<string> PlayFabIDs = new List<string>();
+        List<string> _playFabIDs = new List<string>();
         
-        private const string REQUEST_MESSAGE_PREFIX = "[IDRequest]";
-        private const string RESPONSE_MESSAGE_PREFIX = "[IDResponse]";
-        private const char SEPARATOR_CHAR = '█';
+        const string REQUEST_MESSAGE_PREFIX = "[IDRequest]";
+        const string RESPONSE_MESSAGE_PREFIX = "[IDResponse]";
+        const char SEPARATOR_CHAR = '█';
 
         /// <summary>
         /// Returns if the player with the target playfabID is running Mod-Bot
@@ -25,7 +25,7 @@ namespace ModLibrary
         /// <returns></returns>
         public bool IsUsingModBot(string playfabID)
         {
-            return PlayFabIDs.Contains(playfabID);
+            return _playFabIDs.Contains(playfabID);
         }
 
         /// <summary>
@@ -37,12 +37,12 @@ namespace ModLibrary
             MultiplayerMessageSender.SendToAllClients(message);
         }
 
-        private void Respond(string playfabIDTarget)
+        void respond(string playfabIDTarget)
         {
             FirstPersonMover player = CharacterTracker.Instance.GetPlayer();
             if (player == null)
             {
-                DelegateScheduler.Instance.Schedule(delegate { Respond(playfabIDTarget); }, 1);
+                DelegateScheduler.Instance.Schedule(delegate { respond(playfabIDTarget); }, 1);
                 return;
             }
             
@@ -62,12 +62,11 @@ namespace ModLibrary
             {
                 string[] subMessages = message.Split(SEPARATOR_CHAR);
 
-                if (!PlayFabIDs.Contains(subMessages[1]))
+                if (!_playFabIDs.Contains(subMessages[1]))
                 {
-                    PlayFabIDs.Add(subMessages[1]);
+                    _playFabIDs.Add(subMessages[1]);
 
-                    Respond(subMessages[1]);
-
+                    respond(subMessages[1]);
                 }
             }
 
@@ -78,11 +77,8 @@ namespace ModLibrary
                 if (subMessages[1] != playfabID) // if the message wasnt meant for us, dont do anything
                     return;
 
-                if (!PlayFabIDs.Contains(subMessages[2]))
-                {
-                    PlayFabIDs.Add(subMessages[2]);
-
-                }
+                if (!_playFabIDs.Contains(subMessages[2]))
+                    _playFabIDs.Add(subMessages[2]);
 
             }
 

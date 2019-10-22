@@ -1,11 +1,11 @@
 ﻿using InternalModBot;
 using ModLibrary;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using System.Collections;
 
 namespace InternalModBot
 {
@@ -21,7 +21,7 @@ namespace InternalModBot
         {
             ReloadMods();
 
-            foreach (LoadedMod mod in mods)
+            foreach (LoadedMod mod in _mods)
             {
                 bool isActive = PlayerPrefs.GetInt(mod.Mod.GetUniqueID(), 1) != 0;
                 if (!isActive)
@@ -39,9 +39,9 @@ namespace InternalModBot
         {
             UpgradePagesManager.Reset();
             ClearCache();
-            mods.Clear();
+            _mods.Clear();
             PassOnMod = new PassOnToModsManager();
-            string[] files = Directory.GetFiles(GetModsFolderPath());
+            string[] files = Directory.GetFiles(getModsFolderPath());
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].EndsWith(".dll"))
@@ -58,13 +58,13 @@ namespace InternalModBot
                         {
                             Debug.LogError("Mod '" + file + "' is not working, make sure that it is set up right: " + ex.Message);
                         }, 0.5f);
-                        
+
                     }
                 }
             }
         }
 
-        private void Update()
+        void Update()
         {
             if (Input.GetKey(KeyCode.F3) && Input.GetKeyDown(KeyCode.R))
             {
@@ -98,9 +98,9 @@ namespace InternalModBot
                     throw new Exception("could not find class 'main'");
                 }
                 object obj = Activator.CreateInstance(type);
-                
+
                 Mod modToLoad = obj as Mod;
-                mods.ForEach(delegate (LoadedMod mod)
+                _mods.ForEach(delegate (LoadedMod mod)
                 {
                     if (mod.Mod.GetUniqueID() == modToLoad.GetUniqueID())
                     {
@@ -109,7 +109,7 @@ namespace InternalModBot
                 });
 
                 loadedMod = new LoadedMod(modToLoad, assemblyData, hasFile);
-                mods.Add(loadedMod);
+                _mods.Add(loadedMod);
 
                 bool isActive = PlayerPrefs.GetInt(modToLoad.GetUniqueID(), 1) != 0;
                 if (!isActive)
@@ -120,17 +120,17 @@ namespace InternalModBot
                 {
                     try
                     {
-                        StartCoroutine(CallOnModRefreshedNextFrame(modToLoad));
+                        StartCoroutine(callOnModRefreshedNextFrame(modToLoad));
                     }
-                    catch(Exception exception)
+                    catch (Exception exception)
                     {
                         throw new Exception("Caught exception in OnModRefreshed for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
                     }
                 }
 
-                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (!hasFile && loadedMod != null)
                 {
@@ -139,7 +139,7 @@ namespace InternalModBot
                         loadedMod.Mod.OnModDeactivated(); // Called so that the mod will (hopefully) clean up anything it has already done
                     }
 
-                    mods.Remove(loadedMod); // If the mod was sent over the network and something went wrong, unload the mod
+                    _mods.Remove(loadedMod); // If the mod was sent over the network and something went wrong, unload the mod
                 }
 
                 throw new Exception("The mod you are trying to load isn't valid: " + e.Message);
@@ -147,7 +147,7 @@ namespace InternalModBot
 
         }
 
-        private IEnumerator CallOnModRefreshedNextFrame(Mod mod)
+        IEnumerator callOnModRefreshedNextFrame(Mod mod)
         {
             yield return 0;
             mod.OnModRefreshed();
@@ -163,8 +163,8 @@ namespace InternalModBot
             if (GetIsModOnlyLoadedInMemory(mod) == false)
                 return;
 
-            string filename = VerifyName(mod.GetModName());
-            string fullPath = GetModsFolderPath() + filename + ".dll";
+            string filename = verifyName(mod.GetModName());
+            string fullPath = getModsFolderPath() + filename + ".dll";
             if (File.Exists(fullPath))
             {
                 debug.Log("The file \"" + fullPath + "\" already existed", Color.red);
@@ -173,7 +173,7 @@ namespace InternalModBot
 
             File.WriteAllBytes(fullPath, GetModData(mod));
 
-            foreach (LoadedMod _mod in mods)
+            foreach (LoadedMod _mod in _mods)
             {
                 if (_mod.Mod == mod)
                 {
@@ -183,12 +183,12 @@ namespace InternalModBot
             }
         }
 
-        private string GetModsFolderPath()
+        string getModsFolderPath()
         {
             return AssetLoader.GetSubdomain(Application.dataPath) + "mods/";
         }
 
-        private string VerifyName(string oldName)
+        string verifyName(string oldName)
         {
             return oldName.Trim("<>:\"\\/|?*".ToCharArray());
         }
@@ -214,7 +214,7 @@ namespace InternalModBot
         public List<Mod> GetAllLoadedMods()
         {
             List<Mod> mods = new List<Mod>();
-            foreach(LoadedMod mod in this.mods)
+            foreach (LoadedMod mod in _mods)
             {
                 if (!mod.IsDeactivated)
                 {
@@ -231,7 +231,7 @@ namespace InternalModBot
         public List<Mod> GetAllMods()
         {
             List<Mod> mods = new List<Mod>();
-            foreach (LoadedMod mod in this.mods)
+            foreach (LoadedMod mod in _mods)
             {
                 mods.Add(mod.Mod);
             }
@@ -246,11 +246,11 @@ namespace InternalModBot
         {
             PlayerPrefs.SetInt(mod.GetUniqueID(), 0);
 
-            for (int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < _mods.Count; i++)
             {
-                if (mods[i].Mod == mod)
+                if (_mods[i].Mod == mod)
                 {
-                    mods[i].IsDeactivated = true;
+                    _mods[i].IsDeactivated = true;
                     break;
                 }
             }
@@ -267,11 +267,11 @@ namespace InternalModBot
         {
             PlayerPrefs.SetInt(mod.GetUniqueID(), 1);
 
-            for (int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < _mods.Count; i++)
             {
-                if (mods[i].Mod == mod)
+                if (_mods[i].Mod == mod)
                 {
-                    mods[i].IsDeactivated = false;
+                    _mods[i].IsDeactivated = false;
                     break;
                 }
             }
@@ -286,11 +286,11 @@ namespace InternalModBot
         /// <returns></returns>
         public bool? IsModDeactivated(Mod mod)
         {
-            for (int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < _mods.Count; i++)
             {
-                if (mods[i].Mod == mod)
+                if (_mods[i].Mod == mod)
                 {
-                    return mods[i].IsDeactivated;
+                    return _mods[i].IsDeactivated;
                 }
             }
 
@@ -299,11 +299,11 @@ namespace InternalModBot
 
         internal byte[] GetModData(Mod mod)
         {
-            for (int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < _mods.Count; i++)
             {
-                if (mods[i].Mod == mod)
+                if (_mods[i].Mod == mod)
                 {
-                    return mods[i].RawAssemblyData;
+                    return _mods[i].RawAssemblyData;
                 }
             }
             return null;
@@ -316,62 +316,21 @@ namespace InternalModBot
         /// <returns></returns>
         public bool GetIsModOnlyLoadedInMemory(Mod mod)
         {
-            for (int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < _mods.Count; i++)
             {
-                if (mods[i].Mod == mod)
+                if (_mods[i].Mod == mod)
                 {
-                    return mods[i].IsOnlyLoadedInMemory;
+                    return _mods[i].IsOnlyLoadedInMemory;
                 }
             }
             return false;
         }
 
-        private List<LoadedMod> mods = new List<LoadedMod>();
+        List<LoadedMod> _mods = new List<LoadedMod>();
 
         /// <summary>
         /// A very special mod that will call all mods the most functions passed to it on all mods
         /// </summary>
         public Mod PassOnMod = new PassOnToModsManager();
-    }
-
-    /// <summary>
-    /// Class used to keep both a mod and bool that decides if the mod is active in same list
-    /// </summary>
-    public class LoadedMod
-    {
-        private LoadedMod() // this will prevent people from createing now LoadedMod instances in mods
-        {
-        }
-
-        /// <summary>
-        /// Sets the mod field to the passed mod, and will not deactivate the mod
-        /// </summary>
-        /// <param name="_mod"></param>
-        /// <param name="_rawAssemblyData"></param>
-        /// <param name="isLoadedFromFile"></param>
-        internal LoadedMod(Mod _mod, byte[] _rawAssemblyData, bool isLoadedFromFile)
-        {
-            Mod = _mod;
-            IsDeactivated = false;
-            RawAssemblyData = _rawAssemblyData;
-            IsOnlyLoadedInMemory = !isLoadedFromFile;
-        }
-
-        /// <summary>
-        /// The Mod object the class is holding
-        /// </summary>
-        public Mod Mod;
-
-        /// <summary>
-        /// Decides if the mod is deactivated.
-        /// </summary>
-        public bool IsDeactivated;
-
-        /// <summary>
-        /// If this mod doesnt have a file
-        /// </summary>
-        public bool IsOnlyLoadedInMemory;
-
-        internal readonly byte[] RawAssemblyData;
     }
 }

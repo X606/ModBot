@@ -101,7 +101,7 @@ public static class Injector
 
         readModule.Module.Dispose();
 
-        return new Injection(halfInjected.IlProcessor, halfInjected.Module, halfInjected.Type);
+        return new Injection(halfInjected.IlProcessor, halfInjected.Module, halfInjected.Type, instructionInsertOffset);
     }
 
     public static void OverrideMethod(string pathToPasteTo, string pasteClassName, string pasteMethodName, string pathToCopyFrom, string copyClassName, string copyMethodName)
@@ -528,7 +528,7 @@ public static class Injector
     {
         HalfInjected halfInjected = InjectionFirstStep(path, "TwitchWhoIsLiveManager", "onGameLiveStreamRequestFinished", "", false);
         bool injectedPatch = false;
-        foreach(var item in halfInjected.IlProcessor.Body.Instructions)
+        foreach(Instruction item in halfInjected.IlProcessor.Body.Instructions)
         {
             if (item.Operand is int && ((int)item.Operand) == 42863452)
             {
@@ -552,357 +552,424 @@ public static class Injector
 
 public class Injection
 {
-    public Injection(ILProcessor _processor, ModuleDefinition _module, TypeDefinition type)
+    public Injection(ILProcessor processor, ModuleDefinition module, TypeDefinition type, int instructionInsertOffset = 0)
     {
-        Processor = _processor;
-        module = _module;
-        Type = type;
+        _processor = processor;
+        _module = module;
+        _type = type;
+        _instructionInsertOffset = instructionInsertOffset > 0 ? instructionInsertOffset + 1 : 0;
     }
+
     public Injection()
     {
-        isNull = true;
+        _isNull = true;
     }
 
     #region AddInstructionToTopSaves
-    public void AddInstructionOverSafe(OpCode instruction, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction));
     }
-    public void AddInstructionOverSafe(OpCode instruction, byte operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, byte operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, CallSite operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, CallSite operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, double operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, double operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, FieldReference operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, FieldReference operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction, operand));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, float operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, float operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, int operandIndex, int index = 0, bool THIS_IS_A_INSTRUCTION = true)
+    public void AddInstructionOverSafe(OpCode instruction, int operandIndex, int index = -1, bool THIS_IS_A_INSTRUCTION = true)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
-        Instruction _instruction = Processor.Body.Instructions[operandIndex - 1];
+        Instruction _instruction = _processor.Body.Instructions[operandIndex - 1];
         if (_instruction == null)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction, _instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, _instruction));
     }
-    public void AddInstructionOverSafe(OpCode instruction, Instruction[] operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, Instruction[] operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, int operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, int operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, long operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, long operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, MethodReference operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, MethodReference operand, int index = -1)
     {
-        if(isNull)
+        if(_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, ParameterDefinition operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, ParameterDefinition operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, sbyte operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, sbyte operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, string operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, string operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, TypeReference operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, TypeReference operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionOverSafe(OpCode instruction, VariableDefinition operand, int index = 0)
+    public void AddInstructionOverSafe(OpCode instruction, VariableDefinition operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertBefore(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertBefore(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
 
 
 
 
-    public void AddInstructionUnderSafe(OpCode instruction, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, byte operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, byte operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, CallSite operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, CallSite operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, double operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, double operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, FieldReference operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, FieldReference operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, float operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, float operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, int operandIndex, int index = 0, bool THIS_IS_A_INSTRUCTION = true)
+    public void AddInstructionUnderSafe(OpCode instruction, int operandIndex, int index = -1, bool THIS_IS_A_INSTRUCTION = true)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Instruction _instruction = Processor.Body.Instructions[operandIndex - 1];
+        Instruction _instruction = _processor.Body.Instructions[operandIndex - 1];
         if (_instruction == null)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction, _instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, _instruction));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, Instruction[] operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, Instruction[] operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, int operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, int operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, long operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, long operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, MethodReference operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, MethodReference operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, ParameterDefinition operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, ParameterDefinition operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, sbyte operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, sbyte operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, string operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, string operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, TypeReference operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, TypeReference operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
-    public void AddInstructionUnderSafe(OpCode instruction, VariableDefinition operand, int index = 0)
+    public void AddInstructionUnderSafe(OpCode instruction, VariableDefinition operand, int index = -1)
     {
-        if (isNull)
+        if (_isNull)
             return;
-        if (index < 0 || index >= Processor.Body.Instructions.Count)
+        if (index >= _processor.Body.Instructions.Count)
             return;
 
-        Processor.InsertAfter(Processor.Body.Instructions[index], Processor.Create(instruction));
+        int insertIndex = index >= 0 ? index : _instructionInsertOffset;
+
+        _processor.InsertAfter(_processor.Body.Instructions[insertIndex], _processor.Create(instruction, operand));
     }
     #endregion
 
     public int GetLengthOfInstructions()
     {
-        if (isNull)
+        if (_isNull)
             return -1;
 
-        return Processor.Body.Instructions.Count;
+        return _processor.Body.Instructions.Count;
     }
 
     public void Write()
     {
-        if (isNull)
+        if (_isNull)
             return;
 
-        module.Write();
+        _module.Write();
         Console.WriteLine("Injected!");
-        module.Dispose();
+        _module.Dispose();
     }
 
     public FieldReference GetFieldReferenceOnSameType(string name)
     {
-        if(Type == null)
+        if(_type == null)
             return null;
 
-        foreach(FieldDefinition field in Type.Fields)
+        foreach(FieldDefinition field in _type.Fields)
         {
             if(field == null)
                 continue;
 
             if (field.Name == name)
             {
-                return module.ImportReference(field);
+                return _module.ImportReference(field);
             }
         }
         return null;
     }
 
-    private readonly bool isNull;
-    private ILProcessor Processor;
-    private ModuleDefinition module;
-    private TypeDefinition Type;
+    int _instructionInsertOffset;
+    readonly bool _isNull;
+    ILProcessor _processor;
+    ModuleDefinition _module;
+    TypeDefinition _type;
 }

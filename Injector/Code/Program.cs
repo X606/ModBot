@@ -84,6 +84,13 @@ class Program
         refreshUpgradesInjection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         refreshUpgradesInjection.Write();
 
+        Console.WriteLine("Injecting into FirstPersonMover.ExecuteCommand...");
+        Injection executeCommandInjection = Injector.AddCallToMethodInMethod(installPath, "FirstPersonMover", "ExecuteCommand", modLibraryPath, "InternalModBot.CalledFromInjections", "FromExecuteCommand", 2, true);
+        executeCommandInjection.AddInstructionUnderSafe(OpCodes.Stloc_0);
+        executeCommandInjection.AddInstructionOverSafe(OpCodes.Ldarg_1);
+        executeCommandInjection.AddInstructionOverSafe(OpCodes.Ldarg_0);
+        executeCommandInjection.Write();
+
         Console.WriteLine("Injecting into Character.Start...");
         Injection onCharacterStartInjection = Injector.AddCallToMethodInMethod(installPath, "Character", "Start", modLibraryPath, "InternalModBot.CalledFromInjections", "FromOnCharacterStart");
         onCharacterStartInjection.AddInstructionOverSafe(OpCodes.Ldarg_0);
@@ -178,6 +185,7 @@ class Program
 
         Console.WriteLine("Appying the melon patch (unbans melon)");
         Injector.MelonPatch(installPath); // unbans melon
+
     }
 }
 

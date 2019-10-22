@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 using InternalModBot;
 
 namespace ModLibrary
@@ -21,7 +19,7 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
-        private const int CONSOLE_CHARACTER_LIMIT = 1000;
+        const int CONSOLE_CHARACTER_LIMIT = 1000;
 
         /// <summary>
         /// Writes to the in-game console.
@@ -131,142 +129,42 @@ namespace ModLibrary
         /// <param name="obj"></param>
         public static void PrintAllChildren(Transform obj) // TODO : Rewrite this function
         {
-            outputText = "";
-            WriteToFile(obj.ToString());
-            RecursivePrintAllChildren("   ", obj);
+            _outputText = "";
+            writeToFile(obj.ToString());
+            recursivePrintAllChildren("   ", obj);
 
-            File.WriteAllText(Application.persistentDataPath + "/debug.txt", outputText);
+            File.WriteAllText(Application.persistentDataPath + "/debug.txt", _outputText);
             Process.Start("notepad.exe", Application.persistentDataPath + "/debug.txt");
         }
 
-        private static void RecursivePrintAllChildren(string pre, Transform obj)
+        static void recursivePrintAllChildren(string pre, Transform obj)
         {
             Component[] components = obj.gameObject.GetComponents(typeof(Component));
 
             if (components.Length != 0)
-            {
-                WriteToFile(pre + "Components: ");
-            }
+                writeToFile(pre + "Components: ");
 
             for (int i = 0; i < components.Length; i++)
             {
-                WriteToFile(pre + components[i].ToString());
+                writeToFile(pre + components[i].ToString());
             }
 
             if (obj.childCount != 0)
-            {
-                WriteToFile(pre + "Children: ");
-            }
+                writeToFile(pre + "Children: ");
 
             for (int i = 0; i < obj.childCount; i++)
             {
                 Transform child = obj.GetChild(i);
-                WriteToFile(pre + i + ": " + child.name);
-                RecursivePrintAllChildren(pre + "   ", child);
+                writeToFile(pre + i + ": " + child.name);
+                recursivePrintAllChildren(pre + "   ", child);
             }
         }
 
-        private static void WriteToFile(string msg)
+        static void writeToFile(string msg)
         {
-            outputText += msg + "\n";
+            _outputText += msg + "\n";
         }
 
-        private static string outputText;
-    }
-}
-
-namespace InternalModBot
-{
-    /// <summary>
-    /// Used by Mod-Bot as the low level level of the debug console system
-    /// </summary>
-    public class Logger : Singleton<Logger>
-    {
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F1))
-            {
-                Flip();
-            }
-            if (!Container.activeSelf)
-            {
-                return;
-            }
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                RunCommand(input.text);
-                input.text = "";
-            }
-        }
-
-        internal void Flip()
-        {
-            if (Container.activeSelf)
-            {
-                animator.Play("hideConsole");
-                return;
-            }
-            animator.Play("showConsole");
-        }
-
-        /// <summary>
-        /// Writes the specified text to the console
-        /// </summary>
-        /// <param name="whatToLog"></param>
-        public void Log(string whatToLog)
-        {
-            Text logText = LogText;
-            logText.text = logText.text + "\n" + whatToLog;
-
-            Console.WriteLine(whatToLog);
-        }
-
-        /// <summary>
-        /// Writes the specified text to the console, now in color!
-        /// </summary>
-        /// <param name="whatToLog"></param>
-        /// <param name="color"></param>
-        public void Log(string whatToLog, Color color)
-        {
-            string text = ColorUtility.ToHtmlStringRGB(color);
-            Text logText = LogText;
-            logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
-
-            Console.WriteLine(whatToLog);
-        }
-
-        /// <summary>
-        /// Gets called when the user types in a command into the input field and presses enter
-        /// </summary>
-        /// <param name="command"></param>
-        public void RunCommand(string command)
-        {
-            try
-            {
-                ConsoleInputManager.OnCommandRan(command);
-                ModsManager.Instance.PassOnMod.OnCommandRan(command);
-            }
-            catch (Exception ex)
-            {
-                Log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
-                Log(ex.StackTrace, Color.red);
-            }
-        }
-        /// <summary>
-        /// The animator containing the animations for opening and closeing the console
-        /// </summary>
-        public Animator animator;
-        /// <summary>
-        /// The complete text of the console
-        /// </summary>
-        public Text LogText;
-        /// <summary>
-        /// The GameObject thats holding the console
-        /// </summary>
-        public GameObject Container;
-        /// <summary>
-        /// the input field that commands are typed into
-        /// </summary>
-        public InputField input;
+        static string _outputText;
     }
 }

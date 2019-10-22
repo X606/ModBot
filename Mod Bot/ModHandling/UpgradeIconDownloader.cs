@@ -1,5 +1,4 @@
 ﻿using ModLibrary;
-using ModLibrary.ModTools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,23 +16,24 @@ namespace InternalModBot
     /// </summary>
     public class UpgradeIconDownloader : Singleton<UpgradeIconDownloader>
     {
-        private const string UpgradeIconsFolderName = "ModdedUpgradeIcons/";
-        private string UpgradeIconsFolderPath
+        const string UPGRADE_ICONS_FOLDER_NAME = "ModdedUpgradeIcons/";
+
+        const char UPGRADE_AND_LEVEL_FILE_NAME_SEPARATOR = '_';
+
+        string _upgradeIconsFolderPath
         {
             get
             {
-                return Path.Combine(Application.dataPath, UpgradeIconsFolderName);
+                return Path.Combine(Application.dataPath, UPGRADE_ICONS_FOLDER_NAME);
             }
         }
 
-        private const char UpgradeAndLevelFileNameSeparator = '_';
-
-        private void Start()
+        void Start()
         {
             // Create icons folder if it does not exist
-            if (!Directory.Exists(UpgradeIconsFolderPath))
+            if (!Directory.Exists(_upgradeIconsFolderPath))
             {
-                Directory.CreateDirectory(UpgradeIconsFolderPath);
+                Directory.CreateDirectory(_upgradeIconsFolderPath);
             }
         }
 
@@ -44,24 +44,24 @@ namespace InternalModBot
         /// <param name="url"></param>
         public void SetIconOnUpgrade(UpgradeDescription upgrade, string url)
         {
-            string fileName = GetFileNameForUpgrade(upgrade);
+            string fileName = getFileNameForUpgrade(upgrade);
 
-            if (File.Exists(UpgradeIconsFolderPath + fileName))
+            if (File.Exists(_upgradeIconsFolderPath + fileName))
             {
-                byte[] imageData = File.ReadAllBytes(UpgradeIconsFolderPath + fileName);
+                byte[] imageData = File.ReadAllBytes(_upgradeIconsFolderPath + fileName);
 
                 Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
                 texture.LoadImage(imageData);
 
-                upgrade.Icon = GetSpriteFromTexture(texture);
+                upgrade.Icon = getSpriteFromTexture(texture);
             }
             else
             {
-                StartCoroutine(DownloadImageAndSetIconOnUpgrade(upgrade, url));
+                StartCoroutine(downloadImageAndSetIconOnUpgrade(upgrade, url));
             }
         }
 
-        private IEnumerator DownloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
+        IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
         {
             UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
 
@@ -76,27 +76,27 @@ namespace InternalModBot
 
             Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
 
-            upgrade.Icon = GetSpriteFromTexture(texture);
+            upgrade.Icon = getSpriteFromTexture(texture);
 
-            string fileName = GetFileNameForUpgrade(upgrade);
+            string fileName = getFileNameForUpgrade(upgrade);
             byte[] fileData = texture.EncodeToPNG();
 
-            FileStream fileStream = File.Create(UpgradeIconsFolderPath + fileName);
+            FileStream fileStream = File.Create(_upgradeIconsFolderPath + fileName);
             fileStream.Write(fileData, 0, fileData.Length);
             fileStream.Close();
         }
 
-        private Sprite GetSpriteFromTexture(Texture2D texture)
+        Sprite getSpriteFromTexture(Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), Vector2.one * 0.5f);
         }
 
-        private string GetFileNameForUpgrade(UpgradeDescription upgrade)
+        string getFileNameForUpgrade(UpgradeDescription upgrade)
         {
             string upgradeTypeName = upgrade.UpgradeType.ToString();
             string upgradeLevel = upgrade.Level.ToString();
 
-            return upgradeTypeName + UpgradeAndLevelFileNameSeparator + upgradeLevel + ".png";
+            return upgradeTypeName + UPGRADE_AND_LEVEL_FILE_NAME_SEPARATOR + upgradeLevel + ".png";
         }
     }
 }

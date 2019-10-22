@@ -19,9 +19,7 @@ namespace InternalModBot
         public static void FromRefreshUpgradesStart(FirstPersonMover owner)
         {
             if (owner == null || owner.gameObject == null || !owner.IsAlive() || owner.GetCharacterModel() == null)
-            {
                 return;
-            }
 
             UpgradeCollection upgrade = owner.GetComponent<UpgradeCollection>();
             ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(owner, upgrade);
@@ -34,9 +32,7 @@ namespace InternalModBot
         public static void FromRefreshUpgradesEnd(FirstPersonMover owner)
         {
             if (owner.gameObject == null)
-            {
                 return;
-            }
 
             ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(owner, owner.GetComponent<UpgradeCollection>());
         }
@@ -88,13 +84,10 @@ namespace InternalModBot
         public static bool FromIsUpgradeCurrentlyVisible(UpgradeDescription upgrade)
         {
             if (!UpgradePagesManager.IsUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
                 return false;
-            }
+
             if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
-            {
                 return true;
-            }
 
             return (GameModeManager.ShowsStoryBlockedUpgrades() || (!Singleton<UpgradeManager>.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsEndlessCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(Singleton<CharacterTracker>.Instance.GetPlayer());
         }
@@ -106,9 +99,7 @@ namespace InternalModBot
         public static void FromFixedUpdate(Projectile projectile)
         {
             if (!projectile.IsFlying())
-            {
                 return;
-            }
 
             ModsManager.Instance.PassOnMod.OnProjectileUpdate(projectile);
         }
@@ -138,17 +129,13 @@ namespace InternalModBot
         public static void FromOnEnvironmentCollided(Projectile arrow)
         {
             if (arrow.PassThroughEnvironment)
-            {
                 return;
-            }
+
             if (!arrow.IsFlying())
-            {
                 return;
-            }
+
             if (arrow.MainCollider != null)
-            {
                 arrow.MainCollider.enabled = false;
-            }
 
             ModsManager.Instance.PassOnMod.OnProjectileDestroyed(arrow);
         }
@@ -177,9 +164,7 @@ namespace InternalModBot
         {
             List<MechBodyPart> powerCrystals = character.GetBodyParts(MechBodyPartType.PowerCrystal);
             if (powerCrystals.Count == 0)
-            {
                 return character.transform.position;
-            }
 
             return powerCrystals[0].transform.position;
         }
@@ -191,17 +176,147 @@ namespace InternalModBot
         /// <returns></returns>
         public static UnityEngine.Object FromResourcesLoad(string path)
         {
-            UnityEngine.Object obj = LevelEditorObjectAdder.GetObjectData(path);
-            if (obj != null)
-            {
-                return obj;
-            }
+            UnityEngine.Object levelEditorObject = LevelEditorObjectAdder.GetObjectData(path);
+
+            if (levelEditorObject != null)
+                return levelEditorObject;
 
             if(ModsManager.Instance == null)
                 return null;
+
             return ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
         }
 
+        /// <summary>
+        /// Called from <see cref="FirstPersonMover.ExecuteCommand(Bolt.Command, bool)"/> and sets the <see cref="FPMoveCommand.Input"/> properties to 0 or <see langword="false"/> is they have been restricted
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public static FPMoveCommand FromExecuteCommand(FirstPersonMover owner, Bolt.Command command)
+        {
+            FPMoveCommand moveCommand = (FPMoveCommand)command;
+
+            if (!CharacterInputRestrictor.HasAnyRestrictions(owner))
+                return moveCommand;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.Jump))
+                moveCommand.Input.Jump = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovement))
+            {
+                moveCommand.Input.VerticalCursorMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovementUp) && moveCommand.Input.VerticalCursorMovement > 0f)
+                    moveCommand.Input.VerticalCursorMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalCursorMovementDown) && moveCommand.Input.VerticalCursorMovement < 0f)
+                    moveCommand.Input.VerticalCursorMovement = 0f;
+            }
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovement))
+            {
+                moveCommand.Input.HorizontalCursorMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovementLeft) && moveCommand.Input.HorizontalCursorMovement < 0f)
+                    moveCommand.Input.HorizontalCursorMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalCursorMovementRight) && moveCommand.Input.HorizontalCursorMovement > 0f)
+                    moveCommand.Input.HorizontalCursorMovement = 0f;
+            }
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.AttackKeyDown))
+                moveCommand.Input.AttackKeyDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.AttackKeyUp))
+                moveCommand.Input.AttackKeyUp = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.AttackKeyHeld))
+                moveCommand.Input.AttackKeyHeld = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SecondAttackKeyDown))
+                moveCommand.Input.SecondAttackDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SecondAttackKeyUp))
+                moveCommand.Input.SecondAttackUp = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SecondAttackKeyHeld))
+                moveCommand.Input.SecondAttackHeld = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.JetpackKeyHeld))
+                moveCommand.Input.JetpackHeld = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.ScrollWheelDelta))
+                moveCommand.Input.ScrollWheelDelta = 0f;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.UseAbilityKeyDown))
+                moveCommand.Input.UseAbilityDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.UseAbilityKeyHeld))
+                moveCommand.Input.UseAbilityHeld = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.NextAbilityKeyDown))
+                moveCommand.Input.NextAbilityDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.UseKeyDown))
+                moveCommand.Input.UseKeyDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.TransferConsciousnessKeyDown))
+                moveCommand.Input.TransferConsciousnessDown = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SwitchToWeapon1KeyDown))
+                moveCommand.Input.Weapon1 = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SwitchToWeapon2KeyDown))
+                moveCommand.Input.Weapon2 = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SwitchToWeapon3KeyDown))
+                moveCommand.Input.Weapon3 = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SwitchToWeapon4KeyDown))
+                moveCommand.Input.Weapon4 = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.SwitchToWeapon5KeyDown))
+                moveCommand.Input.Weapon5 = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.NextWeaponKeyDown))
+                moveCommand.Input.NextWeapon = false;
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovement))
+            {
+                moveCommand.Input.VerticalMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovementForward) && moveCommand.Input.VerticalMovement > 0f)
+                    moveCommand.Input.VerticalMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.VerticalMovementBackwards) && moveCommand.Input.VerticalMovement < 0f)
+                    moveCommand.Input.VerticalMovement = 0f;
+            }
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovement))
+            {
+                moveCommand.Input.HorizontalMovement = 0f;
+            }
+            else
+            {
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovementLeft) && moveCommand.Input.HorizontalMovement < 0f)
+                    moveCommand.Input.HorizontalMovement = 0f;
+
+                if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.HorizontalMovementRight) && moveCommand.Input.HorizontalMovement > 0f)
+                    moveCommand.Input.HorizontalMovement = 0f;
+            }
+
+            if (CharacterInputRestrictor.HasRestrictions(owner, InputRestrictions.EmoteKeyHeld))
+                moveCommand.Input.IsEmoteKeyHeld = false;
+
+            return moveCommand;
+        }
     }
 
 }

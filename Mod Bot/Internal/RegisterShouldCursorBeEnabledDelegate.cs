@@ -11,34 +11,35 @@ namespace InternalModBot
     /// </summary>
     public static class RegisterShouldCursorBeEnabledDelegate
     {
-        static List<Func<bool>> registerdHandlers = new List<Func<bool>>();
+        static List<Func<bool>> _registeredHandlers = new List<Func<bool>>();
 
         /// <summary>
-        /// Registers a new handler, if this handeler returns true the cursor will be unlocked
+        /// Registers a new handler, if this handler returns <see langword="true"/> the cursor will be unlocked
         /// </summary>
         /// <param name="handler"></param>
         public static void Register(Func<bool> handler)
         {
-            registerdHandlers.Add(handler);
+            _registeredHandlers.Add(handler);
         }
+
         /// <summary>
         /// Removes a handler
         /// </summary>
         /// <param name="handler"></param>
         public static void UnRegister(Func<bool> handler)
         {
-            registerdHandlers.Remove(handler);
+            _registeredHandlers.Remove(handler);
         }
 
         /// <summary>
-        /// Returns true if any of the registerd handelers return true
+        /// Returns <see langword="true"/> if any of the registerd handlers return <see langword="true"/>
         /// </summary>
         /// <returns></returns>
         public static bool ShouldMouseBeEnabled()
         {
-            for(int i = 0; i < registerdHandlers.Count; i++)
+            for(int i = 0; i < _registeredHandlers.Count; i++)
             {
-                if(registerdHandlers[i]())
+                if(_registeredHandlers[i]())
                     return true;
             }
 

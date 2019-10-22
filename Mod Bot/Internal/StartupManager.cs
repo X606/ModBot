@@ -18,10 +18,8 @@ namespace InternalModBot
         {
             ErrorChanger.ChangeError(); // Change error message so that crashes are sent to us and/or the developers of any mods installed instead of the actual game developers
 
-            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something went wrong during installation
-            {
+            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
                 throw new DirectoryNotFoundException("Mods folder not found!");
-            }
             
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
@@ -37,7 +35,7 @@ namespace InternalModBot
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
-                InitilizeUI(); // Initialize all custom UI
+                initilizeUI(); // Initialize all custom UI
 
                 ModsManager modsManager = gameFlowManager.AddComponent<ModsManager>();
                 modsManager.Initialize(); // Loads all mods in the mods folder
@@ -45,7 +43,7 @@ namespace InternalModBot
             catch (Exception e)
             {
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
-                Logger.Instance.animator.Play("hideConsole");
+                Logger.Instance.Animator.Play("hideConsole");
             }
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
@@ -54,23 +52,23 @@ namespace InternalModBot
             IgnoreCrashesManager.Start();
         }
 
-        private static void InitilizeUI()
+        static void initilizeUI()
         {
             GameObject spawnedUI = UnityEngine.Object.Instantiate(AssetLoader.GetObjectFromFile("twitchmode", "Canvas", "Clone Drone in the Danger Zone_Data/"));
             ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
 
             Logger logger = spawnedUI.AddComponent<Logger>();
-            logger.animator = spawedUIModdedObject.GetObject<Animator>(0);
+            logger.Animator = spawedUIModdedObject.GetObject<Animator>(0);
             logger.LogText = spawedUIModdedObject.GetObject<Text>(1);
             logger.Container = spawedUIModdedObject.GetObject<GameObject>(2);
-            logger.input = spawedUIModdedObject.GetObject<InputField>(3);
+            logger.InputField = spawedUIModdedObject.GetObject<InputField>(3);
 
             FPSCount fps = spawnedUI.AddComponent<FPSCount>();
-            fps.counter = spawedUIModdedObject.GetObject<Text>(4);
+            fps.Counter = spawedUIModdedObject.GetObject<Text>(4);
 
             ModSuggestingManager modSuggestingManager = spawnedUI.AddComponent<ModSuggestingManager>();
             ModdedObject modSuggestingManagerInfo = spawedUIModdedObject.GetObject<ModdedObject>(5);
-            modSuggestingManager.displayText = modSuggestingManagerInfo.GetObject<Text>(0);
+            modSuggestingManager.DisplayText = modSuggestingManagerInfo.GetObject<Text>(0);
             modSuggestingManager.ModSuggestionAnimator = modSuggestingManagerInfo.GetObject<Animator>(1);
         }
     }

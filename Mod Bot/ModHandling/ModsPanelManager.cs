@@ -13,7 +13,7 @@ namespace InternalModBot
     /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
-        private void Start()
+        void Start()
         {
             Vector3 pauseScreenButtonOffest = new Vector3(0f, 1.2f, 0f); 
 
@@ -41,18 +41,18 @@ namespace InternalModBot
             pauseScreenModsButton.GetComponentInChildren<Text>().text = "MODS";
 
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
-            ModsWindow = Instantiate(modsWindowPrefab);
+            _modsWindow = Instantiate(modsWindowPrefab);
             
-            ModsWindowModdedObject = ModsWindow.GetComponent<ModdedObject>();
-            ModsWindow.SetActive(false);
+            _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
+            _modsWindow.SetActive(false);
 
             mainMenuModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
-            mainMenuModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
+            mainMenuModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
             pauseScreenModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
-            pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(OpenModsMenu); // Add open menu callback
+            pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
 
-            ModsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(CloseModsMenu); // Add close menu button callback
-            ModsWindowModdedObject.GetObject<Button>(2).onClick.AddListener(OnGetMoreModsClicked); // Add more mods clicked callback
+            _modsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(closeModsMenu); // Add close menu button callback
+            _modsWindowModdedObject.GetObject<Button>(2).onClick.AddListener(onGetMoreModsClicked); // Add more mods clicked callback
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
@@ -78,22 +78,21 @@ namespace InternalModBot
             ReloadModItems();
         }
 
-        private void OpenModsMenu()
+        void openModsMenu()
         {
-            ModsWindow.SetActive(true);
+            _modsWindow.SetActive(true);
             ReloadModItems();
         }
 
-        private void CloseModsMenu()
+        void closeModsMenu()
         {
-            ModsWindow.SetActive(false);
+            _modsWindow.SetActive(false);
         }
 
-        private void OnGetMoreModsClicked()
+        void onGetMoreModsClicked()
         {
             GameObject modDownloadsPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Mod downloads", "Clone Drone in the Danger Zone_Data/");
             
-
             ModdedObject spawnedModdedObject = Instantiate(modDownloadsPrefab).GetComponent<ModdedObject>();
             GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
             spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
@@ -101,11 +100,10 @@ namespace InternalModBot
                 Destroy(spawnedModdedObject.gameObject);
             });
 
-            spawnedModdedObject.StartCoroutine(DownloadModData(content));
-
+            spawnedModdedObject.StartCoroutine(downloadModData(content));
         }
 
-        IEnumerator DownloadModData(GameObject content)
+        IEnumerator downloadModData(GameObject content)
         {
             GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
             
@@ -132,16 +130,17 @@ namespace InternalModBot
 
         }
 
-        private void OpenModsOptionsWindowForMod(Mod mod)
+        void openModsOptionsWindowForMod(Mod mod)
         {
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModsWindow, mod);
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod);
             mod.CreateSettingsWindow(builder);
         }
 
-        private void ToggleIsModDisabled(int ID)
+        void toggleIsModDisabled(int ID)
         {
             Mod mod = ModsManager.Instance.GetAllMods()[ID];
             bool? isNotActive = ModsManager.Instance.IsModDeactivated(mod);
+
             if (!isNotActive.HasValue)
                 return;
             
@@ -155,16 +154,13 @@ namespace InternalModBot
             }
             
             ReloadModItems();
-
         }
 
-        private void AddModToList(Mod mod, GameObject parent)
+        void addModToList(Mod mod, GameObject parent)
         {
             bool? isModNotActive = ModsManager.Instance.IsModDeactivated(mod);
             if (!isModNotActive.HasValue)
-            {
                 return;
-            }
 
             GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
             GameObject modItem = Instantiate(modItemPrefab, parent.transform);
@@ -172,12 +168,10 @@ namespace InternalModBot
             string modName = mod.GetModName();
             string url = mod.GetModImageURL();
 
-            ModItems.Add(modItem);
+            _modItems.Add(modItem);
 
             if (!string.IsNullOrEmpty(url))
-            {
-                SetImageFromURL(url, mod);
-            }
+                setImageFromURL(url, mod);
 
             ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
 
@@ -194,56 +188,50 @@ namespace InternalModBot
             }
 
             Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
-            BroadcastButton.onClick.AddListener( delegate { OnBroadcastButtonClicked(mod); } );
+            BroadcastButton.onClick.AddListener( delegate { onBroadcastButtonClicked(mod); } );
             BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
 
             Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
-            DownloadButton.onClick.AddListener(delegate { OnDownloadButtonClicked(mod); });
+            DownloadButton.onClick.AddListener(delegate { onDownloadButtonClicked(mod); });
             bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
             DownloadButton.gameObject.SetActive(hasNoFile);
 
             int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
-            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { ToggleIsModDisabled(modId); }); // Add disable button callback
-            modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { OpenModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
+            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(modId); }); // Add disable button callback
+            modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
 
-        private void OnBroadcastButtonClicked(Mod mod)
+        void onBroadcastButtonClicked(Mod mod)
         {
             Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
-                "No",
-                null,
-                "Yes",
-                delegate
+                "No", null,
+                "Yes", delegate
                 {
                     ModSharingManager.Instance.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
-                }
-            );
+                });
         }
-        private void OnDownloadButtonClicked(Mod mod)
+
+        void onDownloadButtonClicked(Mod mod)
         {
             Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will place " + mod.GetModName() + " in your mod folder as a .dll file, are you sure you want to do this?", 
-                "No", 
-                null, 
-                "Yes", 
-                delegate 
+                "No", null, 
+                "Yes", delegate 
                 {
                     ModsManager.Instance.WriteDllFileToModFolder(mod);
                     ReloadModItems();
-                }
-            );
-            
+                });
         }
 
-        private void SetImageFromURL(string url, Mod owner)
+        void setImageFromURL(string url, Mod owner)
         {
             if (string.IsNullOrEmpty(url))
                 return;
 
-            StartCoroutine(SetModImageFromURLRoutine(owner, url));
+            StartCoroutine(setModImageFromURLRoutine(owner, url));
         }
 
-        private IEnumerator SetModImageFromURLRoutine(Mod mod, string url)
+        IEnumerator setModImageFromURLRoutine(Mod mod, string url)
         {
             UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
 
@@ -255,7 +243,7 @@ namespace InternalModBot
             }
             else
             {
-                ModdedObject modWindowItem = FindModItemWithName(mod.GetUniqueID());
+                ModdedObject modWindowItem = findModItemWithName(mod.GetUniqueID());
                 if (modWindowItem != null)
                 {
                     DownloadHandlerTexture textureDownloader = webRequest.downloadHandler as DownloadHandlerTexture;
@@ -268,21 +256,20 @@ namespace InternalModBot
             }
         }
 
-        private void Update()
+        void Update()
         {
-            if (ModsWindow.activeInHierarchy)
+            if (_modsWindow.activeInHierarchy)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    CloseModsMenu();
+                    closeModsMenu();
                 }
             }
-
         }
         
-        private ModdedObject FindModItemWithName(string id)
+        ModdedObject findModItemWithName(string id)
         {
-            foreach(GameObject moddedObject in ModItems)
+            foreach(GameObject moddedObject in _modItems)
             {
                 if (moddedObject.GetComponent<ModdedObject>().GetObject<Text>(5).text == "Mod ID: " + id)
                 {
@@ -297,10 +284,10 @@ namespace InternalModBot
         /// </summary>
         public void ReloadModItems()
         {
-            ModItems.Clear();
+            _modItems.Clear();
 
             // Remove all mods from list
-            foreach (Transform child in ((GameObject)ModsWindowModdedObject.objects[0]).transform)
+            foreach (Transform child in ((GameObject)_modsWindowModdedObject.objects[0]).transform)
             {
                 Destroy(child.gameObject);
             }
@@ -308,23 +295,22 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllMods();
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
-            RectTransform size = ModsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>();
+            RectTransform size = _modsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>();
             size.sizeDelta = new Vector2(size.sizeDelta.x, MOD_ITEM_HEIGHT * mods.Count);
 
             // Add all mods back to list
             for (int i = 0; i < mods.Count; i++)
             {
-                AddModToList(mods[i], ModsWindowModdedObject.GetObject<GameObject>(0));
+                addModToList(mods[i], _modsWindowModdedObject.GetObject<GameObject>(0));
             }
-
         }
 
-        private List<GameObject> ModItems = new List<GameObject>();
+        List<GameObject> _modItems = new List<GameObject>();
 
-        private GameObject ModsWindow;
+        GameObject _modsWindow;
 
-        private ModdedObject ModsWindowModdedObject;
+        ModdedObject _modsWindowModdedObject;
 
-        private const int MOD_ITEM_HEIGHT = 100;
+        const int MOD_ITEM_HEIGHT = 100;
     }
 }

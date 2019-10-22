@@ -14,6 +14,7 @@ namespace InternalModBot
     /// </summary>
     public class DebugLineDrawingManager : Singleton<DebugLineDrawingManager>
     {
+        List<LineInfo> _linesToDraw = new List<LineInfo>();
 
         /// <summary>
         /// Adds a line to the lines to draw this frame
@@ -21,31 +22,11 @@ namespace InternalModBot
         /// <param name="info"></param>
         public void AddLine(LineInfo info)
         {
-            LinesToDraw.Add(info);
+            _linesToDraw.Add(info);
         }
-        private List<LineInfo> LinesToDraw = new List<LineInfo>();
 
-        //private Camera[] cameras = new Camera[0];
-        
-
-        private void Update()
+        void Update()
         {
-            /*if (Camera.allCameras.Length != cameras.Length)
-            {
-                cameras = Camera.allCameras;
-                for (int i = 0; i < cameras.Length; i++)
-                {
-                    if (cameras[i].targetTexture != null)
-                        continue;
-
-                    if (cameras[i].GetComponent<DebugLineDrawer>() == null)
-                    {
-                        cameras[i].gameObject.AddComponent<DebugLineDrawer>();
-                    }
-
-                }
-            }*/
-
             Camera main = Camera.main;
             if (main == null)
             {
@@ -63,53 +44,51 @@ namespace InternalModBot
                 main.gameObject.AddComponent<DebugLineDrawer>();
             }
             
-            StartCoroutine(RunAtEndOfFrame());
+            StartCoroutine(runAtEndOfFrame());
         }
 
-        IEnumerator RunAtEndOfFrame()
+        IEnumerator runAtEndOfFrame()
         {
             yield return new WaitForEndOfFrame();
-            //LinesToDraw.Clear();
-            for (int i = 0; i < LinesToDraw.Count; i++)
+
+            for (int i = 0; i < _linesToDraw.Count; i++)
             {
-                if (LinesToDraw[i].EndTime <= Time.unscaledTime)
+                if (_linesToDraw[i].EndTime <= Time.unscaledTime)
                 {
-                    LinesToDraw.RemoveAt(i);
+                    _linesToDraw.RemoveAt(i);
                     i--;
                 }
             }
 
         }
 
-        private class DebugLineDrawer : MonoBehaviour
+        class DebugLineDrawer : MonoBehaviour
         {
-            private Material LineMaterial;
-            private void Awake()
+            Material _lineMaterial;
+
+            void Awake()
             {
-                LineMaterial = AssetLoader.GetObjectFromFile<Material>("modswindow", "Line", "Clone Drone in the Danger Zone_Data/");
+                _lineMaterial = AssetLoader.GetObjectFromFile<Material>("modswindow", "Line", "Clone Drone in the Danger Zone_Data/");
             }
 
-            private void OnPostRender()
+            void OnPostRender()
             {
-                //GL.PushMatrix();
-                
-                //GL.MultMatrix(transform.localToWorldMatrix);
                 GL.Begin(GL.LINES);
 
-                for(int i = 0; i < DebugLineDrawingManager.Instance.LinesToDraw.Count; i++)
+                for(int i = 0; i < DebugLineDrawingManager.Instance._linesToDraw.Count; i++)
                 {
-                    LineMaterial.SetPass(0);
+                    _lineMaterial.SetPass(0);
 
-                    LineInfo info = DebugLineDrawingManager.Instance.LinesToDraw[i];
+                    LineInfo info = DebugLineDrawingManager.Instance._linesToDraw[i];
                     GL.Color(info.Color);
                     GL.Vertex(info.Point1);
                     GL.Vertex(info.Point2);
                 }
 
                 GL.End();
-                //GL.PopMatrix();
             }
         }
+
         /// <summary>
         /// Describes a line in 3D space
         /// </summary>

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using System;
 using UnityEngine;
 
 namespace ModLibrary
@@ -23,9 +23,7 @@ namespace ModLibrary
         public static IEnumerable<ComponentType> GetComponents<ComponentType>(this IEnumerable<Component> collection) where ComponentType : Component
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
 
             ComponentType[] components = new ComponentType[collection.Count()];
 
@@ -34,11 +32,47 @@ namespace ModLibrary
             {
                 ComponentType component = item.GetComponent<ComponentType>();
                 components[currentIndex] = component;
-
                 currentIndex++;
             }
 
             return components;
+        }
+
+        /// <summary>
+        /// Destroys all the objects in a collection of <see cref="UnityEngine.Object"/>
+        /// </summary>
+        /// <typeparam name="ObjectType">The type of object to destroy, must derive from <see cref="UnityEngine.Object"/></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="waitBeforeDestroy">An optional wait in seconds before destroying the objects</param>
+        public static void DestroyAll<ObjectType>(this IEnumerable<ObjectType> objects, float waitBeforeDestroy = 0f) where ObjectType : UnityEngine.Object
+        {
+            if (objects == null)
+                throw new ArgumentNullException(nameof(objects));
+
+            if (waitBeforeDestroy < 0f)
+                throw new ArgumentOutOfRangeException("Wait before destroy argument must be greater than of equal to 0!");
+
+            foreach (ObjectType obj in objects)
+            {
+                UnityEngine.Object.Destroy(obj, waitBeforeDestroy);
+            }
+        }
+
+        /// <summary>
+        /// Immediately destroys all the objects in a collection of <see cref="UnityEngine.Object"/>
+        /// </summary>
+        /// <typeparam name="ObjectType">The type of object to destroy, must derive from <see cref="UnityEngine.Object"/></typeparam>
+        /// <param name="objects"></param>
+        /// <param name="allowDestroyingAssets">An optional argument to determine if destroying assets is allowed</param>
+        public static void DestroyAllImmediate<ObjectType>(this IEnumerable<ObjectType> objects, bool allowDestroyingAssets = false) where ObjectType : UnityEngine.Object
+        {
+            if (objects == null)
+                throw new ArgumentNullException(nameof(objects));
+
+            foreach (ObjectType obj in objects)
+            {
+                UnityEngine.Object.DestroyImmediate(obj, allowDestroyingAssets);
+            }
         }
 
         /// <summary>
@@ -56,20 +90,15 @@ namespace ModLibrary
         public static IEnumerable<FieldType> GetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(fieldName))
-            {
                 throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
-            }
 
             FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
 
             if (field == null)
-            {
                 throw new MissingFieldException("Field \"" + typeof(CollectionType).Name + "." + fieldName + "\" could not be found!");
-            }
 
             FieldType[] fields = new FieldType[collection.Count()];
 
@@ -98,20 +127,15 @@ namespace ModLibrary
         public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, FieldType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(fieldName))
-            {
                 throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
-            }
 
             FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
 
             if (field == null)
-            {
                 throw new MissingFieldException("Field \"" + typeof(CollectionType).Name + "." + fieldName + "\" could not be found!");
-            }
 
             foreach (CollectionType item in collection)
             {
@@ -134,24 +158,18 @@ namespace ModLibrary
         public static void SetFields<CollectionType, FieldType>(this IEnumerable<CollectionType> collection, string fieldName, Func<CollectionType, FieldType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(fieldName))
-            {
                 throw new ArgumentException("Given field name was null or empty", nameof(fieldName));
-            }
+
             if (valueFunction == null)
-            {
                 throw new ArgumentNullException(nameof(valueFunction));
-            }
 
             FieldInfo field = typeof(CollectionType).GetField(fieldName, bindingFlags);
 
             if (field == null)
-            {
                 throw new MissingFieldException("Field \"" + typeof(CollectionType).Name + "." + fieldName + "\" could not be found!");
-            }
 
             foreach (CollectionType item in collection)
             {
@@ -175,20 +193,15 @@ namespace ModLibrary
         public static IEnumerable<PropertyType> GetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(propertyName))
-            {
                 throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
-            }
 
             PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
 
             if (property == null)
-            {
                 throw new MissingMemberException("Property \"" + typeof(CollectionType).Name + "." + propertyName + "\" could not be found!");
-            }
 
             PropertyType[] properties = new PropertyType[collection.Count()];
 
@@ -217,20 +230,15 @@ namespace ModLibrary
         public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, PropertyType value, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(propertyName))
-            {
                 throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
-            }
 
             PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
 
             if (property == null)
-            {
                 throw new MissingMemberException("Property \"" + typeof(CollectionType).Name + "." + propertyName + "\" could not be found!");
-            }
 
             foreach (CollectionType item in collection)
             {
@@ -253,24 +261,18 @@ namespace ModLibrary
         public static void SetPropertyValues<CollectionType, PropertyType>(this IEnumerable<CollectionType> collection, string propertyName, Func<CollectionType, PropertyType> valueFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(propertyName))
-            {
                 throw new ArgumentException("Given property name was null or empty", nameof(propertyName));
-            }
+
             if (valueFunction == null)
-            {
                 throw new ArgumentNullException(nameof(valueFunction));
-            }
 
             PropertyInfo property = typeof(CollectionType).GetProperty(propertyName, bindingFlags, null, typeof(PropertyType), new Type[0], null);
 
             if (property == null)
-            {
                 throw new MissingMemberException("Property \"" + typeof(CollectionType).Name + "." + propertyName + "\" could not be found!");
-            }
 
             foreach (CollectionType item in collection)
             {
@@ -292,13 +294,10 @@ namespace ModLibrary
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(methodName))
-            {
                 throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
 
             CallMethods(collection, methodName, arguments: null, bindingFlags: bindingFlags);
         }
@@ -317,24 +316,14 @@ namespace ModLibrary
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
-            if (string.IsNullOrEmpty(methodName))
-            {
-                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
 
-            Type[] argumentTypes;
+            if (string.IsNullOrEmpty(methodName))
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+
+            Type[] argumentTypes = new Type[0];
             if (arguments != null)
-            {
-                argumentTypes = new Type[arguments.Length];
                 argumentTypes = Type.GetTypeArray(arguments);
-            }
-            else
-            {
-                argumentTypes = new Type[0];
-            }
 
             MethodInfo methodInfo = typeof(CollectionType).GetMethod(methodName, bindingFlags, null, argumentTypes, null);
 
@@ -365,17 +354,13 @@ namespace ModLibrary
         public static void CallMethods<CollectionType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(methodName))
-            {
                 throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
+
             if (argumentFunction == null)
-            {
                 throw new ArgumentNullException(nameof(argumentFunction));
-            }
 
             foreach (CollectionType item in collection)
             {
@@ -383,7 +368,7 @@ namespace ModLibrary
                 Type[] argumentTypes = Type.GetTypeArray(arguments);
 
                 MethodInfo methodInfo = typeof(CollectionType).GetMethod(methodName, bindingFlags, null, argumentTypes, null);
-                
+
                 if (methodInfo == null)
                 {
                     string typeNames = string.Join(", ", argumentTypes.GetPropertyValues<Type, string>("Name"));
@@ -410,13 +395,10 @@ namespace ModLibrary
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(methodName))
-            {
                 throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
 
             return CallMethods<CollectionType, ReturnType>(collection, methodName, arguments: null, bindingFlags: bindingFlags);
         }
@@ -437,24 +419,14 @@ namespace ModLibrary
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, object[] arguments, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
-            if (string.IsNullOrEmpty(methodName))
-            {
-                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
 
-            Type[] argumentTypes;
+            if (string.IsNullOrEmpty(methodName))
+                throw new ArgumentException("Given method name was null or empty", nameof(methodName));
+
+            Type[] argumentTypes = new Type[0];
             if (arguments != null)
-            {
-                argumentTypes = new Type[arguments.Length];
                 argumentTypes = Type.GetTypeArray(arguments);
-            }
-            else
-            {
-                argumentTypes = new Type[0];
-            }
 
             MethodInfo methodInfo = typeof(CollectionType).GetMethod(methodName, bindingFlags, null, argumentTypes, null);
 
@@ -495,17 +467,13 @@ namespace ModLibrary
         public static IEnumerable<ReturnType> CallMethods<CollectionType, ReturnType>(this IEnumerable<CollectionType> collection, string methodName, Func<CollectionType, object[]> argumentFunction, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
+
             if (string.IsNullOrEmpty(methodName))
-            {
                 throw new ArgumentException("Given method name was null or empty", nameof(methodName));
-            }
+
             if (argumentFunction == null)
-            {
                 throw new ArgumentNullException(nameof(argumentFunction));
-            }
 
             ReturnType[] returnValues = new ReturnType[collection.Count()];
 
@@ -543,16 +511,12 @@ namespace ModLibrary
         public static CollectionType GetRandomOrDefault<CollectionType>(this IEnumerable<CollectionType> collection)
         {
             if (collection == null)
-            {
                 throw new ArgumentNullException(nameof(collection));
-            }
 
             CollectionType[] collectionArray = collection.ToArray();
 
             if (collectionArray.Length == 0)
-            {
                 return default(CollectionType);
-            }
 
             return collectionArray[UnityEngine.Random.Range(0, collectionArray.Length)];
         }
@@ -578,5 +542,6 @@ namespace ModLibrary
 
             return randomizedList;
         }
+
     }
 }

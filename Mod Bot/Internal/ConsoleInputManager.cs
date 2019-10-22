@@ -44,9 +44,7 @@ namespace InternalModBot
             }
 
             if (subCommands[0] == "crash")
-            {
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
-            }
         }
 
         /// <summary>
@@ -57,13 +55,13 @@ namespace InternalModBot
             throw new Exception("-Crashed from console-");
         }
     }
-    
+
     /// <summary>
     /// Used by Mod-Bot to ignore crashes when the ignoreallcrashes command is active
     /// </summary>
     public static class IgnoreCrashesManager
     {
-        private static bool isIgnoringCrashes = false;
+        static bool _isIgnoringCrashes = false;
 
         /// <summary>
         /// Starts ignoring crashes if we are currently configuerd to
@@ -74,41 +72,39 @@ namespace InternalModBot
 
             if (isIgnoringCrashesInt == 0)
             {
-                isIgnoringCrashes = false;
+                _isIgnoringCrashes = false;
             }
             else if (isIgnoringCrashesInt == 1)
             {
-                isIgnoringCrashes = true;
+                _isIgnoringCrashes = true;
             }
             else
             {
                 debug.Log("IgnoreCrashes playerpref value out of range, resetting to default value");
                 PlayerPrefs.SetInt("IgnoreCrashes", 0);
-                isIgnoringCrashes = false;
+                _isIgnoringCrashes = false;
             }
 
-            if (isIgnoringCrashes)
-            {
-                DelegateScheduler.Instance.Schedule(Alert, 1f);
-            }
+            if (_isIgnoringCrashes)
+                DelegateScheduler.Instance.Schedule(alert, 1f);
         }
-        
-        private static void Alert()
+
+        static void alert()
         {
             debug.Log("Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing \"ignoreallcrashes 0\" into the console.", Color.red);
         }
-        
+
         /// <summary>
         /// Sets if we should ignore crashes
         /// </summary>
         /// <param name="state"></param>
         public static void SetIsIgnoringCrashes(bool state)
         {
-            isIgnoringCrashes = state;
-            int ignoreCrashesIntValue = isIgnoringCrashes ? 1 : 0;
+            _isIgnoringCrashes = state;
+            int ignoreCrashesIntValue = _isIgnoringCrashes ? 1 : 0;
 
             PlayerPrefs.SetInt("IgnoreCrashes", ignoreCrashesIntValue);
-            
+
             if (state)
             {
                 debug.Log("The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.", Color.red);
@@ -125,7 +121,7 @@ namespace InternalModBot
         /// <returns></returns>
         public static bool GetIsIgnoringCrashes()
         {
-            return isIgnoringCrashes;
+            return _isIgnoringCrashes;
         }
     }
 }

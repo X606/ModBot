@@ -21,7 +21,7 @@ namespace ModLibrary
         public static void SendToAllClients(string message)
         {
             GenericStringForModdingEvent genericStringForModdingEvent = GenericStringForModdingEvent.Create(GlobalTargets.AllClients);
-            SendEvent(genericStringForModdingEvent, message);
+            sendEvent(genericStringForModdingEvent, message);
         }
 
         /// <summary>
@@ -32,10 +32,10 @@ namespace ModLibrary
         public static void SendToAllClients(string message, GlobalTargets targets)
         {
             GenericStringForModdingEvent genericStringForModdingEvent = GenericStringForModdingEvent.Create(targets);
-            SendEvent(genericStringForModdingEvent, message);
+            sendEvent(genericStringForModdingEvent, message);
         }
 
-        private static void SendEvent(GenericStringForModdingEvent myEvent, string message)
+        static void sendEvent(GenericStringForModdingEvent myEvent, string message)
         {
             if (message.Length > 1024)
             {

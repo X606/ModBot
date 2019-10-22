@@ -16,63 +16,61 @@ namespace InternalModBot
     /// </summary>
     public class UpgradeAngleSetter : Singleton<UpgradeAngleSetter>
     {
-        private Dictionary<ModdedUpgradeRepresenter, float> changedIconAngles;
+        Dictionary<ModdedUpgradeRepresenter, float> _changedIconAngles;
+
+        GameObject _saveButtonObject = null;
 
         internal bool DebugModeEnabled;
 
-        private GameObject saveButtonObject = null;
-
-        private void Start()
+        void Start()
         {
             DebugModeEnabled = false;
 
-            changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
+            _changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
-            changedIconAngles.Clear();
+            _changedIconAngles.Clear();
 
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
 
-            if (saveButtonObject != null)
-            {
-                Destroy(saveButtonObject);
-            }
+            if (_saveButtonObject != null)
+                Destroy(_saveButtonObject);
         }
 
-        private void CreateSaveButton()
+        void createSaveButton()
         {
             GameObject buttonPrefab = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
 
-            saveButtonObject = Instantiate(buttonPrefab);
-            saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-            saveButtonObject.GetComponent<RectTransform>().localPosition -= new Vector3(0f, 40f, 0f);
+            _saveButtonObject = Instantiate(buttonPrefab);
+            _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
+            _saveButtonObject.GetComponent<RectTransform>().localPosition -= new Vector3(0f, 40f, 0f);
 
-            Button saveButton = saveButtonObject.GetComponentInChildren<Button>();
+            Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
 
             saveButton.onClick = new Button.ButtonClickedEvent();
-            saveButton.onClick.AddListener(SaveAngleChangesToFile);
+            saveButton.onClick.AddListener(saveAngleChangesToFile);
 
             saveButton.GetComponentInChildren<Text>().text = "Generate";
         }
 
-        private void SaveAngleChangesToFile()
+        void saveAngleChangesToFile()
         {
             string fileName = "UpgradeAnglesCode.txt";
             string fullFilePath = Path.Combine(Application.persistentDataPath, fileName);
 
             List<string> lines = new List<string>();
-            foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in changedIconAngles)
+            foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in _changedIconAngles)
             {
                 string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
 
-                string upgradeType = ConvertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
+                string upgradeType = convertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
                 string level = upgradeAngle.Key.Level.ToString();
                 string angle = upgradeAngle.Value.ToString();
-                string upgradeName = GetUpgradeName(upgradeAngle.Key);
+                string upgradeName = getUpgradeName(upgradeAngle.Key);
 
                 string formatted = string.Format(item, upgradeType, level, angle, upgradeName);
 
@@ -83,23 +81,19 @@ namespace InternalModBot
             Process.Start("notepad.exe", fullFilePath);
         }
 
-        private string GetUpgradeName(ModdedUpgradeRepresenter upgrade)
+        string getUpgradeName(ModdedUpgradeRepresenter upgrade)
         {
             if (upgrade == null)
-            {
                 return string.Empty;
-            }
 
             UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgrade.UpgradeType, upgrade.Level);
             if (upgradeDescription == null)
-            {
                 return string.Empty;
-            }
 
             return upgradeDescription.UpgradeName;
         }
 
-        private string ConvertUpgradeTypeToString(UpgradeType upgradeType)
+        string convertUpgradeTypeToString(UpgradeType upgradeType)
         {
             string prefix;
 
@@ -115,68 +109,62 @@ namespace InternalModBot
             return prefix + upgradeType.ToString();
         }
 
-        private float GetAngleForIconAtCurrentPage(UpgradeUIIcon icon)
+        float getAngleForIconAtCurrentPage(UpgradeUIIcon icon)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
             return UpgradePagesManager.GetAngleOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
         }
 
-        private void SetAngleOfUpgrade(UpgradeUIIcon icon, float newAngle)
+        void setAngleOfUpgrade(UpgradeUIIcon icon, float newAngle)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
             if (upgradeDescription == null)
-            {
                 return;
-            }
 
             upgradeDescription.SetAngleOffset(newAngle, UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage));
         }
 
-        private void UpdateIcon(UpgradeUIIcon icon, BaseEventData eventData)
+        void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)
         {
             float scrollDelta = eventData.currentInputModule.input.mouseScrollDelta.y;
-            float newAngle = GetAngleForIconAtCurrentPage(icon) + scrollDelta;
+            float newAngle = getAngleForIconAtCurrentPage(icon) + scrollDelta;
 
-            SetAngleOfUpgrade(icon, newAngle);
+            setAngleOfUpgrade(icon, newAngle);
 
             UpgradeDescription upgradeDescription = icon.GetDescription();
             ModdedUpgradeRepresenter upgrade = new ModdedUpgradeRepresenter(upgradeDescription.UpgradeType, upgradeDescription.Level);
 
-            changedIconAngles[upgrade] = newAngle;
+            _changedIconAngles[upgrade] = newAngle;
 
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
             RefreshIconEventTriggers();
         }
 
-        private bool CanCurrentlyEditIconAngles()
+        bool canCurrentlyEditIconAngles()
         {
             return DebugModeEnabled && UpgradePagesManager.CurrentPage != 0 && GameModeManager.IsSinglePlayer();
         }
 
         internal void UpdateSaveButtonState()
         {
-            if (saveButtonObject == null)
-            {
+            if (_saveButtonObject == null)
                 return;
-            }
 
-            saveButtonObject.SetActive(CanCurrentlyEditIconAngles());
+            _saveButtonObject.SetActive(canCurrentlyEditIconAngles());
         }
 
         internal void RefreshIconEventTriggers()
         {
-            if (!CanCurrentlyEditIconAngles())
+            if (!canCurrentlyEditIconAngles())
             {
-                if (saveButtonObject != null)
-                {
-                    saveButtonObject.SetActive(false);
-                }
+                if (_saveButtonObject != null)
+                    _saveButtonObject.SetActive(false);
 
                 return;
             }
-            else if (saveButtonObject == null)
+            else if (_saveButtonObject == null)
             {
-                CreateSaveButton();
+                createSaveButton();
             }
 
             List<UpgradeUIIcon> icons = Accessor.GetPrivateField<UpgradeUI, List<UpgradeUIIcon>>("_icons", GameUIRoot.Instance.UpgradeUI);
@@ -192,10 +180,11 @@ namespace InternalModBot
                     eventID = EventTriggerType.Scroll,
                     callback = new EventTrigger.TriggerEvent()
                 };
-                scrollCallback.callback.AddListener(delegate (BaseEventData eventData) { UpdateIcon(icon, eventData); });
+                scrollCallback.callback.AddListener(delegate (BaseEventData eventData) { updateIcon(icon, eventData); });
 
                 eventTrigger.triggers.Add(scrollCallback);
             }
         }
+
     }
 }

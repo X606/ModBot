@@ -13,22 +13,21 @@ namespace InternalModBot
     /// </summary>
     public class UpdateChecker : MonoBehaviour
     {
-        private void Start()
+        void Start()
         {
-            if (!GameModeManager.Is(GameMode.None)) // If the user is currently playing any game mode, dont even check for updates
-            {
+            if (!GameFlowManager.Instance.IsOnTitleScreen()) // If the user is currently playing any game mode, dont check for updates
                 return;
-            }
 
-            StartCoroutine(CheckVersion()); // Needs to be a Coroutine since the web requests are not asynchronous
+            StartCoroutine(checkVersion()); // Needs to be a Coroutine since the web requests are not asynchronous
         }
 
-        private IEnumerator CheckVersion()
+        IEnumerator checkVersion()
         {
             string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
             
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
+
             if(modBotVersionRequest.isNetworkError || modBotVersionRequest.isHttpError)
                 yield break;
 
@@ -44,12 +43,12 @@ namespace InternalModBot
 
             string message = "New Mod-Bot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
 
-            Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, "Dismiss", null, "Install", OnInstallButtonClicked);
+            Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, "Dismiss", null, "Install", onInstallButtonClicked);
             generic.SetColorOfFirstButton(Color.red);
             generic.SetColorOfSecondButton(Color.green);
         }
 
-        private void OnInstallButtonClicked()
+        void onInstallButtonClicked()
         {
             Application.OpenURL("http://clonedronemodbot.com/");
         }
