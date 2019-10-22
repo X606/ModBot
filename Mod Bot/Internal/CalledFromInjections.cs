@@ -159,14 +159,11 @@ namespace InternalModBot
         /// <returns></returns>
         public static bool FromRefreshCursorEnabled()
         {
-            if (RegisterShouldCursorBeEnabledDelegate.ShouldMouseBeEnabled())
+            if (RegisterShouldCursorBeEnabledDelegate.ShouldMouseBeEnabled() || ModsManager.Instance == null || ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
+            {
+                InputManager.Instance.SetCursorEnabled(true);
                 return true;
-
-            if (ModsManager.Instance == null)
-                return true;
-            
-            if (ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
-                return true;
+            }
 
             return false;
         }
