@@ -22,7 +22,13 @@ namespace InternalModBot
             TwitchChatClient.singleton.AddChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
         }
-
+        
+        void OnDestroy()
+        {
+            TwitchChatClient.singleton.RemoveChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
+        }
+        
         /// <summary>
         /// Shows the next in the suggested mods queue
         /// </summary>
