@@ -41,13 +41,14 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
-    <Compile Include="ExtensionMethods\FirstPersonMoverExtensions.cs" />
-    <Compile Include="ExtensionMethods\GlobalEventManagerExtensions.cs" />
-    <Compile Include="ExtensionMethods\Vector3Extensions.cs" />
+    <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
     <Compile Include="Generic2ButtonDialoge.cs" />
-    <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
-    <Compile Include="ExtensionMethods\ModSettingsExtensions.cs" />
-    <Compile Include="ExtensionMethods\SingleExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\ModSettingsExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\SingleExtensions.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
@@ -68,29 +69,28 @@
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="Internal\CloseModOptionsWindowOnEscapeKey.cs" />
     <Compile Include="Internal\LoadedMod.cs" />
-    <Compile Include="ModHandling\CharacterInputRestrictor.cs" />
-    <Compile Include="ModHandling\InputRestrictions.cs" />
+    <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
+    <Compile Include="ModUtilities\InputRestrictions.cs" />
     <Compile Include="ModHandling\Mod.cs" />
-    <Compile Include="ModHandling\ModDownloadInfoItem.cs" />
-    <Compile Include="ModHandling\ModOptionWindowBuilder.cs" />
+    <Compile Include="ModHandling\ModDownloading\ModDownloadInfoItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\ModsManager.cs" />
-    <Compile Include="ModHandling\ModsPanelManager.cs" />
-    <Compile Include="ModHandling\ModTools.cs" />
+    <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
+    <Compile Include="ModUtilities\ModTools.cs" />
     <Compile Include="Internal\OptionsSaver.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
-    <Compile Include="ModHandling\UpgradeIconDownloader.cs" />
-    <Compile Include="MultiplayerTools\ModBotUserIdentifier.cs" />
-    <Compile Include="MultiplayerTools\ModSharingManager.cs" />
-    <Compile Include="MultiplayerTools\MultiplayerEventCallback.cs" />
-    <Compile Include="MultiplayerTools\MultiplayerEventListener.cs" />
-    <Compile Include="MultiplayerTools\MultiplayerMessageSender.cs" />
-    <Compile Include="ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
+    <Compile Include="ModUtilities\UpgradeIconDownloader.cs" />
+    <Compile Include="ModUtilities\MultiplayerTools\ModBotUserIdentifier.cs" />
+    <Compile Include="ModUtilities\MultiplayerTools\ModSharingManager.cs" />
+    <Compile Include="ModUtilities\MultiplayerTools\MultiplayerEventCallback.cs" />
+    <Compile Include="ModUtilities\MultiplayerTools\MultiplayerEventListener.cs" />
+    <Compile Include="ModUtilities\MultiplayerTools\MultiplayerMessageSender.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
-    <Compile Include="YieldInstructions\WaitForCharacterModelAndUpgradeInitialization.cs" />
-    <Compile Include="YieldInstructions\WaitForCharacterModelInitialization.cs" />
+    <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelAndUpgradeInitialization.cs" />
+    <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelInitialization.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

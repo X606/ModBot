@@ -47,7 +47,7 @@ namespace ModLibrary
             UpgradeAngleSetter.Instance.UpdateSaveButtonState();
         }
 
-        GameObject createButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
+        static GameObject createButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
         {
             GameObject spawedButton = Instantiate(prefab);
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
@@ -66,7 +66,7 @@ namespace ModLibrary
         /// <summary>
         /// Should be called when the back button is clicked on the UI.
         /// </summary>
-        public void BackClicked()
+        public static void BackClicked()
         {
             UpgradePagesManager.PreviousPage();
             refreshPageContents();
@@ -75,13 +75,13 @@ namespace ModLibrary
         /// <summary>
         /// Should be called when the next button is clicked on the UI.
         /// </summary>
-        public void NextClicked()
+        public static void NextClicked()
         {
             UpgradePagesManager.NextPage();
             refreshPageContents();
         }
 
-        void refreshPageContents()
+        static void refreshPageContents()
         {
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
 

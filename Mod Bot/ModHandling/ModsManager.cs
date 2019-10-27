@@ -147,7 +147,7 @@ namespace InternalModBot
 
         }
 
-        IEnumerator callOnModRefreshedNextFrame(Mod mod)
+        static IEnumerator callOnModRefreshedNextFrame(Mod mod)
         {
             yield return 0;
             mod.OnModRefreshed();
@@ -183,12 +183,12 @@ namespace InternalModBot
             }
         }
 
-        string getModsFolderPath()
+        static string getModsFolderPath()
         {
             return AssetLoader.GetSubdomain(Application.dataPath) + "mods/";
         }
 
-        string verifyName(string oldName)
+        static string verifyName(string oldName)
         {
             return oldName.Trim("<>:\"\\/|?*".ToCharArray());
         }
@@ -254,7 +254,7 @@ namespace InternalModBot
                     break;
                 }
             }
-            CustomUpgradeManager.Instance.NextClicked();
+            CustomUpgradeManager.NextClicked();
             UpgradePagesManager.RemoveModdedUpgradesFor(mod);
             mod.OnModDeactivated();
         }

@@ -24,7 +24,8 @@ class Program
             Console.WriteLine("All injections completed!");
 
             System.Threading.Thread.Sleep(2000);
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             ErrorHandler.Crash(e.Message + ": " + e.StackTrace);
         }

@@ -81,7 +81,7 @@ namespace InternalModBot
             Process.Start("notepad.exe", fullFilePath);
         }
 
-        string getUpgradeName(ModdedUpgradeRepresenter upgrade)
+        static string getUpgradeName(ModdedUpgradeRepresenter upgrade)
         {
             if (upgrade == null)
                 return string.Empty;
@@ -93,7 +93,7 @@ namespace InternalModBot
             return upgradeDescription.UpgradeName;
         }
 
-        string convertUpgradeTypeToString(UpgradeType upgradeType)
+        static string convertUpgradeTypeToString(UpgradeType upgradeType)
         {
             string prefix;
 
@@ -109,13 +109,13 @@ namespace InternalModBot
             return prefix + upgradeType.ToString();
         }
 
-        float getAngleForIconAtCurrentPage(UpgradeUIIcon icon)
+        static float getAngleForIconAtCurrentPage(UpgradeUIIcon icon)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
             return UpgradePagesManager.GetAngleOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
         }
 
-        void setAngleOfUpgrade(UpgradeUIIcon icon, float newAngle)
+        static void setAngleOfUpgrade(UpgradeUIIcon icon, float newAngle)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
             if (upgradeDescription == null)

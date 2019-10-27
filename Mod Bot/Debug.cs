@@ -107,7 +107,7 @@ namespace ModLibrary
         /// <param name="timeToStay">The amount of unscaledTime in seconds to render the line</param>
         public static void DrawLine(Vector3 point1, Vector3 point2, Color color, float timeToStay = 0)
         {
-            DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point1, point2, color, Time.unscaledTime + timeToStay));
+            DebugLineDrawingManager.Instance.AddLine(new LineInfo(point1, point2, color, Time.unscaledTime + timeToStay));
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace ModLibrary
         public static void DrawRay(Vector3 point, Vector3 direction, Color color, float timeToStay = 0)
         {
             Vector3 otherPoint = point + (direction.normalized * 1000);
-            DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point, otherPoint, color, Time.unscaledTime + timeToStay));
+            DebugLineDrawingManager.Instance.AddLine(new LineInfo(point, otherPoint, color, Time.unscaledTime + timeToStay));
         }
 
         /// <summary>

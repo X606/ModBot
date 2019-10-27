@@ -14,11 +14,10 @@ namespace InternalModBot
         static List<KeyValuePair<string, object>> _loadedkeys = new List<KeyValuePair<string, object>>();
 
         [JsonIgnore]
-        readonly static string _path;
+        readonly static string _path = Application.persistentDataPath + "/SavedModSettings.json";
 
         static OptionsSaver()
         {
-            _path = Application.persistentDataPath + "/SavedModSettings.json";
             if (System.IO.File.Exists(_path))
             {
                 string json = System.IO.File.ReadAllText(_path);

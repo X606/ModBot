@@ -103,7 +103,7 @@ namespace InternalModBot
             spawnedModdedObject.StartCoroutine(downloadModData(content));
         }
 
-        IEnumerator downloadModData(GameObject content)
+        static IEnumerator downloadModData(GameObject content)
         {
             GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
             
@@ -202,13 +202,13 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
 
-        void onBroadcastButtonClicked(Mod mod)
+        static void onBroadcastButtonClicked(Mod mod)
         {
             Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
                 "No", null,
                 "Yes", delegate
                 {
-                    ModSharingManager.Instance.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
+                    ModSharingManager.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
                 });
         }
 
