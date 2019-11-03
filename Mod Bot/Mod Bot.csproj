@@ -75,6 +75,7 @@
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\ModsManager.cs" />
     <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
+    <Compile Include="ModUtilities\LayerMasks.cs" />
     <Compile Include="ModUtilities\ModTools.cs" />
     <Compile Include="Internal\OptionsSaver.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
