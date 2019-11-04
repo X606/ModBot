@@ -42,6 +42,7 @@
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="ModHandling\UIControllers\KeyCodeInput.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />

@@ -39,6 +39,40 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Adds KeyCodeInput, note that the value of the <see cref="KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
+        /// </summary>
+        /// <param name="defaultValue">The value you want the key to be bound to be default</param>
+        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+        /// <param name="keyCodeInput">The spawned <see cref="KeyCodeInput"/></param>
+        /// <param name="onChange">Called when the selected key is changed</param>
+        public void AddKeyCodeInput(KeyCode defaultValue, string name, out KeyCodeInput keyCodeInput, Action<KeyCode> onChange = null)
+        {
+            keyCodeInput = new GameObject().AddComponent<KeyCodeInput>();
+            keyCodeInput.transform.parent = _content.transform;
+            keyCodeInput.Init(defaultValue, delegate(KeyCode keyCode)
+            {
+                OptionsSaver.SaveInt(_ownerMod, name, (int)keyCode);
+                onChange(keyCode);
+            });
+            int? loadedKey = OptionsSaver.LoadInt(_ownerMod, name);
+            if (loadedKey.HasValue && loadedKey.Value != (int)defaultValue)
+            {
+                keyCodeInput.SelectedKey = (KeyCode)loadedKey;
+            }
+
+        }
+        /// <summary>
+        /// Adds KeyCodeInput, note that the value of the <see cref="KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
+        /// </summary>
+        /// <param name="defaultValue">The value you want the key to be bound to be default</param>
+        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+        /// <param name="onChange">Called when the selected key is changed</param>
+        public void AddKeyCodeInput(KeyCode defaultValue, string name, Action<KeyCode> onChange = null)
+        {
+            AddKeyCodeInput(defaultValue, name, out KeyCodeInput input, onChange);
+        }
+
+        /// <summary>
         /// Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
         /// </summary>
         /// <param name="min">The minimum value of the slider</param>
@@ -49,8 +83,8 @@ namespace ModLibrary
         /// <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
         public void AddSlider(float min, float max, float defaultValue, string name, out Slider slider, Action<float> onChange = null)
         {
-            GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
-            ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
+            GameObject sliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
+            ModdedObject moddedObject = GameObject.Instantiate(sliderPrefab).GetComponent<ModdedObject>();
             moddedObject.transform.parent = _content.transform;
             moddedObject.GetObject<Text>(0).text = name;
             slider = moddedObject.GetObject<Slider>(1);
@@ -409,7 +443,7 @@ namespace ModLibrary
         /// <param name="text">string that will be displayed</param>
         public void AddLabel(string text)
         {
-            AddLabel(text, out Text _text);
+            AddLabel(text, out _);
         }
 
         /// <summary>
