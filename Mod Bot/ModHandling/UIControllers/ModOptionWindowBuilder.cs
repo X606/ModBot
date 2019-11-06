@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using InternalModBot;
+using ModLibrary;
 
 #pragma warning disable IDE1005 // Delegate invocation can be simplefied
 
@@ -12,13 +13,15 @@ namespace ModLibrary
     /// <summary>
     /// Used to place all of the options in the options window
     /// </summary>
-    public class ModOptionsWindowBuilder
+    public partial class ModOptionsWindowBuilder
     {
+        readonly GameObject _pageButtonsHolder;
         readonly GameObject _content;
         readonly GameObject _spawnedBase;
         readonly Button _xButton;
         readonly GameObject _owner;
         readonly Mod _ownerMod;
+        List<Page> _pages = new List<Page>();
 
         internal ModOptionsWindowBuilder(GameObject owner, Mod ownerMod)
         {
@@ -35,415 +38,64 @@ namespace ModLibrary
             ModdedObject modObject = _spawnedBase.GetComponent<ModdedObject>();
             _content = modObject.GetObject<GameObject>(0);
             _xButton = modObject.GetObject<Button>(1);
+            _pageButtonsHolder = modObject.GetObject<GameObject>(2);
             _xButton.onClick.AddListener(CloseWindow);
-        }
 
-        /// <summary>
-        /// Adds KeyCodeInput, note that the value of the <see cref="KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
-        /// </summary>
-        /// <param name="defaultValue">The value you want the key to be bound to be default</param>
-        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="keyCodeInput">The spawned <see cref="KeyCodeInput"/></param>
-        /// <param name="onChange">Called when the selected key is changed</param>
-        public void AddKeyCodeInput(KeyCode defaultValue, string name, out KeyCodeInput keyCodeInput, Action<KeyCode> onChange = null)
-        {
-            keyCodeInput = new GameObject().AddComponent<KeyCodeInput>();
-            keyCodeInput.transform.parent = _content.transform;
-            keyCodeInput.Init(defaultValue, delegate(KeyCode keyCode)
+            DelegateScheduler.Instance.Schedule(delegate
             {
-                OptionsSaver.SaveInt(_ownerMod, name, (int)keyCode);
-                onChange(keyCode);
-            });
-            int? loadedKey = OptionsSaver.LoadInt(_ownerMod, name);
-            if (loadedKey.HasValue && loadedKey.Value != (int)defaultValue)
-            {
-                keyCodeInput.SelectedKey = (KeyCode)loadedKey;
-            }
-
-        }
-        /// <summary>
-        /// Adds KeyCodeInput, note that the value of the <see cref="KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
-        /// </summary>
-        /// <param name="defaultValue">The value you want the key to be bound to be default</param>
-        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">Called when the selected key is changed</param>
-        public void AddKeyCodeInput(KeyCode defaultValue, string name, Action<KeyCode> onChange = null)
-        {
-            AddKeyCodeInput(defaultValue, name, out KeyCodeInput input, onChange);
-        }
-
-        /// <summary>
-        /// Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
-        /// </summary>
-        /// <param name="min">The minimum value of the slider</param>
-        /// <param name="max">The maximum value of the slider</param>
-        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="slider">A reference that is set to the created slider</param>
-        /// <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
-        public void AddSlider(float min, float max, float defaultValue, string name, out Slider slider, Action<float> onChange = null)
-        {
-            GameObject sliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
-            ModdedObject moddedObject = GameObject.Instantiate(sliderPrefab).GetComponent<ModdedObject>();
-            moddedObject.transform.parent = _content.transform;
-            moddedObject.GetObject<Text>(0).text = name;
-            slider = moddedObject.GetObject<Slider>(1);
-            slider.minValue = min;
-            slider.maxValue = max;
-            slider.value = defaultValue;
-            Text numberDisplay = moddedObject.GetObject<Text>(2);
-
-            float? loadedFloat = OptionsSaver.LoadFloat(_ownerMod, name);
-            if(loadedFloat.HasValue)
-            {
-                slider.value = loadedFloat.Value;
-            }
-
-            if(onChange != null)
-            {
-                onChange(slider.value);
-            }
-
-            numberDisplay.text = slider.value.ToString();
-
-            slider.onValueChanged.AddListener(delegate (float value)
-            {
-                OptionsSaver.SaveFloat(_ownerMod, name, value);
-
-                if(onChange != null)
+                PopulatePages();
+                if(_pages.Count >= 1)
                 {
-                    onChange(value);
+                    SetPage(_pages[0]);
                 }
-
-                numberDisplay.text = value.ToString();
-            });
-        }
-
-        /// <summary>
-        /// Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
-        /// </summary>
-        /// <param name="min">The minimum value of the slider</param>
-        /// <param name="max">The maximum value of the slider</param>
-        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-        /// <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
-        public void AddSlider(float min, float max, float defaultValue, string name, Action<float> onChange = null)
-        {
-            AddSlider(min, max, defaultValue, name, out Slider slider, onChange);
-        }
-
-        /// <summary>
-        /// Adds a slider to the options window that can only be whole numbers
-        /// </summary>
-        /// <param name="min">The minimum value of the slider</param>
-        /// <param name="max">That maximum value of the slider</param>
-        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-        /// <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="slider">A reference that is set to the created slider</param>
-        /// <param name="onChange">Called when the value is changed, if null does nothing</param>
-        public void AddIntSlider(int min, int max, int defaultValue, string name, out Slider slider, Action<int> onChange = null)
-        {
-            GameObject SliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
-            ModdedObject moddedObject = GameObject.Instantiate(SliderPrefab).GetComponent<ModdedObject>();
-            moddedObject.transform.parent = _content.transform;
-            moddedObject.GetObject<Text>(0).text = name;
-            Slider _slider = moddedObject.GetObject<Slider>(1);
-            _slider.minValue = min;
-            _slider.maxValue = max;
-            _slider.wholeNumbers = true;
-            _slider.value = defaultValue;
-            Text numberDisplay = moddedObject.GetObject<Text>(2);
-
-            int? loadedInt = OptionsSaver.LoadInt(_ownerMod, name);
-            if(loadedInt.HasValue)
-            {
-                _slider.value = loadedInt.Value;
-            }
-
-            if(onChange != null)
-            {
-                onChange((int)_slider.value);
-            }
-
-            numberDisplay.text = _slider.value.ToString();
-            _slider.onValueChanged.AddListener(delegate (float value)
-            {
-                OptionsSaver.SaveInt(_ownerMod, name, (int)value);
-
-                if(onChange != null)
-                {
-                    onChange((int)_slider.value);
-                }
-
-                numberDisplay.text = value.ToString();
-            });
-
-            slider = _slider;
+            }, 0f);
         }
         
         /// <summary>
-        /// Adds a slider to the options window that can only be whole numbers
+        /// Removes all of the page buttons and spawns in new ones
         /// </summary>
-        /// <param name="min">The minimum value of the slider</param>
-        /// <param name="max">That maximum value of the slider</param>
-        /// <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-        /// <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">Called when the value is changed, if null does nothing</param>
-        public void AddIntSlider(int min, int max, int defaultValue, string name, Action<int> onChange = null)
+        public void PopulatePages()
         {
-            AddIntSlider(min, max, defaultValue, name, out Slider slider, onChange);
+            TransformUtils.DestroyAllChildren(_pageButtonsHolder.transform);
+            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "PageButton", "Clone Drone in the Danger Zone_Data/");
+
+            foreach(Page page in _pages)
+            {
+                GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
+                spawnedButton.transform.parent = _pageButtonsHolder.transform;
+                ModdedObject moddedObject = spawnedButton.GetComponent<ModdedObject>();
+                moddedObject.GetObject<Text>(0).text = page.Name;
+                moddedObject.GetObject<Button>(1).onClick.AddListener(delegate { SetPage(page); });
+            }
         }
-        /// <summary>
-        /// Adds a checkbox to the mods window
-        /// </summary>
-        /// <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
-        /// <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
-        /// <param name="toggle">>A reference that is set to the created toggle</param>
-        /// <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
-        public void AddCheckbox(bool defaultValue, string name, out Toggle toggle, Action<bool> onChange = null)
+
+        void SetPage(Page page)
         {
-            GameObject CheckBoxPrefab = AssetLoader.GetObjectFromFile("modswindow", "Checkbox", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedObject = GameObject.Instantiate(CheckBoxPrefab);
-            spawnedObject.transform.parent = _content.transform;
-            ModdedObject moddedObject = spawnedObject.GetComponent<ModdedObject>();
-            toggle = moddedObject.GetObject<Toggle>(0);
-            toggle.isOn = defaultValue;
-            moddedObject.GetObject<GameObject>(1).GetComponent<Text>().text = name;
+            TransformUtils.DestroyAllChildren(_content.transform);
+            page.Populate(_content, _ownerMod);
+        }
 
-            bool? loadedBool = OptionsSaver.LoadBool(_ownerMod, name);
-            if (loadedBool.HasValue)
+        /// <summary>
+        /// Adds a new page, call methods on this page to add items to it. If a page with the same name already exists returns a reference to that page
+        /// </summary>
+        /// <param name="pageName">The name of the page to spawn</param>
+        /// <param name="forcedHeight">If not null this will set the height of the page to this</param>
+        /// <returns></returns>
+        public Page AddPage(string pageName, float? forcedHeight = null)
+        {
+            foreach(Page item in _pages)
             {
-                toggle.isOn = loadedBool.Value;
-            }
-
-            if (onChange != null)
-            {
-                onChange(toggle.isOn);
-            }
-
-            toggle.onValueChanged.AddListener(delegate (bool value)
-            {
-                OptionsSaver.SaveBool(_ownerMod, name, value);
-
-                if (onChange != null)
+                if(item.Name == pageName)
                 {
-                    onChange(value);
+                    return item;
                 }
-            });
-        }
-        /// <summary>
-        /// Adds a checkbox to the mods window
-        /// </summary>
-        /// <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
-        /// <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
-        public void AddCheckbox(bool defaultValue, string name, Action<bool> onChange = null)
-        {
-            AddCheckbox(defaultValue, name, out Toggle toggle, onChange);
-        }
-
-        /// <summary>
-        /// Adds a input field to the mods window
-        /// </summary>
-        /// <param name="defaultValue">The defualt value before it is edited by the user</param>
-        /// <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
-        /// <param name="inputField">A reference to the created InputField</param>
-        /// <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
-        public void AddInputField(string defaultValue, string name, out InputField inputField, Action<string> onChange = null)
-        {
-            GameObject InputFieldPrefab = AssetLoader.GetObjectFromFile("modswindow", "InputField", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(InputFieldPrefab);
-            spawnedPrefab.transform.parent = _content.transform;
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            spawnedModdedObject.GetObject<Text>(0).text = name;
-            inputField = spawnedModdedObject.GetObject<InputField>(1);
-            inputField.text = defaultValue;
-
-            string loadedString = OptionsSaver.LoadString(_ownerMod, name);
-            if (loadedString != null)
-            {
-                inputField.text = loadedString;
             }
 
-            if (onChange != null)
-            {
-                onChange(inputField.text);
-            }
+            Page page = new Page(pageName, forcedHeight);
 
-            inputField.onValueChanged.AddListener(delegate (string value)
-            {
-                OptionsSaver.SaveString(_ownerMod, name, value);
+            _pages.Add(page);
 
-                if (onChange != null)
-                {
-                    onChange(value);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Adds a input field to the mods window
-        /// </summary>
-        /// <param name="defaultValue">The defualt value before it is edited by the user</param>
-        /// <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
-        public void AddInputField(string defaultValue, string name, Action<string> onChange = null)
-        {
-            AddInputField(defaultValue, name, out InputField inputField, onChange);
-        }
-
-
-        /// <summary>
-        /// Adds a dropdown to the mods window
-        /// </summary>
-        /// <param name="options">The diffrent options that should be selectable</param>
-        /// <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
-        /// <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
-        /// <param name="dropdown">a reference to the dropdown created, null if defaultIndex is not in the bounds of options</param>
-        /// <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
-        public void AddDropdown(string[] options, int defaultIndex, string name, out Dropdown dropdown, Action<int> onChange = null)
-        {
-            if (options.Length <= defaultIndex || defaultIndex < 0)
-            {
-                dropdown = null;
-                return;
-            }
-
-            GameObject dropdownPrefab = AssetLoader.GetObjectFromFile("modswindow", "DropDown", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(dropdownPrefab);
-            spawnedPrefab.transform.parent = _content.transform;
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            spawnedModdedObject.GetObject<Text>(0).text = name;
-
-            dropdown = spawnedModdedObject.GetObject<Dropdown>(1);
-            dropdown.options.Clear();
-            
-            foreach (string option in options)
-            {
-                Dropdown.OptionData data = new Dropdown.OptionData(option);
-                dropdown.options.Add(data);
-            }
-            dropdown.value = defaultIndex;
-            dropdown.RefreshShownValue();
-
-            int? loadedInt = OptionsSaver.LoadInt(_ownerMod, name);
-            if (loadedInt.HasValue)
-            {
-                dropdown.value = loadedInt.Value;
-                dropdown.RefreshShownValue();
-            }
-
-            if (onChange != null)
-            {
-                onChange(dropdown.value);
-            }
-
-            dropdown.onValueChanged.AddListener(delegate (int value)
-            {
-                OptionsSaver.SaveInt(_ownerMod, name, value);
-
-                if (onChange != null)
-                {
-                    onChange(value);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Adds a dropdown to the mods window
-        /// </summary>
-        /// <param name="options">The diffrent options that should be selectable</param>
-        /// <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
-        /// <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
-        /// <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
-        public void AddDropdown(string[] options, int defaultIndex, string name, Action<int> onChange = null)
-        {
-            AddDropdown(options, defaultIndex, name, out Dropdown dropdown, onChange);
-        }
-
-        /// <summary>
-        /// Adds a dropdown to the options window
-        /// </summary>
-        /// <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
-        /// <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
-        /// <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
-        /// <param name="dropdown">a refrence to the dropdown created</param>
-        /// <param name="onChange"></param>
-        public void AddDropDown<T>(int defaultIndex, string name, out Dropdown dropdown, Action<int> onChange = null) where T : IComparable, IFormattable, IConvertible
-        {
-            if (!typeof(T).IsEnum)
-            {
-                throw new ArgumentException("The generic type T must be an enum type");
-            }
-
-            List<string> enums = EnumTools.GetNames<T>();
-            AddDropdown(enums.ToArray(), defaultIndex, name, out dropdown, onChange);
-        }
-
-
-        /// <summary>
-        /// Adds a dropdown to the options window
-        /// </summary>
-        /// <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
-        /// <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
-        /// <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
-        /// <param name="onChange"></param>
-        public void AddDropDown<T>(int defaultIndex, string name, Action<int> onChange = null) where T : IComparable, IFormattable, IConvertible
-        {
-            AddDropDown<T>(defaultIndex, name, out Dropdown dropdown, onChange);
-        }
-
-        /// <summary>
-        /// Adds a button to the options window
-        /// </summary>
-        /// <param name="text">The text displayed on the button</param>
-        /// <param name="button">a refrence to the created button</param>
-        /// <param name="callback">Called when the user clicks the button</param>
-        public void AddButton(string text, out Button button, UnityEngine.Events.UnityAction callback)
-        {
-            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(buttonPrefab);
-            spawnedPrefab.transform.parent = _content.transform;
-
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            button = spawnedModdedObject.GetObject<Button>(0);
-            button.onClick.AddListener(callback);
-            spawnedModdedObject.GetObject<Text>(1).text = text;
-        }
-
-        /// <summary>
-        /// Adds a button to the options window
-        /// </summary>
-        /// <param name="text">The text displayed on the button</param>
-        /// <param name="callback">Called when the user clicks the button</param>
-        public void AddButton(string text, UnityEngine.Events.UnityAction callback)
-        {
-            AddButton(text, out Button button, callback);
-        }
-
-        /// <summary>
-        /// Adds a plain text to the options window
-        /// </summary>
-        /// <param name="text">string that will be displayed</param>
-        /// <param name="_text">a refrence to the created text</param>
-        public void AddLabel(string text, out Text _text)
-        {
-            GameObject labelPrefab = AssetLoader.GetObjectFromFile("modswindow", "Label", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(labelPrefab);
-            spawnedPrefab.transform.parent = _content.transform;
-
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            _text = spawnedModdedObject.GetObject<Text>(0);
-            _text.text = text;
-        }
-
-        /// <summary>
-        /// Adds a plain text to the options window
-        /// </summary>
-        /// <param name="text">string that will be displayed</param>
-        public void AddLabel(string text)
-        {
-            AddLabel(text, out _);
+            return page;
         }
 
         /// <summary>
@@ -477,6 +129,299 @@ namespace ModLibrary
         {
             return true;
         }
-        
+
+        /// <summary>
+        /// Represents a page in the mod options window
+        /// </summary>
+        public class Page
+        {
+            internal Page(string name, float? forcedHeight)
+            {
+                Name = name;
+                ForcedHeight = forcedHeight;
+                _items = new List<ModdedOptionPageItem>();
+            }
+
+            internal void Populate(GameObject container, Mod owner)
+            {
+                foreach(ModdedOptionPageItem item in _items)
+                {
+                    item.CreatePageItem(container, owner);
+                }
+            }
+
+            /// <summary>The name of the page</summary>
+            public readonly string Name;
+
+            /// <summary>The forced height of the page, if null the height will be set automatically</summary>
+            public readonly float? ForcedHeight;
+
+            readonly List<ModdedOptionPageItem> _items;
+            
+            /// <summary>
+            /// Adds a slider to the page with the passed arguements
+            /// </summary>
+            /// <param name="min">The minimum value of the slider</param>
+            /// <param name="max">The maximum value of the slider</param>
+            /// <param name="defaultValue">The value the slider should be set to by default</param>
+            /// <param name="displayName">The text you want to display next to the slider</param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
+            /// <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
+            /// <param name="onChange">Called when the value of the slider is changed</param>
+            public void AddSlider(float min, float max, float defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<float> onChange = null)
+            {
+                ModdedOptionSliderItem slider = new ModdedOptionSliderItem();
+                slider.Min = min;
+                slider.Max = max;
+                slider.DefaultValue = defaultValue;
+                slider.DisplayName = displayName;
+                slider.SaveID = saveID;
+                slider.OnCreate = onCreate;
+                slider.CustomRect = customRect;
+                slider.OnChange = onChange;
+
+                _items.Add(slider);
+            }
+
+            /// <summary>
+            /// Adds a slider with only whole numbers to the page with the passed arguements
+            /// </summary>
+            /// <param name="min">The minimum value of the slider</param>
+            /// <param name="max">The maximum value of the slider</param>
+            /// <param name="defaultValue">The value the slider should be set to by default</param>
+            /// <param name="displayName">The text you want to display next to the slider</param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
+            /// <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
+            /// <param name="onChange">Called when the value of the slider is changed</param>
+            public void AddIntSlider(int min, int max, int defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
+            {
+                ModdedOptionIntSliderItem slider = new ModdedOptionIntSliderItem();
+                slider.Min = min;
+                slider.Max = max;
+                slider.DefaultValue = defaultValue;
+                slider.DisplayName = displayName;
+                slider.SaveID = saveID;
+                slider.OnCreate = onCreate;
+                slider.CustomRect = customRect;
+                slider.OnChange = onChange;
+
+                _items.Add(slider);
+            }
+
+            /// <summary>
+            /// Adds a <see cref="InputField"/> to the page with the passed arguements
+            /// </summary>
+            /// <param name="defaultValue">The value the <see cref="InputField"/> should be set to by default</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="InputField"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the <see cref="InputField"/> is created, use this to change properties of the <see cref="InputField"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="InputField"/>, use this to change the position and scale of the <see cref="InputField"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
+            public void AddInputField(string defaultValue, string displayName, string saveID, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
+            {
+                ModdedOptionInputFieldItem input = new ModdedOptionInputFieldItem();
+                input.DefaultValue = defaultValue;
+                input.DisplayName = displayName;
+                input.SaveID = saveID;
+                input.OnCreate = onCreate;
+                input.CustomRect = customRect;
+                input.OnChange = onChange;
+
+                _items.Add(input);
+            }
+
+            /// <summary>
+            /// Adds a <see cref="Toggle"/> to the page with the passed arguements
+            /// </summary>
+            /// <param name="defaultValue">The value the <see cref="Toggle"/> should be set to by default</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="Toggle"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the <see cref="Toggle"/> is created, use this to change properties of the <see cref="Toggle"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="Toggle"/>, use this to change the position and scale of the <see cref="Toggle"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="Toggle"/> is changed</param>
+            public void AddCheckbox(bool defaultValue, string displayName, string saveID, Action<Toggle> onCreate = null, Rect? customRect = null, Action<bool> onChange = null)
+            {
+                ModdedOptionCheckboxItem checkBox = new ModdedOptionCheckboxItem();
+                checkBox.DefaultValue = defaultValue;
+                checkBox.DisplayName = displayName;
+                checkBox.SaveID = saveID;
+                checkBox.OnCreate = onCreate;
+                checkBox.CustomRect = customRect;
+                checkBox.OnChange = onChange;
+
+                _items.Add(checkBox);
+            }
+
+            /// <summary>
+            /// Adds a <see cref="Dropdown"/> to the page with the passed arguements
+            /// </summary>
+            /// <param name="options">The options of the dropdown</param>
+            /// <param name="defaultValue">The index of the options to set by default</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="Dropdown"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
+            public void AddDropDown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
+            {
+                ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem();
+                dropdown.Options = options;
+                dropdown.DefaultValue = defaultValue;
+                dropdown.DisplayName = displayName;
+                dropdown.SaveID = saveID;
+                dropdown.OnCreate = onCreate;
+                dropdown.CustomRect = customRect;
+                dropdown.OnChange = onChange;
+
+                _items.Add(dropdown);
+            }
+            /// <summary>
+            /// Adds a <see cref="Dropdown"/> to the page with the options of the passed enum 
+            /// </summary>
+            /// <param name="defaultValue">The index of the enum to set by default</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="Dropdown"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
+            public void AddDropdown<T>(T defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<T> onChange = null)
+            {
+                if(!typeof(T).IsEnum)
+                    throw new InvalidOperationException("Generic type must be a enum");
+
+                string[] names = Enum.GetNames(typeof(T));
+                AddDropDown(names, (int)((object)defaultValue), displayName, saveID, onCreate, customRect, delegate(int value)
+                {
+                    onChange((T)((object)value));
+                });
+            }
+
+            /// <summary>
+            /// Adds a <see cref="KeyCodeInput"/> to the page with the passed arguements
+            /// </summary>
+            /// <param name="defaultValue">The value the <see cref="KeyCodeInput"/> should be set to by default</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="KeyCodeInput"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="onCreate">Called when the <see cref="KeyCodeInput"/> is created, use this to change properties of the <see cref="KeyCodeInput"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="KeyCodeInput"/>, use this to change the position and scale of the <see cref="KeyCodeInput"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="KeyCodeInput"/> is changed</param>
+            public void AddKeyCodeInput(KeyCode defaultValue, string displayName, string saveID, Action<KeyCodeInput> onCreate = null, Rect? customRect = null, Action<KeyCode> onChange = null)
+            {
+                ModdedOptionKeyCodeItem keyCodeItem = new ModdedOptionKeyCodeItem();
+                keyCodeItem.DefaultValue = defaultValue;
+                keyCodeItem.DisplayName = displayName;
+                keyCodeItem.SaveID = saveID;
+                keyCodeItem.OnCreate = onCreate;
+                keyCodeItem.CustomRect = customRect;
+                keyCodeItem.OnChange = onChange;
+
+                _items.Add(keyCodeItem);
+            }
+
+            /// <summary>
+            /// Adds a <see cref="Button"/> to the page with the passed arguements
+            /// </summary>
+            /// <param name="displayName">The text you want to display next to the <see cref="Button"/></param>
+            /// <param name="onClick">Called when the user clicks on the created <see cref="Button"/></param>
+            /// <param name="onCreate">Called when the <see cref="Button"/> is created, use this to change properties of the <see cref="Button"/></param>
+            public void AddButton(string displayName, Action onClick, Action<Button> onCreate = null)
+            {
+                ModdedOptionButtonItem button = new ModdedOptionButtonItem();
+                button.DisplayName = displayName;
+                button.OnClick = onClick;
+                button.OnCreate = onCreate;
+
+                _items.Add(button);
+            }
+
+            /// <summary>
+            /// Adds a label (a bit of text) to the page
+            /// </summary>
+            /// <param name="displayName">The page to display</param>
+            /// <param name="onCreate">Called when the label is created, use this to change the properties of the <see cref="Text"/></param>
+            public void AddLabel(string displayName, Action<Text> onCreate = null)
+            {
+                ModdedOptionLabelItem label = new ModdedOptionLabelItem();
+                label.DisplayName = displayName;
+                label.OnCreate = onCreate;
+
+                _items.Add(label);
+            }
+
+            /// <summary>
+            /// Adds a generic page item, use this to add your own item types! To create a new item type simply make a class that extends <see cref="ModdedOptionPageItem"/> and pass a instance of it to this class
+            /// </summary>
+            /// <param name="customItem">The generic <see cref="ModdedOptionPageItem"/> to add</param>
+            public void AddGeneric(ModdedOptionPageItem customItem)
+            {
+                _items.Add(customItem);
+            }
+        }
+        /// <summary>
+        /// Used to represent a position and scale of items in modded option window pages
+        /// </summary>
+        public struct Rect
+        {
+            /// <summary>
+            /// The position of the item, if null keeps default values
+            /// </summary>
+            public Vector2? Position;
+            /// <summary>
+            /// The Scale of the item, if null keeps defualt values
+            /// </summary>
+            public Vector2? Scale;
+
+        }
     }
+
+    /// <summary>
+    /// A base class for modded option page items
+    /// </summary>
+    public abstract class ModdedOptionPageItem
+    {
+        /// <summary>
+        /// The custom rect of the page, if null uses default values
+        /// </summary>
+        public ModOptionsWindowBuilder.Rect? CustomRect;
+        /// <summary>
+        /// The name that should be displayed on the option
+        /// </summary>
+        public string DisplayName;
+        /// <summary>
+        /// The Id of the option
+        /// </summary>
+        public string SaveID;
+
+        /// <summary>
+        /// Should create the object you want to spawn as a child of holder
+        /// </summary>
+        /// <param name="holder">The object that the spawned object should be a child of</param>
+        /// <param name="owner">The mod who spawned the option</param>
+        public abstract void CreatePageItem(GameObject holder, Mod owner);
+
+        /// <summary>
+        /// Applies the <see cref="CustomRect"/> to the passed <see cref="GameObject"/>, if <see cref="CustomRect"/> is not <see langword="null"/>.
+        /// </summary>
+        /// <param name="spawnedObject"></param>
+        protected void applyCustomRect(GameObject spawnedObject)
+        {
+            if(!CustomRect.HasValue)
+                return;
+
+            LayoutElement element = spawnedObject.GetComponent<LayoutElement>();
+            if(element == null)
+                element = spawnedObject.AddComponent<LayoutElement>();
+
+            element.ignoreLayout = true;
+
+            RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
+            if (CustomRect.Value.Scale.HasValue)
+                rectTransform.sizeDelta = CustomRect.Value.Scale.Value;
+            if(CustomRect.Value.Position.HasValue)
+                rectTransform.anchoredPosition = CustomRect.Value.Position.Value;
+        }
+    }
+
 }

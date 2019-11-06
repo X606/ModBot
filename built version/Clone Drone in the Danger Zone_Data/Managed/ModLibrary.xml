@@ -304,6 +304,342 @@
             If this return true, there was an error during downloading
             </summary>
         </member>
+        <member name="T:ModLibrary.KeyCodeInput">
+            <summary>
+            Manages the input of a custom KeyCode value in the modded options page
+            </summary>
+        </member>
+        <member name="P:ModLibrary.KeyCodeInput.SelectedKey">
+            <summary>
+            Gets or sets the current KeyCode
+            </summary>
+        </member>
+        <member name="M:ModLibrary.KeyCodeInput.AskForNewKey">
+            <summary>
+            Asks the user to input a new key, if the user does not do so in 4 seconds aborts and does nothing
+            </summary>
+        </member>
+        <member name="T:ModLibrary.ModOptionsWindowBuilder">
+            <summary>
+            Used to place all of the options in the options window
+            </summary>
+        </member>
+        <member name="F:ModLibrary.ModOptionsWindowBuilder.LEGACY_PAGE_NAME">
+            <summary>
+            The name used for the page if a mod uses the old methods
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddKeyCodeInput(UnityEngine.KeyCode,System.String,ModLibrary.KeyCodeInput@,System.Action{UnityEngine.KeyCode})">
+            <summary>
+            Adds KeyCodeInput, note that the value of the <see cref="T:UnityEngine.KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
+            </summary>
+            <param name="defaultValue">The value you want the key to be bound to be default</param>
+            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+            <param name="keyCodeInput">The spawned <see cref="T:ModLibrary.KeyCodeInput"/></param>
+            <param name="onChange">Called when the selected key is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddKeyCodeInput(UnityEngine.KeyCode,System.String,System.Action{UnityEngine.KeyCode})">
+            <summary>
+            Adds KeyCodeInput, note that the value of the <see cref="T:UnityEngine.KeyCode"/> gets saved by Mod-Bot so you dont need to worry about it
+            </summary>
+            <param name="defaultValue">The value you want the key to be bound to be default</param>
+            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+            <param name="onChange">Called when the selected key is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddSlider(System.Single,System.Single,System.Single,System.String,UnityEngine.UI.Slider@,System.Action{System.Single})">
+            <summary>
+            Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">The maximum value of the slider</param>
+            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+            <param name="slider">A reference that is set to the created slider</param>
+            <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddSlider(System.Single,System.Single,System.Single,System.String,System.Action{System.Single})">
+            <summary>
+            Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">The maximum value of the slider</param>
+            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
+            <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddIntSlider(System.Int32,System.Int32,System.Int32,System.String,UnityEngine.UI.Slider@,System.Action{System.Int32})">
+            <summary>
+            Adds a slider to the options window that can only be whole numbers
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">That maximum value of the slider</param>
+            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+            <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
+            <param name="slider">A reference that is set to the created slider</param>
+            <param name="onChange">Called when the value is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddIntSlider(System.Int32,System.Int32,System.Int32,System.String,System.Action{System.Int32})">
+            <summary>
+            Adds a slider to the options window that can only be whole numbers
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">That maximum value of the slider</param>
+            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
+            <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
+            <param name="onChange">Called when the value is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddCheckbox(System.Boolean,System.String,UnityEngine.UI.Toggle@,System.Action{System.Boolean})">
+            <summary>
+            Adds a checkbox to the mods window
+            </summary>
+            <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
+            <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
+            <param name="toggle">>A reference that is set to the created toggle</param>
+            <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddCheckbox(System.Boolean,System.String,System.Action{System.Boolean})">
+            <summary>
+            Adds a checkbox to the mods window
+            </summary>
+            <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
+            <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
+            <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddInputField(System.String,System.String,UnityEngine.UI.InputField@,System.Action{System.String})">
+            <summary>
+            Adds a input field to the mods window
+            </summary>
+            <param name="defaultValue">The defualt value before it is edited by the user</param>
+            <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
+            <param name="inputField">A reference to the created InputField</param>
+            <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddInputField(System.String,System.String,System.Action{System.String})">
+            <summary>
+            Adds a input field to the mods window
+            </summary>
+            <param name="defaultValue">The defualt value before it is edited by the user</param>
+            <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
+            <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropdown(System.String[],System.Int32,System.String,UnityEngine.UI.Dropdown@,System.Action{System.Int32})">
+            <summary>
+            Adds a dropdown to the mods window
+            </summary>
+            <param name="options">The diffrent options that should be selectable</param>
+            <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
+            <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
+            <param name="dropdown">a reference to the dropdown created, null if defaultIndex is not in the bounds of options</param>
+            <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropdown(System.String[],System.Int32,System.String,System.Action{System.Int32})">
+            <summary>
+            Adds a dropdown to the mods window
+            </summary>
+            <param name="options">The diffrent options that should be selectable</param>
+            <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
+            <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
+            <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropDown``1(System.Int32,System.String,UnityEngine.UI.Dropdown@,System.Action{System.Int32})">
+            <summary>
+            Adds a dropdown to the options window
+            </summary>
+            <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
+            <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
+            <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
+            <param name="dropdown">a refrence to the dropdown created</param>
+            <param name="onChange"></param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropDown``1(System.Int32,System.String,System.Action{System.Int32})">
+            <summary>
+            Adds a dropdown to the options window
+            </summary>
+            <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
+            <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
+            <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
+            <param name="onChange"></param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddButton(System.String,UnityEngine.UI.Button@,UnityEngine.Events.UnityAction)">
+            <summary>
+            Adds a button to the options window
+            </summary>
+            <param name="text">The text displayed on the button</param>
+            <param name="button">a refrence to the created button</param>
+            <param name="callback">Called when the user clicks the button</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddButton(System.String,UnityEngine.Events.UnityAction)">
+            <summary>
+            Adds a button to the options window
+            </summary>
+            <param name="text">The text displayed on the button</param>
+            <param name="callback">Called when the user clicks the button</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddLabel(System.String,UnityEngine.UI.Text@)">
+            <summary>
+            Adds a plain text to the options window
+            </summary>
+            <param name="text">string that will be displayed</param>
+            <param name="_text">a refrence to the created text</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddLabel(System.String)">
+            <summary>
+            Adds a plain text to the options window
+            </summary>
+            <param name="text">string that will be displayed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.PopulatePages">
+            <summary>
+            Removes all of the page buttons and spawns in new ones
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddPage(System.String,System.Nullable{System.Single})">
+            <summary>
+            Adds a new page, call methods on this page to add items to it. If a page with the same name already exists returns a reference to that page
+            </summary>
+            <param name="pageName">The name of the page to spawn</param>
+            <param name="forcedHeight">If not null this will set the height of the page to this</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.CloseWindow">
+            <summary>
+            Closes the options window, this also opens its parent window (probably the mods window)
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.ForceCloseWindow">
+            <summary>
+            Closes the options window, does NOT open the parent window
+            </summary>
+        </member>
+        <member name="T:ModLibrary.ModOptionsWindowBuilder.Page">
+            <summary>
+            Represents a page in the mod options window
+            </summary>
+        </member>
+        <member name="F:ModLibrary.ModOptionsWindowBuilder.Page.Name">
+            <summary>The name of the page</summary>
+        </member>
+        <member name="F:ModLibrary.ModOptionsWindowBuilder.Page.ForcedHeight">
+            <summary>The forced height of the page, if null the height will be set automatically</summary>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddSlider(System.Single,System.Single,System.Single,System.String,System.String,System.Action{UnityEngine.UI.Slider},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.Single})">
+            <summary>
+            Adds a slider to the page with the passed arguements
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">The maximum value of the slider</param>
+            <param name="defaultValue">The value the slider should be set to by default</param>
+            <param name="displayName">The text you want to display next to the slider</param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
+            <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
+            <param name="onChange">Called when the value of the slider is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddIntSlider(System.Int32,System.Int32,System.Int32,System.String,System.String,System.Action{UnityEngine.UI.Slider},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.Int32})">
+            <summary>
+            Adds a slider with only whole numbers to the page with the passed arguements
+            </summary>
+            <param name="min">The minimum value of the slider</param>
+            <param name="max">The maximum value of the slider</param>
+            <param name="defaultValue">The value the slider should be set to by default</param>
+            <param name="displayName">The text you want to display next to the slider</param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
+            <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
+            <param name="onChange">Called when the value of the slider is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddInputField(System.String,System.String,System.String,System.Action{UnityEngine.UI.InputField},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.String})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.InputField"/> to the page with the passed arguements
+            </summary>
+            <param name="defaultValue">The value the <see cref="T:UnityEngine.UI.InputField"/> should be set to by default</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.InputField"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.InputField"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.InputField"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddCheckbox(System.Boolean,System.String,System.String,System.Action{UnityEngine.UI.Toggle},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.Boolean})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.Toggle"/> to the page with the passed arguements
+            </summary>
+            <param name="defaultValue">The value the <see cref="T:UnityEngine.UI.Toggle"/> should be set to by default</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Toggle"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Toggle"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Toggle"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.Toggle"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.Toggle"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.Toggle"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddDropDown(System.String[],System.Int32,System.String,System.String,System.Action{UnityEngine.UI.Dropdown},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.Int32})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.Dropdown"/> to the page with the passed arguements
+            </summary>
+            <param name="options">The options of the dropdown</param>
+            <param name="defaultValue">The index of the options to set by default</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Dropdown"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.Dropdown"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.Dropdown"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddDropdown``1(``0,System.String,System.String,System.Action{UnityEngine.UI.Dropdown},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{``0})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.Dropdown"/> to the page with the options of the passed enum 
+            </summary>
+            <param name="defaultValue">The index of the enum to set by default</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Dropdown"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.Dropdown"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.Dropdown"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.Dropdown"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddKeyCodeInput(UnityEngine.KeyCode,System.String,System.String,System.Action{ModLibrary.KeyCodeInput},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{UnityEngine.KeyCode})">
+            <summary>
+            Adds a <see cref="T:ModLibrary.KeyCodeInput"/> to the page with the passed arguements
+            </summary>
+            <param name="defaultValue">The value the <see cref="T:ModLibrary.KeyCodeInput"/> should be set to by default</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:ModLibrary.KeyCodeInput"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:ModLibrary.KeyCodeInput"/> is created, use this to change properties of the <see cref="T:ModLibrary.KeyCodeInput"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:ModLibrary.KeyCodeInput"/>, use this to change the position and scale of the <see cref="T:ModLibrary.KeyCodeInput"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:ModLibrary.KeyCodeInput"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddButton(System.String,System.Action,System.Action{UnityEngine.UI.Button})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.Button"/> to the page with the passed arguements
+            </summary>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Button"/></param>
+            <param name="onClick">Called when the user clicks on the created <see cref="T:UnityEngine.UI.Button"/></param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Button"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Button"/></param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddLabel(System.String,System.Action{UnityEngine.UI.Text})">
+            <summary>
+            Adds a label (a bit of text) to the page
+            </summary>
+            <param name="displayName">The page to display</param>
+            <param name="onCreate">Called when the label is created, use this to change the properties of the <see cref="T:UnityEngine.UI.Text"/></param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddGeneric(ModLibrary.ModdedOptionPageItem)">
+            <summary>
+            Adds a generic page item, use this to add your own item types! To create a new item type simply make a class that extends <see cref="T:ModLibrary.ModdedOptionPageItem"/> and pass a instance of it to this class
+            </summary>
+            <param name="customItem">The generic <see cref="T:ModLibrary.ModdedOptionPageItem"/> to add</param>
+        </member>
+        <member name="T:ModLibrary.ModOptionsWindowBuilder.Rect">
+            <summary>
+            Used to represent a position and scale of items in modded option window pages
+            </summary>
+        </member>
+        <member name="F:ModLibrary.ModOptionsWindowBuilder.Rect.Position">
+            <summary>
+            The position of the item, if null keeps default values
+            </summary>
+        </member>
+        <member name="F:ModLibrary.ModOptionsWindowBuilder.Rect.Scale">
+            <summary>
+            The Scale of the item, if null keeps defualt values
+            </summary>
+        </member>
         <member name="T:ModLibrary.FirstPersonMoverExtensions">
             <summary>
             Defines extension methods for <see cref="T:FirstPersonMover"/>
@@ -647,6 +983,56 @@
             <summary>
             Extension methods for mod settings handling
             </summary>
+        </member>
+        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsStringValue(SettingsManager,ModLibrary.Mod,System.String,System.String)">
+            <summary>
+            Gets a <see cref="T:System.String"/> value saved in the loaded settings
+            </summary>
+            <param name="me"></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="name">The name of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsBoolValue(SettingsManager,ModLibrary.Mod,System.String,System.Boolean)">
+            <summary>
+            Gets a <see cref="T:System.Boolean"/> value saved in the loaded settings
+            </summary>
+            <param name="me"></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="name">The name of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsFloatValue(SettingsManager,ModLibrary.Mod,System.String,System.Single)">
+            <summary>
+            Gets a <see cref="T:System.Single"/> value saved in the loaded settings
+            </summary>
+            <param name="me"></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="name">The name of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsIntValue(SettingsManager,ModLibrary.Mod,System.String,System.Int32)">
+            <summary>
+            Gets an <see cref="T:System.Int32"/> value saved in the loaded settings
+            </summary>
+            <param name="me"></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="name">The name of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsKeyCodeValue(SettingsManager,ModLibrary.Mod,System.String,UnityEngine.KeyCode)">
+            <summary>
+            Gets a <see cref="T:UnityEngine.KeyCode"/> value saved in the loaded settings
+            </summary>
+            <param name="me"></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="name">The name of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
         </member>
         <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsStringValue(SettingsManager,ModLibrary.Mod,System.String)">
             <summary>
@@ -1290,162 +1676,260 @@
             <param name="path">The path specified</param>
             <returns></returns>
         </member>
-        <member name="T:ModLibrary.ModOptionsWindowBuilder">
+        <member name="T:ModLibrary.ModdedOptionPageItem">
             <summary>
-            Used to place all of the options in the options window
+            A base class for modded option page items
             </summary>
         </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddSlider(System.Single,System.Single,System.Single,System.String,UnityEngine.UI.Slider@,System.Action{System.Single})">
+        <member name="F:ModLibrary.ModdedOptionPageItem.CustomRect">
             <summary>
-            Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
-            </summary>
-            <param name="min">The minimum value of the slider</param>
-            <param name="max">The maximum value of the slider</param>
-            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-            <param name="slider">A reference that is set to the created slider</param>
-            <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddSlider(System.Single,System.Single,System.Single,System.String,System.Action{System.Single})">
-            <summary>
-            Adds a slider, note that the value of the slider will be saved by Mod-Bot so you dont need to save it in a ny way
-            </summary>
-            <param name="min">The minimum value of the slider</param>
-            <param name="max">The maximum value of the slider</param>
-            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-            <param name="name">The name of the slider, this will both be displayed to the user and used in the mod to get the value (no 2 names should EVER be the same)</param>
-            <param name="onChange">A callback that gets called when the slider gets changed, if null wont do anything</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddIntSlider(System.Int32,System.Int32,System.Int32,System.String,UnityEngine.UI.Slider@,System.Action{System.Int32})">
-            <summary>
-            Adds a slider to the options window that can only be whole numbers
-            </summary>
-            <param name="min">The minimum value of the slider</param>
-            <param name="max">That maximum value of the slider</param>
-            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-            <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
-            <param name="slider">A reference that is set to the created slider</param>
-            <param name="onChange">Called when the value is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddIntSlider(System.Int32,System.Int32,System.Int32,System.String,System.Action{System.Int32})">
-            <summary>
-            Adds a slider to the options window that can only be whole numbers
-            </summary>
-            <param name="min">The minimum value of the slider</param>
-            <param name="max">That maximum value of the slider</param>
-            <param name="defaultValue">The value the slider will be set to before it is changed by the user</param>
-            <param name="name">Both the display name in the list and used by you to get the value (no 2 names should EVER be the same)</param>
-            <param name="onChange">Called when the value is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddCheckbox(System.Boolean,System.String,UnityEngine.UI.Toggle@,System.Action{System.Boolean})">
-            <summary>
-            Adds a checkbox to the mods window
-            </summary>
-            <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
-            <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
-            <param name="toggle">>A reference that is set to the created toggle</param>
-            <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddCheckbox(System.Boolean,System.String,System.Action{System.Boolean})">
-            <summary>
-            Adds a checkbox to the mods window
-            </summary>
-            <param name="defaultValue">The value the checkbox will be set to before the user changes it</param>
-            <param name="name">Both the display name of the checkbox and what you use to get the value of the checkbox (no 2 names should EVER be the same)</param>
-            <param name="onChange">Called when the value of the checkbox is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddInputField(System.String,System.String,UnityEngine.UI.InputField@,System.Action{System.String})">
-            <summary>
-            Adds a input field to the mods window
-            </summary>
-            <param name="defaultValue">The defualt value before it is edited by the user</param>
-            <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
-            <param name="inputField">A reference to the created InputField</param>
-            <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddInputField(System.String,System.String,System.Action{System.String})">
-            <summary>
-            Adds a input field to the mods window
-            </summary>
-            <param name="defaultValue">The defualt value before it is edited by the user</param>
-            <param name="name">Name used both as a display name and as a key for you to get the value by later (no 2 names should EVER be the same)</param>
-            <param name="onChange">Gets called when the value of the inputField gets changed, if null doesnt nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropdown(System.String[],System.Int32,System.String,UnityEngine.UI.Dropdown@,System.Action{System.Int32})">
-            <summary>
-            Adds a dropdown to the mods window
-            </summary>
-            <param name="options">The diffrent options that should be selectable</param>
-            <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
-            <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
-            <param name="dropdown">a reference to the dropdown created, null if defaultIndex is not in the bounds of options</param>
-            <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropdown(System.String[],System.Int32,System.String,System.Action{System.Int32})">
-            <summary>
-            Adds a dropdown to the mods window
-            </summary>
-            <param name="options">The diffrent options that should be selectable</param>
-            <param name="defaultIndex">what index in the previus array will be selected before the user edits it</param>
-            <param name="name">Display name and key for you later (no 2 names should EVER be the same)</param>
-            <param name="onChange">Gets called when the value of the dropdown is changed, if null does nothing</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropDown``1(System.Int32,System.String,UnityEngine.UI.Dropdown@,System.Action{System.Int32})">
-            <summary>
-            Adds a dropdown to the options window
-            </summary>
-            <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
-            <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
-            <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
-            <param name="dropdown">a refrence to the dropdown created</param>
-            <param name="onChange"></param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddDropDown``1(System.Int32,System.String,System.Action{System.Int32})">
-            <summary>
-            Adds a dropdown to the options window
-            </summary>
-            <typeparam name="T">Must be an enum type, the options of this enum will be displayed as the options of the dropdown</typeparam>
-            <param name="defaultIndex">The index in the enum that will be selected before the user edits it</param>
-            <param name="name">Display name and key to get value (no 2 names should EVER be the same)</param>
-            <param name="onChange"></param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddButton(System.String,UnityEngine.UI.Button@,UnityEngine.Events.UnityAction)">
-            <summary>
-            Adds a button to the options window
-            </summary>
-            <param name="text">The text displayed on the button</param>
-            <param name="button">a refrence to the created button</param>
-            <param name="callback">Called when the user clicks the button</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddButton(System.String,UnityEngine.Events.UnityAction)">
-            <summary>
-            Adds a button to the options window
-            </summary>
-            <param name="text">The text displayed on the button</param>
-            <param name="callback">Called when the user clicks the button</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddLabel(System.String,UnityEngine.UI.Text@)">
-            <summary>
-            Adds a plain text to the options window
-            </summary>
-            <param name="text">string that will be displayed</param>
-            <param name="_text">a refrence to the created text</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.AddLabel(System.String)">
-            <summary>
-            Adds a plain text to the options window
-            </summary>
-            <param name="text">string that will be displayed</param>
-        </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.CloseWindow">
-            <summary>
-            Closes the options window, this also opens its parent window (probably the mods window)
+            The custom rect of the page, if null uses default values
             </summary>
         </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.ForceCloseWindow">
+        <member name="F:ModLibrary.ModdedOptionPageItem.DisplayName">
             <summary>
-            Closes the options window, does NOT open the parent window
+            The name that should be displayed on the option
             </summary>
+        </member>
+        <member name="F:ModLibrary.ModdedOptionPageItem.SaveID">
+            <summary>
+            The Id of the option
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModdedOptionPageItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Should create the object you want to spawn as a child of holder
+            </summary>
+            <param name="holder">The object that the spawned object should be a child of</param>
+            <param name="owner">The mod who spawned the option</param>
+        </member>
+        <member name="M:ModLibrary.ModdedOptionPageItem.applyCustomRect(UnityEngine.GameObject)">
+            <summary>
+            Applies the <see cref="F:ModLibrary.ModdedOptionPageItem.CustomRect"/> to the passed <see cref="T:UnityEngine.GameObject"/>, if <see cref="F:ModLibrary.ModdedOptionPageItem.CustomRect"/> is not <see langword="null"/>.
+            </summary>
+            <param name="spawnedObject"></param>
+        </member>
+        <member name="T:ModLibrary.LayerMasks">
+            <summary>
+            Defines constants that represent the different layer masks defined in the unity editor
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.Default">
+            <summary>
+            Builtin Unity layer, default layer if none is defined
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.TransparentFX">
+            <summary>
+            Builtin Unity layer, makes effects such as lens flares shine through the object its applied to
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.IgnoreRaycast">
+            <summary>
+            Builtin Unity layer, raycasts will ignore any objects wuth this layer
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.Water">
+            <summary>
+            Builtin Unity layer, unused in-game
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.UI">
+            <summary>
+            Builtin Unity layer, default layer for all UI
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.UnderArea">
+            <summary>
+            Layer for the starting area and upgrade room
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CloneDroneLogo">
+            <summary>
+            Layer for the logo on the main menu
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CentauriStation">
+            <summary>
+            Layer for the Centauri Station visible in chapter 2 of story mode
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.IgnoreDuringTwitchSpawnRaycast">
+            <summary>
+            Used to ignore the raycast for twitch spawns
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.ToolCamera">
+            <summary>
+            Unknown
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.EnvironmentalHazards">
+            <summary>
+            Layer for all environmentel hazards, i.e. sawblades, spike traps, fire jets, lava, etc.
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CutsceneCameraSet">
+            <summary>
+            Unknown
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.BluescreenNetwork">
+            <summary>
+            Layer for the network like structure in the ending cutscene of chapter 3 of story mode
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.Environment">
+            <summary>
+            Layer for all walkable surfaces, including level objects
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CharacterRoot">
+            <summary>
+            Layer for all characters
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.BodyPart">
+            <summary>
+            Layer for all severed body parts
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.Projectile">
+            <summary>
+            Layer for all projectiles, i.e. arrows, grenade shrapnel and flame breath projectiles
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CameraCollider">
+            <summary>
+            Layer for all objects the camera should collide with
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.EnvironmentRigidBodies">
+            <summary>
+            Layer for all environment rigid bodies
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CharacterObjectPusher">
+            <summary>
+            Layer for characters to push objects
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.BodyPartOnlyCollider">
+            <summary>
+            Layer for objects that will only collide with body parts
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.FinalAreaObelisk">
+            <summary>
+            Layer for the final area marker in Last Bot Standing
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.CharacterOnlyCollider">
+            <summary>
+            Layer for objects that will only collide with characters
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LayerMasks.EnvironmentOnlyCollider">
+            <summary>
+            Layer for objects that will only collide with the environment
+            </summary>
+        </member>
+        <member name="M:ModLibrary.LayerMasks.Combine(System.Int32[])">
+            <summary>
+            Combines all the given layers into one layer mask
+            </summary>
+            <param name="layers">The layers to apply to the final mask</param>
+            <returns>The layermask that will have all the collision layers of <paramref name="layers"/></returns>
+        </member>
+        <member name="T:ModLibrary.ModdedSettings">
+            <summary>
+            Used to save and set modded settings
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.GetModdedSettingsStringValue(ModLibrary.Mod,System.String,System.String)">
+            <summary>
+            Gets a <see cref="T:System.String"/> value saved in the loaded settings
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.GetModdedSettingsFloatValue(ModLibrary.Mod,System.String,System.Single)">
+            <summary>
+            Gets a <see langword="float"/> value saved in the loaded settings
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.GetModdedSettingsIntValue(ModLibrary.Mod,System.String,System.Int32)">
+            <summary>
+            Gets a <see langword="int"/> value saved in the loaded settings
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.GetModdedSettingsBoolValue(ModLibrary.Mod,System.String,System.Boolean)">
+            <summary>
+            Gets a <see langword="bool"/> value saved in the loaded settings
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.GetModdedSettingsKeyCodeValue(ModLibrary.Mod,System.String,UnityEngine.KeyCode)">
+            <summary>
+            Gets a <see cref="T:UnityEngine.KeyCode"/> value saved in the loaded settings
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
+            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsStringValue(ModLibrary.Mod,System.String,System.String)">
+            <summary>
+            Sets a <see cref="T:System.String"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsFloatValue(ModLibrary.Mod,System.String,System.Single)">
+            <summary>
+            Sets a <see langword="float"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsIntValue(ModLibrary.Mod,System.String,System.Int32)">
+            <summary>
+            Sets a <see langword="int"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsBoolValue(ModLibrary.Mod,System.String,System.Boolean)">
+            <summary>
+            Sets a <see langword="bool"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsKeyCodeValue(ModLibrary.Mod,System.String,UnityEngine.KeyCode)">
+            <summary>
+            Sets a <see cref="T:UnityEngine.KeyCode"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
         </member>
         <member name="T:ModLibrary.EnumTools">
             <summary>
@@ -1631,6 +2115,266 @@
             Returns if the <see cref="T:UnityEngine.Coroutine"/> should keep waiting
             </summary>
         </member>
+        <member name="T:InternalModBot.LineInfo">
+            <summary>
+            Describes a line in 3D space
+            </summary>
+        </member>
+        <member name="M:InternalModBot.LineInfo.#ctor(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
+            <summary>
+            Initializes a new instance of the <see cref="T:InternalModBot.LineInfo"/> class
+            </summary>
+            <param name="point1"></param>
+            <param name="point2"></param>
+            <param name="color"></param>
+            <param name="endTime"></param>
+        </member>
+        <member name="F:InternalModBot.LineInfo.Point1">
+            <summary>
+            The start point of the line
+            </summary>
+        </member>
+        <member name="F:InternalModBot.LineInfo.Point2">
+            <summary>
+            The end point of the line
+            </summary>
+        </member>
+        <member name="F:InternalModBot.LineInfo.Color">
+            <summary>
+            The <see cref="T:UnityEngine.Color"/> of the line
+            </summary>
+        </member>
+        <member name="F:InternalModBot.LineInfo.EndTime">
+            <summary>
+            The time we want to stop displaying the line
+            </summary>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionLabelItem">
+            <summary>
+            Used by Mod-Bot to reprecent label items on modded option pages
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionLabelItem.OnCreate">
+            <summary>
+            Called when the label is created
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionLabelItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionButtonItem">
+            <summary>
+            Used by Mod-Bot to reprecent a button in a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionButtonItem.OnClick">
+            <summary>
+            If is not null, is called when the user clicks the button
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionButtonItem.OnCreate">
+            <summary>
+            Is called when the button is spawned
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionButtonItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionKeyCodeItem">
+            <summary>
+            Used by Mod-Bot to reprecent a KeyCode item in a modded options window
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionKeyCodeItem.DefaultValue">
+            <summary>
+            The default keycode
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionKeyCodeItem.OnCreate">
+            <summary>
+            called when the KeyCodeInput item is created
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionKeyCodeItem.OnChange">
+            <summary>
+            Called when the keycode is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionKeyCodeItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionDropDownItem">
+            <summary>
+            Used by Mod-Bot to reprecent a dropdown item in a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionDropDownItem.Options">
+            <summary>
+            The dropdowns options
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionDropDownItem.DefaultValue">
+            <summary>
+            The default value of the dropdown
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionDropDownItem.OnCreate">
+            <summary>
+            Called when the dropdown is created
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionDropDownItem.OnChange">
+            <summary>
+            Called when the value of the dropdown is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionDropDownItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionIntSliderItem">
+            <summary>
+            Used to reprecent Int slider items on a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionIntSliderItem.Max">
+            <summary>
+            The max value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionIntSliderItem.Min">
+            <summary>
+            The min value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionIntSliderItem.DefaultValue">
+            <summary>
+            The default value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionIntSliderItem.OnCreate">
+            <summary>
+            Called when the slider is created
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionIntSliderItem.OnChange">
+            <summary>
+            Called when the value of the slider is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionIntSliderItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionInputFieldItem">
+            <summary>
+            Used by Mod-Bot to reprecent a InputField in a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionInputFieldItem.DefaultValue">
+            <summary>
+            The default value of the input field
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionInputFieldItem.OnCreate">
+            <summary>
+            Called when the InputField is spawned
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionInputFieldItem.OnChange">
+            <summary>
+            Called when the content of the input field is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionInputFieldItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionCheckboxItem">
+            <summary>
+            Used by Mod-Bot to reprecent checkbox items
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionCheckboxItem.DefaultValue">
+            <summary>
+            The value of the checkbox by default
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionCheckboxItem.OnCreate">
+            <summary>
+            Called when the toggle is spawned
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionCheckboxItem.OnChange">
+            <summary>
+            called when the value of the toggle is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionCheckboxItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionSliderItem">
+            <summary>
+            Used by Mod-Bot to reprecent Slider items on modded option pages
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionSliderItem.Max">
+            <summary>
+            The max value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionSliderItem.Min">
+            <summary>
+            The min value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionSliderItem.DefaultValue">
+            <summary>
+            The default value of the slider
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionSliderItem.OnCreate">
+            <summary>
+            Called when the slider is created
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionSliderItem.OnChange">
+            <summary>
+            Called when the value of the slider is changed
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionSliderItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
         <member name="T:InternalModBot.CalledFromInjections">
             <summary>
             Contains methods that get called from the game itself
@@ -1777,104 +2521,11 @@
             Used by Mod-Bot to draw lines on screen
             </summary>
         </member>
-        <member name="M:InternalModBot.DebugLineDrawingManager.AddLine(InternalModBot.DebugLineDrawingManager.LineInfo)">
+        <member name="M:InternalModBot.DebugLineDrawingManager.AddLine(InternalModBot.LineInfo)">
             <summary>
             Adds a line to the lines to draw this frame
             </summary>
             <param name="info"></param>
-        </member>
-        <member name="T:InternalModBot.DebugLineDrawingManager.LineInfo">
-            <summary>
-            Describes a line in 3D space
-            </summary>
-        </member>
-        <member name="M:InternalModBot.DebugLineDrawingManager.LineInfo.#ctor(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
-            <summary>
-            Initializes a new instance of the <see cref="T:InternalModBot.DebugLineDrawingManager.LineInfo"/> class
-            </summary>
-            <param name="point1"></param>
-            <param name="point2"></param>
-            <param name="color"></param>
-            <param name="endTime"></param>
-        </member>
-        <member name="F:InternalModBot.DebugLineDrawingManager.LineInfo.Point1">
-            <summary>
-            The start point of the line
-            </summary>
-        </member>
-        <member name="F:InternalModBot.DebugLineDrawingManager.LineInfo.Point2">
-            <summary>
-            The end point of the line
-            </summary>
-        </member>
-        <member name="F:InternalModBot.DebugLineDrawingManager.LineInfo.Color">
-            <summary>
-            The <see cref="T:UnityEngine.Color"/> of the line
-            </summary>
-        </member>
-        <member name="F:InternalModBot.DebugLineDrawingManager.LineInfo.EndTime">
-            <summary>
-            The time we want to stop displaying the line
-            </summary>
-        </member>
-        <member name="T:InternalModBot.DoubleValueHolder`2">
-            <summary>
-            Used to hold 2 values in 1 object
-            </summary>
-            <typeparam name="T1"></typeparam>
-            <typeparam name="T2"></typeparam>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.#ctor(`0,`1)">
-            <summary>
-            Initializes a new instance of the <see cref="T:InternalModBot.DoubleValueHolder`2"/> struct
-            </summary>
-            <param name="_first">The first value to store</param>
-            <param name="_second">The second value to hold</param>
-        </member>
-        <member name="F:InternalModBot.DoubleValueHolder`2.FirstValue">
-            <summary>
-            The first value held by this object
-            </summary>
-        </member>
-        <member name="F:InternalModBot.DoubleValueHolder`2.SecondValue">
-            <summary>
-            The second value held by this object
-            </summary>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.op_Equality(InternalModBot.DoubleValueHolder{`0,`1},InternalModBot.DoubleValueHolder{`0,`1})">
-            <summary>
-            Compares 2 instances of the <see cref="T:InternalModBot.DoubleValueHolder`2"/> struct
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.op_Inequality(InternalModBot.DoubleValueHolder{`0,`1},InternalModBot.DoubleValueHolder{`0,`1})">
-            <summary>
-            Compares 2 instances of the <see cref="T:InternalModBot.DoubleValueHolder`2"/> struct
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.Equals(System.Object)">
-            <summary>
-            Checks if the current instance has the same values as the given object
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.GetHashCode">
-            <summary>
-            Gets the hash code
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.DoubleValueHolder`2.ToString">
-            <summary>
-            Gets info about the current value and places it in a string
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:InternalModBot.ErrorChanger">
             <summary>
@@ -2420,7 +3071,7 @@
             Saves a string to the save file and loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <param name="_string"></param>
         </member>
         <member name="M:InternalModBot.OptionsSaver.LoadString(ModLibrary.Mod,System.String)">
@@ -2428,7 +3079,7 @@
             Loads a string from the loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:InternalModBot.OptionsSaver.SaveInt(ModLibrary.Mod,System.String,System.Int32)">
@@ -2436,7 +3087,7 @@
             Saves a int to the save file and loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <param name="_int"></param>
         </member>
         <member name="M:InternalModBot.OptionsSaver.LoadInt(ModLibrary.Mod,System.String)">
@@ -2444,7 +3095,7 @@
             loads an int from the loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:InternalModBot.OptionsSaver.SaveFloat(ModLibrary.Mod,System.String,System.Single)">
@@ -2452,7 +3103,7 @@
             Saves a float to the save file and loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <param name="_float"></param>
         </member>
         <member name="M:InternalModBot.OptionsSaver.LoadFloat(ModLibrary.Mod,System.String)">
@@ -2460,7 +3111,7 @@
             loads a float from the loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:InternalModBot.OptionsSaver.SaveBool(ModLibrary.Mod,System.String,System.Boolean)">
@@ -2468,7 +3119,7 @@
             Saves a bool to the save file and loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <param name="_bool"></param>
         </member>
         <member name="M:InternalModBot.OptionsSaver.LoadBool(ModLibrary.Mod,System.String)">
@@ -2476,7 +3127,7 @@
             loads a bool from the loaded options
             </summary>
             <param name="mod"></param>
-            <param name="name"></param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="T:InternalModBot.OptionsSaver.SaveFormats">
