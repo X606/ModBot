@@ -17,9 +17,11 @@ namespace InternalModBot
             
             GameUIRoot.Instance.ErrorWindow.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = "The Mod-Bot devs would love to see this!";
 
+            /* NOTE: This causes us to not be able to connect to multiplayer servers
             string versionString = VersionNumberManager.Instance.GetVersionString();
             versionString += " - Modded Client";
             Accessor.SetPrivateField("_versionString", VersionNumberManager.Instance, versionString);
+            */
         }
     }
 }
