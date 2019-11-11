@@ -41,24 +41,7 @@
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetLoader.cs" />
-    <Compile Include="Internal\LineInfo.cs" />
-    <Compile Include="ModHandling\UIControllers\KeyCodeInput.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionLabelItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionButtonItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionKeyCodeItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionDropDownItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionIntSliderItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionInputFieldItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionCheckboxItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilderLegacySupport.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
     <Compile Include="Generic2ButtonDialoge.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\ModSettingsExtensions.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\SingleExtensions.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
@@ -66,6 +49,7 @@
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
+    <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\ModSuggestingManager.cs" />
@@ -78,30 +62,47 @@
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="Internal\CloseModOptionsWindowOnEscapeKey.cs" />
     <Compile Include="Internal\LoadedMod.cs" />
-    <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
-    <Compile Include="ModUtilities\InputRestrictions.cs" />
     <Compile Include="ModHandling\Mod.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadInfoItem.cs" />
+    <Compile Include="ModHandling\UIControllers\KeyCodeInput.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionButtonItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionCheckboxItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionDropDownItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionInputFieldItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionIntSliderItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionKeyCodeItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionLabelItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\ModsManager.cs" />
+    <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilderLegacySupport.cs" />
     <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
+    <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\ModSettingsExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\SingleExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
+    <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
+    <Compile Include="ModUtilities\InputRestrictions.cs" />
     <Compile Include="ModUtilities\LayerMasks.cs" />
     <Compile Include="ModUtilities\ModdedSettings.cs" />
     <Compile Include="ModUtilities\ModTools.cs" />
     <Compile Include="Internal\OptionsSaver.cs" />
     <Compile Include="ModHandling\PassOnToModsManager.cs" />
-    <Compile Include="ModUtilities\UpgradeIconDownloader.cs" />
     <Compile Include="ModUtilities\MultiplayerTools\ModBotUserIdentifier.cs" />
     <Compile Include="ModUtilities\MultiplayerTools\ModSharingManager.cs" />
     <Compile Include="ModUtilities\MultiplayerTools\MultiplayerEventCallback.cs" />
     <Compile Include="ModUtilities\MultiplayerTools\MultiplayerEventListener.cs" />
     <Compile Include="ModUtilities\MultiplayerTools\MultiplayerMessageSender.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Internal\UpdateChecker.cs" />
+    <Compile Include="ModUtilities\UpgradeIconDownloader.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelAndUpgradeInitialization.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelInitialization.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Internal\UpdateChecker.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
