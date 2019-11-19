@@ -99,27 +99,27 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Draws a line for the main camera, and if thats null for the player camera between point1 and point2 in the color of color for one frame.
+        /// Draws a line from one point to another in a specified color
         /// </summary>
         /// <param name="point1">Point to draw from</param>
         /// <param name="point2">Point to draw to</param>
         /// <param name="color">The color to draw in</param>
         /// <param name="timeToStay">The amount of unscaledTime in seconds to render the line</param>
-        public static void DrawLine(Vector3 point1, Vector3 point2, Color color, float timeToStay = 0)
+        public static void DrawLine(Vector3 point1, Vector3 point2, Color color, float timeToStay = 0f)
         {
             DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point1, point2, color, Time.unscaledTime + timeToStay));
         }
 
         /// <summary>
-        /// Draws a ray for the main camera, and if thats null for the players camera from point in the direction of direction in the color color for one frame.
+        /// Draws a ray from a point in a direction. The ray will always have a length of 1000 units
         /// </summary>
         /// <param name="point">The point to draw from</param>
         /// <param name="direction">The direction to draw in</param>
         /// <param name="color">The color to draw in</param>
         /// <param name="timeToStay">The amount of unscaledTime in seconds to render the line</param>
-        public static void DrawRay(Vector3 point, Vector3 direction, Color color, float timeToStay = 0)
+        public static void DrawRay(Vector3 point, Vector3 direction, Color color, float timeToStay = 0f)
         {
-            Vector3 otherPoint = point + (direction.normalized * 1000);
+            Vector3 otherPoint = point + (direction.normalized * 1000f);
             DebugLineDrawingManager.Instance.AddLine(new DebugLineDrawingManager.LineInfo(point, otherPoint, color, Time.unscaledTime + timeToStay));
         }
 
@@ -131,7 +131,7 @@ namespace ModLibrary
         {
             _outputText = "";
             writeToFile(obj.ToString());
-            recursivePrintAllChildren("   ", obj);
+            recursivePrintAllChildren("    ", obj);
 
             File.WriteAllText(Application.persistentDataPath + "/debug.txt", _outputText);
             Process.Start("notepad.exe", Application.persistentDataPath + "/debug.txt");
@@ -139,14 +139,15 @@ namespace ModLibrary
 
         static void recursivePrintAllChildren(string pre, Transform obj)
         {
-            Component[] components = obj.gameObject.GetComponents(typeof(Component));
+            Component[] components = obj.GetComponents(typeof(Component));
 
             if (components.Length != 0)
                 writeToFile(pre + "Components: ");
 
             for (int i = 0; i < components.Length; i++)
             {
-                writeToFile(pre + components[i].ToString());
+                string componentString = components[i].name + " (" + components[i].GetType().FullName + ")";
+                writeToFile(pre + componentString);
             }
 
             if (obj.childCount != 0)
@@ -156,7 +157,7 @@ namespace ModLibrary
             {
                 Transform child = obj.GetChild(i);
                 writeToFile(pre + i + ": " + child.name);
-                recursivePrintAllChildren(pre + "   ", child);
+                recursivePrintAllChildren(pre + "    ", child);
             }
         }
 
