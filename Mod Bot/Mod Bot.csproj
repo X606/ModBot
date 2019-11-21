@@ -86,7 +86,7 @@
     <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
     <Compile Include="ModUtilities\InputRestrictions.cs" />
-    <Compile Include="ModUtilities\LayerMasks.cs" />
+    <Compile Include="ModUtilities\Layers.cs" />
     <Compile Include="ModUtilities\ModdedSettings.cs" />
     <Compile Include="ModUtilities\ModTools.cs" />
     <Compile Include="Internal\OptionsSaver.cs" />

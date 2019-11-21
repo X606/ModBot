@@ -12,7 +12,7 @@ namespace ModLibrary
     /// <summary>
     /// Defines constants that represent the different layer masks defined in the unity editor
     /// </summary>
-    public static class LayerMasks
+    public static class Layers
     {
         /// <summary>
         /// Builtin Unity layer, default layer if none is defined
@@ -110,22 +110,5 @@ namespace ModLibrary
         /// Layer for objects that will only collide with the environment
         /// </summary>
         public const int EnvironmentOnlyCollider = 26;
-
-        /// <summary>
-        /// Combines all the given layers into one layer mask
-        /// </summary>
-        /// <param name="layers">The layers to apply to the final mask</param>
-        /// <returns>The layermask that will have all the collision layers of <paramref name="layers"/></returns>
-        public static int Combine(params int[] layers)
-        {
-            int finalLayer = 0;
-
-            foreach (int layer in layers)
-            {
-                finalLayer |= 1 << layer;
-            }
-
-            return finalLayer;
-        }
     }
 }
