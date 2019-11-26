@@ -75,7 +75,7 @@ namespace InternalModBot
             },
             "Yes", delegate
             {
-                StartCoroutine(downloadModFileAndLoadAsyc(_modDownloadUrl));
+                StartCoroutine(downloadModFileAndLoadAsync(_modDownloadUrl));
 
             });
         }
@@ -86,12 +86,12 @@ namespace InternalModBot
             "No", null,
             "Yes", delegate
             {
-                StartCoroutine(downloadModBytesAndLoadAsyc(_modDownloadUrl));
+                StartCoroutine(downloadModBytesAndLoadAsync(_modDownloadUrl));
             });
 
         }
 
-        static IEnumerator downloadModFileAndLoadAsyc(string url)
+        static IEnumerator downloadModFileAndLoadAsync(string url)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
@@ -110,7 +110,7 @@ namespace InternalModBot
             ModsPanelManager.Instance.ReloadModItems();
         }
 
-        static IEnumerator downloadModBytesAndLoadAsyc(string url)
+        static IEnumerator downloadModBytesAndLoadAsync(string url)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();

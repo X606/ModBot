@@ -48,7 +48,7 @@ namespace ModLibrary
                 {
                     SetPage(_pages[0]);
                 }
-            }, 0f);
+            }, -1f); // We do -1f here because the game might be paused and cause this to be triggered right after it is unpaused
         }
         
         /// <summary>
@@ -289,7 +289,7 @@ namespace ModLibrary
             public void AddDropdown<T>(T defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<T> onChange = null)
             {
                 if(!typeof(T).IsEnum)
-                    throw new InvalidOperationException("Generic type must be a enum");
+                    throw new InvalidOperationException("Generic type must be an enum");
 
                 string[] names = Enum.GetNames(typeof(T));
                 AddDropDown(names, (int)((object)defaultValue), displayName, saveID, onCreate, customRect, delegate(int value)

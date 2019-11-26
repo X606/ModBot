@@ -41,21 +41,24 @@ namespace InternalModBot
         /// <param name="mod"></param>
         public static void RemoveModdedUpgradesFor(Mod mod)
         {
-            foreach (var item in _allModdedUpgradePages)
+            for (int i = 0; i < _allModdedUpgradePages.Count; i++)
             {
+                KeyValuePair<Mod, List<ModdedUpgradeRepresenter>> item = _allModdedUpgradePages[i];
                 if (item.Key == mod)
                 {
                     foreach (ModdedUpgradeRepresenter upgradeType in item.Value)
                     {
-                        for (int i = 0; i < UpgradeManager.Instance.UpgradeDescriptions.Count; i++)
+                        for (int o = 0; o < UpgradeManager.Instance.UpgradeDescriptions.Count; o++)
                         {
-                            if (UpgradeManager.Instance.UpgradeDescriptions[i].UpgradeType == upgradeType.UpgradeType && UpgradeManager.Instance.UpgradeDescriptions[i].Level == upgradeType.Level && IsModdedUpgradeType(upgradeType.UpgradeType))
+                            if (UpgradeManager.Instance.UpgradeDescriptions[o].UpgradeType == upgradeType.UpgradeType && UpgradeManager.Instance.UpgradeDescriptions[o].Level == upgradeType.Level && IsModdedUpgradeType(upgradeType.UpgradeType))
                             {
-                                UpgradeManager.Instance.UpgradeDescriptions.RemoveAt(i);
-                                i--;
+                                UpgradeManager.Instance.UpgradeDescriptions.RemoveAt(o);
+                                o--;
                             }
                         }
                     }
+
+                    _allModdedUpgradePages[i] = new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, new List<ModdedUpgradeRepresenter>());
 
                     return;
                 }
@@ -63,7 +66,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Adds a upgrade to keep track of, this upgrade will be displayed on the page of the mod passed
+        /// Adds an upgrade to keep track of, this upgrade will be displayed on the page of the mod passed
         /// </summary>
         /// <param name="upgradeType"></param>
         /// <param name="level"></param>

@@ -58,7 +58,6 @@ namespace InternalModBot
                         {
                             Debug.LogError("Mod '" + file + "' is not working, make sure that it is set up right: " + ex.Message);
                         }, 0.5f);
-
                     }
                 }
             }
@@ -93,10 +92,10 @@ namespace InternalModBot
                         type = types[i];
                     }
                 }
+
                 if (type == null)
-                {
-                    throw new Exception("could not find class 'main'");
-                }
+                    throw new Exception("Could not find class 'main'");
+
                 object obj = Activator.CreateInstance(type);
 
                 Mod modToLoad = obj as Mod;
@@ -127,7 +126,6 @@ namespace InternalModBot
                         throw new Exception("Caught exception in OnModRefreshed for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
                     }
                 }
-
 
             }
             catch (Exception e)
