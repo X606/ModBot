@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using InternalModBot;
+using System;
 
 namespace ModLibrary
 {
@@ -18,7 +19,7 @@ namespace ModLibrary
         static readonly Dictionary<string, Transform> _moddedLevelObjectTransforms = new Dictionary<string, Transform>();
         static readonly Dictionary<string, Texture2D> _moddedLevelObjectTextures = new Dictionary<string, Texture2D>();
 
-        static readonly List<DoubleValueHolder<string, string>> _moddedLevelObjects = new List<DoubleValueHolder<string, string>>();
+        static readonly List<Tuple<string, string>> _moddedLevelObjects = new List<Tuple<string, string>>();
 
         /// <summary>
         /// Adds an object to the editor
@@ -38,14 +39,14 @@ namespace ModLibrary
             if (!_moddedLevelObjectTransforms.ContainsKey(fullPath))
                 _moddedLevelObjectTransforms.Add(fullPath, transform);
 
-            DoubleValueHolder<string, string> doubleValueHolder = new DoubleValueHolder<string, string>(fullPath, texturePath);
+            Tuple<string, string> tuple = new Tuple<string, string>(fullPath, texturePath);
 
-            if (!_moddedLevelObjects.Contains(doubleValueHolder))
-                _moddedLevelObjects.Add(doubleValueHolder);
+            if (!_moddedLevelObjects.Contains(tuple))
+                _moddedLevelObjects.Add(tuple);
 
         }
 
-        internal static Object GetObjectData(string path)
+        internal static UnityEngine.Object GetObjectData(string path)
         {
             if (_moddedLevelObjectTransforms.ContainsKey(path))
                 return _moddedLevelObjectTransforms[path];
@@ -61,13 +62,13 @@ namespace ModLibrary
             List<LevelObjectEntry> levelObjects = LevelObjectsLibraryManager.Instance.GetLevelObjectsInLibrary();
             List<LevelObjectEntry> visibleLevelObjects = LevelObjectsLibraryManager.Instance.GetVisibleLevelEditorObjects();
 
-            foreach(DoubleValueHolder<string, string> item in _moddedLevelObjects)
+            foreach(Tuple<string, string> tuple in _moddedLevelObjects)
             {
                 LevelObjectEntry entry = new LevelObjectEntry();
-                string[] subStrings = item.FirstValue.Split("/".ToArray());
+                string[] subStrings = tuple.Item1.Split("/".ToArray());
                 entry.DisplayName = subStrings[subStrings.Length-1];
-                entry.PathUnderResources = item.FirstValue;
-                entry.PreviewPathUnderResources = item.SecondValue;
+                entry.PathUnderResources = tuple.Item1;
+                entry.PreviewPathUnderResources = tuple.Item2;
 
                 levelObjects.Add(entry);
                 visibleLevelObjects.Add(entry);

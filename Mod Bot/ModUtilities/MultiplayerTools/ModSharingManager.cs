@@ -27,7 +27,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="data"></param>
         /// <param name="modName"></param>
-        public void SendModToAllModBotClients(byte[] data, string modName)
+        public static void SendModToAllModBotClients(byte[] data, string modName)
         {
             string dataAsString = data.RawBytesToString();
 
@@ -99,7 +99,7 @@ namespace InternalModBot
             _downloadingData.Remove(id);
         }
 
-        bool hasDownloadedAllParts(string[] data)
+        static bool hasDownloadedAllParts(string[] data)
         {
             for (int i = 0; i < data.Length; i++)
             {
@@ -112,7 +112,7 @@ namespace InternalModBot
             return true;
         }
 
-        string generateID(int length)
+        static string generateID(int length)
         {
             string returnValue = "";
             for (int i = 0; i < length; i++)

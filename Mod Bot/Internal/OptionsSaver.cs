@@ -14,11 +14,10 @@ namespace InternalModBot
         static List<KeyValuePair<string, object>> _loadedkeys = new List<KeyValuePair<string, object>>();
 
         [JsonIgnore]
-        readonly static string _path;
+        readonly static string _path = Application.persistentDataPath + "/SavedModSettings.json";
 
         static OptionsSaver()
         {
-            _path = Application.persistentDataPath + "/SavedModSettings.json";
             if (System.IO.File.Exists(_path))
             {
                 string json = System.IO.File.ReadAllText(_path);
@@ -96,11 +95,11 @@ namespace InternalModBot
         /// Saves a string to the save file and loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <param name="_string"></param>
-        public static void SaveString(Mod mod, string name, string _string)
+        public static void SaveString(Mod mod, string id, string _string)
         {
-            string key = generateSaveFormatString(mod, SaveFormats.String, name);
+            string key = generateSaveFormatString(mod, SaveFormats.String, id);
             int? index = getIndexOfKey(key);
 
             if (index.HasValue)
@@ -119,9 +118,9 @@ namespace InternalModBot
         /// Loads a string from the loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static string LoadString(Mod mod, string name)
+        public static string LoadString(Mod mod, string id)
         {
             if (_loadedkeys == null)
             {
@@ -130,7 +129,7 @@ namespace InternalModBot
             
             foreach (KeyValuePair<string, object> value in _loadedkeys)
             {
-                if (value.Key == generateSaveFormatString(mod, SaveFormats.String, name))
+                if (value.Key == generateSaveFormatString(mod, SaveFormats.String, id))
                 {
                     return value.Value as string;
                 }
@@ -143,11 +142,11 @@ namespace InternalModBot
         /// Saves a int to the save file and loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <param name="_int"></param>
-        public static void SaveInt(Mod mod, string name, int _int)
+        public static void SaveInt(Mod mod, string id, int _int)
         {
-            string key = generateSaveFormatString(mod, SaveFormats.Int, name);
+            string key = generateSaveFormatString(mod, SaveFormats.Int, id);
             int? index = getIndexOfKey(key);
 
             if (index.HasValue)
@@ -166,9 +165,9 @@ namespace InternalModBot
         /// loads an int from the loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static int? LoadInt(Mod mod, string name)
+        public static int? LoadInt(Mod mod, string id)
         {
             if (_loadedkeys == null)
             {
@@ -177,7 +176,7 @@ namespace InternalModBot
             
             foreach (KeyValuePair<string, object> value in _loadedkeys)
             {
-                if (value.Key == generateSaveFormatString(mod, SaveFormats.Int, name))
+                if (value.Key == generateSaveFormatString(mod, SaveFormats.Int, id))
                 {
                     if (value.Value is int)
                     {
@@ -203,11 +202,11 @@ namespace InternalModBot
         /// Saves a float to the save file and loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <param name="_float"></param>
-        public static void SaveFloat(Mod mod, string name, float _float)
+        public static void SaveFloat(Mod mod, string id, float _float)
         {
-            string key = generateSaveFormatString(mod, SaveFormats.Float, name);
+            string key = generateSaveFormatString(mod, SaveFormats.Float, id);
             int? index = getIndexOfKey(key);
 
             if (index.HasValue)
@@ -226,9 +225,9 @@ namespace InternalModBot
         /// loads a float from the loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static float? LoadFloat(Mod mod, string name)
+        public static float? LoadFloat(Mod mod, string id)
         {
             if(_loadedkeys == null)
             {
@@ -237,7 +236,7 @@ namespace InternalModBot
 
             foreach(KeyValuePair<string, object> value in _loadedkeys)
             {
-                string generated = generateSaveFormatString(mod, SaveFormats.Float, name);
+                string generated = generateSaveFormatString(mod, SaveFormats.Float, id);
 
                 if(value.Key == generated)
                 {
@@ -264,11 +263,11 @@ namespace InternalModBot
         /// Saves a bool to the save file and loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <param name="_bool"></param>
-        public static void SaveBool(Mod mod, string name, bool _bool)
+        public static void SaveBool(Mod mod, string id, bool _bool)
         {
-            string key = generateSaveFormatString(mod, SaveFormats.Bool, name);
+            string key = generateSaveFormatString(mod, SaveFormats.Bool, id);
             int? index = getIndexOfKey(key);
 
             if (index.HasValue)
@@ -287,9 +286,9 @@ namespace InternalModBot
         /// loads a bool from the loaded options
         /// </summary>
         /// <param name="mod"></param>
-        /// <param name="name"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public static bool? LoadBool(Mod mod, string name)
+        public static bool? LoadBool(Mod mod, string id)
         {
             if (_loadedkeys == null)
             {
@@ -299,7 +298,7 @@ namespace InternalModBot
             bool? outputBool = null;
             foreach (KeyValuePair<string, object> value in _loadedkeys)
             {
-                if (value.Key == generateSaveFormatString(mod, SaveFormats.Bool, name))
+                if (value.Key == generateSaveFormatString(mod, SaveFormats.Bool, id))
                 {
                     outputBool = value.Value as bool?;
                     break;

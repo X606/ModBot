@@ -15,34 +15,32 @@ namespace InternalModBot
     {
         void Start()
         {
-            Vector3 pauseScreenButtonOffest = new Vector3(0f, 1.2f, 0f); 
+            Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(6).gameObject; // Gets the lower buttons container
-
-            titleScreenContainer.GetComponent<VerticalLayoutGroup>().spacing *= 0.3f;
+            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(7).gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
-            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(0).gameObject; // Gets the options button (we copy it and replace its organs and face)
+            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(1).gameObject; // Gets the options button (we copy it and replace its organs and face)
             GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
-            //mainMenuModsButton.transform.localPosition = new Vector3(0f, -146f, 0f); // Set position of button
             mainMenuModsButton.GetComponentInChildren<Text>().text = "MODS"; // Set title
             mainMenuModsButton.transform.SetAsFirstSibling();
-            
-            GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
-            GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffest;
-            GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffest;
-            GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffest;
-            GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffest;
-            GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffest;
-            GameUIRoot.Instance.EscMenu.MainMenuConfirmUI.transform.position -= pauseScreenButtonOffest;
 
-            pauseScreenModsButton.transform.position -= pauseScreenButtonOffest;
+            GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
+            GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.transform.GetChild(1).GetChild(9).position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.MainMenuConfirmUI.transform.position -= pauseScreenButtonOffset;
+
+            pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<Text>().text = "MODS";
 
             GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
             _modsWindow = Instantiate(modsWindowPrefab);
-            
+
             _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
             _modsWindow.SetActive(false);
 
@@ -57,23 +55,23 @@ namespace InternalModBot
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
             image.GetComponent<Image>().sprite = AssetLoader.GetObjectFromFile<Sprite>("modswindow", "modbot", "Clone Drone in the Danger Zone_Data/");
-            image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1);
-            image.GetComponent<RectTransform>().position -= new Vector3(7, 0);
-            
+            image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1f);
+            image.GetComponent<RectTransform>().position -= new Vector3(7f, 0f);
+
             Transform spawnedObject = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             spawnedObject.gameObject.SetActive(true);
             spawnedObject.GetComponent<Text>().text = "X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>";
-            spawnedObject.GetComponent<RectTransform>().position -= new Vector3(7, -2);
+            spawnedObject.GetComponent<RectTransform>().position -= new Vector3(7f, -2f);
 
             Transform upperTitle = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             upperTitle.gameObject.SetActive(true);
             upperTitle.GetComponent<Text>().text = "Mod-Bot by:";
             upperTitle.GetComponent<Text>().color = new Color32(255, 165, 0, 255);
-            upperTitle.GetComponent<RectTransform>().position -= new Vector3(7, -2);
+            upperTitle.GetComponent<RectTransform>().position -= new Vector3(7f, -2f);
 
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1).GetComponent<RectTransform>().position += new Vector3(7, 0);
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3).GetComponent<RectTransform>().position += new Vector3(7, 0);
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4).GetComponent<RectTransform>().position += new Vector3(7, 0);
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1).GetComponent<RectTransform>().position += new Vector3(7f, 0f);
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3).GetComponent<RectTransform>().position += new Vector3(7f, 0f);
+            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4).GetComponent<RectTransform>().position += new Vector3(7f, 0f);
 
             ReloadModItems();
         }
@@ -103,7 +101,7 @@ namespace InternalModBot
             spawnedModdedObject.StartCoroutine(downloadModData(content));
         }
 
-        IEnumerator downloadModData(GameObject content)
+        static IEnumerator downloadModData(GameObject content)
         {
             GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
             
@@ -202,13 +200,13 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
 
-        void onBroadcastButtonClicked(Mod mod)
+        static void onBroadcastButtonClicked(Mod mod)
         {
             Generic2ButtonDialogue dialoge = new Generic2ButtonDialogue("This will ask everyone else in the server using Mod-Bot to download " + mod.GetModName() + ", are you sure you want to do this?",
                 "No", null,
                 "Yes", delegate
                 {
-                    ModSharingManager.Instance.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
+                    ModSharingManager.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
                 });
         }
 

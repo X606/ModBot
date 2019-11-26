@@ -20,7 +20,7 @@ namespace InternalModBot
 
         const char UPGRADE_AND_LEVEL_FILE_NAME_SEPARATOR = '_';
 
-        string _upgradeIconsFolderPath
+        static string upgradeIconsFolderPath
         {
             get
             {
@@ -31,9 +31,9 @@ namespace InternalModBot
         void Start()
         {
             // Create icons folder if it does not exist
-            if (!Directory.Exists(_upgradeIconsFolderPath))
+            if (!Directory.Exists(upgradeIconsFolderPath))
             {
-                Directory.CreateDirectory(_upgradeIconsFolderPath);
+                Directory.CreateDirectory(upgradeIconsFolderPath);
             }
         }
 
@@ -46,9 +46,9 @@ namespace InternalModBot
         {
             string fileName = getFileNameForUpgrade(upgrade);
 
-            if (File.Exists(_upgradeIconsFolderPath + fileName))
+            if (File.Exists(upgradeIconsFolderPath + fileName))
             {
-                byte[] imageData = File.ReadAllBytes(_upgradeIconsFolderPath + fileName);
+                byte[] imageData = File.ReadAllBytes(upgradeIconsFolderPath + fileName);
 
                 Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
                 texture.LoadImage(imageData);
@@ -61,7 +61,7 @@ namespace InternalModBot
             }
         }
 
-        IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
+        static IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
         {
             UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
 
@@ -81,17 +81,17 @@ namespace InternalModBot
             string fileName = getFileNameForUpgrade(upgrade);
             byte[] fileData = texture.EncodeToPNG();
 
-            FileStream fileStream = File.Create(_upgradeIconsFolderPath + fileName);
+            FileStream fileStream = File.Create(upgradeIconsFolderPath + fileName);
             fileStream.Write(fileData, 0, fileData.Length);
             fileStream.Close();
         }
 
-        Sprite getSpriteFromTexture(Texture2D texture)
+        static Sprite getSpriteFromTexture(Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), Vector2.one * 0.5f);
         }
 
-        string getFileNameForUpgrade(UpgradeDescription upgrade)
+        static string getFileNameForUpgrade(UpgradeDescription upgrade)
         {
             string upgradeTypeName = upgrade.UpgradeType.ToString();
             string upgradeLevel = upgrade.Level.ToString();
