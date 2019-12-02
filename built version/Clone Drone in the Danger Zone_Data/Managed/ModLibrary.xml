@@ -389,7 +389,7 @@
         </member>
         <member name="M:ModLibrary.debug.DrawLine(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
             <summary>
-            Draws a line for the main camera, and if thats null for the player camera between point1 and point2 in the color of color for one frame.
+            Draws a line from one point to another in a specified color
             </summary>
             <param name="point1">Point to draw from</param>
             <param name="point2">Point to draw to</param>
@@ -398,7 +398,7 @@
         </member>
         <member name="M:ModLibrary.debug.DrawRay(UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
             <summary>
-            Draws a ray for the main camera, and if thats null for the players camera from point in the direction of direction in the color color for one frame.
+            Draws a ray from a point in a direction. The ray will always have a length of 1000 units
             </summary>
             <param name="point">The point to draw from</param>
             <param name="direction">The direction to draw in</param>
@@ -646,7 +646,7 @@
         </member>
         <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType)">
             <summary>
-            Called in <see cref="M:Character.onDeath(Character,DamageSourceType)"/>
+            Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
             </summary>
             <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
             <param name="killerCharacter">The killer <see cref="T:Character"/></param>
@@ -2139,7 +2139,7 @@
         </member>
         <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterDeath(Character,Character,DamageSourceType)">
             <summary>
-            Called from <see cref="M:Character.onDeath(Character,DamageSourceType)"/>
+            Called from <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
             </summary>
             <param name="owner"></param>
             <param name="killer"></param>

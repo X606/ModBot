@@ -194,7 +194,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="Character.onDeath(Character, DamageSourceType)"/>
+        /// Called in <see cref="Character.onDeath(Character, DamageSourceType, int)"/>
         /// </summary>
         /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
         /// <param name="killerCharacter">The killer <see cref="Character"/></param>

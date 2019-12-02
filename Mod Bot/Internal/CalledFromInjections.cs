@@ -56,7 +56,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Called from <see cref="Character.onDeath(Character, DamageSourceType)"/>
+        /// Called from <see cref="Character.onDeath(Character, DamageSourceType, int)"/>
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="killer"></param>
@@ -89,7 +89,7 @@ namespace InternalModBot
             if (UpgradePagesManager.ForceUpgradeVisible(upgrade.UpgradeType, upgrade.Level))
                 return true;
 
-            return (GameModeManager.ShowsStoryBlockedUpgrades() || (!Singleton<UpgradeManager>.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsEndlessCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(Singleton<CharacterTracker>.Instance.GetPlayer());
+            return (GameModeManager.ShowsStoryBlockedUpgrades() || (!UpgradeManager.Instance.IsUpgradeLockedByCurrentMetagameProgress(upgrade) && !upgrade.HideInStoryMode)) && (!GameModeManager.IsMultiplayerDuel() || upgrade.IsAvailableInDuels) && (!GameModeManager.IsBattleRoyale() || upgrade.IsAvailableInBattleRoyale) && (!GameModeManager.IsCoop() || upgrade.IsAvailableInCoop) && (upgrade.IsUpgradeVisible || GameModeManager.IsMultiplayer()) && upgrade.IsCompatibleWithCharacter(CharacterTracker.Instance.GetPlayer());
         }
 
         /// <summary>
