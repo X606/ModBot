@@ -219,7 +219,7 @@ namespace ModLibrary
         public void AddButton(string text, out Button button, UnityEngine.Events.UnityAction callback)
         {
             Page page = AddPage(LEGACY_PAGE_NAME);
-            page.AddButton(text, delegate { callback(); }, null);
+            page.AddButton(text, delegate { callback(); }, null, null);
 
             button = null;
         }
