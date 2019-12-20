@@ -1,0 +1,43 @@
+﻿modsbutton:MODS
+newversionmessage:New Mod-Bot version available: {0}\n(Current version: {1})
+newversiondismiss:Dismiss
+newversioninstall:Install
+modbotversion:Mod-Bot Version: {0}
+modbotuptodate:Mod-Bot version '{0}' up to date!
+ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing "ignoreallcrashes 0" into the console.
+ignoreallcrashes_on:The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.
+ignoreallcrashes_off:The game is no longer ignoring crashes, this option should always be turned off for stability purposes.
+crashscreen_customtitle:The Mod-Bot devs would love to see this!
+crashscreen_customdescription:Send us a screenshot over in the Clone Drone Mod-Bot discord so we can fix it!\n\nDO NOT SEND THIS TO THE REAL GAME DEVELOPERS, THIS IS PROBABLY A FAULT OF MOD-BOT OR AN INSTALLED MOD AND NOT THEIRS.
+fps_label:{0} FPS
+command_failed_message:Command '{0}' failed with the following error: {1}
+mod_suggested_multiplayer:Mod download request!\n{0} wants to share a mod with you!\nMod name: "{1}"
+mod_suggested_multiplayer_load_success:Mod loaded from suggestion!
+mod_suggested_multiplayer_load_fail:ERROR: Could not load mod from multiplayer network
+mod_suggested_twitch:Mod suggested!\n{0}\nSuggested by: {1}
+mod_suggested_twitch_load_fail:ERROR: Could not load mod from link
+upgrade_screen_next:Next
+upgrade_screen_back:Back
+upgrade_screen_generate:Generate
+mod_download_confirm_message:You are about to download {0}. This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?
+mod_download_confirm_yes:Yes
+mod_download_confirm_no:No
+mod_load_confirm_message:You are about to load in {0} temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?
+mod_load_confirm_yes:Yes
+mod_load_confirm_no:No
+request_new_key:Please press a key to bind it
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>
+mod_bot_credits_by:Mod-Bot by:
+mods_menu_get_more:Get more mods
+mods_menu_mod_options:Mod Options
+mods_menu_enable_mod:Enable Mod
+mods_menu_disable_mod:Disable Mod
+mods_menu_mod_id:Mod ID: {0}
+mods_menu_broadcast_confirm_message:This will ask everyone else in the server using Mod-Bot to download {0}, are you sure you want to do this?
+mods_menu_broadcast_confirm_yes:Yes
+mods_menu_broadcast_confirm_no:No
+mods_menu_download_confirm_message:This will place {0} in your mods folder as a .dll file, are you sure you want to do this?
+mods_menu_download_confirm_yes:Yes
+mods_menu_download_confirm_no:No
+clear_cache_success:Successfully cleared the cache.
+clear_cache_fail:Cache is being used.

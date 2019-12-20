@@ -54,9 +54,9 @@ namespace InternalModBot
         /// <param name="color"></param>
         public void Log(string whatToLog, Color color)
         {
-            string text = ColorUtility.ToHtmlStringRGB(color);
+            string colorText = ColorUtility.ToHtmlStringRGB(color);
             Text logText = LogText;
-            logText.text = logText.text + "\n<color=#" + text + ">" + whatToLog + "</color>";
+            logText.text = logText.text + "\n<color=#" + colorText + ">" + whatToLog + "</color>";
 
             Console.WriteLine(whatToLog);
         }
@@ -74,7 +74,7 @@ namespace InternalModBot
             }
             catch (Exception ex)
             {
-                Log("command '" + command + "' failed with the following error: " + ex.Message, Color.red);
+                Log(ModBotLocalizationManager.FormatLocalizedStringFromID("command_failed_message", command, ex.Message), Color.red);
                 Log(ex.StackTrace, Color.red);
             }
         }

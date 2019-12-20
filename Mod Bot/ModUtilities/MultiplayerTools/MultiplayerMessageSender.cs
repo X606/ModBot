@@ -38,9 +38,7 @@ namespace ModLibrary
         static void sendEvent(GenericStringForModdingEvent myEvent, string message)
         {
             if (message.Length > 1024)
-            {
                 throw new Exception("Error sending modded string event: Attempted to send a message that is too long, messages cannot exceed 1024 characters in length");
-            }
 
             myEvent.EventData = message;
             myEvent.Send();

@@ -199,10 +199,10 @@ namespace InternalModBot
             AssetLoader.ClearCache();
             if (Caching.ClearCache())
             {
-                Logger.Instance.Log("Successfully cleared the cache.");
+                Logger.Instance.Log(LocalizationManager.Instance.GetTranslatedString("clear_cache_success"));
                 return;
             }
-            Logger.Instance.Log("Cache is being used.");
+            Logger.Instance.Log(LocalizationManager.Instance.GetTranslatedString("clear_cache_fail"));
         }
 
         /// <summary>

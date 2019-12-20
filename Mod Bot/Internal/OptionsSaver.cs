@@ -23,7 +23,6 @@ namespace InternalModBot
                 string json = System.IO.File.ReadAllText(_path);
                 Load(json);
             }
-
         }
 
         /// <summary>

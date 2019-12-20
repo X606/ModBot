@@ -5,6 +5,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using ModLibrary.Properties;
 
 namespace InternalModBot
 {
@@ -23,8 +24,8 @@ namespace InternalModBot
 
         IEnumerator checkVersion()
         {
-            string installedModBotVersion = File.ReadAllLines(AssetLoader.GetSubdomain(Application.dataPath) + "\\version.txt")[1].Remove(0, 8); // Current ModBot version
-            
+            string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
+
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
 
@@ -33,17 +34,20 @@ namespace InternalModBot
 
             string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
 
-            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\nMod-Bot Version: " + installedModBotVersion; // Add ModBot version in corner
-            
+            string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
+            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\n" + modBotVersionLabel;
+
             if (installedModBotVersion == newestModBotVersion)
             {
-                debug.Log("Mod-Bot version '" + installedModBotVersion + "' up to date!", Color.green);
+                string modBotUpToDateMessage = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotuptodate", installedModBotVersion);
+                debug.Log(modBotUpToDateMessage, Color.green);
                 yield break;
             }
 
-            string message = "New Mod-Bot version available: " + newestModBotVersion + "\n(current version: " + installedModBotVersion + ")";
-
-            Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, "Dismiss", null, "Install", onInstallButtonClicked);
+            string message = ModBotLocalizationManager.FormatLocalizedStringFromID("newversion_message", newestModBotVersion, installedModBotVersion);
+            string dismissButtonText = LocalizationManager.Instance.GetTranslatedString("newversion_dismiss");
+            string installButtonText = LocalizationManager.Instance.GetTranslatedString("newversion_install");
+            Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, dismissButtonText, null, installButtonText, onInstallButtonClicked);
             generic.SetColorOfFirstButton(Color.red);
             generic.SetColorOfSecondButton(Color.green);
         }

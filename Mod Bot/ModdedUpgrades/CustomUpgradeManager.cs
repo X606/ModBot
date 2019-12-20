@@ -18,8 +18,8 @@ namespace ModLibrary
         void Start()
         {
             GameObject prefab = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
-            _backButton = createButtonAt(prefab, new Vector3(-300, -200, 0), "Back", BackClicked);
-            _nextButton = createButtonAt(prefab, new Vector3(300, -200, 0), "Next", NextClicked);
+            _backButton = createButtonAt(prefab, new Vector3(-300f, -200f, 0f), "upgrade_screen_back", BackClicked);
+            _nextButton = createButtonAt(prefab, new Vector3(300f, -200f, 0f), "upgrade_screen_next", NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }
@@ -47,7 +47,7 @@ namespace ModLibrary
             UpgradeAngleSetter.Instance.UpdateSaveButtonState();
         }
 
-        static GameObject createButtonAt(GameObject prefab, Vector3 position, string text, UnityAction call)
+        static GameObject createButtonAt(GameObject prefab, Vector3 position, string localizationID, UnityAction call)
         {
             GameObject spawedButton = Instantiate(prefab);
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
@@ -58,7 +58,7 @@ namespace ModLibrary
             button.onClick = new Button.ButtonClickedEvent();
             button.onClick.AddListener(call);
 
-            spawedButton.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>().text = text;
+            spawedButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = localizationID;
 
             return spawedButton;
         }
@@ -85,19 +85,16 @@ namespace ModLibrary
         {
             Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
 
-            Mod mod = UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage);
+            Accessor.CallPrivateMethod("tryLocalizeTextField", GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>()); // Re-localize "Select Upgrade" text field
+            GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
 
+            Mod mod = UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage);
             if (mod != null)
             {
-                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade\n[" + mod.GetModName() + "]";
+                GameUIRoot.Instance.UpgradeUI.TitleText.text += "\n[" + mod.GetModName() + "]";
                 GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
 
                 UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
-            }
-            else
-            {
-                GameUIRoot.Instance.UpgradeUI.TitleText.text = "Select upgrade";
-                GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
             }
         }
     }

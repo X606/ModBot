@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System;
 using UnityEngine;
+using ModLibrary.Properties;
 
 namespace InternalModBot
 {
@@ -170,7 +171,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Called from <see cref="Resources.Load(string)"/>, <see cref="Resources.Load{T}(string)"/> and <see cref="ResourceRequest.asset"/>
+        /// Called from <see cref="UnityEngine.Resources.Load(string)"/>, <see cref="UnityEngine.Resources.Load{T}(string)"/> and <see cref="ResourceRequest.asset"/>
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -317,6 +318,16 @@ namespace InternalModBot
 
             return moveCommand;
         }
+
+        /// <summary>
+        /// Called from LocalizationManager.populateDictionaryForCurrentLanguage
+        /// </summary>
+        public static void FromPopulateLanguageDictionary()
+        {
+            Dictionary<string, string> translatedStrings = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+            ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(translatedStrings);
+        }
+
     }
 
 }

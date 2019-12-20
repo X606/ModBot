@@ -13,14 +13,12 @@ namespace InternalModBot
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F3))
-            {
                 Counter.gameObject.SetActive(!Counter.gameObject.activeSelf);
-            }
 
             float FPS = 1f / Time.unscaledDeltaTime;
             int FPSInt = Convert.ToInt32(FPS);
 
-            Counter.text = FPSInt + " FPS";
+            Counter.text = ModBotLocalizationManager.FormatLocalizedStringFromID("fps_label", FPSInt);
         }
 
         /// <summary>

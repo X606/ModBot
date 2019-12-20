@@ -54,7 +54,7 @@ namespace InternalModBot
             saveButton.onClick = new Button.ButtonClickedEvent();
             saveButton.onClick.AddListener(saveAngleChangesToFile);
 
-            saveButton.GetComponentInChildren<Text>().text = "Generate";
+            saveButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "upgrade_screen_generate";
         }
 
         void saveAngleChangesToFile()

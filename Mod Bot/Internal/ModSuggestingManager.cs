@@ -59,9 +59,7 @@ namespace InternalModBot
             if (displayName == null)
                 displayName = "";
 
-            DisplayText.text = "Mod download request!\n" +
-                displayName + " wants to share a mod with you!\n" +
-                "Mod name: \"" + modName + "\"";
+            DisplayText.text = ModBotLocalizationManager.FormatLocalizedStringFromID("mod_suggested_multiplayer", displayName, modName);
 
             ModSuggestionAnimator.Play("suggestMod");
 
@@ -88,11 +86,11 @@ namespace InternalModBot
                 try
                 {
                     ModsManager.Instance.LoadMod(data, false);
-                    debug.Log("Mod loaded from suggestion!", Color.green);
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_success"), Color.green);
                 }
                 catch
                 {
-                    debug.Log("ERROR: Could not load mod loaded from multiplayer network");
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_fail"), Color.red);
                 }
             }
             else if (clickedKey == KeyCode.PageDown)
@@ -104,9 +102,8 @@ namespace InternalModBot
 
         IEnumerator suggestMod(ModSuggestion mod)
         {
-            DisplayText.text = "Mod suggested!\n"
-                + mod.ModName + "\n" 
-                + "Suggested by: " + mod.SuggesterName;
+            DisplayText.text = ModBotLocalizationManager.FormatLocalizedStringFromID("mod_suggested_twitch", mod.ModName, mod.SuggesterName);
+
             ModSuggestionAnimator.Play("suggestMod");
 
             KeyCode clickedKey;
@@ -142,7 +139,7 @@ namespace InternalModBot
                 }
                 catch
                 {
-                    debug.Log("Suggested mod failed to load", Color.red);
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_twitch_load_fail"), Color.red);
                     TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");
                 }
             }

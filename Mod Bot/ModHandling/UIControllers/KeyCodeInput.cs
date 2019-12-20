@@ -59,7 +59,7 @@ namespace ModLibrary
 
         IEnumerator askForNewKey()
         {
-            _keyDisplay.text = "Please input a new key";
+            _keyDisplay.text = LocalizationManager.Instance.GetTranslatedString("request_new_key");
             float maxTime = Time.time + 4f;
             yield return new WaitUntil(delegate
             {
