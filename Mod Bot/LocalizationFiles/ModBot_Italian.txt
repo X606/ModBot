@@ -1,7 +1,7 @@
 ﻿modsbutton:MODS
-newversionmessage:New Mod-Bot version available: {0}\n(Current version: {1})
-newversiondismiss:Dismiss
-newversioninstall:Install
+newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
+newversion_dismiss:Dismiss
+newversion_install:Install
 modbotversion:Mod-Bot Version: {0}
 modbotuptodate:Mod-Bot version '{0}' up to date!
 ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing "ignoreallcrashes 0" into the console.

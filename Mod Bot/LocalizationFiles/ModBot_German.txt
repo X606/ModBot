@@ -13,7 +13,7 @@ fps_label:{0} FPS
 command_failed_message:Command '{0}' failed with the following error: {1}
 mod_suggested_multiplayer:Mod download request!\n{0} wants to share a mod with you!\nMod name: "{1}"
 mod_suggested_multiplayer_load_success:Mod loaded from suggestion!
-mod_suggested_multiplayer_load_fail:ERROR: Could not load mod loaded from multiplayer network
+mod_suggested_multiplayer_load_fail:ERROR: Could not load mod from multiplayer network
 mod_suggested_twitch:Mod suggested!\n{0}\nSuggested by: {1}
 mod_suggested_twitch_load_fail:ERROR: Could not load mod from link
 upgrade_screen_next:Next
