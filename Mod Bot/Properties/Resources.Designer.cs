@@ -125,14 +125,14 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:Italian MODS
-        ///newversionmessage:Italian New Mod-Bot version available: {0}\n(Current version: {1})
-        ///newversiondismiss:Italian Dismiss
-        ///newversioninstall:Italian Install
-        ///modbotversion:Italian Mod-Bot Version: {0}
-        ///modbotuptodate:Italian Mod-Bot version &apos;{0}&apos; up to date!
-        ///ignoreallcrashes_savedwarning:Italian Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-        ///ignoreallc [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to modsbutton:MODS
+        ///newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
+        ///newversion_dismiss:Dismiss
+        ///newversion_install:Install
+        ///modbotversion:Mod-Bot Version: {0}
+        ///modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
+        ///ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
+        ///ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Italian {
             get {
@@ -205,7 +205,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.4.2.
+        ///   Looks up a localized string similar to 1.4.3-beta.
         /// </summary>
         internal static string ModBotVersion {
             get {
