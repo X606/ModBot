@@ -41,25 +41,45 @@ namespace InternalModBot
             ClearCache();
             _mods.Clear();
             PassOnMod = new PassOnToModsManager();
+
+            List<string> errors = new List<string>();
+            List<string> invalidModsFilePaths = new List<string>();
+
             string[] files = Directory.GetFiles(getModsFolderPath());
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].EndsWith(".dll"))
                 {
-                    try
+                    byte[] modData = File.ReadAllBytes(files[i]);
+                    if (!LoadMod(modData, true, out string error))
                     {
-                        byte[] modData = File.ReadAllBytes(files[i]);
-                        LoadMod(modData, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        string file = files[i];
-                        DelegateScheduler.Instance.Schedule(delegate
-                        {
-                            Debug.LogError("Mod '" + file + "' is not working, make sure that it is set up right: " + ex.Message);
-                        }, 0.5f);
+                        errors.Add(error);
+                        invalidModsFilePaths.Add(files[i]);
                     }
                 }
+            }
+
+            if (errors.Count > 0)
+                StartCoroutine(showModInvalidMessage(invalidModsFilePaths, errors));
+        }
+
+        static IEnumerator showModInvalidMessage(List<string> filePaths, List<string> errors)
+        {
+            if (filePaths.Count != errors.Count)
+                throw new ArgumentException(nameof(filePaths) + " and " + nameof(errors) + " lists must have the same length");
+
+            for (int i = 0; i < filePaths.Count; i++)
+            {
+                string fileName = Path.GetFileName(filePaths[i]);
+                new Generic2ButtonDialogue("Mod \"" + fileName + "\" could not be loaded, do you want to remove the file? Error: " + errors[i],
+                    "Yes",
+                    delegate
+                    {
+                        File.Delete(filePaths[i]);
+                    },
+                    "No", null);
+
+                yield return new WaitWhile(delegate { return Generic2ButtonDialogue.IsWindowOpen; });
             }
         }
 
@@ -78,71 +98,59 @@ namespace InternalModBot
         /// </summary>
         /// <param name="assemblyData"></param>
         /// <param name="hasFile"></param>
-        public void LoadMod(byte[] assemblyData, bool hasFile)
+        /// <param name="errorMessage"></param>
+        public bool LoadMod(byte[] assemblyData, bool hasFile, out string errorMessage)
         {
-            LoadedMod loadedMod = null;
-            try
+            Type[] types = Assembly.Load(assemblyData).GetTypes();
+            Type mainType = null;
+            for (int i = 0; i < types.Length; i++)
             {
-                Type[] types = Assembly.Load(assemblyData).GetTypes();
-                Type type = null;
-                for (int i = 0; i < types.Length; i++)
+                if (types[i].Name.ToLower() == "main")
                 {
-                    if (types[i].Name.ToLower() == "main")
-                    {
-                        type = types[i];
-                    }
+                    mainType = types[i];
                 }
-
-                if (type == null)
-                    throw new Exception("Could not find class 'main'");
-
-                object obj = Activator.CreateInstance(type);
-
-                Mod modToLoad = obj as Mod;
-                _mods.ForEach(delegate (LoadedMod mod)
-                {
-                    if (mod.Mod.GetUniqueID() == modToLoad.GetUniqueID())
-                    {
-                        throw new Exception("2 or more mods (\"" + mod.Mod.GetModName() + "\" and \"" + modToLoad.GetModName() + "\" have the same UniqueID!");
-                    }
-                });
-
-                loadedMod = new LoadedMod(modToLoad, assemblyData, hasFile);
-                _mods.Add(loadedMod);
-
-                bool isActive = PlayerPrefs.GetInt(modToLoad.GetUniqueID(), 1) != 0;
-                if (!isActive)
-                {
-                    DisableMod(modToLoad);
-                }
-                else
-                {
-                    try
-                    {
-                        StartCoroutine(callOnModRefreshedNextFrame(modToLoad));
-                    }
-                    catch (Exception exception)
-                    {
-                        throw new Exception("Caught exception in OnModRefreshed for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
-                    }
-                }
-
-            }
-            catch (Exception e)
-            {
-                if (!hasFile && loadedMod != null)
-                {
-                    if (loadedMod.Mod != null) // Just in case
-                    {
-                        loadedMod.Mod.OnModDeactivated(); // Called so that the mod will (hopefully) clean up anything it has already done
-                    }
-
-                    _mods.Remove(loadedMod); // If the mod was sent over the network and something went wrong, unload the mod
-                }
-
-                throw new Exception("The mod you are trying to load isn't valid: " + e.Message);
             }
 
+            if (mainType == null)
+            {
+                errorMessage = "Main class not found";
+                return false;
+            }
+
+            object obj = Activator.CreateInstance(mainType);
+
+            Mod modToLoad = obj as Mod;
+            foreach (LoadedMod mod in _mods)
+            {
+                if (mod.Mod.GetUniqueID() == modToLoad.GetUniqueID())
+                {
+                    errorMessage = "Mod has the same UniqueID as \"" + mod.Mod.GetModName() + "\"";
+                    return false;
+                }
+            }
+
+            LoadedMod loadedMod = new LoadedMod(modToLoad, assemblyData, hasFile);
+            _mods.Add(loadedMod);
+
+            bool isActive = PlayerPrefs.GetInt(modToLoad.GetUniqueID(), 1) != 0;
+            if (!isActive)
+            {
+                DisableMod(modToLoad);
+            }
+            else
+            {
+                try
+                {
+                    StartCoroutine(callOnModRefreshedNextFrame(modToLoad));
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception("Caught exception in OnModRefreshed or OnModEnabled for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
+                }
+            }
+
+            errorMessage = null;
+            return true;
         }
 
         static IEnumerator callOnModRefreshedNextFrame(Mod mod)

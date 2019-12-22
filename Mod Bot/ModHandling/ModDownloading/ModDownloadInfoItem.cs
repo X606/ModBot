@@ -113,7 +113,7 @@ namespace InternalModBot
             if(webRequest.isHttpError || webRequest.isNetworkError)
                 yield break;
 
-            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false);
+            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false, out string error);
             ModsPanelManager.Instance.ReloadModItems();
         }
         

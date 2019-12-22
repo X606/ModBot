@@ -83,14 +83,14 @@ namespace InternalModBot
             if (clickedKey == KeyCode.PageUp)
             {
                 ModSuggestionAnimator.Play("AcceptMod");
-                try
-                {
-                    ModsManager.Instance.LoadMod(data, false);
-                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_success"), Color.green);
-                }
-                catch
+
+                if (!ModsManager.Instance.LoadMod(data, false, out string error))
                 {
                     debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_fail"), Color.red);
+                }
+                else
+                {
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_success"), Color.green);
                 }
             }
             else if (clickedKey == KeyCode.PageDown)
@@ -132,12 +132,7 @@ namespace InternalModBot
                 yield return webRequest.SendWebRequest();
 
                 byte[] data = webRequest.downloadHandler.data;
-                
-                try
-                {
-                    ModsManager.Instance.LoadMod(data, false);
-                }
-                catch
+                if (!ModsManager.Instance.LoadMod(data, false, out string error))
                 {
                     debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_twitch_load_fail"), Color.red);
                     TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");

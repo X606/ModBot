@@ -88,8 +88,6 @@ namespace InternalModBot
                 string translatedText = splitLine[1].Replace("\\n", "\n");
 
                 languageDictionary.Add(id, translatedText);
-
-                ModLibrary.debug.Log(id + " : \"" + translatedText + "\"");
             }
         }
     }
