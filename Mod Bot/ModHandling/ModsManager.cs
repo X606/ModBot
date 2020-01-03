@@ -207,10 +207,10 @@ namespace InternalModBot
             AssetLoader.ClearCache();
             if (Caching.ClearCache())
             {
-                Logger.Instance.Log(LocalizationManager.Instance.GetTranslatedString("clear_cache_success"));
+                ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_success");
                 return;
             }
-            Logger.Instance.Log(LocalizationManager.Instance.GetTranslatedString("clear_cache_fail"));
+            ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_fail");
         }
 
         /// <summary>
