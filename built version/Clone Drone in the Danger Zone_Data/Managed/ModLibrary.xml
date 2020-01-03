@@ -2117,135 +2117,6 @@
             Returns if the <see cref="T:UnityEngine.Coroutine"/> should keep waiting
             </summary>
         </member>
-        <member name="T:ModLibrary.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Brazilian_Portuguese">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_English">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_French">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_German">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Italian">
-             <summary>
-               Looks up a localized string similar to modsbutton:Italian MODS
-            newversionmessage:Italian New Mod-Bot version available: {0}\n(Current version: {1})
-            newversiondismiss:Italian Dismiss
-            newversioninstall:Italian Install
-            modbotversion:Italian Mod-Bot Version: {0}
-            modbotuptodate:Italian Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Italian Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallc [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Russian">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Simplified_Chinese">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Spanish_LatinAmerica">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBot_Spanish_Spain">
-             <summary>
-               Looks up a localized string similar to modsbutton:MODS
-            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-            newversion_dismiss:Dismiss
-            newversion_install:Install
-            modbotversion:Mod-Bot Version: {0}
-            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
-             </summary>
-        </member>
-        <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
-            <summary>
-              Looks up a localized string similar to 1.4.2.
-            </summary>
-        </member>
         <member name="T:InternalModBot.CalledFromInjections">
             <summary>
             Contains methods that get called from the game itself
@@ -2349,11 +2220,6 @@
             <param name="command"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromPopulateLanguageDictionary">
-            <summary>
-            Called from LocalizationManager.populateDictionaryForCurrentLanguage
-            </summary>
-        </member>
         <member name="T:InternalModBot.ConsoleInputManager">
             <summary>
             Used by Mod-Bot to define commands
@@ -2456,25 +2322,6 @@
             <summary>
             The time we want to stop displaying the line
             </summary>
-        </member>
-        <member name="T:InternalModBot.ModBotLocalizationManager">
-            <summary>
-            Handles localization of string added in Mod-Bot
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModBotLocalizationManager.FormatLocalizedStringFromID(System.String,System.Object[])">
-            <summary>
-            Gets the translated string via <see cref="M:LocalizationManager.GetTranslatedString(System.String)"/> and formats the returned <see langword="string"/> with the given arguments
-            </summary>
-            <param name="ID">The localization ID to get the translated string of</param>
-            <param name="arguments">The arguments to format into the string</param>
-            <returns>The translated and formatted string</returns>
-        </member>
-        <member name="M:InternalModBot.ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            Adds all Mod-Bot localization IDs and translated text for the current language into the given dictionary
-            </summary>
-            <param name="languageDictionary"></param>
         </member>
         <member name="T:InternalModBot.RegisterShouldCursorBeEnabledDelegate">
             <summary>

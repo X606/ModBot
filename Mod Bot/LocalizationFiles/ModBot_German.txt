@@ -1,43 +1,43 @@
-﻿modsbutton:MODS
-newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-newversion_dismiss:Dismiss
-newversion_install:Install
+﻿modsbutton:MODIFIKATIONEN
+newversion_message:Neue Mod-Bot-Version verfügbar: {0}\n(Aktuelle Version: {1})
+newversion_dismiss:Entlassen
+newversion_install:Installieren
 modbotversion:Mod-Bot Version: {0}
-modbotuptodate:Mod-Bot version '{0}' up to date!
-ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing "ignoreallcrashes 0" into the console.
-ignoreallcrashes_on:The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.
-ignoreallcrashes_off:The game is no longer ignoring crashes, this option should always be turned off for stability purposes.
-crashscreen_customtitle:The Mod-Bot devs would love to see this!
-crashscreen_customdescription:Send us a screenshot over in the Clone Drone Mod-Bot discord so we can fix it!\n\nDO NOT SEND THIS TO THE REAL GAME DEVELOPERS, THIS IS PROBABLY A FAULT OF MOD-BOT OR AN INSTALLED MOD AND NOT THEIRS.
+modbotuptodate:Mod-Bot Version '{0}' auf dem neuesten Stand!
+ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie "ignoreallcrashes 0" in die Konsole eingeben.
+ignoreallcrashes_on:Das Spiel ignoriert jetzt alle Abstürze. Diese Option sollte nur zum Testen aktiviert werden. Wenn diese Option aktiviert ist, werden weiche Abstürze ignoriert, es können jedoch immer noch harte Abstürze auftreten.
+ignoreallcrashes_off:Das Spiel ignoriert keine Abstürze mehr. Diese Option sollte aus Stabilitätsgründen immer deaktiviert sein.
+crashscreen_customtitle:Die Mod-Bot-Entwickler würden das gerne sehen!
+crashscreen_customdescription:Senden Sie uns einen Screenshot in der Clone Drone Mod-Bot-Zwietracht, damit wir ihn beheben können!\n\nSENDEN SIE DAS NICHT AN DIE ECHTEN SPIELENTWICKLER, DAS IST MÖGLICHERWEISE EIN FEHLER DES MOD-BOT ODER EINES INSTALLIERTEN MODS UND NICHT IHRER.
 fps_label:{0} FPS
-command_failed_message:Command '{0}' failed with the following error: {1}
-mod_suggested_multiplayer:Mod download request!\n{0} wants to share a mod with you!\nMod name: "{1}"
-mod_suggested_multiplayer_load_success:Mod loaded from suggestion!
-mod_suggested_multiplayer_load_fail:ERROR: Could not load mod from multiplayer network
-mod_suggested_twitch:Mod suggested!\n{0}\nSuggested by: {1}
-mod_suggested_twitch_load_fail:ERROR: Could not load mod from link
-upgrade_screen_next:Next
-upgrade_screen_back:Back
-upgrade_screen_generate:Generate
-mod_download_confirm_message:You are about to download {0}. This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?
-mod_download_confirm_yes:Yes
-mod_download_confirm_no:No
-mod_load_confirm_message:You are about to load in {0} temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?
-mod_load_confirm_yes:Yes
-mod_load_confirm_no:No
-request_new_key:Please press a key to bind it
-mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>
-mod_bot_credits_by:Mod-Bot by:
-mods_menu_get_more:Get more mods
-mods_menu_mod_options:Mod Options
-mods_menu_enable_mod:Enable Mod
-mods_menu_disable_mod:Disable Mod
+command_failed_message:Befehl '{0}' ist mit folgendem Fehler fehlgeschlagen: {1}
+mod_suggested_multiplayer:Mod Download Anfrage!\n{0} möchte einen Mod mit dir teilen!\nMod-Name: "{1}"
+mod_suggested_multiplayer_load_success:Mod von Vorschlag geladen!
+mod_suggested_multiplayer_load_fail:FEHLER: Mod konnte nicht aus dem Multiplayer-Netzwerk geladen werden
+mod_suggested_twitch:Mod vorgeschlagen!\n{0}\nVorgeschlagen von: {1}
+mod_suggested_twitch_load_fail:FEHLER: Mod konnte nicht vom Link geladen werden
+upgrade_screen_next:Nächster
+upgrade_screen_back:Zurück
+upgrade_screen_generate:Generieren
+mod_download_confirm_message:Sie laden gerade {0} herunter. Dadurch wird eine DLL-Datei in Ihren Mods-Ordner gelegt und alle Mods neu geladen (dies bedeutet auch, dass alle temporär geladenen Mods verschwinden). Möchten Sie das wirklich tun?
+mod_download_confirm_yes:Ja
+mod_download_confirm_no:Nein
+mod_load_confirm_message:Du bist dabei, vorübergehend {0} zu laden (wird nicht im Mods-Ordner abgelegt. Der Mod verschwindet, wenn du das Spiel das nächste Mal verlässt). Möchten Sie das wirklich tun?
+mod_load_confirm_yes:Ja
+mod_load_confirm_no:Nein
+request_new_key:Bitte drücken Sie eine Taste, um es zu binden
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander und HSCarsten</size>
+mod_bot_credits_by:Mod-Bot von:
+mods_menu_get_more:Holen Sie sich mehr Mods
+mods_menu_mod_options:Mod-Optionen
+mods_menu_enable_mod:Aktiviere Mod
+mods_menu_disable_mod:Mod deaktivieren
 mods_menu_mod_id:Mod ID: {0}
-mods_menu_broadcast_confirm_message:This will ask everyone else in the server using Mod-Bot to download {0}, are you sure you want to do this?
-mods_menu_broadcast_confirm_yes:Yes
-mods_menu_broadcast_confirm_no:No
-mods_menu_download_confirm_message:This will place {0} in your mods folder as a .dll file, are you sure you want to do this?
-mods_menu_download_confirm_yes:Yes
-mods_menu_download_confirm_no:No
-clear_cache_success:Successfully cleared the cache.
-clear_cache_fail:Cache is being used.
+mods_menu_broadcast_confirm_message:Hierdurch werden alle anderen Benutzer des Servers, die Mod-Bot verwenden, aufgefordert, {0} herunterzuladen. Möchten Sie dies wirklich tun?
+mods_menu_broadcast_confirm_yes:Ja
+mods_menu_broadcast_confirm_no:Nein
+mods_menu_download_confirm_message:Dadurch wird {0} als DLL-Datei in Ihren Mods-Ordner verschoben. Möchten Sie das wirklich tun?
+mods_menu_download_confirm_yes:Ja
+mods_menu_download_confirm_no:Nein
+clear_cache_success:Cache erfolgreich geleert.
+clear_cache_fail:Cache wird verwendet.

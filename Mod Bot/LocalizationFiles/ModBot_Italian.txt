@@ -1,43 +1,43 @@
 ﻿modsbutton:MODS
-newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-newversion_dismiss:Dismiss
-newversion_install:Install
-modbotversion:Mod-Bot Version: {0}
-modbotuptodate:Mod-Bot version '{0}' up to date!
-ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing "ignoreallcrashes 0" into the console.
-ignoreallcrashes_on:The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.
-ignoreallcrashes_off:The game is no longer ignoring crashes, this option should always be turned off for stability purposes.
-crashscreen_customtitle:The Mod-Bot devs would love to see this!
-crashscreen_customdescription:Send us a screenshot over in the Clone Drone Mod-Bot discord so we can fix it!\n\nDO NOT SEND THIS TO THE REAL GAME DEVELOPERS, THIS IS PROBABLY A FAULT OF MOD-BOT OR AN INSTALLED MOD AND NOT THEIRS.
+newversion_message:Nuova versione Mod-Bot disponibile: {0}\n(Versione corrente: {1})
+newversion_dismiss:Respingere
+newversion_install:Installare
+modbotversion:Versione Mod-Bot: {0}
+modbotuptodate:Versione Mod-Bot '{0}' aggiornata!
+ignoreallcrashes_savedwarning:Messaggio di opzione salvato (IgnoreCrashes): tutti gli arresti anomali vengono ignorati, questo dovrebbe essere abilitato solo a scopo di test, disattivarlo digitando "ignoreallcrashes 0" nella console.
+ignoreallcrashes_on:Il gioco ora ignora tutti gli arresti anomali, questa opzione dovrebbe essere abilitata solo per i test. Se questa opzione è abilitata, verranno ignorati gli arresti anomali, ma possono comunque verificarsi arresti anomali.
+ignoreallcrashes_off:Il gioco non ignora più gli arresti anomali, questa opzione deve essere sempre disattivata per motivi di stabilità.
+crashscreen_customtitle:Gli sviluppatori Mod-Bot adorerebbero vederlo!
+crashscreen_customdescription:Inviaci uno screenshot nella discordia Clone Drone Mod-Bot in modo che possiamo risolverlo!\n\nNON INVIARE QUESTO AGLI SVILUPPI DEL GIOCO REALE, QUESTO È PROBABILMENTE UN GUASTO DI MOD-BOT O UN MOD INSTALLATO E NON LORO.
 fps_label:{0} FPS
-command_failed_message:Command '{0}' failed with the following error: {1}
-mod_suggested_multiplayer:Mod download request!\n{0} wants to share a mod with you!\nMod name: "{1}"
-mod_suggested_multiplayer_load_success:Mod loaded from suggestion!
-mod_suggested_multiplayer_load_fail:ERROR: Could not load mod from multiplayer network
-mod_suggested_twitch:Mod suggested!\n{0}\nSuggested by: {1}
-mod_suggested_twitch_load_fail:ERROR: Could not load mod from link
-upgrade_screen_next:Next
-upgrade_screen_back:Back
-upgrade_screen_generate:Generate
-mod_download_confirm_message:You are about to download {0}. This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?
-mod_download_confirm_yes:Yes
+command_failed_message:Il comando '{0}' non è riuscito con il seguente errore: {1}
+mod_suggested_multiplayer:Richiesta di download mod!\n{0} vuole condividere una mod con te!\nNome mod: "{1}"
+mod_suggested_multiplayer_load_success:Mod caricata dal suggerimento!
+mod_suggested_multiplayer_load_fail:ERRORE: impossibile caricare mod dalla rete multiplayer
+mod_suggested_twitch:Mod suggerito!\n{0}\nSuggerito da: {1}
+mod_suggested_twitch_load_fail:ERRORE: impossibile caricare la mod dal collegamento
+upgrade_screen_next:Prossimo
+upgrade_screen_back:Prima
+upgrade_screen_generate:Creare
+mod_download_confirm_message:Stai per scaricare {0}. Ciò inserirà un file .dll nella cartella delle mod e ricaricherà tutte le mod (ciò significa anche che eventuali mod caricate temporaneamente andranno via). Sei sicuro di volerlo fare?
+mod_download_confirm_yes:Sì
 mod_download_confirm_no:No
-mod_load_confirm_message:You are about to load in {0} temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?
-mod_load_confirm_yes:Yes
+mod_load_confirm_message:Stai per caricare temporaneamente {0} (non lo posizionerà nella cartella mod. La mod scomparirà la prossima volta che esci dal gioco). Sei sicuro di volerlo fare?
+mod_load_confirm_yes:Sì
 mod_load_confirm_no:No
-request_new_key:Please press a key to bind it
-mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>
-mod_bot_credits_by:Mod-Bot by:
-mods_menu_get_more:Get more mods
-mods_menu_mod_options:Mod Options
-mods_menu_enable_mod:Enable Mod
-mods_menu_disable_mod:Disable Mod
+request_new_key:Si prega di premere un tasto per vincolarlo
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander e HSCarsten</size>
+mod_bot_credits_by:Mod-Bot di:
+mods_menu_get_more:Ottieni più mod
+mods_menu_mod_options:Opzioni Mod
+mods_menu_enable_mod:Abilita Mod
+mods_menu_disable_mod:Disabilita Mod
 mods_menu_mod_id:Mod ID: {0}
-mods_menu_broadcast_confirm_message:This will ask everyone else in the server using Mod-Bot to download {0}, are you sure you want to do this?
-mods_menu_broadcast_confirm_yes:Yes
+mods_menu_broadcast_confirm_message:Questo chiederà a tutti gli altri utenti del server che usano Mod-Bot di scaricare {0}, sei sicuro di volerlo fare?
+mods_menu_broadcast_confirm_yes:Sì
 mods_menu_broadcast_confirm_no:No
-mods_menu_download_confirm_message:This will place {0} in your mods folder as a .dll file, are you sure you want to do this?
-mods_menu_download_confirm_yes:Yes
+mods_menu_download_confirm_message:Questo metterà {0} nella tua cartella mods come file .dll, sei sicuro di volerlo fare?
+mods_menu_download_confirm_yes:Sì
 mods_menu_download_confirm_no:No
-clear_cache_success:Successfully cleared the cache.
-clear_cache_fail:Cache is being used.
+clear_cache_success:Svuota la cache correttamente.
+clear_cache_fail:La cache è in uso.

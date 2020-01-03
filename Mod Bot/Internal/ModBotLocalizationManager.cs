@@ -1,5 +1,7 @@
-﻿using ModLibrary.Properties;
+﻿using ModLibrary;
+using ModLibrary.Properties;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +18,16 @@ namespace InternalModBot
 
         const string LANGUAGE_ID_ENGLISH = "en";
         const string LANGUAGE_ID_ITALIAN = "it";
-        const string LANGUAGE_ID_SPANISH_LATIN_AMERICA = "es-419";
+        const string LANGUAGE_ID_SPANISH_LATIN_AMERICA = "es-419"; // Currently normal Spanish, Google Translate does not support this variant of Spanish
         const string LANGUAGE_ID_RUSSIAN = "ru";
         const string LANGUAGE_ID_GERMAN = "de";
         const string LANGUAGE_ID_FRENCH = "fr";
         const string LANGUAGE_ID_SPANISH_SPAIN = "es-ES";
         const string LANGUAGE_ID_SIMPLIFIED_CHINESE = "zh-CN";
-        const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR";
+        const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR"; // Currently normal Portuguese, Google Translate does not support Brazilian Portuguese
+
+        static Queue<string> _localizationIDsToLog;
+        static bool _isCoroutineRunning;
 
         static string getLocalizationFileContentsForCurrentLanguage()
         {
@@ -85,10 +90,45 @@ namespace InternalModBot
                     continue;
 
                 string id = splitLine[0];
-                string translatedText = splitLine[1].Replace("\\n", "\n");
+                string translatedText = splitLine[1].Replace("\\n", "\n"); // Replace "\n" with an actual newline
 
                 languageDictionary.Add(id, translatedText);
             }
+        }
+
+        /// <summary>
+        /// Passes the output of <see cref="LocalizationManager.GetTranslatedString(string)"/> into <see cref="debug.Log(string)"/> once the <see cref="LocalizationManager"/> is initialized
+        /// </summary>
+        /// <param name="localizationID"></param>
+        public static void LogLocalizedStringOnceLocalizationManagerInitialized(string localizationID)
+        {
+            if (LocalizationManager.Instance.IsInitialized())
+            {
+                debug.Log(LocalizationManager.Instance.GetTranslatedString(localizationID));
+                return;
+            }
+
+            if (_localizationIDsToLog == null)
+                _localizationIDsToLog = new Queue<string>();
+
+            _localizationIDsToLog.Enqueue(localizationID);
+
+            if (!_isCoroutineRunning)
+                StaticCoroutineRunner.StartStaticCoroutine(waitForLocalizationManagerThenLogQueue());
+        }
+
+        static IEnumerator waitForLocalizationManagerThenLogQueue()
+        {
+            _isCoroutineRunning = true;
+
+            yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
+            while(_localizationIDsToLog.Count > 0)
+            {
+                string text = LocalizationManager.Instance.GetTranslatedString(_localizationIDsToLog.Dequeue());
+                debug.Log(text);
+            }
+
+            _isCoroutineRunning = false;
         }
     }
 }
