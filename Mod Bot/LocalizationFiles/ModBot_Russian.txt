@@ -1,43 +1,43 @@
-﻿modsbutton:MODS
-newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-newversion_dismiss:Dismiss
-newversion_install:Install
-modbotversion:Mod-Bot Version: {0}
-modbotuptodate:Mod-Bot version '{0}' up to date!
-ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing "ignoreallcrashes 0" into the console.
-ignoreallcrashes_on:The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.
-ignoreallcrashes_off:The game is no longer ignoring crashes, this option should always be turned off for stability purposes.
-crashscreen_customtitle:The Mod-Bot devs would love to see this!
-crashscreen_customdescription:Send us a screenshot over in the Clone Drone Mod-Bot discord so we can fix it!\n\nDO NOT SEND THIS TO THE REAL GAME DEVELOPERS, THIS IS PROBABLY A FAULT OF MOD-BOT OR AN INSTALLED MOD AND NOT THEIRS.
+﻿modsbutton:модов
+newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
+newversion_dismiss:отклонять
+newversion_install:устанавливать
+modbotversion:Версия Mod-Bot: {0}
+modbotuptodate:Версия Mod-Bot '{0}' обновлена!
+ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
+ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция должна быть включена только для тестирования. Включение этой опции будет игнорировать программные сбои, но тяжелые сбои все еще могут возникать.
+ignoreallcrashes_off:Игра больше не игнорирует сбои, эта опция всегда должна быть отключена для стабильности.
+crashscreen_customtitle:Разработчики Mod-Bot хотели бы увидеть это!
+crashscreen_customdescription:Пришлите нам скриншот в дисконт Clone Drone Mod-Bot, чтобы мы могли это исправить!\n\nНЕ ОТПРАВЛЯЙТЕ ЭТО РАЗРАБОТЧИКУ НАСТОЯЩЕЙ ИГРЫ, ЭТО ВЕРОЯТНО НЕИСПРАВНОСТЬ МОД-БОТА ИЛИ УСТАНОВЛЕННОГО МОДА, А НЕ ИХ.
 fps_label:{0} FPS
-command_failed_message:Command '{0}' failed with the following error: {1}
-mod_suggested_multiplayer:Mod download request!\n{0} wants to share a mod with you!\nMod name: "{1}"
-mod_suggested_multiplayer_load_success:Mod loaded from suggestion!
-mod_suggested_multiplayer_load_fail:ERROR: Could not load mod from multiplayer network
-mod_suggested_twitch:Mod suggested!\n{0}\nSuggested by: {1}
-mod_suggested_twitch_load_fail:ERROR: Could not load mod from link
-upgrade_screen_next:Next
-upgrade_screen_back:Back
-upgrade_screen_generate:Generate
-mod_download_confirm_message:You are about to download {0}. This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?
-mod_download_confirm_yes:Yes
-mod_download_confirm_no:No
-mod_load_confirm_message:You are about to load in {0} temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?
-mod_load_confirm_yes:Yes
-mod_load_confirm_no:No
-request_new_key:Please press a key to bind it
-mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander and HSCarsten</size>
-mod_bot_credits_by:Mod-Bot by:
-mods_menu_get_more:Get more mods
-mods_menu_mod_options:Mod Options
-mods_menu_enable_mod:Enable Mod
-mods_menu_disable_mod:Disable Mod
-mods_menu_mod_id:Mod ID: {0}
-mods_menu_broadcast_confirm_message:This will ask everyone else in the server using Mod-Bot to download {0}, are you sure you want to do this?
-mods_menu_broadcast_confirm_yes:Yes
-mods_menu_broadcast_confirm_no:No
-mods_menu_download_confirm_message:This will place {0} in your mods folder as a .dll file, are you sure you want to do this?
-mods_menu_download_confirm_yes:Yes
-mods_menu_download_confirm_no:No
-clear_cache_success:Successfully cleared the cache.
-clear_cache_fail:Cache is being used.
+command_failed_message:Команда '{0}' завершилась ошибкой: {1}
+mod_suggested_multiplayer:Запрос на скачивание мода!\n{0} хочет поделиться с вами модом!\nНазвание мода: "{1}"
+mod_suggested_multiplayer_load_success:Мод загружен с предложения!
+mod_suggested_multiplayer_load_fail:ОШИБКА: не удалось загрузить мод из многопользовательской сети
+mod_suggested_twitch:Мод предложил!\n{0}\nПредложено: {1}
+mod_suggested_twitch_load_fail:ОШИБКА: не удалось загрузить мод по ссылке
+upgrade_screen_next:следующий
+upgrade_screen_back:назад
+upgrade_screen_generate:генерировать
+mod_download_confirm_message:Вы собираетесь загрузить {0}. Это поместит файл DLL в вашу папку модов и перезагрузит все моды (это также означает, что все временно загруженные моды исчезнут). Вы уверены, что хотите это сделать?
+mod_download_confirm_yes:да
+mod_download_confirm_no:нет
+mod_load_confirm_message:Вы собираетесь временно загрузить {0} (не поместит его в папку модов. Мод исчезнет при следующем выходе из игры). Вы уверены, что хотите это сделать?
+mod_load_confirm_yes:да
+mod_load_confirm_no:нет
+request_new_key:Пожалуйста, нажмите клавишу, чтобы связать его
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander и HSCarsten</size>
+mod_bot_credits_by:Mod-Bot от:
+mods_menu_get_more:Получите больше модов
+mods_menu_mod_options:Опции мода
+mods_menu_enable_mod:Включить мод
+mods_menu_disable_mod:Отключить мод
+mods_menu_mod_id:Идентификатор мода: {0}
+mods_menu_broadcast_confirm_message:Это попросит всех остальных на сервере, использующих Mod-Bot, загрузить {0}, вы уверены, что хотите это сделать?
+mods_menu_broadcast_confirm_yes:да
+mods_menu_broadcast_confirm_no:нет
+mods_menu_download_confirm_message:Это поместит {0} в вашу папку модов как файл .dll, вы уверены, что хотите это сделать?
+mods_menu_download_confirm_yes:да
+mods_menu_download_confirm_no:нет
+clear_cache_success:Успешно очистил кеш.
+clear_cache_fail:Кеш используется.

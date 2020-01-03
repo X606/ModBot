@@ -16,13 +16,13 @@ namespace InternalModBot
 
         const string LANGUAGE_ID_ENGLISH = "en";
         const string LANGUAGE_ID_ITALIAN = "it";
-        const string LANGUAGE_ID_SPANISH_LATIN_AMERICA = "es-419";
+        const string LANGUAGE_ID_SPANISH_LATIN_AMERICA = "es-419"; // Currently normal Spanish, Google Translate does not support this variant of Spanish
         const string LANGUAGE_ID_RUSSIAN = "ru";
         const string LANGUAGE_ID_GERMAN = "de";
         const string LANGUAGE_ID_FRENCH = "fr";
         const string LANGUAGE_ID_SPANISH_SPAIN = "es-ES";
         const string LANGUAGE_ID_SIMPLIFIED_CHINESE = "zh-CN";
-        const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR";
+        const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR"; // Currently normal Portuguese, Google Translate does not support Brazilian Portuguese
 
         static string getLocalizationFileContentsForCurrentLanguage()
         {
