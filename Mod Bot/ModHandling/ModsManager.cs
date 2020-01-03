@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using Harmony;
 
 namespace InternalModBot
 {
@@ -262,9 +263,12 @@ namespace InternalModBot
             }
             CustomUpgradeManager.NextClicked();
             UpgradePagesManager.RemoveModdedUpgradesFor(mod);
+
+            HarmonyInstance.Create(mod.HarmonyID).UnpatchAll(); // unpatches all of the patches made by the mod
+
             mod.OnModDeactivated();
         }
-
+        
         /// <summary>
         /// Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
         /// </summary>
