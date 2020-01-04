@@ -90,7 +90,7 @@ namespace ModLibrary
         }
         #endregion
 
-        #region Get poperty
+        #region Get property
         /// <summary>
         /// Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
         /// </summary>
@@ -99,7 +99,7 @@ namespace ModLibrary
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
         /// <param name="prefixTargetProperty">The name of the prefix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPopertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
+        public static void InjectGetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 
@@ -122,7 +122,7 @@ namespace ModLibrary
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
         /// <param name="postfixTargetProperty">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPopertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
+        public static void InjectGetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 
@@ -147,7 +147,7 @@ namespace ModLibrary
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPopertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectGetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 
@@ -167,7 +167,7 @@ namespace ModLibrary
         }
         #endregion
 
-        #region Set poperty
+        #region Set property
         /// <summary>
         /// Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
         /// </summary>
@@ -176,7 +176,7 @@ namespace ModLibrary
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
         /// <param name="prefixTargetProperty">The name of the prefix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPopertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
+        public static void InjectSetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 
@@ -199,7 +199,7 @@ namespace ModLibrary
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
         /// <param name="postfixTargetProperty">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPopertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
+        public static void InjectSetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 
@@ -224,7 +224,7 @@ namespace ModLibrary
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPopertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectSetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
         {
             HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
 

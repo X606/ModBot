@@ -448,7 +448,7 @@
             <param name="postfixTargetMethod">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectGetPopertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
             </summary>
@@ -458,7 +458,7 @@
             <param name="prefixTargetProperty">The name of the prefix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectGetPopertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
             </summary>
@@ -468,7 +468,7 @@
             <param name="postfixTargetProperty">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectGetPopertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
             </summary>
@@ -480,7 +480,7 @@
             <param name="postfixTargetMethod">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectSetPopertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
             </summary>
@@ -490,7 +490,7 @@
             <param name="prefixTargetProperty">The name of the prefix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectSetPopertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
             </summary>
@@ -500,7 +500,7 @@
             <param name="postfixTargetProperty">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="M:ModLibrary.Injector.InjectSetPopertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
             </summary>
