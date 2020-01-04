@@ -424,5 +424,18 @@ namespace InternalModBot
             return null;
         }
 
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        /// <param name="newLanguageID"></param>
+        /// <param name="localizationDictionary"></param>
+        public override void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnLanugageChanged(newLanguageID, localizationDictionary);
+            }
+        }
     }
 }

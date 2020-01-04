@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using ModLibrary;
 using InternalModBot;
@@ -271,6 +272,15 @@ namespace ModLibrary
         public virtual UnityEngine.Object OnResourcesLoad(string path)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
+        /// </summary>
+        /// <param name="newLanguageID">The language ID that was switched to</param>
+        /// <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
+        public virtual void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        {
         }
     }
 }

@@ -325,7 +325,9 @@ namespace InternalModBot
         public static void FromPopulateLanguageDictionary()
         {
             Dictionary<string, string> translatedStrings = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+
             ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(translatedStrings);
+            ModsManager.Instance.PassOnMod.OnLanugageChanged(SettingsManager.Instance.GetCurrentLanguageID(), translatedStrings);
         }
 
     }
