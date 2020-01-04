@@ -179,11 +179,14 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.GetUniqueID());
 
             Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
-            enableOrDisableButton.transform.GetChild(0).gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_disable_mod";
+            //enableOrDisableButton.transform.GetChild(0).gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_disable_mod";
             if (isModNotActive.Value)
             {
                 modItem.GetComponent<Image>().color = Color.red;
-                enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>().LocalizationID = "mods_menu_enable_mod";
+                LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
+                localizedTextField.LocalizationID = "mods_menu_enable_mod";
+                Accessor.CallPrivateMethod("tryLocalizeTextField", localizedTextField);
+
                 enableOrDisableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
             }
 
@@ -198,7 +201,7 @@ namespace InternalModBot
 
             int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
             modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(modId); }); // Add disable button callback
-            modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
+            //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
