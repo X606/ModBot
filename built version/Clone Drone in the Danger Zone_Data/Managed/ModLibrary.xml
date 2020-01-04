@@ -411,6 +411,107 @@
             </summary>
             <param name="obj"></param>
         </member>
+        <member name="T:ModLibrary.Injector">
+            <summary>
+            Used to inject pre and post injections into a target method
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPopertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="prefixTargetProperty">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPopertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="postfixTargetProperty">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPopertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPopertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="prefixTargetProperty">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPopertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="postfixTargetProperty">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPopertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="T:ModLibrary.LevelEditorObjectAdder">
             <summary>
             Can be used to add your own custom things to the editor!
