@@ -99,7 +99,7 @@ namespace ModLibrary
         public virtual void OnCommandRan(string command)
         {
         }
-        
+
         /// <summary>
         /// Called at the start <see cref="FirstPersonMover.RefreshUpgrades"/>
         /// </summary>
@@ -281,6 +281,14 @@ namespace ModLibrary
         /// <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
         public virtual void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
         {
+        }
+
+        /// <summary>
+        /// Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+        /// </summary>
+        public virtual void OnModLoaded()
+        {
+
         }
     }
 }

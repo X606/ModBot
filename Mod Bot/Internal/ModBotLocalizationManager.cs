@@ -14,6 +14,8 @@ namespace InternalModBot
     /// </summary>
     public static class ModBotLocalizationManager
     {
+        internal static Dictionary<string, string> ModdedUpgradeNamesAndDescriptionsToAdd = new Dictionary<string, string>();
+
         const char ID_STRING_SEPARATOR = ':';
 
         const string LANGUAGE_ID_ENGLISH = "en";
@@ -93,6 +95,14 @@ namespace InternalModBot
                 string translatedText = splitLine[1].Replace("\\n", "\n"); // Replace "\n" with an actual newline
 
                 languageDictionary.Add(id, translatedText);
+            }
+
+            foreach (KeyValuePair<string, string> keyValuePair in ModdedUpgradeNamesAndDescriptionsToAdd)
+            {
+                if (languageDictionary.ContainsKey(keyValuePair.Key))
+                    continue;
+
+                languageDictionary.Add(keyValuePair.Key, keyValuePair.Value);
             }
         }
 

@@ -426,6 +426,14 @@
             <param name="prefixTargetMethod">The name of the prefix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
+        <member name="M:ModLibrary.Injector.InjectPrefix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to <paramref name="sourceMethod"/> to <paramref name="targetMethod"/> that will be called at the start of the method.
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethod">The method to inject a call to</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="M:ModLibrary.Injector.InjectPostfix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
@@ -434,6 +442,14 @@
             <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
             <param name="injectTargetMethod">The name of the method to inject into</param>
             <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPostfix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to sourceMethod to targetMethod that will be called at the end of the method.
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethod">The method to inject a call to</param>
             <param name="mod">The owner of this injection</param>
         </member>
         <member name="M:ModLibrary.Injector.InjectPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
@@ -448,6 +464,15 @@
             <param name="postfixTargetMethod">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
+        <member name="M:ModLibrary.Injector.InjectPrefixAndPostfix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to sourceMethodPrefix and sourceMethodPostfix to targetMethod
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethodPrefix">The prefix method</param>
+            <param name="sourceMethodPostfix">The postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="M:ModLibrary.Injector.InjectGetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
@@ -458,6 +483,14 @@
             <param name="prefixTargetProperty">The name of the prefix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the start of the method.
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="prefixSource">The source of the injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="M:ModLibrary.Injector.InjectGetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
@@ -466,6 +499,14 @@
             <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
             <param name="injectTargetProperty">The name of the method to inject into</param>
             <param name="postfixTargetProperty">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="postfixSource">The source of the injection</param>
             <param name="mod">The owner of this injection</param>
         </member>
         <member name="M:ModLibrary.Injector.InjectGetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
@@ -480,6 +521,15 @@
             <param name="postfixTargetMethod">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefixAndPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource and postfixSource to targetProperty
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="prefixSource">The source of the prefix injection</param>
+            <param name="postfixSource">The source of the postfix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="M:ModLibrary.Injector.InjectSetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
@@ -488,6 +538,14 @@
             <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
             <param name="injectTargetProperty">The name of the method to inject into</param>
             <param name="prefixTargetProperty">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the start of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="prefixSource">The source of the prefix injection</param>
             <param name="mod">The owner of this injection</param>
         </member>
         <member name="M:ModLibrary.Injector.InjectSetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
@@ -500,6 +558,14 @@
             <param name="postfixTargetProperty">The name of the postfix method</param>
             <param name="mod">The owner of this injection</param>
         </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="postfixSource">The source of the postfix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="M:ModLibrary.Injector.InjectSetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
             <summary>
             Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
@@ -510,6 +576,15 @@
             <param name="injectTargetMethod">The name of the method to inject into</param>
             <param name="prefixTargetMethod">The name of the prefix method</param>
             <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefixAndPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="prefixSource">The source of the prefix injection</param>
+            <param name="postfixSource">The source of the postfix injection</param>
             <param name="mod">The owner of this injection</param>
         </member>
         <member name="T:ModLibrary.LevelEditorObjectAdder">
@@ -803,6 +878,18 @@
             </summary>
             <param name="path">The path specified</param>
             <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
+            </summary>
+            <param name="newLanguageID">The language ID that was switched to</param>
+            <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnModLoaded">
+            <summary>
+            Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="T:ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+            </summary>
         </member>
         <member name="T:ModLibrary.KeyCodeInput">
             <summary>
@@ -3595,6 +3682,13 @@
             </summary>
             <param name="path"></param>
             <returns></returns>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="newLanguageID"></param>
+            <param name="localizationDictionary"></param>
         </member>
         <member name="T:InternalModBot.ModSharingManager">
             <summary>

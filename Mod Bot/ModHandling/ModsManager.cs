@@ -142,6 +142,15 @@ namespace InternalModBot
             {
                 try
                 {
+                    modToLoad.OnModLoaded();
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception("Caught exception in OnModLoaded for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
+                }
+
+                try
+                {
                     StartCoroutine(callOnModRefreshedNextFrame(modToLoad));
                 }
                 catch (Exception exception)
