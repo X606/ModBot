@@ -51,9 +51,11 @@
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
+    <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\ModSuggestingManager.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodUnitTest.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\Logger.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
@@ -107,6 +109,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -211,6 +214,9 @@
     <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
     <Content Include="LocalizationFiles\ModBot_Italian.txt" />
     <Content Include="LocalizationFiles\ModBot_English.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

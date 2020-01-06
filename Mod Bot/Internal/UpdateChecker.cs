@@ -26,6 +26,9 @@ namespace InternalModBot
         {
             string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
 
+            if (installedModBotVersion.ToLower().Contains("beta"))
+                yield break;
+
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
 

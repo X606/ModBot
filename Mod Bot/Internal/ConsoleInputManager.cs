@@ -45,6 +45,21 @@ namespace InternalModBot
 
             if (subCommands[0] == "crash")
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
+
+            if (subCommands[0] == "unittest")
+            {
+                if (subCommands.Length > 1)
+                {
+                    bool foundUnitTest = ModBotUnitTestManager.TryRunUnitTest(subCommands[1]);
+                    if (!foundUnitTest)
+                    {
+                        debug.Log("Unit test failed: Unit test \"" + subCommands[1] + "\" not found", Color.red);
+                        return;
+                    }
+                }
+
+                ModBotUnitTestManager.RunAllUnitTests();
+            }
         }
 
         /// <summary>
