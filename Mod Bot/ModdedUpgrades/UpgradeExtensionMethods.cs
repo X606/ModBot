@@ -33,12 +33,10 @@ namespace ModLibrary
                 recursivelyAddRequirments(upgrade, mod);
 
             string nameID = upgrade.UpgradeName.ToLower().Trim();
-            if (!ModBotLocalizationManager.ModdedUpgradeNamesAndDescriptionsToAdd.ContainsKey(nameID))
-                ModBotLocalizationManager.ModdedUpgradeNamesAndDescriptionsToAdd.Add(nameID, upgrade.UpgradeName);
+            ModBotLocalizationManager.TryAddLocalizationStringToDictionary(nameID, upgrade.UpgradeName);
 
             string descriptionID = upgrade.Description.ToLower().Trim();
-            if (!ModBotLocalizationManager.ModdedUpgradeNamesAndDescriptionsToAdd.ContainsKey(descriptionID))
-                ModBotLocalizationManager.ModdedUpgradeNamesAndDescriptionsToAdd.Add(descriptionID, upgrade.Description);
+            ModBotLocalizationManager.TryAddLocalizationStringToDictionary(descriptionID, upgrade.Description);
         }
 
         /// <summary>

@@ -14,7 +14,8 @@ namespace InternalModBot
     /// </summary>
     public static class ModBotLocalizationManager
     {
-        internal static Dictionary<string, string> ModdedUpgradeNamesAndDescriptionsToAdd = new Dictionary<string, string>();
+        static List<Tuple<string, string>> _localizedStringsToAdd = new List<Tuple<string, string>>();
+        static bool _isAddStringsCoroutineRunning;
 
         const char ID_STRING_SEPARATOR = ':';
 
@@ -29,7 +30,7 @@ namespace InternalModBot
         const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR"; // Currently normal Portuguese, Google Translate does not support Brazilian Portuguese
 
         static Queue<string> _localizationIDsToLog;
-        static bool _isCoroutineRunning;
+        static bool _isLogQueueCoroutineRunning;
 
         static string getLocalizationFileContentsForCurrentLanguage()
         {
@@ -96,14 +97,23 @@ namespace InternalModBot
 
                 languageDictionary.Add(id, translatedText);
             }
+        }
 
-            foreach (KeyValuePair<string, string> keyValuePair in ModdedUpgradeNamesAndDescriptionsToAdd)
+        internal static void TryAddLocalizationStringToDictionary(string ID, string text)
+        {
+            if (!LocalizationManager.Instance.IsInitialized())
             {
-                if (languageDictionary.ContainsKey(keyValuePair.Key))
-                    continue;
+                if (!_isAddStringsCoroutineRunning)
+                    StaticCoroutineRunner.StartStaticCoroutine(waitForLocalizationManagerThenAddAllStrings());
 
-                languageDictionary.Add(keyValuePair.Key, keyValuePair.Value);
+                _localizedStringsToAdd.Add(new Tuple<string, string>(ID, text));
+                return;
             }
+
+            Dictionary<string, string> localizationDictionary = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+
+            if (!localizationDictionary.ContainsKey(ID))
+                localizationDictionary.Add(ID, text);
         }
 
         /// <summary>
@@ -123,13 +133,13 @@ namespace InternalModBot
 
             _localizationIDsToLog.Enqueue(localizationID);
 
-            if (!_isCoroutineRunning)
+            if (!_isLogQueueCoroutineRunning)
                 StaticCoroutineRunner.StartStaticCoroutine(waitForLocalizationManagerThenLogQueue());
         }
 
         static IEnumerator waitForLocalizationManagerThenLogQueue()
         {
-            _isCoroutineRunning = true;
+            _isLogQueueCoroutineRunning = true;
 
             yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
             while(_localizationIDsToLog.Count > 0)
@@ -138,7 +148,26 @@ namespace InternalModBot
                 debug.Log(text);
             }
 
-            _isCoroutineRunning = false;
+            _isLogQueueCoroutineRunning = false;
+        }
+
+        static IEnumerator waitForLocalizationManagerThenAddAllStrings()
+        {
+            _isAddStringsCoroutineRunning = true;
+
+            yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
+
+            Dictionary<string, string> localizationDictionary = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+            foreach (Tuple<string, string> idAndLocalizedString in _localizedStringsToAdd)
+            {
+                if (localizationDictionary.ContainsKey(idAndLocalizedString.Item1))
+                    continue;
+
+                localizationDictionary.Add(idAndLocalizedString.Item1, idAndLocalizedString.Item2);
+            }
+
+            _localizedStringsToAdd.Clear();
+            _isAddStringsCoroutineRunning = false;
         }
     }
 }
