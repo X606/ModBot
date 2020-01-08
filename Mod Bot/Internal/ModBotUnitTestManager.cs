@@ -18,7 +18,8 @@ namespace InternalModBot
         static readonly UnitTest[] _unitTests = new UnitTest[]
         {
             new AccessorInstanceCallPrivateMethodUnitTest(),
-            new AccessorInstanceCallPrivateMethodGenericUnitTest()
+            new AccessorInstanceCallPrivateMethodGenericUnitTest(),
+            new AccessorInstanceSetPrivateFieldUnitTest()
         };
 
         /// <summary>
