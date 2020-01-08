@@ -109,7 +109,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -214,9 +213,6 @@
     <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
     <Content Include="LocalizationFiles\ModBot_Italian.txt" />
     <Content Include="LocalizationFiles\ModBot_English.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
