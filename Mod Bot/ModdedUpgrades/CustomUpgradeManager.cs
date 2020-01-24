@@ -17,7 +17,7 @@ namespace ModLibrary
 
         void Start()
         {
-            GameObject prefab = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
+            GameObject prefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");//GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
             _backButton = createButtonAt(prefab, new Vector3(-300f, -200f, 0f), "upgrade_screen_back", BackClicked);
             _nextButton = createButtonAt(prefab, new Vector3(300f, -200f, 0f), "upgrade_screen_next", NextClicked);
 
@@ -49,6 +49,18 @@ namespace ModLibrary
 
         static GameObject createButtonAt(GameObject prefab, Vector3 position, string localizationID, UnityAction call)
         {
+            GameObject button = Instantiate(prefab);
+            button.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
+            button.GetComponent<RectTransform>().localPosition = position;
+
+            ModdedObject buttonModdedObject = button.GetComponent<ModdedObject>();
+            buttonModdedObject.GetObject<Button>(0).onClick.AddListener(call);
+
+            buttonModdedObject.GetObject<Text>(1).text = LocalizationManager.Instance.GetTranslatedString(localizationID);
+
+            return button;
+
+            /*
             GameObject spawedButton = Instantiate(prefab);
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
             spawedButton.GetComponent<RectTransform>().localPosition = position;
@@ -61,6 +73,7 @@ namespace ModLibrary
             spawedButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = localizationID;
 
             return spawedButton;
+            */
         }
         
         /// <summary>
