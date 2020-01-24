@@ -115,8 +115,7 @@ namespace ModLibrary.Properties {
         ///newversion_install:Installieren
         ///modbotversion:Mod-Bot Version: {0}
         ///modbotuptodate:Mod-Bot Version &apos;{0}&apos; auf dem neuesten Stand!
-        ///ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie &quot;ignoreallcrashes 0&quot; in die Konsole eingeben.
-        /// [rest of string was truncated]&quot;;.
+        ///ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie &quot;ignoreallcrashes 0&quot; in die Konsole eingeben.        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_German {
             get {
@@ -208,7 +207,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.4.4-beta.
+        ///   Looks up a localized string similar to 1.4.5-beta.
         /// </summary>
         internal static string ModBotVersion {
             get {

@@ -17,9 +17,11 @@ namespace ModLibrary
 
         void Start()
         {
-            GameObject prefab = AssetLoader.GetObjectFromFile("modswindow", "Button", "Clone Drone in the Danger Zone_Data/");//GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
-            _backButton = createButtonAt(prefab, new Vector3(-300f, -200f, 0f), "upgrade_screen_back", BackClicked);
-            _nextButton = createButtonAt(prefab, new Vector3(300f, -200f, 0f), "upgrade_screen_next", NextClicked);
+            GameObject backButtonPrefab = AssetLoader.GetObjectFromFile("modswindow", "PreviousPageButton", "Clone Drone in the Danger Zone_Data/");
+            _backButton = createButtonAt(backButtonPrefab, new Vector3(-300f, 50f, 0f), BackClicked);
+
+			GameObject nextButtonPrefab = AssetLoader.GetObjectFromFile("modswindow", "NextPageButton", "Clone Drone in the Danger Zone_Data/");
+			_nextButton = createButtonAt(nextButtonPrefab, new Vector3(300f, 50f, 0f), NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }
@@ -47,33 +49,16 @@ namespace ModLibrary
             UpgradeAngleSetter.Instance.UpdateSaveButtonState();
         }
 
-        static GameObject createButtonAt(GameObject prefab, Vector3 position, string localizationID, UnityAction call)
+        static GameObject createButtonAt(GameObject prefab, Vector3 position, UnityAction call)
         {
-            GameObject button = Instantiate(prefab);
-            button.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-            button.GetComponent<RectTransform>().localPosition = position;
-
-            ModdedObject buttonModdedObject = button.GetComponent<ModdedObject>();
-            buttonModdedObject.GetObject<Button>(0).onClick.AddListener(call);
-
-            buttonModdedObject.GetObject<Text>(1).text = LocalizationManager.Instance.GetTranslatedString(localizationID);
-
-            return button;
-
-            /*
             GameObject spawedButton = Instantiate(prefab);
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
             spawedButton.GetComponent<RectTransform>().localPosition = position;
 
-            Button button = spawedButton.transform.GetChild(0).GetChild(1).GetComponent<Button>();
-
-            button.onClick = new Button.ButtonClickedEvent();
+			Button button = spawedButton.GetComponent<Button>();
             button.onClick.AddListener(call);
 
-            spawedButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = localizationID;
-
             return spawedButton;
-            */
         }
         
         /// <summary>
