@@ -217,4 +217,11 @@
     <Content Include="LocalizationFiles\ModBot_English.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
+set "modlibraryxml=$(TargetName).xml"
+
+copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
+copy /Y "$(TargetDir)%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

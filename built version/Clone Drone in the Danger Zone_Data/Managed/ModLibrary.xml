@@ -2439,7 +2439,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.4-beta.
+              Looks up a localized string similar to 1.4.5-beta.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
@@ -2677,6 +2677,63 @@
             Passes the output of <see cref="M:LocalizationManager.GetTranslatedString(System.String)"/> into <see cref="M:ModLibrary.debug.Log(System.String)"/> once the <see cref="T:LocalizationManager"/> is initialized
             </summary>
             <param name="localizationID"></param>
+        </member>
+        <member name="T:InternalModBot.ModBotUnitTestManager">
+            <summary>
+            Handles the Unit Tests for the API methods in Mod-Bot
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotUnitTestManager.RunAllUnitTests">
+            <summary>
+            Runs all defined Unit Tests
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotUnitTestManager.TryRunUnitTest(System.String)">
+            <summary>
+            Attemps to run a defined unit test with the given name
+            </summary>
+            <param name="unitTestName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:InternalModBot.UnitTest">
+            <summary>
+            Base class for all Unit Tests
+            </summary>
+        </member>
+        <member name="P:InternalModBot.UnitTest.CommandActivator">
+            <summary>
+            Returns the string used to activate this Unit Test
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.IsExpectedResult(System.Object[])">
+            <summary>
+            Returns <see langword="true"/> if the Unit Test was successful
+            </summary>
+            <param name="result">The return value of <see cref="M:InternalModBot.UnitTest.RunTest"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UnitTest.RunTest">
+            <summary>
+            Runs the Unit Test
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UnitTest.SetupUnitTest">
+            <summary>
+            Called just before <see cref="M:InternalModBot.UnitTest.RunTest"/>
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.Cleanup">
+            <summary>
+            Expected to clean up anything changed by the unit test
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.IsActivatorMatching(System.String)">
+            <summary>
+            Returns <see langword="true"/> if the given string matches the <see cref="P:InternalModBot.UnitTest.CommandActivator"/>
+            </summary>
+            <param name="activator"></param>
+            <returns></returns>
         </member>
         <member name="T:InternalModBot.RegisterShouldCursorBeEnabledDelegate">
             <summary>
