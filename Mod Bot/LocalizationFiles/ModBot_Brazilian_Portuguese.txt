@@ -1,0 +1,43 @@
+﻿modsbutton:MODIFICAÇÕES
+newversion_message:Nova versão Mod-Bot disponível: {0}\n(versão atual: {1})
+newversion_dismiss:Dispensar
+newversion_install:Instalar
+modbotversion:Versão Mod-Bot: {0}
+modbotuptodate:Versão Mod-Bot '{0}' atualizada!
+ignoreallcrashes_savedwarning:Mensagem de opção salva (IgnoreCrashes): todas as falhas estão sendo ignoradas; isso só deve ser ativado para fins de teste; desative-o digitando "ignoreallcrashes 0" no console.
+ignoreallcrashes_on:O jogo agora está ignorando todas as falhas, essa opção só deve ser ativada para teste. Ter essa opção ativada ignorará falhas leves, mas ainda podem ocorrer falhas graves.
+ignoreallcrashes_off:O jogo não está mais ignorando falhas, essa opção sempre deve ser desativada para fins de estabilidade.
+crashscreen_customtitle:Os desenvolvedores do Mod-Bot adorariam ver isso!
+crashscreen_customdescription:Envie-nos uma captura de tela na discórdia Clone Drone Mod-Bot para que possamos corrigi-lo!\n\nNÃO ENVIE ISSO PARA OS REALIZADORES DE JOGOS REAIS, ISTO É PROVÁVEL UMA FALHA DO MOD-BOT OU DE UM MOD INSTALADO E NÃO DOS SEUS.
+fps_label:{0} FPS
+command_failed_message:O comando '{0}' falhou com o seguinte erro: {1}
+mod_suggested_multiplayer:Pedido de download do Mod!\n{0} quer compartilhar um mod com você!\nNome do mod: "{1}"
+mod_suggested_multiplayer_load_success:Mod carregado por sugestão!
+mod_suggested_multiplayer_load_fail:ERRO: Não foi possível carregar o mod da rede multiplayer
+mod_suggested_twitch:Mod sugerido!\n{0}\nSugerido por: {1}
+mod_suggested_twitch_load_fail:ERRO: Não foi possível carregar o mod do link
+upgrade_screen_next:Próxima
+upgrade_screen_back:Costas
+upgrade_screen_generate:Gerar
+mod_download_confirm_message:Você está prestes a baixar {0}. Isso colocará um arquivo .dll na pasta mods e recarregará todos os mods (isso também significa que todos os mods carregados temporariamente desaparecerão). Você tem certeza de que quer fazer isso?
+mod_download_confirm_yes:Sim
+mod_download_confirm_no:Não
+mod_load_confirm_message:Você está prestes a carregar {0} temporariamente (não o colocará na pasta mods. O mod será desativado na próxima vez que você sair do jogo). Você tem certeza de que quer fazer isso?
+mod_load_confirm_yes:Sim
+mod_load_confirm_no:Não
+request_new_key:Por favor, pressione uma tecla para ligá-lo
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander e HSCarsten</size>
+mod_bot_credits_by:Mod-Bot por:
+mods_menu_get_more:Obtenha mais mods
+mods_menu_mod_options:Opções de Mod
+mods_menu_enable_mod:Ativar Mod
+mods_menu_disable_mod:Desativar Mod
+mods_menu_mod_id:ID da modificação: {0}
+mods_menu_broadcast_confirm_message:Isso pedirá a todos os outros usuários do servidor que usam o Mod-Bot para baixar {0}. Tem certeza de que deseja fazer isso?
+mods_menu_broadcast_confirm_yes:Sim
+mods_menu_broadcast_confirm_no:Não
+mods_menu_download_confirm_message:Isso colocará {0} na pasta mods como um arquivo .dll. Tem certeza de que deseja fazer isso?
+mods_menu_download_confirm_yes:Sim
+mods_menu_download_confirm_no:Não
+clear_cache_success:O cache foi limpo com sucesso.
+clear_cache_fail:O cache está sendo usado.

@@ -31,7 +31,7 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModSharingManager>();                 // Handles sharing of mods to all clients on the same server
             gameFlowManager.AddComponent<ModBotUserIdentifier>();              // Keeps track of what users are currently using Mod-Bot
             gameFlowManager.AddComponent<UpgradeAngleSetter>();                // Handles setting upgrade angles while in-game
-            gameFlowManager.AddComponent<DebugLineDrawingManager>();           // Handels drawing lines on screen
+            gameFlowManager.AddComponent<DebugLineDrawingManager>();           // Handles drawing lines on screen
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {

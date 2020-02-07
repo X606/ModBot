@@ -68,27 +68,22 @@ namespace InternalModBot
 
         void onDownloadButtonClicked()
         {
-            new Generic2ButtonDialogue("You are about to download " + _nameDisplay.text + ". This will place a .dll file in your mods folder and reload all mods (this also means that any temporarily loaded mods will go away). Are you sure you want to do this?",
-            "No", delegate
-            {
-
-            },
-            "Yes", delegate
+            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_download_confirm_message", _nameDisplay.text),
+            LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_no"), null,
+            LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), delegate
             {
                 StartCoroutine(downloadModFileAndLoadAsync(_modDownloadUrl));
-
             });
         }
 
         void onLoadButtonClicked()
         {
-            new Generic2ButtonDialogue("You are about to load in " + _nameDisplay.text + " temporarily (will not place it in the mods folder. The mod will go away the next time you exit the game). Are you sure you want to do this?",
-            "No", null,
-            "Yes", delegate
+            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_load_confirm_message", _nameDisplay.text),
+            LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_no"), null,
+            LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_yes"), delegate
             {
                 StartCoroutine(downloadModBytesAndLoadAsync(_modDownloadUrl));
             });
-
         }
 
         static IEnumerator downloadModFileAndLoadAsync(string url)
@@ -118,7 +113,7 @@ namespace InternalModBot
             if(webRequest.isHttpError || webRequest.isNetworkError)
                 yield break;
 
-            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false);
+            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false, out string error);
             ModsPanelManager.Instance.ReloadModItems();
         }
         

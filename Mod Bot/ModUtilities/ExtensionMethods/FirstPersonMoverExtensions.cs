@@ -56,7 +56,7 @@ namespace ModLibrary
             {
                 GameDataManager.Instance.SetUpgradeLevel(upgradeType, level); // Set the level of the upgrade to the given one
                 UpgradeDescription upgrade = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
-                GlobalEventManager.Instance.Dispatch("UpgradeCompleted", upgrade);
+                GlobalEventManager.Instance.Dispatch(GlobalEvents.UpgradeCompleted, upgrade);
             }
 
             firstPersonMover.SetUpgradesNeedsRefreshing();

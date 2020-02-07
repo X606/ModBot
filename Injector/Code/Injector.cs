@@ -266,7 +266,6 @@ public static class Injector
             ReadWrite = true
         });
 
-
         if (!File.Exists(pathToCopyAssembly))
         {
             Console.WriteLine("Copy: Could not find Assembly-CSharp.dll at path \"" + pathToCopyAssembly + "\"");

@@ -1,0 +1,43 @@
+﻿modsbutton:模式
+newversion_message:新的Mod-Bot版本可用：{0}\n（当前版本：{1}）
+newversion_dismiss:解雇
+newversion_install:安装
+modbotversion:Mod-Bot版本：{0}
+modbotuptodate:最新的Mod-Bot版本'{0}'！
+ignoreallcrashes_savedwarning:已保存的选项消息（IgnoreCrashes）：所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
+ignoreallcrashes_on:现在，游戏将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是硬崩溃仍然可能发生。
+ignoreallcrashes_off:游戏不再忽略崩溃，为稳定起见，应始终关闭此选项。
+crashscreen_customtitle:Mod-Bot开发人员很乐意看到这一点！
+crashscreen_customdescription:将我们的屏幕截图发送给Clone Drone Mod-Bot矛盾者，以便我们进行修复！\n\n请勿将此内容发送给真实的游戏开发者，这很可能是MOD-BOT或已安装的MOD的错误，而不是其错误。
+fps_label:{0} FPS
+command_failed_message:命令'{0}'失败，出现以下错误：{1}
+mod_suggested_multiplayer:Mod下载要求！\n{0}想与您分享一个模组！\n模组名称：“ {1}”
+mod_suggested_multiplayer_load_success:Mod从建议加载！
+mod_suggested_multiplayer_load_fail:错误：无法从多人网络加载mod
+mod_suggested_twitch:国防部建议！\n{0}\n建议者：{1}
+mod_suggested_twitch_load_fail:错误：无法从链接加载mod
+upgrade_screen_next:下一个
+upgrade_screen_back:向后
+upgrade_screen_generate:生成
+mod_download_confirm_message:您将要下载{0}。 这将在您的mods文件夹中放置一个.dll文件并重新加载所有mod（这也意味着所有临时加载的mod都将消失）。 你确定要这么做吗？
+mod_download_confirm_yes:是
+mod_download_confirm_no:没有
+mod_load_confirm_message:您即将临时加载{0}（不会将其放置在mods文件夹中。下次退出游戏时，mod将消失）。 你确定要这么做吗？
+mod_load_confirm_yes:是
+mod_load_confirm_no:没有
+request_new_key:请按一个键进行绑定
+mod_bot_credits_developers_list:X606，Gorakh，\n<size=9>Niek_Alexander和HSCarsten</size>
+mod_bot_credits_by:Mod-Bot通过：
+mods_menu_get_more:获取更多mod
+mods_menu_mod_options:Mod选项
+mods_menu_enable_mod:启用模组
+mods_menu_disable_mod:禁用Mod
+mods_menu_mod_id:模组ID：{0}
+mods_menu_broadcast_confirm_message:这将要求使用Mod-Bot的服务器中的其他所有人下载{0}，确定要执行此操作吗？
+mods_menu_broadcast_confirm_yes:是
+mods_menu_broadcast_confirm_no:没有
+mods_menu_download_confirm_message:这会将{0}作为.dll文件放置在您的mods文件夹中，确定要执行此操作吗？
+mods_menu_download_confirm_yes:是
+mods_menu_download_confirm_no:没有
+clear_cache_success:成功清除缓存。
+clear_cache_fail:正在使用缓存。

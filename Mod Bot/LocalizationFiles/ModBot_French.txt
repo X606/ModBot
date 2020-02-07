@@ -1,0 +1,43 @@
+﻿modsbutton:MODS
+newversion_message:Nouvelle version Mod-Bot disponible: {0}\n(Version actuelle: {1})
+newversion_dismiss:Rejeter
+newversion_install:Installer
+modbotversion:Version Mod-Bot: {0}
+modbotuptodate:Version Mod-Bot '{0}' à jour!
+ignoreallcrashes_savedwarning:Message d'option enregistré (IgnoreCrashes): Tous les plantages sont ignorés, cela ne doit être activé qu'à des fins de test, désactivez-le en tapant "ignoreallcrashes 0" dans la console.
+ignoreallcrashes_on:Le jeu ignore désormais tous les plantages, cette option ne doit être activée que pour les tests. L'activation de cette option ignorera les plantages légers, mais des plantages durs peuvent toujours se produire.
+ignoreallcrashes_off:Le jeu n'ignore plus les plantages, cette option doit toujours être désactivée pour des raisons de stabilité.
+crashscreen_customtitle:Les développeurs de Mod-Bot aimeraient voir ça!
+crashscreen_customdescription:Envoyez-nous une capture d'écran dans la discorde Clone Drone Mod-Bot afin que nous puissions la corriger!\n\nN'ENVOYEZ PAS CECI AUX DÉVELOPPEURS DE JEUX RÉELS, C'EST PROBABLEMENT UN DÉFAUT DE MOD-BOT OU D'UN MOD INSTALLÉ ET NON LEURS.
+fps_label:{0} FPS
+command_failed_message:La commande '{0}' a échoué avec l'erreur suivante: {1}
+mod_suggested_multiplayer:Demande de téléchargement de mod!\n{0} veut partager un mod avec vous!\nNom du mod: "{1}"
+mod_suggested_multiplayer_load_success:Mod chargé à partir de la suggestion!
+mod_suggested_multiplayer_load_fail:ERREUR: impossible de charger le mod depuis un réseau multijoueur
+mod_suggested_twitch:Mod suggéré!\n{0}\nProposé par: {1}
+mod_suggested_twitch_load_fail:ERREUR: impossible de charger le mod à partir du lien
+upgrade_screen_next:Prochain
+upgrade_screen_back:Arrière
+upgrade_screen_generate:Produire
+mod_download_confirm_message:Vous êtes sur le point de télécharger {0}. Cela placera un fichier .dll dans votre dossier mods et rechargera tous les mods (cela signifie également que tous les mods chargés temporairement disparaîtront). Es-tu sûr de vouloir faire ça?
+mod_download_confirm_yes:Oui
+mod_download_confirm_no:Non
+mod_load_confirm_message:Vous êtes sur le point de charger temporairement {0} (ne le placerez pas dans le dossier mods. Le mod disparaîtra la prochaine fois que vous quitterez le jeu). Es-tu sûr de vouloir faire ça?
+mod_load_confirm_yes:Oui
+mod_load_confirm_no:Non
+request_new_key:Veuillez appuyer sur une touche pour le lier
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander et HSCarsten</size>
+mod_bot_credits_by:Mod-Bot par:
+mods_menu_get_more:Obtenez plus de mods
+mods_menu_mod_options:Options de mod
+mods_menu_enable_mod:Activer le mod
+mods_menu_disable_mod:Désactiver le mod
+mods_menu_mod_id:ID du mod: {0}
+mods_menu_broadcast_confirm_message:Cela demandera à tous les autres utilisateurs du serveur utilisant Mod-Bot de télécharger {0}, êtes-vous sûr de vouloir le faire?
+mods_menu_broadcast_confirm_yes:Oui
+mods_menu_broadcast_confirm_no:Non
+mods_menu_download_confirm_message:Cela placera {0} dans votre dossier mods en tant que fichier .dll, êtes-vous sûr de vouloir le faire?
+mods_menu_download_confirm_yes:Oui
+mods_menu_download_confirm_no:Non
+clear_cache_success:Vider le cache avec succès.
+clear_cache_fail:Le cache est utilisé.

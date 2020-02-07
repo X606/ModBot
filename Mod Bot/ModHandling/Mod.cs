@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using ModLibrary;
 using InternalModBot;
@@ -10,6 +11,41 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
+        /// <summary>
+        /// Returns the name of the mod, override to set the name of you mod
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetModName();
+
+        /// <summary>
+        /// Returns a unique ID for every mod
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetUniqueID();
+
+        /// <summary>
+        /// Returns the description of the mod, override to change the description of your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModDescription()
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModImageURL()
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
+        /// </summary>
+        public string HarmonyID => "com.Mod-Bot.Mod." + GetUniqueID();
+
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
         /// </summary>
@@ -62,36 +98,6 @@ namespace ModLibrary
         /// <param name="command">The text entered into the command field of the console</param>
         public virtual void OnCommandRan(string command)
         {
-        }
-
-        /// <summary>
-        /// Returns the name of the mod, override to set the name of you mod
-        /// </summary>
-        /// <returns></returns>
-        public abstract string GetModName();
-
-        /// <summary>
-        /// Returns a unique ID for every mod
-        /// </summary>
-        /// <returns></returns>
-        public abstract string GetUniqueID();
-
-        /// <summary>
-        /// Returns the description of the mod, override to change the description of your mod
-        /// </summary>
-        /// <returns></returns>
-        public virtual string GetModDescription()
-        {
-            return "";
-        }
-
-        /// <summary>
-        /// Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
-        /// </summary>
-        /// <returns></returns>
-        public virtual string GetModImageURL()
-        {
-            return "";
         }
 
         /// <summary>
@@ -266,6 +272,23 @@ namespace ModLibrary
         public virtual UnityEngine.Object OnResourcesLoad(string path)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
+        /// </summary>
+        /// <param name="newLanguageID">The language ID that was switched to</param>
+        /// <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
+        public virtual void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        {
+        }
+
+        /// <summary>
+        /// Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+        /// </summary>
+        public virtual void OnModLoaded()
+        {
+
         }
     }
 }

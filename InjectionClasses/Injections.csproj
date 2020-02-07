@@ -61,4 +61,9 @@
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
+
+copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

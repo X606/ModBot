@@ -45,6 +45,21 @@ namespace InternalModBot
 
             if (subCommands[0] == "crash")
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
+
+            if (subCommands[0] == "unittest")
+            {
+                if (subCommands.Length > 1)
+                {
+                    bool foundUnitTest = ModBotUnitTestManager.TryRunUnitTest(subCommands[1]);
+                    if (!foundUnitTest)
+                    {
+                        debug.Log("Unit test failed: Unit test \"" + subCommands[1] + "\" not found", Color.red);
+                        return;
+                    }
+                }
+
+                ModBotUnitTestManager.RunAllUnitTests();
+            }
         }
 
         /// <summary>
@@ -91,7 +106,7 @@ namespace InternalModBot
 
         static void alert()
         {
-            debug.Log("Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing \"ignoreallcrashes 0\" into the console.", Color.red);
+            debug.Log(LocalizationManager.Instance.GetTranslatedString("ignoreallcrashes_savedwarning"), Color.red);
         }
 
         /// <summary>
@@ -107,11 +122,11 @@ namespace InternalModBot
 
             if (state)
             {
-                debug.Log("The game is now ignoring all crashes, this option should only ever be enabled for testing. Having this option enabled will ignore soft crashes, but hard crashes can still occur.", Color.red);
+                debug.Log(LocalizationManager.Instance.GetTranslatedString("ignoreallcrashes_on"), Color.red);
             }
             else
             {
-                debug.Log("The game is no longer ignoring crashes, this option should always be turned off for stability purposes.", Color.green);
+                debug.Log(LocalizationManager.Instance.GetTranslatedString("ignoreallcrashes_off"), Color.green);
             }
         }
 

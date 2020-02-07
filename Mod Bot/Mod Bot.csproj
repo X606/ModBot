@@ -50,9 +50,14 @@
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="Internal\ModBotLocalizationManager.cs" />
+    <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\ModSuggestingManager.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodGenericUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldUnitTest.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\Logger.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
@@ -101,9 +106,23 @@
     <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelInitialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\UsedDlls\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\Assembly-CSharp.dll</HintPath>
@@ -186,5 +205,23 @@
       <HintPath>..\UsedDlls\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="LocalizationFiles\ModBot_Brazilian_Portuguese.txt" />
+    <Content Include="LocalizationFiles\ModBot_Simplified_Chinese.txt" />
+    <Content Include="LocalizationFiles\ModBot_German.txt" />
+    <Content Include="LocalizationFiles\ModBot_French.txt" />
+    <Content Include="LocalizationFiles\ModBot_Spanish %28Spain%29.txt" />
+    <Content Include="LocalizationFiles\ModBot_Russian.txt" />
+    <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
+    <Content Include="LocalizationFiles\ModBot_Italian.txt" />
+    <Content Include="LocalizationFiles\ModBot_English.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
+set "modlibraryxml=$(TargetName).xml"
+
+copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
+copy /Y "$(TargetDir)%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

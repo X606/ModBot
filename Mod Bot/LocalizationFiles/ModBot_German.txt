@@ -1,0 +1,43 @@
+﻿modsbutton:MODIFIKATIONEN
+newversion_message:Neue Mod-Bot-Version verfügbar: {0}\n(Aktuelle Version: {1})
+newversion_dismiss:Entlassen
+newversion_install:Installieren
+modbotversion:Mod-Bot Version: {0}
+modbotuptodate:Mod-Bot Version '{0}' auf dem neuesten Stand!
+ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie "ignoreallcrashes 0" in die Konsole eingeben.
+ignoreallcrashes_on:Das Spiel ignoriert jetzt alle Abstürze. Diese Option sollte nur zum Testen aktiviert werden. Wenn diese Option aktiviert ist, werden weiche Abstürze ignoriert, es können jedoch immer noch harte Abstürze auftreten.
+ignoreallcrashes_off:Das Spiel ignoriert keine Abstürze mehr. Diese Option sollte aus Stabilitätsgründen immer deaktiviert sein.
+crashscreen_customtitle:Die Mod-Bot-Entwickler würden das gerne sehen!
+crashscreen_customdescription:Senden Sie uns einen Screenshot in der Clone Drone Mod-Bot-Zwietracht, damit wir ihn beheben können!\n\nSENDEN SIE DAS NICHT AN DIE ECHTEN SPIELENTWICKLER, DAS IST MÖGLICHERWEISE EIN FEHLER DES MOD-BOT ODER EINES INSTALLIERTEN MODS UND NICHT IHRER.
+fps_label:{0} FPS
+command_failed_message:Befehl '{0}' ist mit folgendem Fehler fehlgeschlagen: {1}
+mod_suggested_multiplayer:Mod Download Anfrage!\n{0} möchte einen Mod mit dir teilen!\nMod-Name: "{1}"
+mod_suggested_multiplayer_load_success:Mod von Vorschlag geladen!
+mod_suggested_multiplayer_load_fail:FEHLER: Mod konnte nicht aus dem Multiplayer-Netzwerk geladen werden
+mod_suggested_twitch:Mod vorgeschlagen!\n{0}\nVorgeschlagen von: {1}
+mod_suggested_twitch_load_fail:FEHLER: Mod konnte nicht vom Link geladen werden
+upgrade_screen_next:Nächster
+upgrade_screen_back:Zurück
+upgrade_screen_generate:Generieren
+mod_download_confirm_message:Sie laden gerade {0} herunter. Dadurch wird eine DLL-Datei in Ihren Mods-Ordner gelegt und alle Mods neu geladen (dies bedeutet auch, dass alle temporär geladenen Mods verschwinden). Möchten Sie das wirklich tun?
+mod_download_confirm_yes:Ja
+mod_download_confirm_no:Nein
+mod_load_confirm_message:Du bist dabei, vorübergehend {0} zu laden (wird nicht im Mods-Ordner abgelegt. Der Mod verschwindet, wenn du das Spiel das nächste Mal verlässt). Möchten Sie das wirklich tun?
+mod_load_confirm_yes:Ja
+mod_load_confirm_no:Nein
+request_new_key:Bitte drücken Sie eine Taste, um es zu binden
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander und HSCarsten</size>
+mod_bot_credits_by:Mod-Bot von:
+mods_menu_get_more:Holen Sie sich mehr Mods
+mods_menu_mod_options:Mod-Optionen
+mods_menu_enable_mod:Aktiviere Mod
+mods_menu_disable_mod:Mod deaktivieren
+mods_menu_mod_id:Mod ID: {0}
+mods_menu_broadcast_confirm_message:Hierdurch werden alle anderen Benutzer des Servers, die Mod-Bot verwenden, aufgefordert, {0} herunterzuladen. Möchten Sie dies wirklich tun?
+mods_menu_broadcast_confirm_yes:Ja
+mods_menu_broadcast_confirm_no:Nein
+mods_menu_download_confirm_message:Dadurch wird {0} als DLL-Datei in Ihren Mods-Ordner verschoben. Möchten Sie das wirklich tun?
+mods_menu_download_confirm_yes:Ja
+mods_menu_download_confirm_no:Nein
+clear_cache_success:Cache erfolgreich geleert.
+clear_cache_fail:Cache wird verwendet.

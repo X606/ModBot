@@ -50,7 +50,7 @@ namespace ModLibrary
                 throw new ArgumentNullException(nameof(objects));
 
             if (waitBeforeDestroy < 0f)
-                throw new ArgumentOutOfRangeException("Wait before destroy argument must be greater than of equal to 0!");
+                throw new ArgumentOutOfRangeException("Wait before destroy argument must be greater than or equal to 0!");
 
             foreach (ObjectType obj in objects)
             {

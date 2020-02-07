@@ -20,12 +20,10 @@ namespace InternalModBot
 
         GameObject _saveButtonObject = null;
 
-        internal bool DebugModeEnabled;
+        internal bool DebugModeEnabled = false;
 
         void Start()
         {
-            DebugModeEnabled = false;
-
             _changedIconAngles = new Dictionary<ModdedUpgradeRepresenter, float>();
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
@@ -43,18 +41,17 @@ namespace InternalModBot
 
         void createSaveButton()
         {
-            GameObject buttonPrefab = GameUIRoot.Instance.UpgradeUI.transform.GetChild(1).GetChild(6).gameObject;
+            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "GenerateButton", "Clone Drone in the Danger Zone_Data/");
 
-            _saveButtonObject = Instantiate(buttonPrefab);
+			_saveButtonObject = Instantiate(buttonPrefab);
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-            _saveButtonObject.GetComponent<RectTransform>().localPosition -= new Vector3(0f, 40f, 0f);
+			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 
-            Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
 
-            saveButton.onClick = new Button.ButtonClickedEvent();
+			Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
             saveButton.onClick.AddListener(saveAngleChangesToFile);
 
-            saveButton.GetComponentInChildren<Text>().text = "Generate";
+            saveButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "upgrade_screen_generate";
         }
 
         void saveAngleChangesToFile()
@@ -65,7 +62,7 @@ namespace InternalModBot
             List<string> lines = new List<string>();
             foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in _changedIconAngles)
             {
-                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
+                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}f, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
 
                 string upgradeType = convertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
                 string level = upgradeAngle.Key.Level.ToString();

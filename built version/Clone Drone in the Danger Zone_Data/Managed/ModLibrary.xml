@@ -411,6 +411,182 @@
             </summary>
             <param name="obj"></param>
         </member>
+        <member name="T:ModLibrary.Injector">
+            <summary>
+            Used to inject pre and post injections into a target method
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to <paramref name="sourceMethod"/> to <paramref name="targetMethod"/> that will be called at the start of the method.
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethod">The method to inject a call to</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPostfix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to sourceMethod to targetMethod that will be called at the end of the method.
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethod">The method to inject a call to</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectPrefixAndPostfix(System.Reflection.MethodInfo,System.Reflection.MethodInfo,System.Reflection.MethodInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to sourceMethodPrefix and sourceMethodPostfix to targetMethod
+            </summary>
+            <param name="targetMethod">The method to inject into</param>
+            <param name="sourceMethodPrefix">The prefix method</param>
+            <param name="sourceMethodPostfix">The postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="prefixTargetProperty">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the start of the method.
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="prefixSource">The source of the injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="postfixTargetProperty">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="postfixSource">The source of the injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectGetPropertyPrefixAndPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource and postfixSource to targetProperty
+            </summary>
+            <param name="targetProperty">The property to inject to</param>
+            <param name="prefixSource">The source of the prefix injection</param>
+            <param name="postfixSource">The source of the postfix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the start of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="prefixTargetProperty">The name of the prefix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the start of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="prefixSource">The source of the prefix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPostfix``2(System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod that will be called at the end of the method.
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetProperty">The name of the method to inject into</param>
+            <param name="postfixTargetProperty">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="postfixSource">The source of the postfix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefixAndPostfix``3(System.String,System.String,System.String,ModLibrary.Mod)">
+            <summary>
+            Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
+            </summary>
+            <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+            <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
+            <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
+            <param name="injectTargetMethod">The name of the method to inject into</param>
+            <param name="prefixTargetMethod">The name of the prefix method</param>
+            <param name="postfixTargetMethod">The name of the postfix method</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
+        <member name="M:ModLibrary.Injector.InjectSetPropertyPrefixAndPostfix(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo,ModLibrary.Mod)">
+            <summary>
+            Adds a call to prefixSource to targetProperty that will be called at the end of the method.
+            </summary>
+            <param name="targetProperty">The property to inject into</param>
+            <param name="prefixSource">The source of the prefix injection</param>
+            <param name="postfixSource">The source of the postfix injection</param>
+            <param name="mod">The owner of this injection</param>
+        </member>
         <member name="T:ModLibrary.LevelEditorObjectAdder">
             <summary>
             Can be used to add your own custom things to the editor!
@@ -503,6 +679,35 @@
             Base class for all mods, contains virtual implementations for different events in the game.
             </summary>
         </member>
+        <member name="M:ModLibrary.Mod.GetModName">
+            <summary>
+            Returns the name of the mod, override to set the name of you mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetUniqueID">
+            <summary>
+            Returns a unique ID for every mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModDescription">
+            <summary>
+            Returns the description of the mod, override to change the description of your mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModImageURL">
+            <summary>
+            Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:ModLibrary.Mod.HarmonyID">
+            <summary>
+            Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
+            </summary>
+        </member>
         <member name="M:ModLibrary.Mod.OnFirstPersonMoverSpawned(FirstPersonMover)">
             <summary>
             Called in <see cref="M:Character.Start"/> if the <see cref="T:Character"/> is of type <see cref="T:FirstPersonMover"/>
@@ -542,30 +747,6 @@
             Called when you run a command in the console (mostly for debuging).
             </summary>
             <param name="command">The text entered into the command field of the console</param>
-        </member>
-        <member name="M:ModLibrary.Mod.GetModName">
-            <summary>
-            Returns the name of the mod, override to set the name of you mod
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetUniqueID">
-            <summary>
-            Returns a unique ID for every mod
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetModDescription">
-            <summary>
-            Returns the description of the mod, override to change the description of your mod
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetModImageURL">
-            <summary>
-            Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:ModLibrary.Mod.OnUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
             <summary>
@@ -697,6 +878,18 @@
             </summary>
             <param name="path">The path specified</param>
             <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
+            </summary>
+            <param name="newLanguageID">The language ID that was switched to</param>
+            <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnModLoaded">
+            <summary>
+            Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="T:ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+            </summary>
         </member>
         <member name="T:ModLibrary.KeyCodeInput">
             <summary>
@@ -2117,6 +2310,138 @@
             Returns if the <see cref="T:UnityEngine.Coroutine"/> should keep waiting
             </summary>
         </member>
+        <member name="T:ModLibrary.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Brazilian_Portuguese">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODIFICAÇÕES
+            newversion_message:Nova versão Mod-Bot disponível: {0}\n(versão atual: {1})
+            newversion_dismiss:Dispensar
+            newversion_install:Instalar
+            modbotversion:Versão Mod-Bot: {0}
+            modbotuptodate:Versão Mod-Bot &apos;{0}&apos; atualizada!
+            ignoreallcrashes_savedwarning:Mensagem de opção salva (IgnoreCrashes): todas as falhas estão sendo ignoradas; isso só deve ser ativado para fins de teste; desative-o digitando &quot;ignoreallcrashes 0&quot; no console.
+            ignoreallcrashes_on:O jogo agora está ignorando todas as  [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_English">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODS
+            newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
+            newversion_dismiss:Dismiss
+            newversion_install:Install
+            modbotversion:Mod-Bot Version: {0}
+            modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
+            ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
+            ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_French">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODS
+            newversion_message:Nouvelle version Mod-Bot disponible: {0}\n(Version actuelle: {1})
+            newversion_dismiss:Rejeter
+            newversion_install:Installer
+            modbotversion:Version Mod-Bot: {0}
+            modbotuptodate:Version Mod-Bot &apos;{0}&apos; à jour!
+            ignoreallcrashes_savedwarning:Message d&apos;option enregistré (IgnoreCrashes): Tous les plantages sont ignorés, cela ne doit être activé qu&apos;à des fins de test, désactivez-le en tapant &quot;ignoreallcrashes 0&quot; dans la console.
+            ignoreallcrashes_on:Le jeu ignore désormais tous l [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_German">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODIFIKATIONEN
+            newversion_message:Neue Mod-Bot-Version verfügbar: {0}\n(Aktuelle Version: {1})
+            newversion_dismiss:Entlassen
+            newversion_install:Installieren
+            modbotversion:Mod-Bot Version: {0}
+            modbotuptodate:Mod-Bot Version &apos;{0}&apos; auf dem neuesten Stand!
+            ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie &quot;ignoreallcrashes 0&quot; in die Konsole eingeben.
+             [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Italian">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODS
+            newversion_message:Nuova versione Mod-Bot disponibile: {0}\n(Versione corrente: {1})
+            newversion_dismiss:Respingere
+            newversion_install:Installare
+            modbotversion:Versione Mod-Bot: {0}
+            modbotuptodate:Versione Mod-Bot &apos;{0}&apos; aggiornata!
+            ignoreallcrashes_savedwarning:Messaggio di opzione salvato (IgnoreCrashes): tutti gli arresti anomali vengono ignorati, questo dovrebbe essere abilitato solo a scopo di test, disattivarlo digitando &quot;ignoreallcrashes 0&quot; nella console.
+            ignoreallcrashes_on:Il g [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Russian">
+             <summary>
+               Looks up a localized string similar to modsbutton:модов
+            newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
+            newversion_dismiss:отклонять
+            newversion_install:устанавливать
+            modbotversion:Версия Mod-Bot: {0}
+            modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена!
+            ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
+            ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция до [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Simplified_Chinese">
+             <summary>
+               Looks up a localized string similar to modsbutton:模式
+            newversion_message:新的Mod-Bot版本可用：{0}\n（当前版本：{1}）
+            newversion_dismiss:解雇
+            newversion_install:安装
+            modbotversion:Mod-Bot版本：{0}
+            modbotuptodate:最新的Mod-Bot版本&apos;{0}&apos;！
+            ignoreallcrashes_savedwarning:已保存的选项消息（IgnoreCrashes）：所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
+            ignoreallcrashes_on:现在，游戏将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是硬崩溃仍然可能发生。
+            ignoreallcrashes_off:游戏不再忽略崩溃，为稳定起见，应始终关闭此选项。
+            crashscreen_customtitle:Mod-Bot开发人员很乐意看到这一点！
+            crashscreen_customdescription:将我们的屏幕截图发送给Clone Drone Mod-Bot矛 [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Spanish_LatinAmerica">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODIFICACIONES
+            newversion_message:Nueva versión Mod-Bot disponible: {0}\n(Versión actual: {1})
+            newversion_dismiss:Descartar
+            newversion_install:Instalar en pc
+            modbotversion:Versión Mod-Bot: {0}
+            modbotuptodate:¡Versión de Mod-Bot &apos;{0}&apos; actualizada!
+            ignoreallcrashes_savedwarning:Mensaje de opción guardada (IgnoreCrashes): se ignoran todos los bloqueos, esto solo debe habilitarse con fines de prueba, apáguelo escribiendo &quot;ignoreallcrashes 0&quot; en la consola.
+            ignoreallcrashes_on:El juego ahora ig [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBot_Spanish_Spain">
+             <summary>
+               Looks up a localized string similar to modsbutton:MODIFICACIONES
+            newversion_message:Nueva versión Mod-Bot disponible: {0}\n(Versión actual: {1})
+            newversion_dismiss:Descartar
+            newversion_install:Instalar en pc
+            modbotversion:Versión Mod-Bot: {0}
+            modbotuptodate:¡Versión de Mod-Bot &apos;{0}&apos; actualizada!
+            ignoreallcrashes_savedwarning:Mensaje de opción guardada (IgnoreCrashes): se ignoran todos los bloqueos, esto solo debe habilitarse con fines de prueba, apáguelo escribiendo &quot;ignoreallcrashes 0&quot; en la consola.
+            ignoreallcrashes_on:El juego ahora ig [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
+            <summary>
+              Looks up a localized string similar to 1.4.5.
+            </summary>
+        </member>
         <member name="T:InternalModBot.CalledFromInjections">
             <summary>
             Contains methods that get called from the game itself
@@ -2220,6 +2545,11 @@
             <param name="command"></param>
             <returns></returns>
         </member>
+        <member name="M:InternalModBot.CalledFromInjections.FromPopulateLanguageDictionary">
+            <summary>
+            Called from LocalizationManager.populateDictionaryForCurrentLanguage
+            </summary>
+        </member>
         <member name="T:InternalModBot.ConsoleInputManager">
             <summary>
             Used by Mod-Bot to define commands
@@ -2322,6 +2652,88 @@
             <summary>
             The time we want to stop displaying the line
             </summary>
+        </member>
+        <member name="T:InternalModBot.ModBotLocalizationManager">
+            <summary>
+            Handles localization of string added in Mod-Bot
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotLocalizationManager.FormatLocalizedStringFromID(System.String,System.Object[])">
+            <summary>
+            Gets the translated string via <see cref="M:LocalizationManager.GetTranslatedString(System.String)"/> and formats the returned <see langword="string"/> with the given arguments
+            </summary>
+            <param name="ID">The localization ID to get the translated string of</param>
+            <param name="arguments">The arguments to format into the string</param>
+            <returns>The translated and formatted string</returns>
+        </member>
+        <member name="M:InternalModBot.ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Adds all Mod-Bot localization IDs and translated text for the current language into the given dictionary
+            </summary>
+            <param name="languageDictionary"></param>
+        </member>
+        <member name="M:InternalModBot.ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized(System.String)">
+            <summary>
+            Passes the output of <see cref="M:LocalizationManager.GetTranslatedString(System.String)"/> into <see cref="M:ModLibrary.debug.Log(System.String)"/> once the <see cref="T:LocalizationManager"/> is initialized
+            </summary>
+            <param name="localizationID"></param>
+        </member>
+        <member name="T:InternalModBot.ModBotUnitTestManager">
+            <summary>
+            Handles the Unit Tests for the API methods in Mod-Bot
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotUnitTestManager.RunAllUnitTests">
+            <summary>
+            Runs all defined Unit Tests
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotUnitTestManager.TryRunUnitTest(System.String)">
+            <summary>
+            Attemps to run a defined unit test with the given name
+            </summary>
+            <param name="unitTestName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:InternalModBot.UnitTest">
+            <summary>
+            Base class for all Unit Tests
+            </summary>
+        </member>
+        <member name="P:InternalModBot.UnitTest.CommandActivator">
+            <summary>
+            Returns the string used to activate this Unit Test
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.IsExpectedResult(System.Object[])">
+            <summary>
+            Returns <see langword="true"/> if the Unit Test was successful
+            </summary>
+            <param name="result">The return value of <see cref="M:InternalModBot.UnitTest.RunTest"/></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UnitTest.RunTest">
+            <summary>
+            Runs the Unit Test
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.UnitTest.SetupUnitTest">
+            <summary>
+            Called just before <see cref="M:InternalModBot.UnitTest.RunTest"/>
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.Cleanup">
+            <summary>
+            Expected to clean up anything changed by the unit test
+            </summary>
+        </member>
+        <member name="M:InternalModBot.UnitTest.IsActivatorMatching(System.String)">
+            <summary>
+            Returns <see langword="true"/> if the given string matches the <see cref="P:InternalModBot.UnitTest.CommandActivator"/>
+            </summary>
+            <param name="activator"></param>
+            <returns></returns>
         </member>
         <member name="T:InternalModBot.RegisterShouldCursorBeEnabledDelegate">
             <summary>
@@ -2972,12 +3384,13 @@
             Clears all loaded mods and loads them again
             </summary>
         </member>
-        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.Boolean)">
+        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.Boolean,System.String@)">
             <summary>
             Loads a mod from only the bytes making up the assembly
             </summary>
             <param name="assemblyData"></param>
             <param name="hasFile"></param>
+            <param name="errorMessage"></param>
         </member>
         <member name="M:InternalModBot.ModsManager.WriteDllFileToModFolder(ModLibrary.Mod)">
             <summary>
@@ -3326,6 +3739,13 @@
             </summary>
             <param name="path"></param>
             <returns></returns>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="newLanguageID"></param>
+            <param name="localizationDictionary"></param>
         </member>
         <member name="T:InternalModBot.ModSharingManager">
             <summary>
