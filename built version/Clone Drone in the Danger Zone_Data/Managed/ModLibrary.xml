@@ -982,6 +982,18 @@
             <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.InputField"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.InputField"/></param>
             <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.InputField"/> is changed</param>
         </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddVerifyingInputField(System.String,System.String,System.String,System.Predicate{System.String},System.Action{UnityEngine.UI.InputField},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.String})">
+            <summary>
+            Adds a verifying <see cref="T:UnityEngine.UI.InputField"/> to the page with the specified arguments
+            </summary>
+            <param name="defaultValue">The value the <see cref="T:UnityEngine.UI.InputField"/> should be set to by default (NOTE: This value will not be checked by the <see cref="F:InternalModBot.ModdedOptionVerifyingInputFieldItem.Verify"/> predicate)</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="verificationPredicate">The <see cref="T:System.Predicate`1"/> to verify the contents of the <see cref="T:UnityEngine.UI.InputField"/> when it is changed</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.InputField"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.InputField"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.InputField"/> is changed</param>
+        </member>
         <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddCheckbox(System.Boolean,System.String,System.String,System.Action{UnityEngine.UI.Toggle},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.Boolean})">
             <summary>
             Adds a <see cref="T:UnityEngine.UI.Toggle"/> to the page with the passed arguements
@@ -3218,6 +3230,23 @@
             </summary>
         </member>
         <member name="M:InternalModBot.ModdedOptionDropDownItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
+        <member name="T:InternalModBot.ModdedOptionVerifyingInputFieldItem">
+            <summary>
+            Used by Mod-Bot to represent an InputField that verifies input in a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionVerifyingInputFieldItem.Verify">
+            <summary>
+            Used to verify the input of the input field, if this returns <see langword="false"/>, the value will revert back to the previous value, and apply it normally otherwise.
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionVerifyingInputFieldItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
             <summary>
             Places the page item in the page
             </summary>

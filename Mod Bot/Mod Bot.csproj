@@ -73,6 +73,7 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionButtonItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionCheckboxItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionDropDownItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionVerifyingInputFieldItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionInputFieldItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionIntSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionKeyCodeItem.cs" />
