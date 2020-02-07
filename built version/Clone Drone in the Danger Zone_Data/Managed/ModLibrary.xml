@@ -2439,7 +2439,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.5-beta.
+              Looks up a localized string similar to 1.4.5.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
