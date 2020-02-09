@@ -1,4 +1,4 @@
-﻿modsbutton:модов
+﻿modsbutton:моды
 newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
 newversion_dismiss:отклонять
 newversion_install:устанавливать
