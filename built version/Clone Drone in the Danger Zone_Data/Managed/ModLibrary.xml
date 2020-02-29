@@ -833,6 +833,15 @@
             <param name="killerCharacter">The killer <see cref="T:Character"/></param>
             <param name="damageSourceType">The cause of death</param>
         </member>
+        <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
+            <summary>
+            Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
+            </summary>
+            <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
+            <param name="killerCharacter">The killer <see cref="T:Character"/></param>
+            <param name="damageSourceType">The cause of death</param>
+            <param name="attackID">The attack ID that killed <paramref name="killedCharacter"/></param>
+        </member>
         <member name="M:ModLibrary.Mod.OnModDeactivated">
             <summary>
             Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically hidden when the owner mod is disabled
@@ -2459,82 +2468,6 @@
             Contains methods that get called from the game itself
             </summary>
         </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshUpgradesStart(FirstPersonMover)">
-            <summary>
-            Called at the start of <see cref="M:FirstPersonMover.RefreshUpgrades"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshUpgradesEnd(FirstPersonMover)">
-            <summary>
-            Called at the end of <see cref="M:FirstPersonMover.RefreshUpgrades"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterStart(Character)">
-            <summary>
-            Called from <see cref="M:Character.Start"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterUpdate(Character)">
-            <summary>
-            Called from <see cref="M:Character.Update"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterDeath(Character,Character,DamageSourceType)">
-            <summary>
-            Called from <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
-            </summary>
-            <param name="owner"></param>
-            <param name="killer"></param>
-            <param name="damageSource"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromGetAngleOffset(UpgradeDescription)">
-            <summary>
-            Called from <see cref="M:UpgradeDescription.GetAngleOffset"/> and returns the angle the upgrade should be on the current page
-            </summary>
-            <param name="upgrade"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromIsUpgradeCurrentlyVisible(UpgradeDescription)">
-            <summary>
-            Called from <see cref="M:UpgradeDescription.IsUpgradeCurrentlyVisible"/> and returns if the upgrade should be visible on the current page
-            </summary>
-            <param name="upgrade"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromFixedUpdate(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.FixedUpdate"/>
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromStartFlying(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character)"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromDestroyProjectile(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.DestroyProjectile"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnEnvironmentCollided(Projectile)">
-            <summary>
-            Gets from <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshCursorEnabled">
-            <summary>
-            Called from <see cref="M:GameUIRoot.RefreshCursorEnabled"/> and returns if the cursor has been disabled by a mod
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:InternalModBot.CalledFromInjections.FromGetPositionForAIToAimAt(Character)">
             <summary>
             Called from <see cref="M:MortarWalker.GetPositionForAIToAimAt"/>
@@ -2547,14 +2480,6 @@
             Called from <see cref="M:UnityEngine.Resources.Load(System.String)"/>, <see cref="M:UnityEngine.Resources.Load``1(System.String)"/> and <see cref="P:UnityEngine.ResourceRequest.asset"/>
             </summary>
             <param name="path"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromExecuteCommand(FirstPersonMover,Bolt.Command)">
-            <summary>
-            Called from <see cref="M:FirstPersonMover.ExecuteCommand(Bolt.Command,System.Boolean)"/> and sets the <see cref="P:FPMoveCommand.Input"/> properties to 0 or <see langword="false"/> is they have been restricted
-            </summary>
-            <param name="owner"></param>
-            <param name="command"></param>
             <returns></returns>
         </member>
         <member name="M:InternalModBot.CalledFromInjections.FromPopulateLanguageDictionary">
@@ -2663,6 +2588,16 @@
         <member name="F:InternalModBot.LineInfo.EndTime">
             <summary>
             The time we want to stop displaying the line
+            </summary>
+        </member>
+        <member name="T:InternalModBot.ModBotHarmonyInjectionManager">
+            <summary>
+            Handles all of Mod-Bots runtils patching
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotHarmonyInjectionManager.TryInject">
+            <summary>
+            Injects all patches if it is not already done
             </summary>
         </member>
         <member name="T:InternalModBot.ModBotLocalizationManager">
@@ -3662,6 +3597,12 @@
             </summary>
             <param name="me"></param>
         </member>
+        <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover)">
+            <summary>
+            Moved from <see cref="T:InternalModBot.CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)"/>
+            </summary>
+            <param name="firstPersonMover"></param>
+        </member>
         <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
             <summary>
             Calls this method on all mods
@@ -3732,13 +3673,14 @@
             <param name="isFlameBreath"></param>
             <param name="isRepairFire"></param>
         </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType)">
+        <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Calls this method on all mods
             </summary>
             <param name="killedCharacter"></param>
             <param name="killerCharacter"></param>
             <param name="damageSourceType"></param>
+            <param name="attackID"></param>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnModDeactivated">
             <summary>

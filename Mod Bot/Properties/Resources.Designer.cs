@@ -140,14 +140,14 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:модов
+        ///   Looks up a localized string similar to modsbutton:моды
         ///newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
         ///newversion_dismiss:отклонять
         ///newversion_install:устанавливать
         ///modbotversion:Версия Mod-Bot: {0}
         ///modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена!
         ///ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
-        ///ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция до [rest of string was truncated]&quot;;.
+        ///ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция дол [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Russian {
             get {
@@ -207,7 +207,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.4.5.
+        ///   Looks up a localized string similar to 1.4.6.
         /// </summary>
         internal static string ModBotVersion {
             get {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Harmony;
+using HarmonyLib;
 
 namespace ModLibrary
 {
@@ -26,7 +26,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPrefix<InjectionTarget, PrefixTarget>(string injectTargetMethod, string prefixTargetMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
             if(injectTarget == null)
@@ -47,8 +47,8 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPrefix(MethodInfo targetMethod, MethodInfo sourceMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
-            
+            Harmony instance = new Harmony(mod.HarmonyID);
+
             instance.Patch(targetMethod, new HarmonyMethod(sourceMethod));
         }
 
@@ -62,7 +62,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPostfix<InjectionTarget, PostfixTarget>(string injectTargetMethod, string postfixTargetMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
             if(injectTarget == null)
@@ -83,7 +83,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPostfix(MethodInfo targetMethod, MethodInfo sourceMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetMethod, null, new HarmonyMethod(sourceMethod));
         }
@@ -100,7 +100,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
             if(injectTarget == null)
@@ -126,7 +126,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectPrefixAndPostfix(MethodInfo targetMethod, MethodInfo sourceMethodPrefix, MethodInfo sourceMethodPostfix, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetMethod, new HarmonyMethod(sourceMethodPrefix), new HarmonyMethod(sourceMethodPostfix));
         }
@@ -143,7 +143,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
             if(injectTarget == null || injectTarget.GetGetMethod() == null)
@@ -164,7 +164,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPrefix(PropertyInfo targetProperty, PropertyInfo prefixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetGetMethod(), new HarmonyMethod(prefixSource.GetGetMethod()));
         }
@@ -179,7 +179,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
             if(injectTarget == null || injectTarget.GetGetMethod() == null)
@@ -200,7 +200,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPostfix(PropertyInfo targetProperty, PropertyInfo postfixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetGetMethod(), null, new HarmonyMethod(postfixSource.GetGetMethod()));
         }
@@ -217,7 +217,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
             if(injectTarget == null || injectTarget.GetGetMethod() == null)
@@ -243,7 +243,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectGetPropertyPrefixAndPostfix(PropertyInfo targetProperty, PropertyInfo prefixSource, PropertyInfo postfixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetGetMethod(), null, new HarmonyMethod(postfixSource.GetGetMethod()));
         }
@@ -260,7 +260,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
             if(injectTarget == null || injectTarget.GetSetMethod() == null)
@@ -281,7 +281,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPrefix(PropertyInfo targetProperty, PropertyInfo prefixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource.GetSetMethod()));
         }
@@ -296,7 +296,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
             if(injectTarget == null || injectTarget.GetSetMethod() == null)
@@ -317,7 +317,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPostfix(PropertyInfo targetProperty, PropertyInfo postfixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetSetMethod(), null, new HarmonyMethod(postfixSource.GetSetMethod()));
         }
@@ -334,7 +334,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
             if(injectTarget == null || injectTarget.GetSetMethod() == null)
@@ -360,7 +360,7 @@ namespace ModLibrary
         /// <param name="mod">The owner of this injection</param>
         public static void InjectSetPropertyPrefixAndPostfix(PropertyInfo targetProperty, PropertyInfo prefixSource, PropertyInfo postfixSource, Mod mod)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(mod.HarmonyID);
+            Harmony instance = new Harmony(mod.HarmonyID);
 
             instance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource.GetSetMethod()), new HarmonyMethod(postfixSource.GetSetMethod()));
         }

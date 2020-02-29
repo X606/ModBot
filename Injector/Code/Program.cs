@@ -83,89 +83,6 @@ class Program
         Console.WriteLine("Injecting into GameFlowManager.Start...");
         Injector.AddCallToMethodInMethod(installPath, "GameFlowManager", "Start", modLibraryPath, "InternalModBot.StartupManager", "OnStartUp").Write();
 
-        Console.WriteLine("Injecting into FirstPersonMover.RefreshUpgrades...");
-        Injection FirstPersonMover_RefreshUpgrades_Injection = Injector.AddCallToMethodInMethod(installPath, "FirstPersonMover", "RefreshUpgrades", modLibraryPath, "InternalModBot.CalledFromInjections", "FromRefreshUpgradesStart");
-        FirstPersonMover_RefreshUpgrades_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        FirstPersonMover_RefreshUpgrades_Injection.Write();
-
-        Console.WriteLine("Injecting into FirstPersonMover.ExecuteCommand...");
-        Injection FirstPersonMover_ExecuteCommand_Injection = Injector.AddCallToMethodInMethod(installPath, "FirstPersonMover", "ExecuteCommand", modLibraryPath, "InternalModBot.CalledFromInjections", "FromExecuteCommand", 2, true);
-        FirstPersonMover_ExecuteCommand_Injection.AddInstructionUnderSafe(OpCodes.Stloc_0);
-        FirstPersonMover_ExecuteCommand_Injection.AddInstructionOverSafe(OpCodes.Ldarg_1);
-        FirstPersonMover_ExecuteCommand_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        FirstPersonMover_ExecuteCommand_Injection.Write();
-
-        Console.WriteLine("Injecting into Character.Start...");
-        Injection Character_Start_Injection = Injector.AddCallToMethodInMethod(installPath, "Character", "Start", modLibraryPath, "InternalModBot.CalledFromInjections", "FromOnCharacterStart");
-        Character_Start_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Character_Start_Injection.Write();
-
-        Console.WriteLine("Injecting into Character.Update...");
-        Injection Character_Update_Injection = Injector.AddCallToMethodInMethod(installPath, "Character", "Update", modLibraryPath, "InternalModBot.CalledFromInjections", "FromOnCharacterUpdate");
-        Character_Update_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Character_Update_Injection.Write();
-
-        Console.WriteLine("Injecting into Character.onDeath...");
-        Injection Character_onDeath_Injection = Injector.AddCallToMethodInMethod(installPath, "Character", "onDeath", modLibraryPath, "InternalModBot.CalledFromInjections", "FromOnCharacterDeath");
-        Character_onDeath_Injection.AddInstructionOverSafe(OpCodes.Ldarg_2);
-        Character_onDeath_Injection.AddInstructionOverSafe(OpCodes.Ldarg_1);
-        Character_onDeath_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Character_onDeath_Injection.Write();
-
-        Console.WriteLine("Injecting into UpgradeDescription.GetAngleOffset...");
-        Injection UpgradeDescription_GetAngleOffset_Injection = Injector.AddCallToMethodInMethod(installPath, "UpgradeDescription", "GetAngleOffset", modLibraryPath, "InternalModBot.CalledFromInjections", "FromGetAngleOffset");
-        UpgradeDescription_GetAngleOffset_Injection.AddInstructionUnderSafe(OpCodes.Ret);
-        UpgradeDescription_GetAngleOffset_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        UpgradeDescription_GetAngleOffset_Injection.Write();
-
-        Console.WriteLine("Injecting into UpgradeDescription.IsUpgradeCurrentlyVisible...");
-        Injection UpgradeDescription_IsUpgradeCurrentlyVisible_Injection = Injector.AddCallToMethodInMethod(installPath, "UpgradeDescription", "IsUpgradeCurrentlyVisible", modLibraryPath, "InternalModBot.CalledFromInjections", "FromIsUpgradeCurrentlyVisible");
-        UpgradeDescription_IsUpgradeCurrentlyVisible_Injection.AddInstructionUnderSafe(OpCodes.Ret,0);
-        UpgradeDescription_IsUpgradeCurrentlyVisible_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        UpgradeDescription_IsUpgradeCurrentlyVisible_Injection.Write();
-
-        Console.WriteLine("Injecting into ErrorManager.HandleLog...");
-        Injection ErrorManager_HandleLog_Injection = Injector.AddCallToMethodInMethod(installPath, "ErrorManager", "HandleLog", modLibraryPath, "InternalModBot.IgnoreCrashesManager", "GetIsIgnoringCrashes");
-        ErrorManager_HandleLog_Injection.AddInstructionUnderSafe(OpCodes.Ret);
-        ErrorManager_HandleLog_Injection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
-        ErrorManager_HandleLog_Injection.Write();
-        
-        Console.WriteLine("Injecting into Projectile.FixedUpdate...");
-        Injection Projectile_FixedUpdate_Injection = Injector.AddCallToMethodInMethod(installPath, "Projectile", "FixedUpdate", modLibraryPath, "InternalModBot.CalledFromInjections", "FromFixedUpdate");
-        Projectile_FixedUpdate_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Projectile_FixedUpdate_Injection.Write();
-
-        Console.WriteLine("Injecting into Projectile.StartFlying...");
-        Injection Projectile_StartFlying_Injection = Injector.AddCallToMethodInMethod(installPath, "Projectile", "StartFlying", modLibraryPath, "InternalModBot.CalledFromInjections", "FromStartFlying", 0, false, true, new string[] { "Vector3" ,"Vector3", "Boolean", "Character", "Int32", "Single"});
-        Projectile_StartFlying_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0, Projectile_StartFlying_Injection.GetLengthOfInstructions() - 2);
-        Projectile_StartFlying_Injection.Write();
-
-        Console.WriteLine("Injecting into Projectile.DestroyProjectile...");
-        Injection Projectile_DestroyProjectile_Injection = Injector.AddCallToMethodInMethod(installPath, "Projectile", "DestroyProjectile", modLibraryPath, "InternalModBot.CalledFromInjections", "FromDestroyProjectile");
-        Projectile_DestroyProjectile_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Projectile_DestroyProjectile_Injection.Write();
-
-        Console.WriteLine("Injecting into Projectile.OnEnvironmentCollided...");
-        Injection Projectile_OnEnvironmentCollided_Injection = Injector.AddCallToMethodInMethod(installPath, "Projectile", "OnEnvironmentCollided", modLibraryPath, "InternalModBot.CalledFromInjections", "FromOnEnvironmentCollided");
-        Projectile_OnEnvironmentCollided_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Projectile_OnEnvironmentCollided_Injection.Write();
-
-        Console.WriteLine("Injecting into GameUIRoot.RefreshCursorEnabled...");
-        Injection GameUIRoot_RefreshCursorEnabled_Injection = Injector.AddCallToMethodInMethod(installPath, "GameUIRoot", "RefreshCursorEnabled", modLibraryPath, "InternalModBot.CalledFromInjections", "FromRefreshCursorEnabled");
-        GameUIRoot_RefreshCursorEnabled_Injection.AddInstructionUnderSafe(OpCodes.Ret);
-        GameUIRoot_RefreshCursorEnabled_Injection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 3, 0, true);
-        GameUIRoot_RefreshCursorEnabled_Injection.Write();
-
-        Console.WriteLine("Injecting into Resources.Load...");
-        Injection Resources_Load_Injection = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.Resources", "Load", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad");
-        Resources_Load_Injection.AddInstructionUnderSafe(OpCodes.Ret);
-        Resources_Load_Injection.AddInstructionUnderSafe(OpCodes.Ldloc_0);
-        Resources_Load_Injection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 4, 0, true);
-        Resources_Load_Injection.AddInstructionUnderSafe(OpCodes.Ldloc_0);
-        Resources_Load_Injection.AddInstructionUnderSafe(OpCodes.Stloc_0);
-        Resources_Load_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        Resources_Load_Injection.Write();
-
         Console.WriteLine("Injecting into Resources.Load<T>...");
         Injection Resources_LoadT_Injection = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.Resources", "Load", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad", 0, false, false, null, true);
         Resources_LoadT_Injection.AddInstructionUnderSafe(OpCodes.Ret);
@@ -175,7 +92,7 @@ class Program
         Resources_LoadT_Injection.AddInstructionUnderSafe(OpCodes.Stloc_0);
         Resources_LoadT_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         Resources_LoadT_Injection.Write();
-
+        
         Console.WriteLine("Injecting into ResourceRequest.get_asset...");
         Injection ResourceRequest_get_asset_Injection = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.ResourceRequest", "get_asset", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad");
         ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Ret);
@@ -186,13 +103,6 @@ class Program
         ResourceRequest_get_asset_Injection.AddInstructionOverSafe(OpCodes.Ldfld, ResourceRequest_get_asset_Injection.GetFieldReferenceOnSameType("m_Path"));
         ResourceRequest_get_asset_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         ResourceRequest_get_asset_Injection.Write();
-
-        Console.WriteLine("Injecting into LocalizationManager.populateDictionaryForCurrentLanguage...");
-        Injection LocalizationManager_populateDictionaryForCurrentLanguage_Injection = Injector.AddCallToMethodInMethod(installPath, "LocalizationManager", "populateDictionaryForCurrentLanguage", modLibraryPath, "InternalModBot.CalledFromInjections", "FromPopulateLanguageDictionary", 0, false, true);
-        LocalizationManager_populateDictionaryForCurrentLanguage_Injection.Write();
-
-        Console.WriteLine("Appying the melon patch (unbans melon)");
-        Injector.MelonPatch(installPath); // unbans melon
     }
 }
 

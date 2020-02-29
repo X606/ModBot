@@ -50,6 +50,7 @@
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
@@ -165,6 +166,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.CoreModule.dll</HintPath>
@@ -216,6 +221,9 @@
     <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
     <Content Include="LocalizationFiles\ModBot_Italian.txt" />
     <Content Include="LocalizationFiles\ModBot_English.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
