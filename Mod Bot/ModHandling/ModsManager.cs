@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using Harmony;
+using HarmonyLib;
 
 namespace InternalModBot
 {
@@ -270,10 +270,11 @@ namespace InternalModBot
                     break;
                 }
             }
+
             CustomUpgradeManager.NextClicked();
             UpgradePagesManager.RemoveModdedUpgradesFor(mod);
 
-            HarmonyInstance.Create(mod.HarmonyID).UnpatchAll(); // unpatches all of the patches made by the mod
+            new Harmony(mod.HarmonyID).UnpatchAll(mod.HarmonyID); // unpatches all of the patches made by the mod
 
             mod.OnModDeactivated();
         }

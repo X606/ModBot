@@ -153,6 +153,18 @@ namespace InternalModBot
         }
 
         /// <summary>
+        /// Moved from <see cref="CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="AfterUpgradesRefreshed(FirstPersonMover, UpgradeCollection)"/>
+        /// </summary>
+        /// <param name="firstPersonMover"></param>
+        public static void AfterUpgradesRefreshed(FirstPersonMover firstPersonMover)
+        {
+            if (firstPersonMover == null || firstPersonMover.gameObject == null || !firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
+                return;
+
+            ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(firstPersonMover, firstPersonMover.GetComponent<UpgradeCollection>());
+        }
+
+        /// <summary>
         /// Calls this method on all mods
         /// </summary>
         /// <param name="owner"></param>
@@ -343,12 +355,14 @@ namespace InternalModBot
         /// <param name="killedCharacter"></param>
         /// <param name="killerCharacter"></param>
         /// <param name="damageSourceType"></param>
-        public override void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
+        /// <param name="attackID"></param>
+        public override void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType, int attackID)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
                 mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType);
+                mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType, attackID);
             }
         }
 
@@ -371,14 +385,13 @@ namespace InternalModBot
         public override bool ShouldCursorBeEnabled() // if any mod tells the game that the cursor should be enabled, it will be
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            bool result = false;
             foreach(Mod mod in mods)
             {
                 if (mod.ShouldCursorBeEnabled())
-                    result = true;
+                    return true;
             }
 
-            return result || Generic2ButtonDialogue.IsWindowOpen;
+            return Generic2ButtonDialogue.IsWindowOpen;
         }
 
         /// <summary>

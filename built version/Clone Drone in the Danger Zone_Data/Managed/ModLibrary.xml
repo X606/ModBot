@@ -833,6 +833,15 @@
             <param name="killerCharacter">The killer <see cref="T:Character"/></param>
             <param name="damageSourceType">The cause of death</param>
         </member>
+        <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
+            <summary>
+            Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
+            </summary>
+            <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
+            <param name="killerCharacter">The killer <see cref="T:Character"/></param>
+            <param name="damageSourceType">The cause of death</param>
+            <param name="attackID">The attack ID that killed <paramref name="killedCharacter"/></param>
+        </member>
         <member name="M:ModLibrary.Mod.OnModDeactivated">
             <summary>
             Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically hidden when the owner mod is disabled
@@ -978,6 +987,18 @@
             <param name="defaultValue">The value the <see cref="T:UnityEngine.UI.InputField"/> should be set to by default</param>
             <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.InputField"/></param>
             <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.InputField"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.InputField"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.InputField"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddVerifyingInputField(System.String,System.String,System.String,System.Predicate{System.String},System.Action{UnityEngine.UI.InputField},System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{System.String})">
+            <summary>
+            Adds a verifying <see cref="T:UnityEngine.UI.InputField"/> to the page with the specified arguments
+            </summary>
+            <param name="defaultValue">The value the <see cref="T:UnityEngine.UI.InputField"/> should be set to by default (NOTE: This value will not be checked by the <see cref="F:InternalModBot.ModdedOptionVerifyingInputFieldItem.Verify"/> predicate)</param>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.InputField"/></param>
+            <param name="saveID">The Id used to get this value in the <see cref="T:ModLibrary.ModdedSettings"/> class</param>
+            <param name="verificationPredicate">The <see cref="T:System.Predicate`1"/> to verify the contents of the <see cref="T:UnityEngine.UI.InputField"/> when it is changed</param>
             <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.InputField"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.InputField"/></param>
             <param name="customRect">The custom rect of the <see cref="T:UnityEngine.UI.InputField"/>, use this to change the position and scale of the <see cref="T:UnityEngine.UI.InputField"/></param>
             <param name="onChange">Called when the value of the <see cref="T:UnityEngine.UI.InputField"/> is changed</param>
@@ -2388,14 +2409,14 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBot_Russian">
              <summary>
-               Looks up a localized string similar to modsbutton:модов
+               Looks up a localized string similar to modsbutton:моды
             newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
             newversion_dismiss:отклонять
             newversion_install:устанавливать
             modbotversion:Версия Mod-Bot: {0}
             modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена!
             ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
-            ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция до [rest of string was truncated]&quot;;.
+            ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция дол [rest of string was truncated]&quot;;.
              </summary>
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBot_Simplified_Chinese">
@@ -2439,89 +2460,13 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.5.
+              Looks up a localized string similar to 1.4.6.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
             <summary>
             Contains methods that get called from the game itself
             </summary>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshUpgradesStart(FirstPersonMover)">
-            <summary>
-            Called at the start of <see cref="M:FirstPersonMover.RefreshUpgrades"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshUpgradesEnd(FirstPersonMover)">
-            <summary>
-            Called at the end of <see cref="M:FirstPersonMover.RefreshUpgrades"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterStart(Character)">
-            <summary>
-            Called from <see cref="M:Character.Start"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterUpdate(Character)">
-            <summary>
-            Called from <see cref="M:Character.Update"/>
-            </summary>
-            <param name="owner"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnCharacterDeath(Character,Character,DamageSourceType)">
-            <summary>
-            Called from <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
-            </summary>
-            <param name="owner"></param>
-            <param name="killer"></param>
-            <param name="damageSource"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromGetAngleOffset(UpgradeDescription)">
-            <summary>
-            Called from <see cref="M:UpgradeDescription.GetAngleOffset"/> and returns the angle the upgrade should be on the current page
-            </summary>
-            <param name="upgrade"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromIsUpgradeCurrentlyVisible(UpgradeDescription)">
-            <summary>
-            Called from <see cref="M:UpgradeDescription.IsUpgradeCurrentlyVisible"/> and returns if the upgrade should be visible on the current page
-            </summary>
-            <param name="upgrade"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromFixedUpdate(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.FixedUpdate"/>
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromStartFlying(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character)"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromDestroyProjectile(Projectile)">
-            <summary>
-            Called from <see cref="M:Projectile.DestroyProjectile"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromOnEnvironmentCollided(Projectile)">
-            <summary>
-            Gets from <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromRefreshCursorEnabled">
-            <summary>
-            Called from <see cref="M:GameUIRoot.RefreshCursorEnabled"/> and returns if the cursor has been disabled by a mod
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:InternalModBot.CalledFromInjections.FromGetPositionForAIToAimAt(Character)">
             <summary>
@@ -2536,19 +2481,6 @@
             </summary>
             <param name="path"></param>
             <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromExecuteCommand(FirstPersonMover,Bolt.Command)">
-            <summary>
-            Called from <see cref="M:FirstPersonMover.ExecuteCommand(Bolt.Command,System.Boolean)"/> and sets the <see cref="P:FPMoveCommand.Input"/> properties to 0 or <see langword="false"/> is they have been restricted
-            </summary>
-            <param name="owner"></param>
-            <param name="command"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromPopulateLanguageDictionary">
-            <summary>
-            Called from LocalizationManager.populateDictionaryForCurrentLanguage
-            </summary>
         </member>
         <member name="T:InternalModBot.ConsoleInputManager">
             <summary>
@@ -2651,6 +2583,16 @@
         <member name="F:InternalModBot.LineInfo.EndTime">
             <summary>
             The time we want to stop displaying the line
+            </summary>
+        </member>
+        <member name="T:InternalModBot.ModBotHarmonyInjectionManager">
+            <summary>
+            Handles all of Mod-Bots runtils patching
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModBotHarmonyInjectionManager.TryInject">
+            <summary>
+            Injects all patches if it is not already done
             </summary>
         </member>
         <member name="T:InternalModBot.ModBotLocalizationManager">
@@ -3224,6 +3166,23 @@
             <param name="holder"></param>
             <param name="owner"></param>
         </member>
+        <member name="T:InternalModBot.ModdedOptionVerifyingInputFieldItem">
+            <summary>
+            Used by Mod-Bot to represent an InputField that verifies input in a modded options page
+            </summary>
+        </member>
+        <member name="F:InternalModBot.ModdedOptionVerifyingInputFieldItem.Verify">
+            <summary>
+            Used to verify the input of the input field, if this returns <see langword="false"/>, the value will revert back to the previous value, and apply it normally otherwise.
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModdedOptionVerifyingInputFieldItem.CreatePageItem(UnityEngine.GameObject,ModLibrary.Mod)">
+            <summary>
+            Places the page item in the page
+            </summary>
+            <param name="holder"></param>
+            <param name="owner"></param>
+        </member>
         <member name="T:InternalModBot.ModdedOptionInputFieldItem">
             <summary>
             Used by Mod-Bot to reprecent a InputField in a modded options page
@@ -3633,6 +3592,12 @@
             </summary>
             <param name="me"></param>
         </member>
+        <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover)">
+            <summary>
+            Moved from <see cref="T:InternalModBot.CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)"/>
+            </summary>
+            <param name="firstPersonMover"></param>
+        </member>
         <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
             <summary>
             Calls this method on all mods
@@ -3703,13 +3668,14 @@
             <param name="isFlameBreath"></param>
             <param name="isRepairFire"></param>
         </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType)">
+        <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Calls this method on all mods
             </summary>
             <param name="killedCharacter"></param>
             <param name="killerCharacter"></param>
             <param name="damageSourceType"></param>
+            <param name="attackID"></param>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnModDeactivated">
             <summary>

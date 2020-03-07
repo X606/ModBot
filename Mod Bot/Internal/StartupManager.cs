@@ -20,7 +20,7 @@ namespace InternalModBot
 
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
                 throw new DirectoryNotFoundException("Mods folder not found!");
-            
+
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
             gameFlowManager.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
@@ -46,10 +46,12 @@ namespace InternalModBot
                 Logger.Instance.Animator.Play("hideConsole");
             }
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(CalledFromInjections.FromRefreshUpgradesEnd));
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
             
             IgnoreCrashesManager.Start();
+
+            ModBotHarmonyInjectionManager.TryInject();
         }
 
         static void initilizeUI()

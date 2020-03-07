@@ -122,6 +122,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/>
         /// </summary>
         /// <param name="projectile"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnProjectileStartedMoving(Projectile projectile)
         {
         }
@@ -130,6 +131,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.FixedUpdate"/>
         /// </summary>
         /// <param name="projectile"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnProjectileUpdate(Projectile projectile)
         {
         }
@@ -138,6 +140,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/>
         /// </summary>
         /// <param name="projectile"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnProjectileDestroyed(Projectile projectile)
         {
         }
@@ -146,6 +149,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
         {
         }
@@ -154,6 +158,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.FixedUpdate"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnArrowProjectileUpdate(ArrowProjectile arrow)
         {
         }
@@ -162,6 +167,7 @@ namespace ModLibrary
         /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
         /// </summary>
         /// <param name="arrow"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnArrowProjectileDestroyed(ArrowProjectile arrow)
         {
         }
@@ -173,6 +179,7 @@ namespace ModLibrary
         /// <param name="isRepairFire"></param>
         /// <param name="isMortarShrapnel"></param>
         /// <param name="isFlameBreath"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -184,6 +191,7 @@ namespace ModLibrary
         /// <param name="isFlameBreath"></param>
         /// <param name="isMortarShrapnel"></param>
         /// <param name="isRepairFire"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -195,6 +203,7 @@ namespace ModLibrary
         /// <param name="isRepairFire"></param>
         /// <param name="isMortarShrapnel"></param>
         /// <param name="isFlameBreath"></param>
+        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
         public virtual void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
         }
@@ -205,7 +214,19 @@ namespace ModLibrary
         /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
         /// <param name="killerCharacter">The killer <see cref="Character"/></param>
         /// <param name="damageSourceType">The cause of death</param>
+        [Obsolete("Use OnCharacterKilled(Character, Character, DamageSourceType, Int32) instead")]
         public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
+        {
+        }
+
+        /// <summary>
+        /// Called in <see cref="Character.onDeath(Character, DamageSourceType, int)"/>
+        /// </summary>
+        /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
+        /// <param name="killerCharacter">The killer <see cref="Character"/></param>
+        /// <param name="damageSourceType">The cause of death</param>
+        /// <param name="attackID">The attack ID that killed <paramref name="killedCharacter"/></param>
+        public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType, int attackID)
         {
         }
 
@@ -288,7 +309,6 @@ namespace ModLibrary
         /// </summary>
         public virtual void OnModLoaded()
         {
-
         }
     }
 }

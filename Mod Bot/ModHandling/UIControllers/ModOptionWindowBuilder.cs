@@ -233,6 +233,30 @@ namespace ModLibrary
             }
 
             /// <summary>
+            /// Adds a verifying <see cref="InputField"/> to the page with the specified arguments
+            /// </summary>
+            /// <param name="defaultValue">The value the <see cref="InputField"/> should be set to by default (NOTE: This value will not be checked by the <see cref="ModdedOptionVerifyingInputFieldItem.Verify"/> predicate)</param>
+            /// <param name="displayName">The text you want to display next to the <see cref="InputField"/></param>
+            /// <param name="saveID">The Id used to get this value in the <see cref="ModdedSettings"/> class</param>
+            /// <param name="verificationPredicate">The <see cref="Predicate{T}"/> to verify the contents of the <see cref="InputField"/> when it is changed</param>
+            /// <param name="onCreate">Called when the <see cref="InputField"/> is created, use this to change properties of the <see cref="InputField"/></param>
+            /// <param name="customRect">The custom rect of the <see cref="InputField"/>, use this to change the position and scale of the <see cref="InputField"/></param>
+            /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
+            public void AddVerifyingInputField(string defaultValue, string displayName, string saveID, Predicate<string> verificationPredicate, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
+            {
+                ModdedOptionVerifyingInputFieldItem verifyingInput = new ModdedOptionVerifyingInputFieldItem();
+                verifyingInput.DefaultValue = defaultValue;
+                verifyingInput.DisplayName = displayName;
+                verifyingInput.SaveID = saveID;
+                verifyingInput.Verify = verificationPredicate;
+                verifyingInput.OnCreate = onCreate;
+                verifyingInput.CustomRect = customRect;
+                verifyingInput.OnChange = onChange;
+
+                _items.Add(verifyingInput);
+            }
+
+            /// <summary>
             /// Adds a <see cref="Toggle"/> to the page with the passed arguements
             /// </summary>
             /// <param name="defaultValue">The value the <see cref="Toggle"/> should be set to by default</param>
@@ -292,9 +316,9 @@ namespace ModLibrary
                     throw new InvalidOperationException("Generic type must be an enum");
 
                 string[] names = Enum.GetNames(typeof(T));
-                AddDropDown(names, (int)((object)defaultValue), displayName, saveID, onCreate, customRect, delegate(int value)
+                AddDropDown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
                 {
-                    onChange((T)((object)value));
+                    onChange((T)(object)value);
                 });
             }
 

@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 
 namespace InternalModBot.UnitTests
 {
-    public class AccessorInstanceSetPrivateFieldUnitTest : UnitTest
+    public class AccessorInstanceGetPrivateFieldUnitTest : UnitTest
     {
         AccessorTestFields _accessorTestFieldsInstance;
 
-        public override string CommandActivator => "AccessorInstanceSetPrivateField";
+        public override string CommandActivator => "AccessorInstanceGetPrivateField";
 
         public override bool IsExpectedResult(object[] result)
         {
-            if (_accessorTestFieldsInstance.GetFloatingPointValue() != 2f)
+            if ((float)result[0] != 1f)
             {
-                debug.Log(CommandActivator + ": Expected 2.0, Got: " + _accessorTestFieldsInstance.GetFloatingPointValue());
+                debug.Log(CommandActivator + ": Expected 1.0, Got: " + result[0]);
                 return false;
             }
 
-            if (_accessorTestFieldsInstance.GetStringValue() != "TestValue2")
+            if ((string)result[1] != "TestValue1")
             {
-                debug.Log(CommandActivator + ": Expected \"TestValue2\", Got: \"" + _accessorTestFieldsInstance.GetStringValue() + "\"");
+                debug.Log(CommandActivator + ": Expected \"TestValue1\", Got: \"" + result[1] + "\"");
                 return false;
             }
 
@@ -36,10 +36,12 @@ namespace InternalModBot.UnitTests
         {
             Accessor accessor = new Accessor(typeof(AccessorTestFields), _accessorTestFieldsInstance);
 
-            accessor.SetPrivateField("_floatingPointValue", (object)2f);
-            accessor.SetPrivateField("_stringValue", (object)"TestValue2");
+            object[] results = new object[2];
 
-            return null;
+            results[0] = accessor.GetPrivateField("_floatingPointValue");
+            results[1] = accessor.GetPrivateField("_stringValue");
+
+            return results;
         }
 
         public override void SetupUnitTest()

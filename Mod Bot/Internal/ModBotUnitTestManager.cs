@@ -19,7 +19,12 @@ namespace InternalModBot
         {
             new AccessorInstanceCallPrivateMethodUnitTest(),
             new AccessorInstanceCallPrivateMethodGenericUnitTest(),
-            new AccessorInstanceSetPrivateFieldUnitTest()
+            new AccessorInstanceSetPrivateFieldUnitTest(),
+            new AccessorInstanceSetPrivateFieldGenericUnitTest(),
+            new AccessorInstanceGetPrivateFieldUnitTest(),
+            new AccessorInstanceGetPrivateFieldGenericUnitTest(),
+            new AccessorInstanceSetPrivatePropertyUnitTest(),
+            new AccessorInstanceSetPrivatePropertyGenericUnitTest()
         };
 
         /// <summary>

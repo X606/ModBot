@@ -50,6 +50,7 @@
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
@@ -57,6 +58,11 @@
     <Compile Include="Internal\ModSuggestingManager.cs" />
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodGenericUnitTest.cs" />
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceGetPrivateFieldGenericUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldGenericUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceGetPrivateFieldUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyGenericUnitTest.cs" />
+    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyUnitTest.cs" />
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldUnitTest.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\Logger.cs" />
@@ -73,6 +79,7 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionButtonItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionCheckboxItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionDropDownItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionVerifyingInputFieldItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionInputFieldItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionIntSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionKeyCodeItem.cs" />
@@ -164,6 +171,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.CoreModule.dll</HintPath>
@@ -215,6 +226,9 @@
     <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
     <Content Include="LocalizationFiles\ModBot_Italian.txt" />
     <Content Include="LocalizationFiles\ModBot_English.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

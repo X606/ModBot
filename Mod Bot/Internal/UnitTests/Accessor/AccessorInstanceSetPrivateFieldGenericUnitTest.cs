@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace InternalModBot.UnitTests
 {
-    public class AccessorInstanceSetPrivateFieldUnitTest : UnitTest
+    public class AccessorInstanceSetPrivateFieldGenericUnitTest : UnitTest
     {
         AccessorTestFields _accessorTestFieldsInstance;
 
-        public override string CommandActivator => "AccessorInstanceSetPrivateField";
+        public override string CommandActivator => "AccessorInstanceSetPrivateFieldGeneric";
 
         public override bool IsExpectedResult(object[] result)
         {
@@ -36,8 +36,8 @@ namespace InternalModBot.UnitTests
         {
             Accessor accessor = new Accessor(typeof(AccessorTestFields), _accessorTestFieldsInstance);
 
-            accessor.SetPrivateField("_floatingPointValue", (object)2f);
-            accessor.SetPrivateField("_stringValue", (object)"TestValue2");
+            accessor.SetPrivateField("_floatingPointValue", 2f);
+            accessor.SetPrivateField("_stringValue", "TestValue2");
 
             return null;
         }

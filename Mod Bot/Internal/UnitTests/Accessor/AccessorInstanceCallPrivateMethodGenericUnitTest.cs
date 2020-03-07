@@ -46,8 +46,8 @@ namespace InternalModBot.UnitTests
 
             object[] results = new object[2];
 
-            results[0] = accessor.CallPrivateMethod("Get5");
-            results[1] = accessor.CallPrivateMethod("Add", new object[] { 5, 13 });
+            results[0] = accessor.CallPrivateMethod<int>("Get5");
+            results[1] = accessor.CallPrivateMethod<int>("Add", new object[] { 5, 13 });
 
             return results;
         }
