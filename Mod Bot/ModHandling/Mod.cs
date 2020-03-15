@@ -310,5 +310,19 @@ namespace ModLibrary
         public virtual void OnModLoaded()
         {
         }
+
+		/// <summary>
+		/// Called when we connect to a multiplayer server
+		/// </summary>
+		public virtual void OnClientConnectedToServer()
+		{
+		}
+
+		/// <summary>
+		/// Called when we disconnect from a multiplayer server
+		/// </summary>
+		public virtual void OnClientDisconnectedToServer()
+		{
+		}
     }
 }

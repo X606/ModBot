@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Bolt;
 using ModLibrary;
+using System.Collections;
 
 namespace InternalModBot
 {
@@ -455,5 +456,25 @@ namespace InternalModBot
         {
             MultiplayerEventCallback.OnEventRecieved(evnt);
         }
-    }
+
+		/// <summary>
+		/// Called when we connect to a server
+		/// </summary>
+		/// <param name="connection"></param>
+		public override void Connected(BoltConnection connection)
+		{
+			StaticCoroutineRunner.StartStaticCoroutine(MultiplayerPlayerNameManager.DownloadDataFromFirebase());
+
+			ModBotUserIdentifier.Instance.OnLocalClientConnected();
+			ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
+		}
+		/// <summary>
+		/// Called when we disconnect from a server
+		/// </summary>
+		/// <param name="connection"></param>
+		public override void Disconnected(BoltConnection connection)
+		{
+			ModsManager.Instance.PassOnMod.OnClientDisconnectedToServer();
+		}
+	}
 }

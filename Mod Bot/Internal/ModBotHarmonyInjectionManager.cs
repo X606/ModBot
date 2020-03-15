@@ -14,6 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Object;
+#pragma warning disable CS0618 // We dont care if its depricated since its ours
 
 namespace InternalModBot
 {
@@ -514,8 +516,10 @@ namespace InternalModBot
 
             public static void Projectile_DestroyProjectile_Prefix(Projectile __instance)
             {
-                ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-            }
+
+				ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
+
+			}
 
             public static void Projectile_OnEnvironmentCollided_Prefix(Projectile __instance)
             {
@@ -633,6 +637,38 @@ namespace InternalModBot
 
                 return false;
             }
-        }
+
+			public static string MultiplayerPlayerInfoManager_TryGetDisplayName_Postfix(string __result, string playFabID)
+			{
+				if(__result == null)
+					return null;
+
+				return MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(playFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(playFabID, __result);
+			}
+			public static void MultiplayerPlayerInfoLabel_RefreshVisuals_Postfix(ref MultiplayerPlayerInfoState ____playerInfoState, ref Text ___PlayerNameLabel)
+			{
+				if(____playerInfoState == null || ____playerInfoState.IsDetached())
+					return;
+
+				___PlayerNameLabel.supportRichText = true; // allow custom colors
+				___PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+				___PlayerNameLabel.text = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(____playerInfoState.state.PlayFabID);
+			}
+			
+			public static void EnemyNameTag_Initialize_Postfix(EnemyNameTag __instance, Character character)
+			{
+				__instance.gameObject.AddComponent<NameTagRefreshListener>().Init(character, __instance);
+			}
+			public static void EnemyNameTag_OnDestroy_Postfix(EnemyNameTag __instance)
+			{
+				NameTagRefreshListener nameTagRefreshListener = __instance.GetComponent<NameTagRefreshListener>();
+				Destroy(nameTagRefreshListener);
+			}
+
+			public static void CurrentlySpectatingUI_Show_Postfix(Text ___CurrentPlayerText)
+			{
+				___CurrentPlayerText.supportRichText = true;
+			}
+		}
     }
 }
