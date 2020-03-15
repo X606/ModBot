@@ -1,6 +1,7 @@
 ﻿using ModLibrary;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace InternalModBot
 {
@@ -60,6 +61,26 @@ namespace InternalModBot
 
                 ModBotUnitTestManager.RunAllUnitTests();
             }
+
+			if (subCommands[0] == "getplayfabids")
+			{
+				debug.Log("spawned players playfabids: ");
+				List<FirstPersonMover> players = CharacterTracker.Instance.GetAllPlayers();
+				foreach(FirstPersonMover player in players)
+				{
+					string playfabID = player.state.PlayFabID;
+					string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID);
+					if(displayName != null)
+					{
+						debug.Log(displayName + ": " + playfabID);
+					}
+				}
+			}
+			if (subCommands[0] == "redownloaddata")
+			{
+				StaticCoroutineRunner.StartStaticCoroutine(MultiplayerPlayerNameManager.DownloadDataFromFirebase());
+				debug.Log("redownloading data...");
+			}
         }
 
         /// <summary>

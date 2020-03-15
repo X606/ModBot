@@ -1,6 +1,8 @@
 ﻿using ModLibrary;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+#pragma warning disable CS0618 // We dont care if its depricated sincei
 
 namespace InternalModBot
 {
@@ -33,11 +35,6 @@ namespace InternalModBot
         /// <param name="me"></param>
         public override void OnFirstPersonMoverSpawned(FirstPersonMover me)
         {
-            if (me.IsMainPlayer() && BoltNetwork.isRunning)
-            {
-                ModBotUserIdentifier.Instance.RequestIds(me);
-            }
-
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
@@ -178,11 +175,13 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="projectile"></param>
-        public override void OnProjectileStartedMoving(Projectile projectile)
+
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="projectile"></param>
+		[Obsolete]
+		public override void OnProjectileStartedMoving(Projectile projectile)
         {
             if (projectile is ArrowProjectile)
             {
@@ -206,16 +205,17 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="projectile"></param>
-        public override void OnProjectileUpdate(Projectile projectile)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="projectile"></param>
+		[Obsolete]
+		public override void OnProjectileUpdate(Projectile projectile)
         {
             if (projectile is ArrowProjectile)
             {
-                OnArrowProjectileUpdate(projectile as ArrowProjectile);
-            }
+				OnArrowProjectileUpdate(projectile as ArrowProjectile);
+			}
             if (projectile is BulletProjectile)
             {
                 BulletProjectile bullet = projectile as BulletProjectile;
@@ -234,11 +234,12 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="projectile"></param>
-        public override void OnProjectileDestroyed(Projectile projectile)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="projectile"></param>
+		[Obsolete]
+		public override void OnProjectileDestroyed(Projectile projectile)
         {
             if (projectile is ArrowProjectile)
             {
@@ -262,11 +263,12 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="arrow"></param>
-        public override void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="arrow"></param>
+		[Obsolete]
+		public override void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -275,11 +277,12 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="arrow"></param>
-        public override void OnArrowProjectileUpdate(ArrowProjectile arrow)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="arrow"></param>
+		[Obsolete]
+		public override void OnArrowProjectileUpdate(ArrowProjectile arrow)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -288,11 +291,12 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="arrow"></param>
-        public override void OnArrowProjectileDestroyed(ArrowProjectile arrow)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="arrow"></param>
+		[Obsolete]
+		public override void OnArrowProjectileDestroyed(ArrowProjectile arrow)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -301,14 +305,15 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isFlameBreath"></param>
-        /// <param name="isRepairFire"></param>
-        public override void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="bullet"></param>
+		/// <param name="isMortarShrapnel"></param>
+		/// <param name="isFlameBreath"></param>
+		/// <param name="isRepairFire"></param>
+		[Obsolete]
+		public override void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -317,14 +322,15 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isFlameBreath"></param>
-        /// <param name="isRepairFire"></param>
-        public override void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="bullet"></param>
+		/// <param name="isMortarShrapnel"></param>
+		/// <param name="isFlameBreath"></param>
+		/// <param name="isRepairFire"></param>
+		[Obsolete]
+		public override void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -333,14 +339,15 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Calls this method on all mods
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isFlameBreath"></param>
-        /// <param name="isRepairFire"></param>
-        public override void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		/// <param name="bullet"></param>
+		/// <param name="isMortarShrapnel"></param>
+		/// <param name="isFlameBreath"></param>
+		/// <param name="isRepairFire"></param>
+		[Obsolete]
+		public override void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
@@ -424,7 +431,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public override Object OnResourcesLoad(string path)
+        public override UnityEngine.Object OnResourcesLoad(string path)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for(int i = 0; i < mods.Count; i++)
@@ -450,5 +457,29 @@ namespace InternalModBot
                 mods[i].OnLanugageChanged(newLanguageID, localizationDictionary);
             }
         }
-    }
+
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		public override void OnClientConnectedToServer()
+		{
+			List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+			for(int i = 0; i < mods.Count; i++)
+			{
+				mods[i].OnClientConnectedToServer();
+			}
+		}
+		/// <summary>
+		/// Calls this method on all mods
+		/// </summary>
+		public override void OnClientDisconnectedToServer()
+		{
+			List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+			for(int i = 0; i < mods.Count; i++)
+			{
+				mods[i].OnClientDisconnectedToServer();
+			}
+		}
+
+	}
 }
