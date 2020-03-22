@@ -318,7 +318,8 @@ namespace ModLibrary
                 string[] names = Enum.GetNames(typeof(T));
                 AddDropDown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
                 {
-                    onChange((T)(object)value);
+                    if (onChange != null)
+                        onChange((T)(object)value);
                 });
             }
 

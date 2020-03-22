@@ -59,26 +59,22 @@ namespace InternalModBot
             dropdown.value = DefaultValue;
             dropdown.RefreshShownValue();
 
-            int? loadedInt = OptionsSaver.LoadInt(owner, SaveID);
-            if(loadedInt.HasValue)
+            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedValue != null && loadedValue is int intValue)
             {
-                dropdown.value = loadedInt.Value;
+                dropdown.value = intValue;
                 dropdown.RefreshShownValue();
             }
 
             if(OnChange != null)
-            {
                 OnChange(dropdown.value);
-            }
 
             dropdown.onValueChanged.AddListener(delegate (int value)
             {
-                OptionsSaver.SaveInt(owner, SaveID, value);
+                OptionsSaver.SetSetting(owner, SaveID, value, true);
 
                 if(OnChange != null)
-                {
                     OnChange(value);
-                }
             });
 
             applyCustomRect(spawnedPrefab);

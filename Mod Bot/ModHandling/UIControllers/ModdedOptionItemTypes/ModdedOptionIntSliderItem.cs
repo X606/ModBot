@@ -54,28 +54,21 @@ namespace InternalModBot
             slider.wholeNumbers = true;
             Text numberDisplay = moddedObject.GetObject<Text>(2);
 
-            int? loadedInt = OptionsSaver.LoadInt(owner, SaveID);
-            if(loadedInt.HasValue)
-            {
-                slider.value = loadedInt.Value;
-            }
+            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedValue != null && loadedValue is int intValue)
+                slider.value = intValue;
 
             if(OnChange != null)
-            {
                 OnChange((int)slider.value);
-            }
 
             numberDisplay.text = slider.value.ToString();
 
             slider.onValueChanged.AddListener(delegate (float value)
             {
-                int intValue = (int)value;
-                OptionsSaver.SaveInt(owner, SaveID, intValue);
+                OptionsSaver.SetSetting(owner, SaveID, (int)value, true);
 
                 if(OnChange != null)
-                {
-                    OnChange(intValue);
-                }
+                    OnChange((int)value);
 
                 numberDisplay.text = value.ToString();
             });

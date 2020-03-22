@@ -36,15 +36,18 @@ namespace InternalModBot
             InputField inputField = spawnedModdedObject.GetObject<InputField>(1);
             inputField.text = DefaultValue;
 
-            string loadedString = OptionsSaver.LoadString(owner, SaveID);
-            if (loadedString != null)
+            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
+            if (loadedValue != null && loadedValue is string stringValue)
             {
-                inputField.text = loadedString;
-
-                _oldValue = inputField.text;
+                inputField.text = stringValue;
+                _oldValue = stringValue;
 
                 if (OnChange != null)
                     OnChange(inputField.text);
+            }
+            else
+            {
+                _oldValue = DefaultValue;
             }
 
             inputField.onEndEdit.AddListener(delegate (string value)
@@ -57,7 +60,7 @@ namespace InternalModBot
 
                 _oldValue = value;
 
-                OptionsSaver.SaveString(owner, SaveID, value);
+                OptionsSaver.SetSetting(owner, SaveID, value, true);
 
                 if(OnChange != null)
                     OnChange(value);

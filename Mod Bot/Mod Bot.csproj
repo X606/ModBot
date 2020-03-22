@@ -95,7 +95,6 @@
     <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />
-    <Compile Include="ModUtilities\ExtensionMethods\ModSettingsExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\SingleExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
@@ -191,7 +190,7 @@
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\source\repos\Mod-Block\UsedDlls\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\UsedDlls\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
