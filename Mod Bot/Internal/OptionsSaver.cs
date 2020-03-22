@@ -49,32 +49,40 @@ namespace InternalModBot
                     _savedSettingsDictionary.Add(keyValuePair.Key, keyValuePair.Value);
                 }
             }
+            else if (deserializedObject is JArray jArray)
+            {
+                _savedSettingsDictionary = new Dictionary<string, object>();
+
+                foreach (JObject jObject in jArray.Children<JObject>())
+                {
+                    string currentKey = "";
+                    foreach (JProperty jProperty in jObject.Properties())
+                    {
+                        string key = jProperty.Name;
+                        JToken value = jProperty.Value;
+
+                        if (key == "Key") // This might seem very weird, but we are dealing with a serialized KeyValuePair, the keys in this context are the field names, so "Key", and "Value"
+                        {
+                            currentKey = (string)value; // We dont want the local variable 'key' to be the key here, the actual value of the key property is what we want to use as the key
+                            continue;
+                        }
+
+                        if (key == "Value")
+                        {
+                            object settingValue = convertJTokenToSettingsValue(value);
+
+                            if (settingValue != null)
+                                _savedSettingsDictionary.Add(currentKey, settingValue);
+                        }
+                    }
+                }
+            }
             else if (deserializedObject is JObject jObject)
             {
                 _savedSettingsDictionary = new Dictionary<string, object>();
                 foreach (KeyValuePair<string, JToken> pair in jObject)
                 {
-                    object value = null;
-                    if (pair.Value.Type == JTokenType.Boolean)
-                    {
-                        value = pair.Value.ToObject<bool>();
-                    }
-                    else if (pair.Value.Type == JTokenType.Float)
-                    {
-                        value = pair.Value.ToObject<float>();
-                    }
-                    else if (pair.Value.Type == JTokenType.Integer)
-                    {
-                        value = pair.Value.ToObject<int>();
-                    }
-                    else if (pair.Value.Type == JTokenType.String)
-                    {
-                        value = pair.Value.ToObject<string>();
-                    }
-                    else
-                    {
-                        debug.Log("Unsupported JToken type: " + pair.Value.Type, Color.red);
-                    }
+                    object value = convertJTokenToSettingsValue(pair.Value);
 
                     if (value != null)
                         _savedSettingsDictionary.Add(pair.Key, value);
@@ -87,6 +95,24 @@ namespace InternalModBot
             else
             {
                 throw new Exception("Cannot migrate settings file to dictionary type: Unsupported type: " + deserializedObject.GetType().FullName);
+            }
+        }
+
+        static object convertJTokenToSettingsValue(JToken token)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.Boolean:
+                    return token.ToObject<bool>();
+                case JTokenType.Float:
+                    return token.ToObject<float>();
+                case JTokenType.Integer:
+                    return token.ToObject<int>();
+                case JTokenType.String:
+                    return token.ToObject<string>();
+                default:
+                    debug.Log("Unsupported JToken type: " + token.Type, Color.red);
+                    return null;
             }
         }
 
