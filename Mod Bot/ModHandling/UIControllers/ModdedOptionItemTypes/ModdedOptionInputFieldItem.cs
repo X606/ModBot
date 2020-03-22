@@ -43,25 +43,19 @@ namespace InternalModBot
             InputField inputField = spawnedModdedObject.GetObject<InputField>(1);
             inputField.text = DefaultValue;
 
-            string loadedString = OptionsSaver.LoadString(owner, SaveID);
-            if(loadedString != null)
-            {
-                inputField.text = loadedString;
-            }
+            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedValue != null && loadedValue is string stringValue)
+                inputField.text = stringValue;
 
             if(OnChange != null)
-            {
                 OnChange(inputField.text);
-            }
 
             inputField.onValueChanged.AddListener(delegate (string value)
             {
-                OptionsSaver.SaveString(owner, SaveID, value);
+                OptionsSaver.SetSetting(owner, SaveID, value, true);
 
                 if(OnChange != null)
-                {
                     OnChange(value);
-                }
             });
 
             applyCustomRect(spawnedPrefab);

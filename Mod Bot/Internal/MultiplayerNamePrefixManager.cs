@@ -23,7 +23,7 @@ namespace InternalModBot
 		const string NAME_OVERRIDE_URL = "https://modbot-d8a58.firebaseio.com/playerNameOverrides/.json";
 
 		static Dictionary<string, string> playfabIDToCustomPrefixDictionary = new Dictionary<string, string>();
-		static Dictionary<string, string> playfabIDToOverridenameDictionary = new Dictionary<string, string>();
+		static Dictionary<string, string> playfabIDToOverrideNameDictionary = new Dictionary<string, string>();
 
 		internal static Dictionary<string, Action> OnRefreshedListeners = new Dictionary<string, Action>();
 
@@ -46,16 +46,20 @@ namespace InternalModBot
 		/// <returns></returns>
 		public static string GetFullPrefixForPlayfabID(string playfabID)
 		{
+			bool isDictionaryNullOrEmpty = false;
+			if (playfabIDToCustomPrefixDictionary == null || playfabIDToCustomPrefixDictionary.Count == 0)
+				isDictionaryNullOrEmpty = true;
+
 			string prefix = "";
 			
-			if(playfabIDToCustomPrefixDictionary.ContainsKey(playfabID))
+			if(!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.ContainsKey(playfabID))
 				prefix += playfabIDToCustomPrefixDictionary[playfabID] + " ";
 
-			if(ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
+			if (ModBotUserIdentifier.Instance != null && ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
 			{
-				if(playfabIDToCustomPrefixDictionary.ContainsKey(MOD_BOT_USER_KEY))
+				if (!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.TryGetValue(MOD_BOT_USER_KEY, out string modBotUserPrefix))
 				{
-					prefix += playfabIDToCustomPrefixDictionary[MOD_BOT_USER_KEY] + " ";
+					prefix += modBotUserPrefix + " ";
 				}
 				else
 				{
@@ -74,10 +78,10 @@ namespace InternalModBot
 		/// <returns></returns>
 		public static string GetNameForPlayfabID(string playfabID, string defaultName)
 		{
-			if(!playfabIDToOverridenameDictionary.ContainsKey(playfabID))
-				return defaultName;
+			if (playfabIDToOverrideNameDictionary != null && playfabIDToOverrideNameDictionary.Count != 0 && playfabIDToOverrideNameDictionary.TryGetValue(playfabID, out string overrideName))
+				return overrideName;
 
-			return playfabIDToOverridenameDictionary[playfabID];
+			return defaultName;
 		}
 		
 		internal static IEnumerator DownloadDataFromFirebase()
@@ -86,13 +90,13 @@ namespace InternalModBot
 			yield return prefixesReqeust.SendWebRequest();
 			
 			string prefixJson = prefixesReqeust.downloadHandler.text;
-			playfabIDToCustomPrefixDictionary = JsonConvert.DeserializeObject<Dictionary<string,string>>(prefixJson);
+			playfabIDToCustomPrefixDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(prefixJson);
 
 			UnityWebRequest nameOverrideRequest = UnityWebRequest.Get(NAME_OVERRIDE_URL);
 			yield return nameOverrideRequest.SendWebRequest();
 
 			string nameOverrideJson = nameOverrideRequest.downloadHandler.text;
-			playfabIDToOverridenameDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(nameOverrideJson);
+			playfabIDToOverrideNameDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(nameOverrideJson);
 
 			TriggerRefreshNameTagsEvent();
 		}

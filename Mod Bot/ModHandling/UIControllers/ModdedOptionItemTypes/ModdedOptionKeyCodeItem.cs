@@ -39,14 +39,15 @@ namespace InternalModBot
             keyCodeInput.transform.parent = holder.transform;
             keyCodeInput.Init(DefaultValue, delegate (KeyCode keyCode)
             {
-                OptionsSaver.SaveInt(owner, SaveID, (int)keyCode);
-                OnChange(keyCode);
+                OptionsSaver.SetSetting(owner, SaveID, (int)keyCode, true);
+
+                if (OnChange != null)
+                    OnChange(keyCode);
             });
-            int? loadedKey = OptionsSaver.LoadInt(owner, SaveID);
-            if(loadedKey.HasValue && loadedKey.Value != (int)DefaultValue)
-            {
-                keyCodeInput.SelectedKey = (KeyCode)loadedKey;
-            }
+
+            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedValue != null && loadedValue is int intValue && intValue != (int)DefaultValue)
+                keyCodeInput.SelectedKey = (KeyCode)intValue;
 
             keyCodeInput.GetComponent<ModdedObject>().GetObject<Text>(2).text = DisplayName;
 

@@ -43,21 +43,19 @@ namespace InternalModBot
             toggle.isOn = DefaultValue;
             moddedObject.GetObject<GameObject>(1).GetComponent<Text>().text = DisplayName;
 
-            bool? loadedBool = OptionsSaver.LoadBool(owner, SaveID);
-            if(loadedBool.HasValue)
-                toggle.isOn = loadedBool.Value;
+            object loadedBool = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedBool != null && loadedBool is bool boolValue)
+                toggle.isOn = boolValue;
 
             if(OnChange != null)
                 OnChange(toggle.isOn);
 
             toggle.onValueChanged.AddListener(delegate (bool value)
             {
-                OptionsSaver.SaveBool(owner, SaveID, value);
+                OptionsSaver.SetSetting(owner, SaveID, value, true);
 
                 if(OnChange != null)
-                {
                     OnChange(value);
-                }
             });
 
             applyCustomRect(moddedObject.gameObject);

@@ -1635,97 +1635,6 @@
             <param name="enumerable"></param>
             <returns>The randomized collection</returns>
         </member>
-        <member name="T:ModLibrary.ModSettingsExtensions">
-            <summary>
-            Extension methods for mod settings handling
-            </summary>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsStringValue(SettingsManager,ModLibrary.Mod,System.String,System.String)">
-            <summary>
-            Gets a <see cref="T:System.String"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
-            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsBoolValue(SettingsManager,ModLibrary.Mod,System.String,System.Boolean)">
-            <summary>
-            Gets a <see cref="T:System.Boolean"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
-            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsFloatValue(SettingsManager,ModLibrary.Mod,System.String,System.Single)">
-            <summary>
-            Gets a <see cref="T:System.Single"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
-            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsIntValue(SettingsManager,ModLibrary.Mod,System.String,System.Int32)">
-            <summary>
-            Gets an <see cref="T:System.Int32"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
-            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsKeyCodeValue(SettingsManager,ModLibrary.Mod,System.String,UnityEngine.KeyCode)">
-            <summary>
-            Gets a <see cref="T:UnityEngine.KeyCode"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <param name="defaultValue">The value that should be returned if no saved setting could be found</param>
-            <returns>The value of the setting, will be the value of defaultValue if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsStringValue(SettingsManager,ModLibrary.Mod,System.String)">
-            <summary>
-            Gets a <see cref="T:System.String"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <returns>The value of the setting, will be <see langword="null"/> if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsBoolValue(SettingsManager,ModLibrary.Mod,System.String)">
-            <summary>
-            Gets a <see cref="T:System.Boolean"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <returns>The value of the setting, will be <see langword="null"/> if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsFloatValue(SettingsManager,ModLibrary.Mod,System.String)">
-            <summary>
-            Gets a <see cref="T:System.Single"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <returns>The value of the setting, will be <see langword="null"/> if the option could not be found</returns>
-        </member>
-        <member name="M:ModLibrary.ModSettingsExtensions.GetModdedSettingsIntValue(SettingsManager,ModLibrary.Mod,System.String)">
-            <summary>
-            Gets an <see cref="T:System.Int32"/> value saved in the loaded settings
-            </summary>
-            <param name="me"></param>
-            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
-            <param name="name">The name of the setting</param>
-            <returns>The value of the setting, will be <see langword="null"/> if the option could not be found</returns>
-        </member>
         <member name="T:ModLibrary.SingleMethodExtensions">
             <summary>
             Dont call these methods directly from here
@@ -2125,6 +2034,15 @@
             <param name="id">The id of the setting</param>
             <param name="value">The value you want to set the setting to</param>
         </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsStringValue(ModLibrary.Mod,System.String,System.String,System.Boolean)">
+            <summary>
+            Sets a <see cref="T:System.String"/> value in the modded settings 
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="saveID">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+            <param name="writeToFile"><see langword="true"/> if the setting should be written to the save file immediately, <see langword="false"/> if not. It is recommended to set this to <see langword="false"/> and then calling <see cref="M:ModLibrary.ModdedSettings.WriteSettingsToFile"/> if you set values often</param>
+        </member>
         <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsFloatValue(ModLibrary.Mod,System.String,System.Single)">
             <summary>
             Sets a <see langword="float"/> value in the loaded settings 
@@ -2132,6 +2050,15 @@
             <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
             <param name="id">The id of the setting</param>
             <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsFloatValue(ModLibrary.Mod,System.String,System.Single,System.Boolean)">
+            <summary>
+            Sets a <see langword="float"/> value in the loaded settings 
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="saveID">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+            <param name="writeToFile"><see langword="true"/> if the setting should be written to the save file immediately, <see langword="false"/> if not. It is recommended to set this to <see langword="false"/> and then calling <see cref="M:ModLibrary.ModdedSettings.WriteSettingsToFile"/> if you set values often</param>
         </member>
         <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsIntValue(ModLibrary.Mod,System.String,System.Int32)">
             <summary>
@@ -2141,6 +2068,15 @@
             <param name="id">The id of the setting</param>
             <param name="value">The value you want to set the setting to</param>
         </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsIntValue(ModLibrary.Mod,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Sets a <see langword="int"/> value in the loaded settings 
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="saveID">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+            <param name="writeToFile"><see langword="true"/> if the setting should be written to the save file immediately, <see langword="false"/> if not. It is recommended to set this to <see langword="false"/> and then calling <see cref="M:ModLibrary.ModdedSettings.WriteSettingsToFile"/> if you set values often</param>
+        </member>
         <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsBoolValue(ModLibrary.Mod,System.String,System.Boolean)">
             <summary>
             Sets a <see langword="bool"/> value in the loaded settings 
@@ -2149,6 +2085,15 @@
             <param name="id">The id of the setting</param>
             <param name="value">The value you want to set the setting to</param>
         </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsBoolValue(ModLibrary.Mod,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Sets a <see langword="bool"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+            <param name="writeToFile"><see langword="true"/> if the setting should be written to the save file immediately, <see langword="false"/> if not. It is recommended to set this to <see langword="false"/> and then calling <see cref="M:ModLibrary.ModdedSettings.WriteSettingsToFile"/> if you set values often</param>
+        </member>
         <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsKeyCodeValue(ModLibrary.Mod,System.String,UnityEngine.KeyCode)">
             <summary>
             Sets a <see cref="T:UnityEngine.KeyCode"/> value in the loaded settings 
@@ -2156,6 +2101,27 @@
             <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
             <param name="id">The id of the setting</param>
             <param name="value">The value you want to set the setting to</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.SetModdedSettingsKeyCodeValue(ModLibrary.Mod,System.String,UnityEngine.KeyCode,System.Boolean)">
+            <summary>
+            Sets a <see cref="T:UnityEngine.KeyCode"/> value in the loaded settings 
+            </summary>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns this setting</param>
+            <param name="id">The id of the setting</param>
+            <param name="value">The value you want to set the setting to</param>
+            <param name="writeToFile"><see langword="true"/> if the setting should be written to the save file immediately, <see langword="false"/> if not. It is recommended to set this to <see langword="false"/> and then calling <see cref="M:ModLibrary.ModdedSettings.WriteSettingsToFile"/> if you set values often</param>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.WriteSettingsToFile">
+            <summary>
+            Saves all settings to the settings file, use this to manually write to the file if you passed <see langword="false"/> to any of the SetModdedSettings_____Value methods
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModdedSettings.HasSetting(ModLibrary.Mod,System.String)">
+            <summary>
+            Returns if a setting with the given owner and ID is saved
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the setting</param>
+            <param name="saveID">The ID of the setting</param>
         </member>
         <member name="T:ModLibrary.EnumTools">
             <summary>
@@ -2465,7 +2431,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.7.
+              Looks up a localized string similar to 1.4.8.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
@@ -3479,95 +3445,6 @@
         <member name="T:InternalModBot.OptionsSaver">
             <summary>
             Used by Mod-Bot to save mod options
-            </summary>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.Load(System.String)">
-            <summary>
-            Sets the loaded options from an input json string
-            </summary>
-            <param name="json"></param>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.save">
-            <summary>
-            Saves the current loaded options to a file
-            </summary>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.generateSaveFormatString(ModLibrary.Mod,InternalModBot.OptionsSaver.SaveFormats,System.String)">
-            <summary>
-            Used to make sure that mods always get saved in the same format
-            </summary>
-            <param name="mod"></param>
-            <param name="saveFormat"></param>
-            <param name="name"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.SaveString(ModLibrary.Mod,System.String,System.String)">
-            <summary>
-            Saves a string to the save file and loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <param name="_string"></param>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.LoadString(ModLibrary.Mod,System.String)">
-            <summary>
-            Loads a string from the loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.SaveInt(ModLibrary.Mod,System.String,System.Int32)">
-            <summary>
-            Saves a int to the save file and loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <param name="_int"></param>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.LoadInt(ModLibrary.Mod,System.String)">
-            <summary>
-            loads an int from the loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.SaveFloat(ModLibrary.Mod,System.String,System.Single)">
-            <summary>
-            Saves a float to the save file and loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <param name="_float"></param>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.LoadFloat(ModLibrary.Mod,System.String)">
-            <summary>
-            loads a float from the loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.SaveBool(ModLibrary.Mod,System.String,System.Boolean)">
-            <summary>
-            Saves a bool to the save file and loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <param name="_bool"></param>
-        </member>
-        <member name="M:InternalModBot.OptionsSaver.LoadBool(ModLibrary.Mod,System.String)">
-            <summary>
-            loads a bool from the loaded options
-            </summary>
-            <param name="mod"></param>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="T:InternalModBot.OptionsSaver.SaveFormats">
-            <summary>
-            The diffrent types of save formats supported
             </summary>
         </member>
         <member name="T:InternalModBot.PassOnToModsManager">

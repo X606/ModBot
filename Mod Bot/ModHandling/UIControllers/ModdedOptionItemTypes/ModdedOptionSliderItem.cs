@@ -53,27 +53,21 @@ namespace InternalModBot
             slider.value = DefaultValue;
             Text numberDisplay = moddedObject.GetObject<Text>(2);
 
-            float? loadedFloat = OptionsSaver.LoadFloat(owner, SaveID);
-            if(loadedFloat.HasValue)
-            {
-                slider.value = loadedFloat.Value;
-            }
+            object loadedFloat = OptionsSaver.LoadSetting(owner, SaveID);
+            if(loadedFloat != null && loadedFloat is float floatValue)
+                slider.value = floatValue;
 
             if(OnChange != null)
-            {
                 OnChange(slider.value);
-            }
 
             numberDisplay.text = slider.value.ToString();
 
             slider.onValueChanged.AddListener(delegate (float value)
             {
-                OptionsSaver.SaveFloat(owner, SaveID, value);
+                OptionsSaver.SetSetting(owner, SaveID, value, true);
 
                 if(OnChange != null)
-                {
                     OnChange(value);
-                }
 
                 numberDisplay.text = value.ToString();
             });
