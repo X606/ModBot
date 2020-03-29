@@ -1,26 +1,24 @@
 <h1>Accessor</h1>
-<p>The accessor class can be used to interact with private or protected members of a class.</p>
-<p>Read the source code <a href="https://github.com/X606/ModBot/blob/master/Mod%20Bot/Accessor.cs" target="_blank">here</a></p>
-<br>
+<p>
+	The accessor class can be used to interact with private or protected members of a class.<br>
+	Read the source code <a href="https://github.com/X606/ModBot/blob/master/Mod%20Bot/Accessor.cs" target="_blank">here</a>
+</p>
+<h1>Constructor</h1>
+<h2>public Accessor(Type _type, object _instance)</h2>
+<p>
+	Initializes a new instance of the Accessor class with the specified type and instance
+</p>
 <h1>Methods</h1>
-<h2>CallPrivateMethod (Non-static)<a href="#non-static-footnote"><sup>[1]</sup></a></h2>
-<p>Requires that an instance of the Accessor class is defined in order to be called.</p>
+<h2>public object CallPrivateMethod(string methodName, object[] args)</h2>
 <p>
-	Calls a private method from a class.<br>
+	Calls a non-public method <i>methodName</i> with arguments <i>args</i> in the type and instance specified in the current instance of the Accessor class
 	<br>
-	CallPrivateMethod (Non-static) takes 1-2 arguments (2nd is null by default):<br>
-	The first argument is a string, this is the name if the private or protected method you want to call, note that it is case-sensitive.<br>
-	The second argument is an object array, this is the arguments that will be passed on to the method, if null, no arguments will be passed.<br>
-	<br>
-	Note that since this method is of type void, you can not currently get the return value of a private method.
+	NOTE: <i>methodName</i> is case-sensitive.
 </p>
-<br>
-<h2>GetAllMethods (Non-static)<a href="#non-static-footnote"><sup>[1]</sup></a></h2>
-<p>Requires that an instance of the Accessor class is defined in order to be called.</p>
+<h2>public ReturnType CallPrivateMethod [ReturnType] (string methodName, object[] args)</h2>
 <p>
-	GetAllMethods (Non-static) takes no arguments and returns a MethodInfo array of all the methods in the specified type.
+	
 </p>
-<br>
 <h2>SetPrivateField (Non-static)<a href="#non-static-footnote"><sup>[1]</sup></a></h2>
 <p>Requires that an instance of the Accessor class is defined in order to be called.</p>
 <p>
@@ -52,6 +50,3 @@
 </p>
 <br>
 <br>
-<p id="non-static-footnote">
-	[1] Non static members of a class need to have an instance to run on, whereas static members don't. <a href="https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members" target="_blank">Read more</a>
-</p>
