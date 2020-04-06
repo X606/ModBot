@@ -30,7 +30,7 @@ namespace InternalModBot
             Camera main = Camera.main;
             if (main == null)
             {
-                FirstPersonMover player = CharacterTracker.Instance.GetPlayer();
+                FirstPersonMover player = CharacterTracker.Instance.GetPlayerRobot();
                 if (player == null)
                     return;
 
