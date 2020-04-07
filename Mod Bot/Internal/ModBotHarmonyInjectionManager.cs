@@ -669,6 +669,14 @@ namespace InternalModBot
 			{
 				___CurrentPlayerText.supportRichText = true;
 			}
-		}
+
+            public static void ErrorManager_SendDataToLoggly_Prefix(WWWForm form)
+            {
+                form.AddField("IsModdedClient", "true");
+
+                string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetAllLoadedMods().CallMethods<Mod, string>("GetModName"));
+                form.AddField("LoadedMods", loadedModNames);
+            }
+        }
     }
 }
