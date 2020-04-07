@@ -2431,7 +2431,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.8.
+              Looks up a localized string similar to 1.4.8.1.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
