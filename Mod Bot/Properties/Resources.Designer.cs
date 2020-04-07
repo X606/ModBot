@@ -109,13 +109,13 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:MODIFIKATIONEN
-        ///newversion_message:Neue Mod-Bot-Version verfügbar: {0}\n(Aktuelle Version: {1})
-        ///newversion_dismiss:Entlassen
-        ///newversion_install:Installieren
+        ///   Looks up a localized string similar to modsbutton:Modificationen.
+        ///newversion_message:Eine neue Version von Mod-Bot ist verfügbar.: {0}\n(Aktuelle Version: {1})
+        ///newversion_dismiss:Nicht machen.
+        ///newversion_install:Instalieren.
         ///modbotversion:Mod-Bot Version: {0}
-        ///modbotuptodate:Mod-Bot Version &apos;{0}&apos; auf dem neuesten Stand!
-        ///ignoreallcrashes_savedwarning:Gespeicherte Optionsmeldung (IgnoreCrashes): Alle Abstürze werden ignoriert. Diese Meldung sollte nur zu Testzwecken aktiviert werden. Deaktivieren Sie sie, indem Sie &quot;ignoreallcrashes 0&quot; in die Konsole eingeben.        /// [rest of string was truncated]&quot;;.
+        ///modbotuptodate:Mod-Bot Version &apos;{0}&apos; ist auf dem neusten stand!
+        ///ignoreallcrashes_savedwarning:Gespeicherte Nachricht (Ignoriere alle Abstürze): Alle Abstürze werden ignorierd, dies sollte nur für testenden Grund gemacht werden, schalte es aus indem du &quot;ignoreallcrashes 0&quot; in die Conso [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_German {
             get {
@@ -207,7 +207,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.4.8.1.
+        ///   Looks up a localized string similar to 1.4.9.
         /// </summary>
         internal static string ModBotVersion {
             get {
