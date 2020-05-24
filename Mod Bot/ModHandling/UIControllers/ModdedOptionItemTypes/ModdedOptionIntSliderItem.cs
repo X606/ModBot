@@ -43,16 +43,16 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject sliderPrefab = AssetLoader.GetObjectFromFile("modswindow", "Slider", "Clone Drone in the Danger Zone_Data/");
-            ModdedObject moddedObject = GameObject.Instantiate(sliderPrefab).GetComponent<ModdedObject>();
-            moddedObject.transform.parent = holder.transform;
-            moddedObject.GetObject<Text>(0).text = DisplayName;
-            Slider slider = moddedObject.GetObject<Slider>(1);
+            GameObject spawnedPrefab = InternalAssetBundleCache.ModsWindow.InstantiateObject("Slider");
+            spawnedPrefab.transform.parent = holder.transform;
+            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
+            spawnedModdedObject.GetObject<Text>(0).text = DisplayName;
+            Slider slider = spawnedModdedObject.GetObject<Slider>(1);
             slider.minValue = Min;
             slider.maxValue = Max;
             slider.value = DefaultValue;
             slider.wholeNumbers = true;
-            Text numberDisplay = moddedObject.GetObject<Text>(2);
+            Text numberDisplay = spawnedModdedObject.GetObject<Text>(2);
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
             if(loadedValue != null && loadedValue is int intValue)
@@ -73,7 +73,7 @@ namespace InternalModBot
                 numberDisplay.text = value.ToString();
             });
 
-            applyCustomRect(moddedObject.gameObject);
+            applyCustomRect(spawnedModdedObject.gameObject);
 
             if (OnCreate != null)
                 OnCreate(slider);

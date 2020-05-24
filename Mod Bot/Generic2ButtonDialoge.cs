@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using InternalModBot;
 
 #pragma warning disable IDE1005
 
@@ -44,8 +45,7 @@ namespace ModLibrary
         /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
         {
-            GameObject prefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Generic2ButtonDialoge", "Clone Drone in the Danger Zone_Data/");
-            _spawnedObject = GameObject.Instantiate(prefab).GetComponent<ModdedObject>();
+            _spawnedObject = InternalAssetBundleCache.ModsWindow.InstantiateObject("Generic2ButtonDialoge").GetComponent<ModdedObject>();
 
             _displayText = _spawnedObject.GetObject<Text>(0);
             _button1 = _spawnedObject.GetObject<Button>(1);

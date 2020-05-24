@@ -32,8 +32,7 @@ namespace ModLibrary
             owner.SetActive(false);
             _owner = owner;
             _ownerMod = ownerMod;
-            GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModOptionsCanvas", "Clone Drone in the Danger Zone_Data/");
-            _spawnedBase = GameObject.Instantiate(modsWindowPrefab);
+            _spawnedBase = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModOptionsCanvas");
             _spawnedBase.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
             ModdedObject modObject = _spawnedBase.GetComponent<ModdedObject>();
             _content = modObject.GetObject<GameObject>(0);
@@ -57,7 +56,7 @@ namespace ModLibrary
         public void PopulatePages()
         {
             TransformUtils.DestroyAllChildren(_pageButtonsHolder.transform);
-            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "PageButton", "Clone Drone in the Danger Zone_Data/");
+            GameObject buttonPrefab = InternalAssetBundleCache.ModsWindow.GetObject("PageButton");
 
             foreach(Page page in _pages)
             {
@@ -171,15 +170,17 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the slider is changed</param>
             public void AddSlider(float min, float max, float defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<float> onChange = null)
             {
-                ModdedOptionSliderItem slider = new ModdedOptionSliderItem();
-                slider.Min = min;
-                slider.Max = max;
-                slider.DefaultValue = defaultValue;
-                slider.DisplayName = displayName;
-                slider.SaveID = saveID;
-                slider.OnCreate = onCreate;
-                slider.CustomRect = customRect;
-                slider.OnChange = onChange;
+                ModdedOptionSliderItem slider = new ModdedOptionSliderItem
+                {
+                    Min = min,
+                    Max = max,
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(slider);
             }
@@ -197,15 +198,17 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the slider is changed</param>
             public void AddIntSlider(int min, int max, int defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
-                ModdedOptionIntSliderItem slider = new ModdedOptionIntSliderItem();
-                slider.Min = min;
-                slider.Max = max;
-                slider.DefaultValue = defaultValue;
-                slider.DisplayName = displayName;
-                slider.SaveID = saveID;
-                slider.OnCreate = onCreate;
-                slider.CustomRect = customRect;
-                slider.OnChange = onChange;
+                ModdedOptionIntSliderItem slider = new ModdedOptionIntSliderItem
+                {
+                    Min = min,
+                    Max = max,
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(slider);
             }
@@ -221,13 +224,15 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
             public void AddInputField(string defaultValue, string displayName, string saveID, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
             {
-                ModdedOptionInputFieldItem input = new ModdedOptionInputFieldItem();
-                input.DefaultValue = defaultValue;
-                input.DisplayName = displayName;
-                input.SaveID = saveID;
-                input.OnCreate = onCreate;
-                input.CustomRect = customRect;
-                input.OnChange = onChange;
+                ModdedOptionInputFieldItem input = new ModdedOptionInputFieldItem
+                {
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(input);
             }
@@ -244,14 +249,16 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
             public void AddVerifyingInputField(string defaultValue, string displayName, string saveID, Predicate<string> verificationPredicate, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
             {
-                ModdedOptionVerifyingInputFieldItem verifyingInput = new ModdedOptionVerifyingInputFieldItem();
-                verifyingInput.DefaultValue = defaultValue;
-                verifyingInput.DisplayName = displayName;
-                verifyingInput.SaveID = saveID;
-                verifyingInput.Verify = verificationPredicate;
-                verifyingInput.OnCreate = onCreate;
-                verifyingInput.CustomRect = customRect;
-                verifyingInput.OnChange = onChange;
+                ModdedOptionVerifyingInputFieldItem verifyingInput = new ModdedOptionVerifyingInputFieldItem
+                {
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    Verify = verificationPredicate,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(verifyingInput);
             }
@@ -267,13 +274,15 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="Toggle"/> is changed</param>
             public void AddCheckbox(bool defaultValue, string displayName, string saveID, Action<Toggle> onCreate = null, Rect? customRect = null, Action<bool> onChange = null)
             {
-                ModdedOptionCheckboxItem checkBox = new ModdedOptionCheckboxItem();
-                checkBox.DefaultValue = defaultValue;
-                checkBox.DisplayName = displayName;
-                checkBox.SaveID = saveID;
-                checkBox.OnCreate = onCreate;
-                checkBox.CustomRect = customRect;
-                checkBox.OnChange = onChange;
+                ModdedOptionCheckboxItem checkBox = new ModdedOptionCheckboxItem
+                {
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(checkBox);
             }
@@ -290,14 +299,16 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
             public void AddDropDown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
-                ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem();
-                dropdown.Options = options;
-                dropdown.DefaultValue = defaultValue;
-                dropdown.DisplayName = displayName;
-                dropdown.SaveID = saveID;
-                dropdown.OnCreate = onCreate;
-                dropdown.CustomRect = customRect;
-                dropdown.OnChange = onChange;
+                ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem
+                {
+                    Options = options,
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(dropdown);
             }
@@ -334,13 +345,15 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="KeyCodeInput"/> is changed</param>
             public void AddKeyCodeInput(KeyCode defaultValue, string displayName, string saveID, Action<KeyCodeInput> onCreate = null, Rect? customRect = null, Action<KeyCode> onChange = null)
             {
-                ModdedOptionKeyCodeItem keyCodeItem = new ModdedOptionKeyCodeItem();
-                keyCodeItem.DefaultValue = defaultValue;
-                keyCodeItem.DisplayName = displayName;
-                keyCodeItem.SaveID = saveID;
-                keyCodeItem.OnCreate = onCreate;
-                keyCodeItem.CustomRect = customRect;
-                keyCodeItem.OnChange = onChange;
+                ModdedOptionKeyCodeItem keyCodeItem = new ModdedOptionKeyCodeItem
+                {
+                    DefaultValue = defaultValue,
+                    DisplayName = displayName,
+                    SaveID = saveID,
+                    OnCreate = onCreate,
+                    CustomRect = customRect,
+                    OnChange = onChange
+                };
 
                 _items.Add(keyCodeItem);
             }
@@ -366,11 +379,13 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Button"/> is created, use this to change properties of the <see cref="Button"/></param>
             public void AddButton(string displayName, Action onClick, Rect? customRect = null, Action<Button> onCreate = null)
             {
-                ModdedOptionButtonItem button = new ModdedOptionButtonItem();
-                button.DisplayName = displayName;
-                button.OnClick = onClick;
-                button.CustomRect = customRect;
-                button.OnCreate = onCreate;
+                ModdedOptionButtonItem button = new ModdedOptionButtonItem
+                {
+                    DisplayName = displayName,
+                    OnClick = onClick,
+                    CustomRect = customRect,
+                    OnCreate = onCreate
+                };
 
                 _items.Add(button);
             }
@@ -382,9 +397,11 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the label is created, use this to change the properties of the <see cref="Text"/></param>
             public void AddLabel(string displayName, Action<Text> onCreate = null)
             {
-                ModdedOptionLabelItem label = new ModdedOptionLabelItem();
-                label.DisplayName = displayName;
-                label.OnCreate = onCreate;
+                ModdedOptionLabelItem label = new ModdedOptionLabelItem
+                {
+                    DisplayName = displayName,
+                    OnCreate = onCreate
+                };
 
                 _items.Add(label);
             }

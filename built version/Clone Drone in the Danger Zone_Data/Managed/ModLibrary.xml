@@ -208,6 +208,46 @@
             <param name="propertyName">The name of the property.</param>
             <param name="instance">The instance the property is in.</param>
         </member>
+        <member name="T:ModLibrary.AssetBundleInfo">
+            <summary>
+            Contains information about an asset bundle with all the assets asynchronously cached
+            </summary>
+        </member>
+        <member name="M:ModLibrary.AssetBundleInfo.Finalize">
+            <summary>
+            Unloads the AssetBundle when this object is destroyed
+            </summary>
+        </member>
+        <member name="M:ModLibrary.AssetBundleInfo.GetObject``1(System.String)">
+            <summary>
+            Loads an object from the <see cref="T:UnityEngine.AssetBundle"/>. Note: This will most likely be a prefab, if you want to instantiate the object you might want to use <see cref="M:ModLibrary.AssetBundleInfo.InstantiateObject``1(System.String)"/> instead
+            </summary>
+            <typeparam name="T">The type of object to load</typeparam>
+            <param name="objectName">The name of the object to load</param>
+            <returns>The object loaded from the asset bundle</returns>
+        </member>
+        <member name="M:ModLibrary.AssetBundleInfo.GetObject(System.String)">
+            <summary>
+            Loads a <see cref="T:UnityEngine.GameObject"/> from the <see cref="T:UnityEngine.AssetBundle"/>. Note: This will most likely be a prefab, if you want to instantiate the <see cref="T:UnityEngine.GameObject"/> you might want to use <see cref="M:ModLibrary.AssetBundleInfo.InstantiateObject(System.String)"/> instead
+            </summary>
+            <param name="objectName">The name of the <see cref="T:UnityEngine.GameObject"/> to load</param>
+            <returns>The <see cref="T:UnityEngine.GameObject"/> loaded from the <see cref="T:UnityEngine.AssetBundle"/></returns>
+        </member>
+        <member name="M:ModLibrary.AssetBundleInfo.InstantiateObject``1(System.String)">
+            <summary>
+            Instantiates an object of type <typeparamref name="T"/> from the <see cref="T:UnityEngine.AssetBundle"/>
+            </summary>
+            <typeparam name="T">The type of the object to instantiate</typeparam>
+            <param name="objectName">The name of the object to instantiate</param>
+            <returns>The instantiated object</returns>
+        </member>
+        <member name="M:ModLibrary.AssetBundleInfo.InstantiateObject(System.String)">
+            <summary>
+            Instantiates a <see cref="T:UnityEngine.GameObject"/> from the <see cref="T:UnityEngine.AssetBundle"/>
+            </summary>
+            <param name="objectName">The name of the <see cref="T:UnityEngine.GameObject"/> to instantiate</param>
+            <returns>The instantiated <see cref="T:UnityEngine.GameObject"/></returns>
+        </member>
         <member name="T:ModLibrary.AssetLoader">
             <summary>
             Used to load assets from assetbundles (normally placed in the mods folder)
@@ -222,6 +262,21 @@
             <summary>
             Returns the full directory to the mods folder directory where we expect most of the assetbundles to be
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetAssetBundle(System.String)">
+            <summary>
+            Gets the <see cref="T:ModLibrary.AssetBundleInfo"/> from the asset bundle with the specified name in the mods folder
+            </summary>
+            <param name="name">The name of the asset bundle file</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetAssetBundle(System.String,System.String)">
+            <summary>
+            Gets the <see cref="T:ModLibrary.AssetBundleInfo"/> from the asset bundle with the specfied name at the given custom path
+            </summary>
+            <param name="name">The name of the asset bundle file</param>
+            <param name="customPath">The custom path to the asset bundle, relative to the game root folder</param>
             <returns></returns>
         </member>
         <member name="M:ModLibrary.AssetLoader.GetObjectFromFile(System.String,System.String)">

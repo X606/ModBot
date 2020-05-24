@@ -31,29 +31,38 @@ namespace ModLibrary
             return GetSubdomain(Application.dataPath) + MODS_FOLDER_NAME;
         }
 
+        static AssetBundleInfo getAssetBundle(string name, string pathFromDataPath = MODS_FOLDER_NAME)
+        {
+            return AssetBundleInfo.CreateOrGetCached(pathFromDataPath + name);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="AssetBundleInfo"/> from the asset bundle with the specified name in the mods folder
+        /// </summary>
+        /// <param name="name">The name of the asset bundle file</param>
+        /// <returns></returns>
+        public static AssetBundleInfo GetAssetBundle(string name)
+        {
+            return getAssetBundle(name);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="AssetBundleInfo"/> from the asset bundle with the specfied name at the given custom path
+        /// </summary>
+        /// <param name="name">The name of the asset bundle file</param>
+        /// <param name="customPath">The custom path to the asset bundle, relative to the game root folder</param>
+        /// <returns></returns>
+        public static AssetBundleInfo GetAssetBundle(string name, string customPath)
+        {
+            if (!customPath.EndsWith("/") && !customPath.EndsWith("\\"))
+                customPath += "/";
+
+            return getAssetBundle(name, customPath);
+        }
+
         static T getObjectFromFileInternal<T>(string _assetBundleName, string _objectName, string _customPathFromDataPath = MODS_FOLDER_NAME) where T : UnityEngine.Object
         {
-            string key = _assetBundleName + ":" + _objectName;
-
-            if (_cachedObjects.ContainsKey(key))
-                return _cachedObjects[key] as T;
-
-            string assetBundleDirectory = GetSubdomain(Application.dataPath) + _customPathFromDataPath;
-            string assetBundleFilePath = assetBundleDirectory + _assetBundleName;
-
-            if (!Directory.Exists(assetBundleDirectory))
-                throw new DirectoryNotFoundException("Could not find directory " + assetBundleDirectory);
-
-            if (!File.Exists(assetBundleFilePath))
-                throw new FileNotFoundException("Could not find AssetBundle file", _assetBundleName);
-
-            AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
-            T result = assetBundle.LoadAssetAsync<T>(_objectName).asset as T;
-            assetBundle.Unload(false);
-
-            _cachedObjects[key] = result;
-
-            return result;
+            return getAssetBundle(_assetBundleName, _customPathFromDataPath).GetObject<T>(_objectName);
         }
 
         /// <summary>

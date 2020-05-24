@@ -17,11 +17,8 @@ namespace ModLibrary
 
         void Start()
         {
-            GameObject backButtonPrefab = AssetLoader.GetObjectFromFile("modswindow", "PreviousPageButton", "Clone Drone in the Danger Zone_Data/");
-            _backButton = createButtonAt(backButtonPrefab, new Vector3(-300f, 50f, 0f), BackClicked);
-
-			GameObject nextButtonPrefab = AssetLoader.GetObjectFromFile("modswindow", "NextPageButton", "Clone Drone in the Danger Zone_Data/");
-			_nextButton = createButtonAt(nextButtonPrefab, new Vector3(300f, 50f, 0f), NextClicked);
+            _backButton = createButtonAt(InternalAssetBundleCache.ModsWindow.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
+			_nextButton = createButtonAt(InternalAssetBundleCache.ModsWindow.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }

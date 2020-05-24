@@ -1,4 +1,5 @@
 ﻿using ModLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,8 +39,7 @@ namespace InternalModBot
             pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton";
 
-            GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
-            _modsWindow = Instantiate(modsWindowPrefab);
+            _modsWindow = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModsMenu");
 
             _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
             _modsWindow.SetActive(false);
@@ -55,7 +55,7 @@ namespace InternalModBot
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
-            image.GetComponent<Image>().sprite = AssetLoader.GetObjectFromFile<Sprite>("modswindow", "modbot", "Clone Drone in the Danger Zone_Data/");
+            image.GetComponent<Image>().sprite = InternalAssetBundleCache.ModsWindow.GetObject<Sprite>("modbot");
             image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1f);
             image.GetComponent<RectTransform>().position -= new Vector3(7f, 0f);
 
@@ -90,9 +90,7 @@ namespace InternalModBot
 
         void onGetMoreModsClicked()
         {
-            GameObject modDownloadsPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Mod downloads", "Clone Drone in the Danger Zone_Data/");
-            
-            ModdedObject spawnedModdedObject = Instantiate(modDownloadsPrefab).GetComponent<ModdedObject>();
+            ModdedObject spawnedModdedObject = InternalAssetBundleCache.ModsWindow.InstantiateObject("Mod downloads").GetComponent<ModdedObject>();
             GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
             spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
             {
@@ -104,8 +102,6 @@ namespace InternalModBot
 
         static IEnumerator downloadModData(GameObject content)
         {
-            GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
-            
             UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/mods/.json");
 
             yield return webRequest.SendWebRequest(); // wait for the web request to send
@@ -115,16 +111,17 @@ namespace InternalModBot
 
             TransformUtils.DestroyAllChildren(content.transform);
 
-            ModsHolder mods = Newtonsoft.Json.JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+            ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
-            foreach(ModsHolder.ModHolder mod in mods.Mods)
+            GameObject modDownloadInfoPrefab = InternalAssetBundleCache.ModsWindow.GetObject("ModDownloadInfo");
+            foreach (ModsHolder.ModHolder modHolder in modsHolder.Mods)
             {
-                if(!mod.Checked) // do not want unchecked mods to come up in-game.
+                if(!modHolder.Checked) // do not want unchecked mods to come up in-game.
                     continue;
 
                 GameObject holder = Instantiate(modDownloadInfoPrefab);
                 holder.transform.parent = content.transform;
-                holder.AddComponent<ModDownloadInfoItem>().Init(mod);
+                holder.AddComponent<ModDownloadInfoItem>().Init(modHolder);
             }
 
         }
@@ -161,8 +158,8 @@ namespace InternalModBot
             if (!isModNotActive.HasValue)
                 return;
 
-            GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
-            GameObject modItem = Instantiate(modItemPrefab, parent.transform);
+            GameObject modItem = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModItemPrefab");
+            modItem.transform.parent = parent.transform;
 
             string modName = mod.GetModName();
             string url = mod.GetModImageURL();
