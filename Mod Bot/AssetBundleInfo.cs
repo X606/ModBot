@@ -25,7 +25,8 @@ namespace ModLibrary
         /// </summary>
         ~AssetBundleInfo()
         {
-            unloadAssetBundle(true);
+            unloadAssetBundle();
+            clearObjectCache(true);
         }
 
         private AssetBundleInfo(string assetBundlePath, string cacheDictionaryKey)
@@ -57,29 +58,31 @@ namespace ModLibrary
         {
             foreach (AssetBundleInfo assetBundleInfo in _cachedAssetBundleInfos.Values)
             {
-                assetBundleInfo.unloadAssetBundle(true);
+                assetBundleInfo.unloadAssetBundle();
+                assetBundleInfo.clearObjectCache();
             }
 
             _cachedAssetBundleInfos.Clear();
         }
 
-        void unloadAssetBundle(bool clearCache = false)
+        void clearObjectCache(bool removeInstanceFromCache = false)
+        {
+            if (_cachedObjects != null)
+            {
+                _cachedObjects.Clear();
+                _cachedObjects = null;
+            }
+
+            if (removeInstanceFromCache)
+                _cachedAssetBundleInfos.Remove(_dictionaryKey);
+        }
+
+        void unloadAssetBundle()
         {
             if (_assetBundle != null)
             {
                 _assetBundle.Unload(false);
                 _assetBundle = null;
-            }
-
-            if (clearCache)
-            {
-                if (_cachedObjects != null)
-                {
-                    _cachedObjects.Clear();
-                    _cachedObjects = null;
-                }
-
-                _cachedAssetBundleInfos.Remove(_dictionaryKey);
             }
         }
 
@@ -88,20 +91,18 @@ namespace ModLibrary
             if (_assetBundle == null)
                 yield break;
 
-            string[] assets = _assetBundle.GetAllAssetNames();
-            foreach (string assetName in assets)
+            AssetBundleRequest allAssetsRequest = _assetBundle.LoadAllAssetsAsync();
+            yield return allAssetsRequest;
+
+            if (_assetBundle == null || _cachedObjects == null)
+                yield break;
+
+            foreach (UnityEngine.Object asset in allAssetsRequest.allAssets)
             {
-                if (_assetBundle == null)
-                    yield break;
+                string name = asset.name;
 
-                AssetBundleRequest request = _assetBundle.LoadAssetAsync(assetName);
-                yield return request;
-
-                if (_cachedObjects == null)
-                    yield break;
-
-                if (!_cachedObjects.ContainsKey(assetName))
-                    _cachedObjects.Add(assetName, request.asset);
+                if (!_cachedObjects.ContainsKey(name)) // This object might have already been added to the cache from GetObject
+                    _cachedObjects.Add(name, asset);
             }
 
             unloadAssetBundle();
