@@ -510,38 +510,6 @@ namespace InternalModBot
                 return !IgnoreCrashesManager.GetIsIgnoringCrashes();
             }
 
-            #region Remove when removing projectile events
-            public static void Projectile_FixedUpdate_Prefix(Projectile __instance)
-            {
-                if (!__instance.IsFlying())
-                    return;
-
-                ModsManager.Instance.PassOnMod.OnProjectileUpdate(__instance);
-            }
-
-            [ExtraInjectionData(ArgumentTypes = new Type[] { typeof(Vector3), typeof(Vector3), typeof(bool), typeof(Character), typeof(int), typeof(float) })]
-            public static void Projectile_StartFlying_Postfix(Projectile __instance)
-            {
-                ModsManager.Instance.PassOnMod.OnProjectileStartedMoving(__instance);
-            }
-
-            public static void Projectile_DestroyProjectile_Prefix(Projectile __instance)
-            {
-				ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-			}
-
-            public static void Projectile_OnEnvironmentCollided_Prefix(Projectile __instance)
-            {
-                if (__instance.PassThroughEnvironment || !__instance.IsFlying())
-                    return;
-
-                if (__instance.MainCollider != null)
-                    __instance.MainCollider.enabled = false;
-
-                ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-            }
-            #endregion
-
             public static bool GameUIRoot_RefreshCursorEnabled_Prefix()
             {
                 if (RegisterShouldCursorBeEnabledDelegate.ShouldMouseBeEnabled() || ModsManager.Instance == null || ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
@@ -609,7 +577,7 @@ namespace InternalModBot
             public static void LocalizationManager_populateDictionaryForCurrentLanguage_Postfix(ref Dictionary<string, string> ____translatedStringsDictionary)
             {
                 ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(____translatedStringsDictionary);
-                ModsManager.Instance.PassOnMod.OnLanugageChanged(SettingsManager.Instance.GetCurrentLanguageID(), ____translatedStringsDictionary);
+                ModsManager.Instance.PassOnMod.OnLanguageChanged(SettingsManager.Instance.GetCurrentLanguageID(), ____translatedStringsDictionary);
             }
 
             public static bool TwitchWhoIsLiveManager_onGameLiveStreamRequestFinished_Prefix(HTTPResponse response, ref List<TwitchStreamInfo> ____streamInfos, ref bool ____hasEverRetirevedLiveUsers)

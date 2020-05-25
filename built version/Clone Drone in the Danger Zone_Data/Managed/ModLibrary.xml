@@ -810,77 +810,6 @@
             <param name="owner"></param>
             <param name="upgrades">The <see cref="T:UpgradeCollection"/> on the <see cref="T:FirstPersonMover"/> object</param>
         </member>
-        <member name="M:ModLibrary.Mod.OnProjectileStartedMoving(Projectile)">
-            <summary>
-            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/>
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnProjectileUpdate(Projectile)">
-            <summary>
-            Called in <see cref="M:Projectile.FixedUpdate"/>
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnProjectileDestroyed(Projectile)">
-            <summary>
-            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/>
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnArrowProjectileStartedMoving(ArrowProjectile)">
-            <summary>
-            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnArrowProjectileUpdate(ArrowProjectile)">
-            <summary>
-            Called in <see cref="M:Projectile.FixedUpdate"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnArrowProjectileDestroyed(ArrowProjectile)">
-            <summary>
-            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnBulletProjectileStartedMoving(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
-            </summary>
-            <param name="bullet"></param>
-            <param name="isRepairFire"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isFlameBreath"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnBulletProjectileUpdate(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Called in <see cref="M:Projectile.FixedUpdate"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
-            </summary>
-            <param name="bullet"></param>
-            <param name="isFlameBreath"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isRepairFire"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnBulletProjectileDestroyed(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
-            </summary>
-            <param name="bullet"></param>
-            <param name="isRepairFire"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isFlameBreath"></param>
-        </member>
-        <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType)">
-            <summary>
-            Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
-            </summary>
-            <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
-            <param name="killerCharacter">The killer <see cref="T:Character"/></param>
-            <param name="damageSourceType">The cause of death</param>
-        </member>
         <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
@@ -936,7 +865,7 @@
             <param name="path">The path specified</param>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.Mod.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:ModLibrary.Mod.OnLanguageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
             </summary>
@@ -3391,11 +3320,12 @@
             Clears all loaded mods and loads them again
             </summary>
         </member>
-        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.Boolean,System.String@)">
+        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.String,System.Boolean,System.String@)">
             <summary>
             Loads a mod from only the bytes making up the assembly
             </summary>
             <param name="assemblyData"></param>
+            <param name="modName"></param>
             <param name="hasFile"></param>
             <param name="errorMessage"></param>
         </member>
@@ -3564,69 +3494,6 @@
             <param name="owner"></param>
             <param name="upgrades"></param>
         </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileStartedMoving(Projectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileUpdate(Projectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileDestroyed(Projectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="projectile"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileStartedMoving(ArrowProjectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileUpdate(ArrowProjectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileDestroyed(ArrowProjectile)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="arrow"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileStartedMoving(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="bullet"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isFlameBreath"></param>
-            <param name="isRepairFire"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileUpdate(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="bullet"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isFlameBreath"></param>
-            <param name="isRepairFire"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileDestroyed(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Calls this method on all mods
-            </summary>
-            <param name="bullet"></param>
-            <param name="isMortarShrapnel"></param>
-            <param name="isFlameBreath"></param>
-            <param name="isRepairFire"></param>
-        </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Calls this method on all mods
@@ -3665,7 +3532,7 @@
             <param name="path"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:InternalModBot.PassOnToModsManager.OnLanguageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Calls this method on all mods
             </summary>

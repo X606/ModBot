@@ -175,187 +175,6 @@ namespace InternalModBot
             }
         }
 
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="projectile"></param>
-		[Obsolete]
-		public override void OnProjectileStartedMoving(Projectile projectile)
-        {
-            if (projectile is ArrowProjectile)
-            {
-                OnArrowProjectileStartedMoving(projectile as ArrowProjectile);
-            }
-            if (projectile is BulletProjectile)
-            {
-                BulletProjectile bullet = projectile as BulletProjectile;
-
-                bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
-                bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
-                bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
-
-                OnBulletProjectileStartedMoving(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnProjectileStartedMoving(projectile);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="projectile"></param>
-		[Obsolete]
-		public override void OnProjectileUpdate(Projectile projectile)
-        {
-            if (projectile is ArrowProjectile)
-            {
-				OnArrowProjectileUpdate(projectile as ArrowProjectile);
-			}
-            if (projectile is BulletProjectile)
-            {
-                BulletProjectile bullet = projectile as BulletProjectile;
-
-                bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
-                bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
-                bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
-
-                OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnProjectileUpdate(projectile);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="projectile"></param>
-		[Obsolete]
-		public override void OnProjectileDestroyed(Projectile projectile)
-        {
-            if (projectile is ArrowProjectile)
-            {
-                OnArrowProjectileDestroyed(projectile as ArrowProjectile);
-            }
-            if (projectile is BulletProjectile)
-            {
-                BulletProjectile bullet = projectile as BulletProjectile;
-
-                bool isMortarShrapnel = bullet.GetDamageSourceType() == DamageSourceType.SpidertronGrenade;
-                bool isFlameBreath = bullet.GetDamageSourceType() == DamageSourceType.FlameBreath || bullet.GetDamageSourceType() == DamageSourceType.SpawnCampDeflectedFlameBreath;
-                bool isRepairFire = bullet.GetDamageSourceType() == DamageSourceType.RepairFire;
-
-                OnBulletProjectileDestroyed(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnProjectileDestroyed(projectile);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="arrow"></param>
-		[Obsolete]
-		public override void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnArrowProjectileStartedMoving(arrow);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="arrow"></param>
-		[Obsolete]
-		public override void OnArrowProjectileUpdate(ArrowProjectile arrow)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnArrowProjectileUpdate(arrow);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="arrow"></param>
-		[Obsolete]
-		public override void OnArrowProjectileDestroyed(ArrowProjectile arrow)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnArrowProjectileDestroyed(arrow);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="bullet"></param>
-		/// <param name="isMortarShrapnel"></param>
-		/// <param name="isFlameBreath"></param>
-		/// <param name="isRepairFire"></param>
-		[Obsolete]
-		public override void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnBulletProjectileStartedMoving(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="bullet"></param>
-		/// <param name="isMortarShrapnel"></param>
-		/// <param name="isFlameBreath"></param>
-		/// <param name="isRepairFire"></param>
-		[Obsolete]
-		public override void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnBulletProjectileUpdate(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-        }
-
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		/// <param name="bullet"></param>
-		/// <param name="isMortarShrapnel"></param>
-		/// <param name="isFlameBreath"></param>
-		/// <param name="isRepairFire"></param>
-		[Obsolete]
-		public override void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-            List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-            for (int i = 0; i < mods.Count; i++)
-            {
-                mods[i].OnBulletProjectileDestroyed(bullet, isMortarShrapnel, isFlameBreath, isRepairFire);
-            }
-        }
-
         /// <summary>
         /// Calls this method on all mods
         /// </summary>
@@ -368,7 +187,6 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType);
                 mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType, attackID);
             }
         }
@@ -449,12 +267,12 @@ namespace InternalModBot
         /// </summary>
         /// <param name="newLanguageID"></param>
         /// <param name="localizationDictionary"></param>
-        public override void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        public override void OnLanguageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnLanugageChanged(newLanguageID, localizationDictionary);
+                mods[i].OnLanguageChanged(newLanguageID, localizationDictionary);
             }
         }
 

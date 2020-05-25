@@ -23,10 +23,7 @@ namespace ModLibrary
         /// </summary>
         public KeyCode SelectedKey
         {
-            get
-            {
-                return _selectedKey;
-            }
+            get => _selectedKey;
             set
             {
                 _selectedKey = value;

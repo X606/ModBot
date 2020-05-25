@@ -65,21 +65,17 @@ namespace ModLibrary
                 return;
 
             List<object> callbacks = _eventListeners[typeof(T)];
-            for (int i = 0; i < callbacks.Count; i++)
+            for (int i = callbacks.Count - 1; i >= 0; i--)
             {
-                Action<T> callbackAction = callbacks[i] as Action<T>;
-
-                if (callbackAction == null)
+                if (callbacks[i] is Action<T> callbackAction)
+                {
+                    callbackAction(_event);
+                }
+                else
                 {
                     callbacks.RemoveAt(i);
-                    i--;
-                    continue;
                 }
-
-                callbackAction(_event);
             }
-
         }
-
     }
 }

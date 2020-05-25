@@ -20,13 +20,7 @@ namespace InternalModBot
 
         const char UPGRADE_AND_LEVEL_FILE_NAME_SEPARATOR = '_';
 
-        static string upgradeIconsFolderPath
-        {
-            get
-            {
-                return Path.Combine(Application.dataPath, UPGRADE_ICONS_FOLDER_NAME);
-            }
-        }
+        static string upgradeIconsFolderPath => Path.Combine(Application.dataPath, UPGRADE_ICONS_FOLDER_NAME);
 
         void Start()
         {

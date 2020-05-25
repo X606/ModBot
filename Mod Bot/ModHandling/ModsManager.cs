@@ -5,8 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 using UnityEngine;
 using HarmonyLib;
+using Newtonsoft.Json;
 
 namespace InternalModBot
 {
@@ -15,6 +17,8 @@ namespace InternalModBot
     /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
+        static Dictionary<Mod, AppDomain> _modAppDomains = new Dictionary<Mod, AppDomain>();
+
         /// <summary>
         /// Loads all mods from the mods directory and deactivates remembered deactivated mods
         /// </summary>
@@ -40,43 +44,59 @@ namespace InternalModBot
         {
             UpgradePagesManager.Reset();
             ClearCache();
+
+            foreach (KeyValuePair<Mod, AppDomain> modAppDomain in _modAppDomains)
+            {
+                AppDomain.Unload(modAppDomain.Value);
+            }
+            _modAppDomains.Clear();
+
             _mods.Clear();
+
             PassOnMod = new PassOnToModsManager();
 
-            List<string> errors = new List<string>();
-            List<string> invalidModsFilePaths = new List<string>();
+            List<ModLoadError> errors = new List<ModLoadError>();
 
+            string[] modFolders = Directory.GetDirectories(getModsFolderPath());
+            foreach (string modFolder in modFolders)
+            {
+                string modInfoFile = modFolder + "/ModInfo.json";
+                if (!File.Exists(modInfoFile))
+                    continue;
+
+                if (!tryLoadModFromFolder(modFolder, out ModLoadError loadError))
+                    errors.Add(loadError);
+            }
+
+            /*
             string[] files = Directory.GetFiles(getModsFolderPath());
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].EndsWith(".dll"))
                 {
                     byte[] modData = File.ReadAllBytes(files[i]);
-                    if (!LoadMod(modData, true, out string error))
+                    if (!LoadMod(modData, Path.GetFileNameWithoutExtension(files[i]), true, out string error))
                     {
                         errors.Add(error);
                         invalidModsFilePaths.Add(files[i]);
                     }
                 }
             }
+            */
 
             if (errors.Count > 0)
-                StartCoroutine(showModInvalidMessage(invalidModsFilePaths, errors));
+                StartCoroutine(showModInvalidMessage(errors));
         }
 
-        static IEnumerator showModInvalidMessage(List<string> filePaths, List<string> errors)
+        static IEnumerator showModInvalidMessage(List<ModLoadError> errors)
         {
-            if (filePaths.Count != errors.Count)
-                throw new ArgumentException(nameof(filePaths) + " and " + nameof(errors) + " lists must have the same length");
-
-            for (int i = 0; i < filePaths.Count; i++)
+            for (int i = 0; i < errors.Count; i++)
             {
-                string fileName = Path.GetFileName(filePaths[i]);
-                new Generic2ButtonDialogue("Mod \"" + fileName + "\" could not be loaded, do you want to remove the file? Error: " + errors[i],
+                new Generic2ButtonDialogue("Mod \"" + errors[i].ModName + "\" could not be loaded (" + errors[i].ErrorMessage + "). Do you want to remove the mod?",
                     "Yes",
                     delegate
                     {
-                        File.Delete(filePaths[i]);
+                        Directory.Delete(errors[i].FolderPath, true);
                     },
                     "No", null);
 
@@ -87,22 +107,106 @@ namespace InternalModBot
         void Update()
         {
             if (Input.GetKey(KeyCode.F3) && Input.GetKeyDown(KeyCode.R))
-            {
                 ReloadMods();
-            }
 
             PassOnMod.GlobalUpdate();
+        }
+
+        bool tryLoadModFromFolder(string folderPath, out ModLoadError error)
+        {
+            string modInfoContent = File.ReadAllText(folderPath + "/ModInfo.json");
+
+            ModInfo modInfo;
+            try
+            {
+                modInfo = JsonConvert.DeserializeObject<ModInfo>(modInfoContent);
+            }
+            catch (Exception e)
+            {
+                error = new ModLoadError(folderPath, "ModInfo.json: Caught exception while deserializing: " + e.Message);
+                return false;
+            }
+
+            if (modInfo == null)
+            {
+                error = new ModLoadError(folderPath, "ModInfo.json: Deserialized to null value");
+                return false;
+            }
+
+            if (!modInfo.AreAllEssentialFieldsAssigned(out string errorMessage))
+            {
+                if (!string.IsNullOrWhiteSpace(modInfo.DisplayName))
+                {
+                    error = new ModLoadError(folderPath, modInfo.DisplayName, errorMessage);
+                }
+                else
+                {
+                    error = new ModLoadError(folderPath, errorMessage);
+                }
+
+                return false;
+            }
+
+            modInfo.FixFieldValues();
+            modInfo.FolderPath = folderPath + "/";
+
+            if (!File.Exists(modInfo.DLLPath))
+            {
+                error = new ModLoadError(folderPath, modInfo.DisplayName, "ModInfo.json: Main dll does not exist");
+                return false;
+            }
+
+            if (!LoadMod(modInfo, out error))
+                return false;
+
+            error = null;
+            return true;
+        }
+
+        AppDomain setupAppDomainForMod(string modName, string path)
+        {
+            AppDomainSetup domainInfo = new AppDomainSetup();
+            AppDomain appDomain = AppDomain.CreateDomain(modName, null, domainInfo);
+            
+            return appDomain;
+        }
+
+        public bool LoadMod(ModInfo modInfo, out ModLoadError error)
+        {
+            AppDomain appDomain = setupAppDomainForMod(modInfo.DisplayName, modInfo.FolderPath);
+            Assembly assembly = appDomain.Load(File.ReadAllBytes(modInfo.DLLPath));
+
+            Type[] types = assembly.GetTypes();
+            Type mainType = null;
+            foreach (Type type in types)
+            {
+                if (type.BaseType == typeof(Mod) && type.Name.ToLower() == "main")
+                {
+                    mainType = type;
+                    break;
+                }
+            }
+
+            if (mainType == null)
+            {
+                error = new ModLoadError(modInfo.FolderPath, modInfo.DisplayName, "Could not find type \"Main\"");
+                return false;
+            }
+
+            object modObj = Activator.CreateInstance(mainType);
+
         }
 
         /// <summary>
         /// Loads a mod from only the bytes making up the assembly
         /// </summary>
         /// <param name="assemblyData"></param>
+        /// <param name="modName"></param>
         /// <param name="hasFile"></param>
         /// <param name="errorMessage"></param>
-        public bool LoadMod(byte[] assemblyData, bool hasFile, out string errorMessage)
+        public bool LoadMod(byte[] assemblyData, string modName, bool hasFile, out string errorMessage)
         {
-            Type[] types = Assembly.Load(assemblyData).GetTypes();
+            Type[] types = assembly.GetTypes();
             Type mainType = null;
             for (int i = 0; i < types.Length; i++)
             {
@@ -146,7 +250,7 @@ namespace InternalModBot
                 }
                 catch (Exception exception)
                 {
-                    throw new Exception("Caught exception in OnModLoaded for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
+                    throw new Exception("Caught exception in OnModLoaded for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\"", exception);
                 }
 
                 try
@@ -155,7 +259,7 @@ namespace InternalModBot
                 }
                 catch (Exception exception)
                 {
-                    throw new Exception("Caught exception in OnModRefreshed or OnModEnabled for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\": " + exception.Message);
+                    throw new Exception("Caught exception in OnModRefreshed or OnModEnabled for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\"", exception);
                 }
             }
 

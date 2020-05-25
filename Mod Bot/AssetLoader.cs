@@ -221,11 +221,11 @@ namespace ModLibrary
             /// <summary>
             /// If this return true, the download is not done yet
             /// </summary>
-            public override bool keepWaiting { get { return !IsDone; } }
+            public override bool keepWaiting => !IsDone;
             /// <summary>
             /// If this return true, there was an error during downloading
             /// </summary>
-            public bool IsError { get { return isError; } }
+            public bool IsError => isError;
 
             internal bool isError = false;
             internal bool IsDone = false;

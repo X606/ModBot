@@ -105,7 +105,7 @@ namespace InternalModBot
             ModsPanelManager.Instance.ReloadModItems();
         }
 
-        static IEnumerator downloadModBytesAndLoadAsync(string url)
+        IEnumerator downloadModBytesAndLoadAsync(string url)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
@@ -113,7 +113,7 @@ namespace InternalModBot
             if(webRequest.isHttpError || webRequest.isNetworkError)
                 yield break;
 
-            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false, out string error);
+            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, _nameDisplay.text, false, out string error);
             ModsPanelManager.Instance.ReloadModItems();
         }
         
