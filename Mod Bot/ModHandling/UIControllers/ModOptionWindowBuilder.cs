@@ -32,7 +32,7 @@ namespace ModLibrary
             owner.SetActive(false);
             _owner = owner;
             _ownerMod = ownerMod;
-            _spawnedBase = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModOptionsCanvas");
+            _spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
             _spawnedBase.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
             ModdedObject modObject = _spawnedBase.GetComponent<ModdedObject>();
             _content = modObject.GetObject<GameObject>(0);
@@ -56,7 +56,7 @@ namespace ModLibrary
         public void PopulatePages()
         {
             TransformUtils.DestroyAllChildren(_pageButtonsHolder.transform);
-            GameObject buttonPrefab = InternalAssetBundleCache.ModsWindow.GetObject("PageButton");
+            GameObject buttonPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("PageButton");
 
             foreach(Page page in _pages)
             {

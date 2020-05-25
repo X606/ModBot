@@ -43,7 +43,7 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="Generic2ButtonDialoge.cs" />
-    <Compile Include="Internal\InternalAssetBundleCache.cs" />
+    <Compile Include="Internal\InternalAssetBundleReferences.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />

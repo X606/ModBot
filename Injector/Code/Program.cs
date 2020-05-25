@@ -70,13 +70,15 @@ class Program
         }
         Console.WriteLine("Finished injecting classes");
 
-        Console.WriteLine("Injection new methods...");
+        /*
+        Console.WriteLine("Injecting new methods...");
 
         Console.WriteLine("Injecting GetPositionForAIToAimAt into MortarWalker");
         Injector.AddMethodToClass(installPath, "MortarWalker", "GetPositionForAIToAimAt", sourceToCopyClassesFrom, "FixSpidertrons", "GetPositionForAIToAimAt");
         Console.WriteLine("Injected!");
 
         Console.WriteLine("Done injecting new methods!");
+        */
 
         Console.WriteLine("Injecting method calls...");
 
@@ -92,17 +94,6 @@ class Program
         Resources_LoadT_Injection.AddInstructionUnderSafe(OpCodes.Stloc_0);
         Resources_LoadT_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
         Resources_LoadT_Injection.Write();
-        
-        Console.WriteLine("Injecting into ResourceRequest.get_asset...");
-        Injection ResourceRequest_get_asset_Injection = Injector.AddCallToMethodInMethod(baseManagedPath + "/UnityEngine.CoreModule.dll", "UnityEngine.ResourceRequest", "get_asset", modLibraryPath, "InternalModBot.CalledFromInjections", "FromResourcesLoad");
-        ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Ret);
-        ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Ldloc_0);
-        ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Brfalse_S, 4, 0, true);
-        ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Ldloc_0);
-        ResourceRequest_get_asset_Injection.AddInstructionUnderSafe(OpCodes.Stloc_0);
-        ResourceRequest_get_asset_Injection.AddInstructionOverSafe(OpCodes.Ldfld, ResourceRequest_get_asset_Injection.GetFieldReferenceOnSameType("m_Path"));
-        ResourceRequest_get_asset_Injection.AddInstructionOverSafe(OpCodes.Ldarg_0);
-        ResourceRequest_get_asset_Injection.Write();
     }
 }
 

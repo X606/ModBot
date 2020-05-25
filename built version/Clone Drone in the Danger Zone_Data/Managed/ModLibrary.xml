@@ -264,13 +264,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.AssetLoader.GetAssetBundle(System.String)">
-            <summary>
-            Gets the <see cref="T:ModLibrary.AssetBundleInfo"/> from the asset bundle with the specified name in the mods folder
-            </summary>
-            <param name="name">The name of the asset bundle file</param>
-            <returns></returns>
-        </member>
         <member name="M:ModLibrary.AssetLoader.GetAssetBundle(System.String,System.String)">
             <summary>
             Gets the <see cref="T:ModLibrary.AssetBundleInfo"/> from the asset bundle with the specfied name at the given custom path
@@ -2492,13 +2485,6 @@
             <summary>
             Contains methods that get called from the game itself
             </summary>
-        </member>
-        <member name="M:InternalModBot.CalledFromInjections.FromGetPositionForAIToAimAt(Character)">
-            <summary>
-            Called from <see cref="M:MortarWalker.GetPositionForAIToAimAt"/>
-            </summary>
-            <param name="character"></param>
-            <returns></returns>
         </member>
         <member name="M:InternalModBot.CalledFromInjections.FromResourcesLoad(System.String)">
             <summary>

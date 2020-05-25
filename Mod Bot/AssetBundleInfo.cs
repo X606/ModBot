@@ -24,7 +24,7 @@ namespace ModLibrary
         /// </summary>
         ~AssetBundleInfo()
         {
-            _assetBundle.Unload(false);
+            unloadAssetBundle(true);
         }
 
         private AssetBundleInfo(string path)
@@ -51,17 +51,53 @@ namespace ModLibrary
             return assetBundleInfo;
         }
 
+        internal static void ClearCache()
+        {
+            foreach (AssetBundleInfo assetBundleInfo in _cachedAssetBundleInfos.Values)
+            {
+                assetBundleInfo.unloadAssetBundle(true);
+            }
+
+            _cachedAssetBundleInfos.Clear();
+        }
+
+        void unloadAssetBundle(bool clearCache = false)
+        {
+            if (_assetBundle != null)
+            {
+                _assetBundle.Unload(false);
+                _assetBundle = null;
+            }
+
+            if (clearCache && _cachedObjects != null)
+            {
+                _cachedObjects.Clear();
+                _cachedObjects = null;
+            }
+        }
+
         IEnumerator cacheAllAssets()
         {
+            if (_assetBundle == null)
+                yield break;
+
             string[] assets = _assetBundle.GetAllAssetNames();
             foreach (string assetName in assets)
             {
+                if (_assetBundle == null)
+                    yield break;
+
                 AssetBundleRequest request = _assetBundle.LoadAssetAsync(assetName);
                 yield return request;
+
+                if (_cachedObjects == null)
+                    yield break;
 
                 if (!_cachedObjects.ContainsKey(assetName))
                     _cachedObjects.Add(assetName, request.asset);
             }
+
+            unloadAssetBundle();
         }
 
         /// <summary>
@@ -72,24 +108,36 @@ namespace ModLibrary
         /// <returns>The object loaded from the asset bundle</returns>
         public T GetObject<T>(string objectName) where T : UnityEngine.Object
         {
-            T result;
-
+            T asset;
             if (_cachedObjects.TryGetValue(objectName, out UnityEngine.Object obj))
             {
-                result = obj as T;
+                asset = obj as T;
+            }
+            else if (_assetBundle != null)
+            {
+                asset = _assetBundle.LoadAsset<T>(objectName);
+
+                if (asset != null)
+                    _cachedObjects.Add(objectName, asset);
             }
             else
             {
-                result = _assetBundle.LoadAsset<T>(objectName);
-
-                if (result != null)
-                    _cachedObjects.Add(objectName, result);
+                asset = null;
             }
 
-            if (result == null)
-                throw new Exception("Object \"" + objectName + "\" of type \"" + typeof(T) + "\" was not found in asset bundle \"" + _assetBundle.name + "\"");
+            if (asset == null)
+            {
+                if (_assetBundle == null)
+                {
+                    throw new Exception("Could not load \"" + objectName + "\" of type \"" + typeof(T) + "\": Asset bundle not loaded");
+                }
+                else
+                {
+                    throw new Exception("Object \"" + objectName + "\" of type \"" + typeof(T) + "\" was not found in asset bundle \"" + _assetBundle.name + "\"");
+                }
+            }
 
-            return result;
+            return asset;
         }
 
         /// <summary>

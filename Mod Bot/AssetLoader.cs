@@ -15,8 +15,6 @@ namespace ModLibrary
     /// </summary>
     public static class AssetLoader
     {
-        static Dictionary<string, UnityEngine.Object> _cachedObjects = new Dictionary<string, UnityEngine.Object>();
-
         /// <summary>
         /// The name of the folder where mods are stored
         /// </summary>
@@ -37,22 +35,12 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Gets the <see cref="AssetBundleInfo"/> from the asset bundle with the specified name in the mods folder
-        /// </summary>
-        /// <param name="name">The name of the asset bundle file</param>
-        /// <returns></returns>
-        public static AssetBundleInfo GetAssetBundle(string name)
-        {
-            return getAssetBundle(name);
-        }
-
-        /// <summary>
         /// Gets the <see cref="AssetBundleInfo"/> from the asset bundle with the specfied name at the given custom path
         /// </summary>
         /// <param name="name">The name of the asset bundle file</param>
         /// <param name="customPath">The custom path to the asset bundle, relative to the game root folder</param>
         /// <returns></returns>
-        public static AssetBundleInfo GetAssetBundle(string name, string customPath)
+        internal static AssetBundleInfo GetAssetBundle(string name, string customPath)
         {
             if (!customPath.EndsWith("/") && !customPath.EndsWith("\\"))
                 customPath += "/";
@@ -207,7 +195,7 @@ namespace ModLibrary
         /// </summary>
         public static void ClearCache()
         {
-            _cachedObjects.Clear();
+            AssetBundleInfo.ClearCache();
         }
 
         /// <summary>

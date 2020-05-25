@@ -41,7 +41,7 @@ namespace InternalModBot
 
         void createSaveButton()
         {
-            _saveButtonObject = InternalAssetBundleCache.ModsWindow.InstantiateObject("GenerateButton");
+            _saveButtonObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
 			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 

@@ -30,7 +30,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject spawnedPrefab = InternalAssetBundleCache.ModsWindow.InstantiateObject("Button");
+            GameObject spawnedPrefab = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Button");
             spawnedPrefab.transform.parent = holder.transform;
 
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();

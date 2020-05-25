@@ -42,7 +42,7 @@ namespace InternalModBot
             if (Options.Length <= DefaultValue || DefaultValue < 0)
                 throw new ArgumentOutOfRangeException(nameof(DefaultValue) + " must be in the bounds of the passed options");
 
-            GameObject spawnedPrefab = InternalAssetBundleCache.ModsWindow.InstantiateObject("DropDown");
+            GameObject spawnedPrefab = InternalAssetBundleReferences.ModsWindow.InstantiateObject("DropDown");
             spawnedPrefab.transform.parent = holder.transform;
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = DisplayName;

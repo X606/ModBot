@@ -14,20 +14,6 @@ namespace InternalModBot
     public static class CalledFromInjections
     {
         /// <summary>
-        /// Called from <see cref="MortarWalker.GetPositionForAIToAimAt"/>
-        /// </summary>
-        /// <param name="character"></param>
-        /// <returns></returns>
-        public static Vector3 FromGetPositionForAIToAimAt(Character character)
-        {
-            List<MechBodyPart> powerCrystals = character.GetBodyParts(MechBodyPartType.PowerCrystal);
-            if (powerCrystals.Count == 0)
-                return character.transform.position;
-
-            return powerCrystals[0].transform.position;
-        }
-
-        /// <summary>
         /// Called from <see cref="UnityEngine.Resources.Load(string)"/>, <see cref="UnityEngine.Resources.Load{T}(string)"/> and <see cref="ResourceRequest.asset"/>
         /// </summary>
         /// <param name="path"></param>
@@ -39,7 +25,7 @@ namespace InternalModBot
             if (levelEditorObject != null)
                 return levelEditorObject;
 
-            if(ModsManager.Instance == null)
+            if (ModsManager.Instance == null)
                 return null;
 
             return ModsManager.Instance.PassOnMod.OnResourcesLoad(path);

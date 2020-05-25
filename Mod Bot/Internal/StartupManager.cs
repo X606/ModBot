@@ -21,8 +21,6 @@ namespace InternalModBot
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
                 throw new DirectoryNotFoundException("Mods folder not found!");
 
-            InternalAssetBundleCache.Initialize();
-
             GameObject gameFlowManager = GameFlowManager.Instance.gameObject;
             
             gameFlowManager.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
@@ -58,7 +56,7 @@ namespace InternalModBot
 
         static void initilizeUI()
         {
-            GameObject spawnedUI = InternalAssetBundleCache.TwitchMode.InstantiateObject("Canvas");
+            GameObject spawnedUI = InternalAssetBundleReferences.TwitchMode.InstantiateObject("Canvas");
             ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
 
             Logger logger = spawnedUI.AddComponent<Logger>();

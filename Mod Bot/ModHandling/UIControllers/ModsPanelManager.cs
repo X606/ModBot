@@ -39,7 +39,7 @@ namespace InternalModBot
             pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton";
 
-            _modsWindow = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModsMenu");
+            _modsWindow = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModsMenu");
 
             _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
             _modsWindow.SetActive(false);
@@ -55,7 +55,7 @@ namespace InternalModBot
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
-            image.GetComponent<Image>().sprite = InternalAssetBundleCache.ModsWindow.GetObject<Sprite>("modbot");
+            image.GetComponent<Image>().sprite = InternalAssetBundleReferences.ModsWindow.GetObject<Sprite>("modbot");
             image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1f);
             image.GetComponent<RectTransform>().position -= new Vector3(7f, 0f);
 
@@ -90,7 +90,7 @@ namespace InternalModBot
 
         void onGetMoreModsClicked()
         {
-            ModdedObject spawnedModdedObject = InternalAssetBundleCache.ModsWindow.InstantiateObject("Mod downloads").GetComponent<ModdedObject>();
+            ModdedObject spawnedModdedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Mod downloads").GetComponent<ModdedObject>();
             GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
             spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
             {
@@ -113,7 +113,7 @@ namespace InternalModBot
 
             ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
-            GameObject modDownloadInfoPrefab = InternalAssetBundleCache.ModsWindow.GetObject("ModDownloadInfo");
+            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("ModDownloadInfo");
             foreach (ModsHolder.ModHolder modHolder in modsHolder.Mods)
             {
                 if(!modHolder.Checked) // do not want unchecked mods to come up in-game.
@@ -158,7 +158,7 @@ namespace InternalModBot
             if (!isModNotActive.HasValue)
                 return;
 
-            GameObject modItem = InternalAssetBundleCache.ModsWindow.InstantiateObject("ModItemPrefab");
+            GameObject modItem = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModItemPrefab");
             modItem.transform.parent = parent.transform;
 
             string modName = mod.GetModName();

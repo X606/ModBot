@@ -51,10 +51,14 @@ namespace InternalModBot
                 bool isTargetMethodSetProperty = mode.StartsWith("set");
                 bool isTargetMethodGetProperty = mode.StartsWith("get");
 
+                if (isTargetMethodSetProperty || isTargetMethodGetProperty)
+                    mode = mode.Remove(0, 3); // Remove the first 3 characters (ie. "get" or "set")
+
                 string typeNamePrefix = "";
                 Type[] argumentTypes = null;
                 bool hasGenericParameters = false;
                 Type[] genericParameterTypes = null;
+                BindingFlags bindingFlags = BindingFlags.Default;
 
                 ExtraInjectionDataAttribute injectionExtraData = injectionSource.GetCustomAttribute<ExtraInjectionDataAttribute>();
                 if (injectionExtraData != null)
@@ -70,7 +74,12 @@ namespace InternalModBot
                         hasGenericParameters = true;
                         genericParameterTypes = injectionExtraData.GenericParameterTypes;
                     }
+
+                    bindingFlags = injectionExtraData.BindingFlagsOverride;
                 }
+
+                if (bindingFlags == BindingFlags.Default)
+                    bindingFlags = TARGET_METHOD_FLAGS;
 
                 Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
                 Type type = null;
@@ -90,27 +99,27 @@ namespace InternalModBot
                 {
                     if (isTargetMethodGetProperty)
                     {
-                        targetMethod = type.GetProperty(methodName).GetGetMethod(false);
+                        targetMethod = type.GetProperty(methodName, bindingFlags).GetMethod;
                     }
                     else if (isTargetMethodSetProperty)
                     {
-                        targetMethod = type.GetProperty(methodName).SetMethod;
+                        targetMethod = type.GetProperty(methodName, bindingFlags).SetMethod;
                     }
                     else
                     {
                         if (argumentTypes != null)
                         {
-                            targetMethod = type.GetMethod(methodName, TARGET_METHOD_FLAGS, null, argumentTypes, null);
+                            targetMethod = type.GetMethod(methodName, bindingFlags, null, argumentTypes, null);
                         }
                         else
                         {
-                            targetMethod = type.GetMethod(methodName, TARGET_METHOD_FLAGS);
+                            targetMethod = type.GetMethod(methodName, bindingFlags);
                         }
                     }
                 }
                 catch (AmbiguousMatchException ambiguousMatch)
                 {
-                    List<MethodInfo> matchingMethods = type.GetMethods(TARGET_METHOD_FLAGS).Where((MethodInfo m) => m.Name == methodName).ToList();
+                    List<MethodInfo> matchingMethods = type.GetMethods(bindingFlags).Where((MethodInfo m) => m.Name == methodName).ToList();
                     if (argumentTypes != null)
                     {
                         for (int i = 0; i < matchingMethods.Count;)
@@ -150,7 +159,7 @@ namespace InternalModBot
 
                             if (matchingMethods.Count == 1)
                             {
-                                targetMethod = matchingMethods[0];
+                                targetMethod = matchingMethods[0].MakeGenericMethod(genericParameterTypes);
                             }
                             else if (matchingMethods.Count == 0)
                             {
@@ -235,6 +244,8 @@ namespace InternalModBot
             public bool HasGenericParameters { get; set; }
 
             public Type[] GenericParameterTypes { get; set; }
+
+            public BindingFlags BindingFlagsOverride { get; set; }
         }
 
         static class Injections
@@ -461,7 +472,7 @@ namespace InternalModBot
                     if (list2[i].ApplyRadiusOffsetIfVisible == null || list2[i].ApplyRadiusOffsetIfVisible.IsUpgradeCurrentlyVisible())
                         num5 += list2[i].RadiusOffset;
 
-                    RectTransform rectTransform = UnityEngine.Object.Instantiate(GameUIRoot.Instance.UpgradeUI.IconLinePrefab);
+                    RectTransform rectTransform = Instantiate(GameUIRoot.Instance.UpgradeUI.IconLinePrefab);
                     rectTransform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
                     rectTransform.SetAsFirstSibling();
                     rectTransform.anchoredPosition = rootPosition;
@@ -470,7 +481,7 @@ namespace InternalModBot
                     Vector2 vector = rootPosition + (num5 * new Vector2(Mathf.Cos(num4), Mathf.Sin(num4)));
                     if (!flag3)
                     {
-                        UpgradeUIIcon upgradeUIIcon = UnityEngine.Object.Instantiate(____authoringChallengeUpgrades ? GameUIRoot.Instance.UpgradeUI.UpgradeConfigIconPrefab : GameUIRoot.Instance.UpgradeUI.IconPrefab);
+                        UpgradeUIIcon upgradeUIIcon = Instantiate(____authoringChallengeUpgrades ? GameUIRoot.Instance.UpgradeUI.UpgradeConfigIconPrefab : GameUIRoot.Instance.UpgradeUI.IconPrefab);
                         upgradeUIIcon.transform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
                         upgradeUIIcon.GetComponent<RectTransform>().anchoredPosition = vector;
                         upgradeUIIcon.Populate(list2[i], rectTransform.GetComponent<Image>());
@@ -516,9 +527,7 @@ namespace InternalModBot
 
             public static void Projectile_DestroyProjectile_Prefix(Projectile __instance)
             {
-
 				ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-
 			}
 
             public static void Projectile_OnEnvironmentCollided_Prefix(Projectile __instance)
@@ -561,8 +570,7 @@ namespace InternalModBot
                 return __result;
             }
 
-            // TODO: Harmony does not like patching generic methods, fix this eventually, for now it will be injected in Injector.exe
-            /*
+            /* Harmony REALLY does not like generic methods, I have given up on trying to make this work, it will continue being in Injector.exe
             [ExtraInjectionData(Namespace = "UnityEngine", HasGenericParameters = true, GenericParameterTypes = new Type[] { typeof(UnityEngine.Object) }, ArgumentTypes = new Type[] { typeof(string) })]
             public static UnityEngine.Object Resources_Load_Postfix_T(UnityEngine.Object __result, string path)
             {
@@ -577,19 +585,13 @@ namespace InternalModBot
                         return moddedResource;
                 }
 
-                debug.Log(path + " loaded (" + __result.GetType().Name + ")");
-
                 return __result;
             }
             */
 
-            // TODO: For some reason this doesn't want to inject, fix this eventually, for now it will be injected in Injector.exe
-            /*
             [ExtraInjectionData(Namespace = "UnityEngine")]
-            public static UnityEngine.Object ResourceRequest_asset_GetPrefix(UnityEngine.Object __result, ref string ___m_Path)
+            public static UnityEngine.Object ResourceRequest_asset_GetPostfix(UnityEngine.Object __result, ref string ___m_Path)
             {
-                debug.Log(___m_Path + " loaded async");
-
                 UnityEngine.Object moddedResource = LevelEditorObjectAdder.GetObjectData(___m_Path);
                 if (moddedResource != null)
                     return moddedResource;
@@ -603,7 +605,6 @@ namespace InternalModBot
 
                 return __result;
             }
-            */
 
             public static void LocalizationManager_populateDictionaryForCurrentLanguage_Postfix(ref Dictionary<string, string> ____translatedStringsDictionary)
             {
@@ -676,6 +677,42 @@ namespace InternalModBot
 
                 string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetAllLoadedMods().CallMethods<Mod, string>("GetModName"));
                 form.AddField("LoadedMods", loadedModNames);
+            }
+
+            public static Vector3 Character_GetPositionForAIToAimAt_Postfix(Vector3 __result, Character __instance)
+            {
+                if (!(__instance is MortarWalker))
+                    return __result;
+
+                List<MechBodyPart> powerCrystals = __instance.GetBodyParts(MechBodyPartType.PowerCrystal);
+                for (int i = powerCrystals.Count - 1; i >= 0; i--)
+                {
+                    if (powerCrystals[i] == null || (powerCrystals[i].ParentConnection != null && powerCrystals[i].ParentConnection.HasBeenSevered()))
+                        powerCrystals.RemoveAt(i);
+                }
+
+                if (powerCrystals.Count == 0)
+                    return __result;
+
+                return powerCrystals[0].GetVolumeWorldCenterPosition();
+            }
+
+            public static Vector3 Character_GetPositionToDeflectArrowsAt_Postfix(Vector3 __result, Character __instance)
+            {
+                if (!(__instance is MortarWalker))
+                    return __result;
+
+                List<MechBodyPart> powerCrystals = __instance.GetBodyParts(MechBodyPartType.PowerCrystal);
+                for (int i = powerCrystals.Count - 1; i >= 0; i--)
+                {
+                    if (powerCrystals[i] == null || (powerCrystals[i].ParentConnection != null && powerCrystals[i].ParentConnection.HasBeenSevered()))
+                        powerCrystals.RemoveAt(i);
+                }
+
+                if (powerCrystals.Count == 0)
+                    return __result;
+
+                return powerCrystals[0].GetVolumeWorldCenterPosition();
             }
         }
     }
