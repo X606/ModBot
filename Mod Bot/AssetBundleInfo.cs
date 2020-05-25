@@ -16,6 +16,7 @@ namespace ModLibrary
     {
         static Dictionary<string, AssetBundleInfo> _cachedAssetBundleInfos = new Dictionary<string, AssetBundleInfo>();
 
+        string _dictionaryKey;
         AssetBundle _assetBundle;
         Dictionary<string, UnityEngine.Object> _cachedObjects;
 
@@ -27,10 +28,11 @@ namespace ModLibrary
             unloadAssetBundle(true);
         }
 
-        private AssetBundleInfo(string path)
+        private AssetBundleInfo(string assetBundlePath, string cacheDictionaryKey)
         {
+            _dictionaryKey = cacheDictionaryKey;
             _cachedObjects = new Dictionary<string, UnityEngine.Object>();
-            _assetBundle = AssetBundle.LoadFromFile(path);
+            _assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
 
             StaticCoroutineRunner.StartStaticCoroutine(cacheAllAssets());
         }
@@ -45,7 +47,7 @@ namespace ModLibrary
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Could not find asset bundle file", filePath);
 
-            AssetBundleInfo assetBundleInfo = new AssetBundleInfo(filePath);
+            AssetBundleInfo assetBundleInfo = new AssetBundleInfo(filePath, key);
             _cachedAssetBundleInfos.Add(key, assetBundleInfo);
 
             return assetBundleInfo;
@@ -69,10 +71,15 @@ namespace ModLibrary
                 _assetBundle = null;
             }
 
-            if (clearCache && _cachedObjects != null)
+            if (clearCache)
             {
-                _cachedObjects.Clear();
-                _cachedObjects = null;
+                if (_cachedObjects != null)
+                {
+                    _cachedObjects.Clear();
+                    _cachedObjects = null;
+                }
+
+                _cachedAssetBundleInfos.Remove(_dictionaryKey);
             }
         }
 
