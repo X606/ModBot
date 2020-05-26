@@ -8,6 +8,10 @@ namespace ModLibrary
 {
     public class ModLoadError
     {
+        public ModLoadError(ModInfo modInfo, string errorMessage) : this(modInfo.FolderPath, modInfo.DisplayName, errorMessage)
+        {
+        }
+
         public ModLoadError(string folderPath, string errorMessage) : this(folderPath, folderPath.Split('/').Last(), errorMessage)
         {
         }

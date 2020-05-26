@@ -47,30 +47,38 @@ namespace ModLibrary
         }
 
         [JsonRequired]
-        public string DisplayName;
+        [JsonProperty]
+        public string DisplayName { get; internal set; }
 
         [JsonRequired]
-        public string UniqueID;
+        [JsonProperty]
+        public string UniqueID { get; internal set; }
 
         [JsonRequired]
-        public string MainDLLFileName;
+        [JsonProperty]
+        public string MainDLLFileName { get; internal set; }
 
         [JsonRequired]
-        public string Author;
+        [JsonProperty]
+        public string Author { get; internal set; }
 
         [JsonRequired]
-        public uint Version;
+        [JsonProperty]
+        public uint Version { get; internal set; }
 
-        public string ImageFileName;
+        [JsonProperty]
+        public string ImageFileName { get; internal set; }
 
-        public string Description;
+        [JsonProperty]
+        public string Description { get; internal set; }
 
-        public string[] ModDependencies;
+        [JsonProperty]
+        public string[] ModDependencies { get; internal set; }
 
-        public string[] Tags;
+        [JsonProperty]
+        public string[] Tags { get; internal set; }
 
-        [JsonIgnore]
-        public string FolderPath;
+        public string FolderPath { get; internal set; }
 
         public string DLLPath => FolderPath + MainDLLFileName;
 

@@ -49,10 +49,10 @@ namespace InternalModBot
         /// <param name="data"></param>
         public void SuggestModMultiplayer(string suggesterPlayfabID, string modName, byte[] data)
         {
-            StartCoroutine(suggestModMultiplayerIEnumerator(suggesterPlayfabID, modName, data));
+            StartCoroutine(suggestModMultiplayerCoroutine(suggesterPlayfabID, modName, data));
         }
 
-        IEnumerator suggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
+        IEnumerator suggestModMultiplayerCoroutine(string suggesterPlayfabID, string modName, byte[] data)
         {
             string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
 

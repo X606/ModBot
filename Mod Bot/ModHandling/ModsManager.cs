@@ -17,7 +17,12 @@ namespace InternalModBot
     /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
-        static Dictionary<Mod, AppDomain> _modAppDomains = new Dictionary<Mod, AppDomain>();
+        /// <summary>
+        /// A very special mod that will call all mods the most functions passed to it on all mods
+        /// </summary>
+        internal Mod PassOnMod = new PassOnToModsManager();
+
+        static Dictionary<Mod, LoadedModInfo> _modsData = new Dictionary<Mod, LoadedModInfo>();
 
         /// <summary>
         /// Loads all mods from the mods directory and deactivates remembered deactivated mods
@@ -25,16 +30,6 @@ namespace InternalModBot
         public void Initialize()
         {
             ReloadMods();
-
-            foreach (LoadedMod mod in _mods)
-            {
-                bool isActive = PlayerPrefs.GetInt(mod.Mod.GetUniqueID(), 1) != 0;
-                if (!isActive)
-                {
-                    DisableMod(mod.Mod);
-                }
-            }
-
         }
 
         /// <summary>
@@ -45,13 +40,12 @@ namespace InternalModBot
             UpgradePagesManager.Reset();
             ClearCache();
 
-            foreach (KeyValuePair<Mod, AppDomain> modAppDomain in _modAppDomains)
+            foreach (LoadedModInfo modData in _modsData.Values)
             {
-                AppDomain.Unload(modAppDomain.Value);
+                modData.Unload();
             }
-            _modAppDomains.Clear();
 
-            _mods.Clear();
+            _modsData.Clear();
 
             PassOnMod = new PassOnToModsManager();
 
@@ -152,7 +146,7 @@ namespace InternalModBot
 
             if (!File.Exists(modInfo.DLLPath))
             {
-                error = new ModLoadError(folderPath, modInfo.DisplayName, "ModInfo.json: Main dll does not exist");
+                error = new ModLoadError(modInfo, "ModInfo.json: Main dll does not exist");
                 return false;
             }
 
@@ -163,17 +157,31 @@ namespace InternalModBot
             return true;
         }
 
-        AppDomain setupAppDomainForMod(string modName, string path)
+        internal AppDomain GetAppDomainForMod(ModInfo info)
         {
-            AppDomainSetup domainInfo = new AppDomainSetup();
-            AppDomain appDomain = AppDomain.CreateDomain(modName, null, domainInfo);
-            
-            return appDomain;
+            foreach (KeyValuePair<Mod, LoadedModInfo> modDataPair in _modsData)
+            {
+                if (modDataPair.Key.modInfo.DisplayName == info.DisplayName)
+                {
+                    if (modDataPair.Value.AppDomain == null)
+                        break;
+
+                    return modDataPair.Value.AppDomain;
+                }
+            }
+
+            AppDomainSetup domainInfo = new AppDomainSetup
+            {
+                ApplicationBase = info.FolderPath
+            };
+
+            AppDomain domain = AppDomain.CreateDomain(info.DisplayName, null, domainInfo);
+            return domain;
         }
 
         public bool LoadMod(ModInfo modInfo, out ModLoadError error)
         {
-            AppDomain appDomain = setupAppDomainForMod(modInfo.DisplayName, modInfo.FolderPath);
+            AppDomain appDomain = GetAppDomainForMod(modInfo);
             Assembly assembly = appDomain.Load(File.ReadAllBytes(modInfo.DLLPath));
 
             Type[] types = assembly.GetTypes();
@@ -189,89 +197,74 @@ namespace InternalModBot
 
             if (mainType == null)
             {
-                error = new ModLoadError(modInfo.FolderPath, modInfo.DisplayName, "Could not find type \"Main\"");
+                error = new ModLoadError(modInfo, "Could not find type \"Main\"");
                 return false;
             }
 
             object modObj = Activator.CreateInstance(mainType);
-
-        }
-
-        /// <summary>
-        /// Loads a mod from only the bytes making up the assembly
-        /// </summary>
-        /// <param name="assemblyData"></param>
-        /// <param name="modName"></param>
-        /// <param name="hasFile"></param>
-        /// <param name="errorMessage"></param>
-        public bool LoadMod(byte[] assemblyData, string modName, bool hasFile, out string errorMessage)
-        {
-            Type[] types = assembly.GetTypes();
-            Type mainType = null;
-            for (int i = 0; i < types.Length; i++)
+            if (!(modObj is Mod modInstance))
             {
-                if (types[i].Name.ToLower() == "main")
-                {
-                    mainType = types[i];
-                }
-            }
-
-            if (mainType == null)
-            {
-                errorMessage = "Main class not found";
+                error = new ModLoadError(modInfo, "Type \"Main\" was not of type \"Mod\"");
                 return false;
             }
 
-            object obj = Activator.CreateInstance(mainType);
-
-            Mod modToLoad = obj as Mod;
-            foreach (LoadedMod mod in _mods)
+            foreach (LoadedModInfo loadedMod in _modsData.Values)
             {
-                if (mod.Mod.GetUniqueID() == modToLoad.GetUniqueID())
+                if (!loadedMod.IsEnabled)
+                    continue;
+
+                if (loadedMod.OwnerModInfo.UniqueID == modInfo.UniqueID)
                 {
-                    errorMessage = "Mod has the same UniqueID as \"" + mod.Mod.GetModName() + "\"";
+                    error = new ModLoadError(modInfo, "Mod has same UniqueID as \"" + loadedMod.OwnerModInfo.DisplayName + "\"");
                     return false;
                 }
             }
 
-            LoadedMod loadedMod = new LoadedMod(modToLoad, assemblyData, hasFile);
-            _mods.Add(loadedMod);
+            LoadedModInfo loadedModInfo = new LoadedModInfo(modInstance, modInfo, appDomain);
+            _modsData.Add(modInstance, loadedModInfo);
 
-            bool isActive = PlayerPrefs.GetInt(modToLoad.GetUniqueID(), 1) != 0;
-            if (!isActive)
-            {
-                DisableMod(modToLoad);
-            }
-            else
+            if (loadedModInfo.IsEnabled)
             {
                 try
                 {
-                    modToLoad.OnModLoaded();
+                    modInstance.OnModLoaded();
                 }
                 catch (Exception exception)
                 {
-                    throw new Exception("Caught exception in OnModLoaded for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\"", exception);
+                    Console.WriteLine("Exception in OnModLoaded for \"" + modInfo.DisplayName + "\" (ID: " + modInfo.UniqueID + "), mod not loaded");
+                    Console.WriteLine(exception);
+                    error = new ModLoadError(modInfo, "Caught exception in OnModLoaded: (" + exception.Message + "), full exception message written to output_log.txt");
+                    return false;
                 }
 
-                try
-                {
-                    StartCoroutine(callOnModRefreshedNextFrame(modToLoad));
-                }
-                catch (Exception exception)
-                {
-                    throw new Exception("Caught exception in OnModRefreshed or OnModEnabled for mod \"" + modToLoad.GetModName() + "\" with ID \"" + modToLoad.GetUniqueID() + "\"", exception);
-                }
+                StartCoroutine(callOnModRefreshedNextFrame(modInstance));
             }
 
-            errorMessage = null;
+            error = null;
             return true;
         }
 
         static IEnumerator callOnModRefreshedNextFrame(Mod mod)
         {
             yield return 0;
-            mod.OnModRefreshed();
-            mod.OnModEnabled();
+
+            try
+            {
+                mod.OnModRefreshed();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Exception in OnModRefreshed for \"" + mod.modInfo.DisplayName + "\" (ID: " + mod.modInfo.UniqueID + ")", exception);
+            }
+
+            try
+            {
+                mod.OnModEnabled();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception("Exception in OnModEnabled for \"" + mod.modInfo.DisplayName + "\" (ID: " + mod.modInfo.UniqueID + ")", exception);
+            }
         }
 
         /// <summary>
@@ -293,9 +286,9 @@ namespace InternalModBot
 
             File.WriteAllBytes(fullPath, GetModData(mod));
 
-            foreach (LoadedMod _mod in _mods)
+            foreach (LoadedModInfo _mod in _mods)
             {
-                if (_mod.Mod == mod)
+                if (_mod._modReference == mod)
                 {
                     _mod.IsOnlyLoadedInMemory = false;
                     return;
@@ -334,11 +327,11 @@ namespace InternalModBot
         public List<Mod> GetAllLoadedMods()
         {
             List<Mod> mods = new List<Mod>();
-            foreach (LoadedMod mod in _mods)
+            foreach (LoadedModInfo mod in _mods)
             {
-                if (!mod.IsDeactivated)
+                if (mod.IsEnabled)
                 {
-                    mods.Add(mod.Mod);
+                    mods.Add(mod._modReference);
                 }
             }
             return mods;
@@ -351,9 +344,9 @@ namespace InternalModBot
         public List<Mod> GetAllMods()
         {
             List<Mod> mods = new List<Mod>();
-            foreach (LoadedMod mod in _mods)
+            foreach (LoadedModInfo mod in _mods)
             {
-                mods.Add(mod.Mod);
+                mods.Add(mod._modReference);
             }
             return mods;
         }
@@ -362,45 +355,20 @@ namespace InternalModBot
         /// Disables a mod, this will call on OnModDeactivated on the mod, and Mod-Bot will not make any more calls to the mod until activated again 
         /// </summary>
         /// <param name="mod"></param>
-        public void DisableMod(Mod mod)
+        public static void DisableMod(Mod mod)
         {
-            PlayerPrefs.SetInt(mod.GetUniqueID(), 0);
-
-            for (int i = 0; i < _mods.Count; i++)
-            {
-                if (_mods[i].Mod == mod)
-                {
-                    _mods[i].IsDeactivated = true;
-                    break;
-                }
-            }
-
-            CustomUpgradeManager.NextClicked();
-            UpgradePagesManager.RemoveModdedUpgradesFor(mod);
-
-            new Harmony(mod.HarmonyID).UnpatchAll(mod.HarmonyID); // unpatches all of the patches made by the mod
-
-            mod.OnModDeactivated();
+            if (_modsData != null && _modsData.TryGetValue(mod, out LoadedModInfo modInfo))
+                modInfo.IsEnabled = false;
         }
         
         /// <summary>
         /// Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
         /// </summary>
         /// <param name="mod"></param>
-        public void EnableMod(Mod mod)
+        public static void EnableMod(Mod mod)
         {
-            PlayerPrefs.SetInt(mod.GetUniqueID(), 1);
-
-            for (int i = 0; i < _mods.Count; i++)
-            {
-                if (_mods[i].Mod == mod)
-                {
-                    _mods[i].IsDeactivated = false;
-                    break;
-                }
-            }
-
-            mod.OnModEnabled();
+            if (_modsData != null && _modsData.TryGetValue(mod, out LoadedModInfo modInfo))
+                modInfo.IsEnabled = true;
         }
 
         /// <summary>
@@ -419,6 +387,14 @@ namespace InternalModBot
             }
 
             return null;
+        }
+
+        public static bool IsModEnabled(Mod mod)
+        {
+            if (_modsData != null && _modsData.TryGetValue(mod, out LoadedModInfo modInfo))
+                return modInfo.IsEnabled;
+
+            return false;
         }
 
         internal byte[] GetModData(Mod mod)
@@ -449,12 +425,5 @@ namespace InternalModBot
             }
             return false;
         }
-
-        List<LoadedMod> _mods = new List<LoadedMod>();
-
-        /// <summary>
-        /// A very special mod that will call all mods the most functions passed to it on all mods
-        /// </summary>
-        public Mod PassOnMod = new PassOnToModsManager();
     }
 }

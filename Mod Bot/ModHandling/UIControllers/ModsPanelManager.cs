@@ -132,23 +132,20 @@ namespace InternalModBot
             mod.CreateSettingsWindow(builder);
         }
 
-        void toggleIsModDisabled(int ID)
+        void toggleIsModDisabled(Mod mod)
         {
-            Mod mod = ModsManager.Instance.GetAllMods()[ID];
-            bool? isNotActive = ModsManager.Instance.IsModDeactivated(mod);
-
-            if (!isNotActive.HasValue)
+            if (mod == null)
                 return;
-            
-            if (isNotActive.Value)
+
+            if (ModsManager.IsModEnabled(mod))
             {
-                ModsManager.Instance.EnableMod(mod);
+                ModsManager.DisableMod(mod);
             }
             else
             {
-                ModsManager.Instance.DisableMod(mod);
+                ModsManager.EnableMod(mod);
             }
-            
+
             ReloadModItems();
         }
 
@@ -196,8 +193,7 @@ namespace InternalModBot
             bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
             DownloadButton.gameObject.SetActive(hasNoFile);
 
-            int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
-            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(modId); }); // Add disable button callback
+            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(mod); }); // Add disable button callback
             //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
