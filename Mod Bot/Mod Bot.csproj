@@ -76,9 +76,11 @@
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="Internal\CloseModOptionsWindowOnEscapeKey.cs" />
-    <Compile Include="Internal\LoadedMod.cs" />
+    <Compile Include="Internal\LoadedModInfo.cs" />
     <Compile Include="ModHandling\Mod.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadInfoItem.cs" />
+    <Compile Include="ModHandling\ModInfo\ModInfo.cs" />
+    <Compile Include="ModHandling\ModLoadError.cs" />
     <Compile Include="ModHandling\UIControllers\KeyCodeInput.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionButtonItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionCheckboxItem.cs" />
