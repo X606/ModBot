@@ -363,18 +363,6 @@ namespace ModLibrary
             /// </summary>
             /// <param name="displayName">The text you want to display next to the <see cref="Button"/></param>
             /// <param name="onClick">Called when the user clicks on the created <see cref="Button"/></param>
-            /// <param name="onCreate">Called when the <see cref="Button"/> is created, use this to change properties of the <see cref="Button"/></param>
-            [Obsolete("Use AddButton(string, Action, Rect?, Action<Button>) instead")]
-            public void AddButton(string displayName, Action onClick, Action<Button> onCreate = null)
-            {
-                AddButton(displayName, onClick, null, onCreate);
-            }
-
-            /// <summary>
-            /// Adds a <see cref="Button"/> to the page with the passed arguements
-            /// </summary>
-            /// <param name="displayName">The text you want to display next to the <see cref="Button"/></param>
-            /// <param name="onClick">Called when the user clicks on the created <see cref="Button"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Button"/>, use this to change the position and scale of the <see cref="Button"/></param>
             /// <param name="onCreate">Called when the <see cref="Button"/> is created, use this to change properties of the <see cref="Button"/></param>
             public void AddButton(string displayName, Action onClick, Rect? customRect = null, Action<Button> onCreate = null)

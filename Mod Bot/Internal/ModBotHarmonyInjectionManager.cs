@@ -403,95 +403,9 @@ namespace InternalModBot
                 ModsManager.Instance.PassOnMod.OnCharacterKilled(__instance, killer, damageSourceType, attackID);
             }
 
-            public static bool UpgradeUI_CreateChildIcons_Prefix(UpgradeDescription root, Vector2 rootPosition, float parentAngle, float angleIncrement, int recursionLevel,
-                                                             ref UpgradeDescription ____emptyUpgradeDescriptionForConsumablesBranch,
-                                                             ref bool ____isInStoryCutsceneMode,
-                                                             ref bool ____authoringChallengeUpgrades,
-                                                             ref List<UpgradeUIIcon> ____icons)
+            public static float UpgradeDescription_GetAngleOffset_Postfix(float __result, UpgradeDescription __instance)
             {
-                bool isConsumablesBranch = root == ____emptyUpgradeDescriptionForConsumablesBranch;
-                List<UpgradeDescription> list;
-                if (!isConsumablesBranch)
-                {
-                    list = UpgradeManager.Instance.GetVisibleUpgradesWithRequirement(root);
-                }
-                else
-                {
-                    list = UpgradeManager.Instance.GetVisibleUpgradesWithRequirement(null).Where((UpgradeDescription upgrade) => upgrade.IsConsumable).ToList();
-                }
-
-                List<UpgradeDescription> list2 = list;
-
-                bool hasConsumablesNotInConsumablesBranch = list2.Count((UpgradeDescription description) => description.IsConsumable) > 1 && !isConsumablesBranch;
-
-                if (hasConsumablesNotInConsumablesBranch)
-                    list2.RemoveAll((UpgradeDescription description) => description.IsConsumable);
-
-                float num = angleIncrement;
-                float num2;
-                if (recursionLevel > 0)
-                {
-                    if (isConsumablesBranch)
-                    {
-                        if (list2.Count >= 3)
-                        {
-                            num2 = GameUIRoot.Instance.UpgradeUI.Consumables3PlusChildRadius;
-                            num = GameUIRoot.Instance.UpgradeUI.Consumables3PlusChildAngle * 0.0174532924f;
-                        }
-                        else
-                        {
-                            num2 = GameUIRoot.Instance.UpgradeUI.UpgradeLevelRadius;
-                            num = GameUIRoot.Instance.UpgradeUI.ConsumablesChildAngle * 0.0174532924f;
-                        }
-                    }
-                    else
-                    {
-                        num = GameUIRoot.Instance.UpgradeUI.ChildAngle * 0.0174532924f;
-                        num2 = GameUIRoot.Instance.UpgradeUI.UpgradeLevelRadius;
-                    }
-                }
-                else
-                {
-                    if (hasConsumablesNotInConsumablesBranch)
-                        list2.Add(____emptyUpgradeDescriptionForConsumablesBranch);
-
-                    num2 = GameUIRoot.Instance.UpgradeUI.FirstCircleRadius;
-
-                    if (____isInStoryCutsceneMode)
-                        num2 += GameUIRoot.Instance.UpgradeUI.Chapter3RadiusDelta;
-                }
-
-                float num3 = (list2.Count - 1) * num;
-
-                for (int i = 0; i < list2.Count; i++)
-                {
-                    float num4 = parentAngle - (num3 * 0.5f) + (num * i) + (UpgradePagesManager.GetAngleOfUpgrade(list2[i].UpgradeType, list2[i].Level) * 0.0174532924f);
-                    bool flag3 = list2[i] == ____emptyUpgradeDescriptionForConsumablesBranch;
-                    float num5 = flag3 ? GameUIRoot.Instance.UpgradeUI.ConsumablesBranchRadius : num2;
-
-                    if (list2[i].ApplyRadiusOffsetIfVisible == null || list2[i].ApplyRadiusOffsetIfVisible.IsUpgradeCurrentlyVisible())
-                        num5 += list2[i].RadiusOffset;
-
-                    RectTransform rectTransform = Instantiate(GameUIRoot.Instance.UpgradeUI.IconLinePrefab);
-                    rectTransform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
-                    rectTransform.SetAsFirstSibling();
-                    rectTransform.anchoredPosition = rootPosition;
-                    rectTransform.localEulerAngles = new Vector3(0f, 0f, num4 * 57.29578f);
-                    rectTransform.sizeDelta = new Vector2(num5, rectTransform.sizeDelta.y);
-                    Vector2 vector = rootPosition + (num5 * new Vector2(Mathf.Cos(num4), Mathf.Sin(num4)));
-                    if (!flag3)
-                    {
-                        UpgradeUIIcon upgradeUIIcon = Instantiate(____authoringChallengeUpgrades ? GameUIRoot.Instance.UpgradeUI.UpgradeConfigIconPrefab : GameUIRoot.Instance.UpgradeUI.IconPrefab);
-                        upgradeUIIcon.transform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
-                        upgradeUIIcon.GetComponent<RectTransform>().anchoredPosition = vector;
-                        upgradeUIIcon.Populate(list2[i], rectTransform.GetComponent<Image>());
-                        ____icons.Add(upgradeUIIcon);
-                    }
-
-                    Accessor.CallPrivateMethod("CreateChildIcons", GameUIRoot.Instance.UpgradeUI, new object[] { list2[i], vector, num4, angleIncrement, recursionLevel + 1 });
-                }
-
-                return false;
+                return UpgradePagesManager.GetAngleOfUpgrade(__instance.UpgradeType, __instance.Level);
             }
 
             public static bool UpgradeDescription_IsUpgradeCurrentlyVisible_Postfix(bool __result, UpgradeDescription __instance)
