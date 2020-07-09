@@ -305,7 +305,7 @@ namespace InternalModBot
 			Assembly loadedAssembly;
 			try
 			{
-				loadedAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
+				loadedAssembly = Assembly.LoadFile(dllPath);
 			} catch(Exception e)
 			{
 				error = new ModLoadError(modInfo, "Could not load \"" + modInfo.MainDLLFileName + "\"");

@@ -286,7 +286,7 @@
             </summary>
             <param name="assetBundleName">The name of the asset bundle file</param>
             <param name="objectName">The name of the object you want to get from the asset bundle</param>
-            <param name="customPath">The custom path of the asset bundle, starts from the 'Clone Drone in the Danger Zone' folder</param>
+            <param name="customPath">The custom path of the asset bundle, starts from your mods root folder</param>
             <returns></returns>
         </member>
         <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String)">
@@ -298,51 +298,10 @@
             <param name="objectName">The name of the object you want to get from the asset bundle</param>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String,System.String)">
-            <summary>
-            Gets an Object of type <typeparamref name="T"/> from an assetbundle
-            </summary>
-            <typeparam name="T">The type of the object in the assetbundle</typeparam>
-            <param name="assetBundleName">The name of the assetbundle file</param>
-            <param name="objectName">The name of the object you want to get from the assetbundle</param>
-            <param name="customPath">The custom path where the assetbundle is located (goes from <seealso cref="P:UnityEngine.Application.dataPath"/>)</param>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.AssetLoader.TrySaveFileToMods(System.String,System.String)">
-            <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
-            <param name="url">The URL to download the file from.</param>
-            <param name="name">The name of the file that will be created.</param>
-        </member>
-        <member name="M:ModLibrary.AssetLoader.SaveFileToMods(System.String,System.String)">
-            <param name="url">The URL to download the file from.</param>
-            <param name="name">The name of the file that will be created.</param>
-        </member>
-        <member name="M:ModLibrary.AssetLoader.SaveFileToModsAsync(System.String,System.String)">
-            <summary>
-            Saves a file into the mods folder, but does so asynchronously, returns a <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in a corutine with yield return
-            </summary>
-            <param name="url">The url to download.</param>
-            <param name="fileName">The name you want to give the file once you have downloaded it.</param>
-            <returns>A <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in corutines with yield return</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String,System.String)" -->
         <member name="M:ModLibrary.AssetLoader.ClearCache">
             <summary>
             Clears the cache for loaded assets
-            </summary>
-        </member>
-        <member name="T:ModLibrary.AssetLoader.AsyncDownload">
-            <summary>
-            A download handeler than can be awaited in corutines with yield return
-            </summary>
-        </member>
-        <member name="P:ModLibrary.AssetLoader.AsyncDownload.keepWaiting">
-            <summary>
-            If this return true, the download is not done yet
-            </summary>
-        </member>
-        <member name="P:ModLibrary.AssetLoader.AsyncDownload.IsError">
-            <summary>
-            If this return true, there was an error during downloading
             </summary>
         </member>
         <member name="T:ModLibrary.Generic2ButtonDialogue">
@@ -2469,6 +2428,13 @@
         <member name="M:InternalModBot.InternalUtils.GetSubdomain(System.String)">
             <summary> </summary>
             <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.InternalUtils.GetModFolderRootFromAssemblyPath(System.String)">
+            <summary>
+            Gets the mod root folder from a specified assembly path
+            </summary>
+            <param name="assemblyPath"></param>
             <returns></returns>
         </member>
         <member name="T:InternalModBot.LineInfo">
