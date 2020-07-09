@@ -1014,14 +1014,6 @@
             <param name="customRect">The custom rect of the <see cref="T:ModLibrary.KeyCodeInput"/>, use this to change the position and scale of the <see cref="T:ModLibrary.KeyCodeInput"/></param>
             <param name="onChange">Called when the value of the <see cref="T:ModLibrary.KeyCodeInput"/> is changed</param>
         </member>
-        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddButton(System.String,System.Action,System.Action{UnityEngine.UI.Button})">
-            <summary>
-            Adds a <see cref="T:UnityEngine.UI.Button"/> to the page with the passed arguements
-            </summary>
-            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Button"/></param>
-            <param name="onClick">Called when the user clicks on the created <see cref="T:UnityEngine.UI.Button"/></param>
-            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Button"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Button"/></param>
-        </member>
         <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddButton(System.String,System.Action,System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{UnityEngine.UI.Button})">
             <summary>
             Adds a <see cref="T:UnityEngine.UI.Button"/> to the page with the passed arguements

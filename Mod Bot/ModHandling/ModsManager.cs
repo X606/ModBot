@@ -9,6 +9,7 @@ using System.Linq;
 using UnityEngine;
 using HarmonyLib;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace InternalModBot
 {
@@ -60,6 +61,9 @@ namespace InternalModBot
 
 		public void ReloadMods()
 		{
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
+
 			ClearCache();
 
 			List<ModLoadError> errors = new List<ModLoadError>();
@@ -67,6 +71,9 @@ namespace InternalModBot
 			{
 				StartCoroutine(showModInvalidMessage(errors));
 			}
+
+			stopwatch.Stop();
+			debug.Log("(re)loaded " + _loadedMods.Count + " mods in " + stopwatch.Elapsed.TotalSeconds + " seconds");
 		}
 
 		/// <summary>
