@@ -80,6 +80,9 @@ namespace InternalModBot
                 yield return 0;
             }
 
+			//TODO: Update this to work with the new mod loading system
+
+			/*
             if (clickedKey == KeyCode.PageUp)
             {
                 ModSuggestionAnimator.Play("AcceptMod");
@@ -97,7 +100,7 @@ namespace InternalModBot
             {
                 ModSuggestionAnimator.Play("DenyMod");
             }
-
+			*/
         }
 
         IEnumerator suggestMod(ModSuggestion mod)
@@ -123,6 +126,8 @@ namespace InternalModBot
                 yield return 0;
             }
 
+			// TODO: Make this work with the new mod loading system
+			/*
             if (clickedKey == KeyCode.PageUp)
             {
                 ModSuggestionAnimator.Play("AcceptMod");
@@ -143,6 +148,7 @@ namespace InternalModBot
                 ModSuggestionAnimator.Play("DenyMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
             }
+			*/
 
         }
 
@@ -183,12 +189,12 @@ namespace InternalModBot
             }
             if (subCommands[0].ToLower() == "!mods")
             {
-                List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+                List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
                 string allMods = "";
                 for(int i = 0; i < mods.Count; i++)
                 {
                     Mod mod = mods[i];
-                    allMods += mod.GetModName();
+					allMods += mod.ModInfo.DisplayName;
                     if (i != mods.Count-1)
                     {
                         allMods += ", ";

@@ -21,7 +21,7 @@ namespace ModLibrary
             if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
                 upgradeManager.UpgradeDescriptions.Add(upgrade);
             
-            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
 
             if (upgrade is AbilityUpgrade)
             {
@@ -84,7 +84,7 @@ namespace ModLibrary
         /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
-            UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod);
+            UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace ModLibrary
             if (upgrade == null)
                 return;
 
-            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
 
             if (upgrade.Requirement2 != null)
                 recursivelyAddRequirments(upgrade.Requirement2, mod);

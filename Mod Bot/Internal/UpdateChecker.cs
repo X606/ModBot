@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using ModLibrary.Properties;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace InternalModBot
 {
@@ -40,7 +43,7 @@ namespace InternalModBot
             string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
             GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\n" + modBotVersionLabel;
 
-            if (installedModBotVersion == newestModBotVersion)
+            if (!isCloudVersionNewer(installedModBotVersion, newestModBotVersion))
             {
                 string modBotUpToDateMessage = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotuptodate", installedModBotVersion);
                 debug.Log(modBotUpToDateMessage, Color.green);
@@ -54,6 +57,54 @@ namespace InternalModBot
             generic.SetColorOfFirstButton(Color.red);
             generic.SetColorOfSecondButton(Color.green);
         }
+
+		bool isCloudVersionNewer(string installedVersion, string cloudVersion)
+		{
+			string[] installedVersionStrings = installedVersion.Split('.');
+			string[] cloudVersionStrings = cloudVersion.Split('.');
+
+			int lengthOfLongest = Mathf.Max(installedVersionStrings.Length, cloudVersionStrings.Length);
+
+			int[] installedVersionNumbers = new int[lengthOfLongest];
+			int[] cloudVersionNumbers = new int[lengthOfLongest];
+
+			for(int i = 0; i < lengthOfLongest; i++)
+			{
+				if (i >= installedVersionStrings.Length)
+				{
+					installedVersionNumbers[i] = 0;
+				}
+				else if(int.TryParse(installedVersionStrings[i], out int number))
+				{
+					installedVersionNumbers[i] = number;
+				}
+				else
+				{
+					throw new Exception("The installed version string was invalid");
+				}
+
+				if(i >= cloudVersionStrings.Length)
+				{
+					cloudVersionNumbers[i] = 0;
+				}
+				else if(int.TryParse(cloudVersionStrings[i], out int number))
+				{
+					cloudVersionNumbers[i] = number;
+				}
+				else
+				{
+					throw new Exception("The cloud version string was invalid");
+				}
+			}
+
+			for(int i = 0; i < lengthOfLongest; i++)
+			{
+				if(installedVersionNumbers[i] > cloudVersionNumbers[i])
+					return false;
+			}
+
+			return true;
+		}
 
         void onInstallButtonClicked()
         {

@@ -11,12 +11,15 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
-        protected internal ModInfo modInfo => ModsManager.GetInfo(this);
+		/// <summary>
+		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
+		/// </summary>
+        protected internal ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
 
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
-        public string HarmonyID => "com.Mod-Bot.Mod." + modInfo.UniqueID;
+        public string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
@@ -51,7 +54,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="ModsManager.ReloadMods"/>
+        /// Called in <see cref="ModsManager.ReloadMods()"/>
         /// </summary>
         public virtual void OnModRefreshed()
         {

@@ -10,35 +10,26 @@ namespace InternalModBot
     /// </summary>
     internal class LoadedModInfo
     {
-        private LoadedModInfo() // this will prevent people from creating new LoadedModInfo instances outside of Mod-Bot
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Sets the mod field to the passed mod, and will not deactivate the mod
         /// </summary>
         /// <param name="mod"></param>
         /// <param name="modInfo"></param>
-        /// <param name="appDomain"></param>
-        internal LoadedModInfo(Mod mod, ModInfo modInfo, AppDomain appDomain)
+        internal LoadedModInfo(Mod mod, ModInfo modInfo)
         {
-            _modReference = mod;
+            ModReference = mod;
             OwnerModInfo = modInfo;
-            AppDomain = appDomain;
         }
 
-        readonly Mod _modReference;
+        internal Mod ModReference;
 
         internal readonly ModInfo OwnerModInfo;
-
-        internal readonly AppDomain AppDomain;
 
         public bool IsEnabled
         {
             get
             {
-                return PlayerPrefs.GetInt(OwnerModInfo.UniqueID, 1) == 1;
+				return OwnerModInfo.IsModEnabled;
             }
             internal set
             {
@@ -49,23 +40,30 @@ namespace InternalModBot
 
                 if (value) // If the mod is being enabled
                 {
-                    _modReference.OnModEnabled();
-                }
+					if (ModReference == null)
+					{
+						ModsManager.Instance.LoadMod(OwnerModInfo);
+
+					} else
+					{
+						ModReference.OnModEnabled();
+					}
+
+						
+				}
                 else // If the mod is being disabled
                 {
                     CustomUpgradeManager.NextClicked();
-                    UpgradePagesManager.RemoveModdedUpgradesFor(_modReference);
+                    UpgradePagesManager.RemoveModdedUpgradesFor(OwnerModInfo.UniqueID);
 
-                    new Harmony(_modReference.HarmonyID).UnpatchAll(_modReference.HarmonyID); // unpatches all of the patches made by the mod
+                    new Harmony(ModReference.HarmonyID).UnpatchAll(ModReference.HarmonyID); // unpatches all of the patches made by the mod
 
-                    _modReference.OnModDeactivated();
+                    ModReference.OnModDeactivated();
                 }
+
+				ModsManager.Instance.RefreshAllLoadedActiveMods();
             }
         }
 
-        internal void Unload()
-        {
-            AppDomain.Unload(AppDomain);
-        }
     }
 }

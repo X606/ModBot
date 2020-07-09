@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -26,7 +27,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static string GetModsFolderDirectory()
         {
-            return GetSubdomain(Application.dataPath) + MODS_FOLDER_NAME;
+            return InternalUtils.GetSubdomain(Application.dataPath) + MODS_FOLDER_NAME;
         }
 
         static AssetBundleInfo getAssetBundle(string name, string pathFromDataPath = MODS_FOLDER_NAME)
@@ -106,7 +107,7 @@ namespace ModLibrary
         /// <param name="name">The name of the file that will be created.</param>
         public static void TrySaveFileToMods(string url, string name)
         {
-            string path = GetSubdomain(Application.dataPath) + "mods/" + name;
+            string path = InternalUtils.GetSubdomain(Application.dataPath) + "mods/" + name;
 
             if (File.Exists(path))
                 return;
@@ -130,7 +131,7 @@ namespace ModLibrary
             byte[] fileData = webClient.DownloadData(url);
             webClient.Dispose();
 
-            string path = GetSubdomain(Application.dataPath) + "mods/";
+            string path = InternalUtils.GetSubdomain(Application.dataPath) + "mods/";
 
             FileStream file = File.Create(path + name);
             file.Close();
@@ -197,22 +198,7 @@ namespace ModLibrary
         {
             AssetBundleInfo.ClearCache();
         }
-
-        /// <summary>
-        /// Gets the directory 1 step under a spesific directory
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string GetSubdomain(string path)
-        {
-            string[] subDomainsArray = path.Split(new char[] { '/' });
-
-            List<string> subDomainsList = new List<string>(subDomainsArray);
-            subDomainsList.RemoveAt(subDomainsList.Count - 1);
-            
-            return subDomainsList.Join("/") + "/";
-        }
-
+		
         /// <summary>
         /// A download handeler than can be awaited in corutines with yield return
         /// </summary>

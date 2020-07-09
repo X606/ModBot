@@ -10,7 +10,7 @@ namespace InternalModBot
     /// </summary>
     public static class UpgradePagesManager
     {
-        static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> _allModdedUpgradePages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>();
+        static List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>> _allModdedUpgradePages = new List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>>();
 
         /// <summary>
         /// The page that is currently selected
@@ -38,13 +38,13 @@ namespace InternalModBot
         /// <summary>
         /// Removes all of the upgrades in <see cref="UpgradeManager.UpgradeDescriptions"/> placed there by a mod 
         /// </summary>
-        /// <param name="mod"></param>
-        public static void RemoveModdedUpgradesFor(Mod mod)
+        /// <param name="modID"></param>
+        public static void RemoveModdedUpgradesFor(string modID)
         {
             for (int i = 0; i < _allModdedUpgradePages.Count; i++)
             {
-                KeyValuePair<Mod, List<ModdedUpgradeRepresenter>> item = _allModdedUpgradePages[i];
-                if (item.Key == mod)
+                KeyValuePair<string, List<ModdedUpgradeRepresenter>> item = _allModdedUpgradePages[i];
+                if (item.Key == modID)
                 {
                     foreach (ModdedUpgradeRepresenter upgradeType in item.Value)
                     {
@@ -58,7 +58,7 @@ namespace InternalModBot
                         }
                     }
 
-                    _allModdedUpgradePages[i] = new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, new List<ModdedUpgradeRepresenter>());
+                    _allModdedUpgradePages[i] = new KeyValuePair<string, List<ModdedUpgradeRepresenter>>(modID, new List<ModdedUpgradeRepresenter>());
 
                     return;
                 }
@@ -71,14 +71,14 @@ namespace InternalModBot
         /// <param name="upgradeType"></param>
         /// <param name="level"></param>
         /// <param name="mod"></param>
-        public static void AddUpgrade(UpgradeType upgradeType, int level, Mod mod)
+        public static void AddUpgrade(UpgradeType upgradeType, int level, string modID)
         {
-            if (modAlreadyHasUpgrade(mod, new ModdedUpgradeRepresenter(upgradeType, level))) // If the mod has already defined the upgrade on its page
+            if (modAlreadyHasUpgrade(modID, new ModdedUpgradeRepresenter(upgradeType, level))) // If the mod has already defined the upgrade on its page
                 return;
 
-            TryAddPage(mod);
+            TryAddPage(modID);
             var pages = GenerateModPages();
-            int page = GetPageForMod(pages, mod);
+            int page = GetPageForMod(pages, modID);
             pages[page].Value.Add(new ModdedUpgradeRepresenter(upgradeType, level));
         }
 
@@ -88,12 +88,12 @@ namespace InternalModBot
         /// <param name="angle"></param>
         /// <param name="upgradeType"></param>
         /// <param name="upgradeLevel"></param>
-        /// <param name="mod"></param>
-        public static void SetAngleOfModdedUpgrade(float angle, UpgradeType upgradeType, int upgradeLevel, Mod mod)
+        /// <param name="modID"></param>
+        public static void SetAngleOfModdedUpgrade(float angle, UpgradeType upgradeType, int upgradeLevel, string modID)
         {
             foreach(var _mod in _allModdedUpgradePages)
             {
-                if (_mod.Key != mod)
+                if (_mod.Key != modID)
                     continue;
 
                 foreach (ModdedUpgradeRepresenter _upgrade in _mod.Value)
@@ -106,7 +106,7 @@ namespace InternalModBot
                 }
             }
 
-            throw new Exception("Cant find upgrade \"" + upgradeType.ToString() + "\" with level " + upgradeLevel + " in upgrades for mod with id: " + mod.GetUniqueID());
+            throw new Exception("Cant find upgrade \"" + upgradeType.ToString() + "\" with level " + upgradeLevel + " in upgrades for mod with id: " + modID);
         }
 
         /// <summary>
@@ -138,27 +138,29 @@ namespace InternalModBot
         /// If mod already has a page does nothing
         /// </summary>
         /// <param mod=""></param>
-        public static void TryAddPage(Mod mod)
+        public static void TryAddPage(string modID)
         {
-            if (containsMod(mod))
+            if (containsMod(modID))
                 return;
 
             List<ModdedUpgradeRepresenter> newList = new List<ModdedUpgradeRepresenter>();
-            _allModdedUpgradePages.Add(new KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>(mod, newList));
+            _allModdedUpgradePages.Add(new KeyValuePair<string, List<ModdedUpgradeRepresenter>>(modID, newList));
         }
 
         /// <summary>
         /// Generates a list where each instance in the list is a different page, and each list in that list is all the moddedUpgradeTypeAndLevels for that page (only includes active mods)
         /// </summary>
         /// <returns></returns>
-        public static List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> GenerateModPages()
+        public static List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>> GenerateModPages()
         {
-            List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages = new List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>>();
+            List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>> pages = new List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>>();
             foreach(var page in _allModdedUpgradePages)
             {
-                if (!page.Key.IsModEnabled())
-                    continue;
+				LoadedModInfo mod = ModsManager.Instance.GetLoadedModWithID(page.Key);
 
+				if(!mod.IsEnabled)
+					continue;
+				
                 pages.Add(page);
             }
 
@@ -168,12 +170,12 @@ namespace InternalModBot
         /// <summary>
         /// Generates a list of pages, and then gets the page index of the mod passed
         /// </summary>
-        /// <param name="mod"></param>
+        /// <param name="modID"></param>
         /// <returns></returns>
-        public static int GetPageForMod(Mod mod)
+        public static int GetPageForMod(string modID)
         {
             var generatedPages = GenerateModPages();
-            int page = GetPageForMod(generatedPages, mod);
+            int page = GetPageForMod(generatedPages, modID);
             return page;
         }
 
@@ -181,19 +183,19 @@ namespace InternalModBot
         /// Gets the page index of the mod passed from the pages list passed
         /// </summary>
         /// <param name="pages"></param>
-        /// <param name="mod"></param>
+        /// <param name="modID"></param>
         /// <returns></returns>
-        public static int GetPageForMod(List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages, Mod mod)
+        public static int GetPageForMod(List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>> pages, string modID)
         {
             for (int i = 0; i < pages.Count; i++)
             {
-                if (pages[i].Key != mod)
+                if (pages[i].Key != modID)
                     continue;
 
                 return i;
             }
 
-            throw new Exception("Could not find page for mod \"" + mod.GetModName() + "\" with the unique id: \"" + mod.GetUniqueID() + "\""); 
+            throw new Exception("Could not find page for mod \"" + ModsManager.Instance.GetLoadedModWithID(modID).OwnerModInfo.DisplayName + "\" with the unique id: \"" + modID + "\""); 
         }
 
         /// <summary>
@@ -201,12 +203,12 @@ namespace InternalModBot
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        public static Mod TryGetModForPage(int page)
+        public static string TryGetModIDForPage(int page)
         {
             page -= 1;
 
             var pages = GenerateModPages();
-            Mod mod = TryGetModForPage(pages, page);
+            string mod = TryGetModIDForPage(pages, page);
             return mod;
         }
 
@@ -216,7 +218,7 @@ namespace InternalModBot
         /// <param name="pages"></param>
         /// <param name="page"></param>
         /// <returns></returns>
-        public static Mod TryGetModForPage(List<KeyValuePair<Mod, List<ModdedUpgradeRepresenter>>> pages, int page)
+        public static string TryGetModIDForPage(List<KeyValuePair<string, List<ModdedUpgradeRepresenter>>> pages, int page)
         {
             if (page < 0 || page >= pages.Count)
                 return null;
@@ -321,24 +323,24 @@ namespace InternalModBot
         /// <summary>
         /// returns true if AllModdedUpgradePages contains the passed mod
         /// </summary>
-        /// <param name="mod"></param>
+        /// <param name="modID"></param>
         /// <returns></returns>
-        static bool containsMod(Mod mod)
+        static bool containsMod(string modID)
         {
             foreach(var valuePair in _allModdedUpgradePages)
             {
-                if (valuePair.Key == mod)
+                if (valuePair.Key == modID)
                     return true;
             }
 
             return false;
         }
 
-        static bool modAlreadyHasUpgrade(Mod mod, ModdedUpgradeRepresenter upgrade)
+        static bool modAlreadyHasUpgrade(string modID, ModdedUpgradeRepresenter upgrade)
         {
             foreach (var valuePair in _allModdedUpgradePages)
             {
-                if (valuePair.Key != mod)
+                if (valuePair.Key != modID)
                     continue;
 
                 return valuePair.Value.Contains(upgrade);

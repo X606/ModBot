@@ -88,7 +88,8 @@ namespace InternalModBot
 
         static IEnumerator downloadModFileAndLoadAsync(string url)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+			yield return 0;
+			/*UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
 
             if(webRequest.isHttpError || webRequest.isNetworkError)
@@ -100,22 +101,23 @@ namespace InternalModBot
             string path = AssetLoader.GetModsFolderDirectory() + fileName;
             File.WriteAllBytes(path, webRequest.downloadHandler.data);
 
-            ModsManager.Instance.ReloadMods();
+            ModsManagerOld.Instance.ReloadMods();
 
-            ModsPanelManager.Instance.ReloadModItems();
-        }
+            ModsPanelManager.Instance.ReloadModItems();*/
+		}
 
         IEnumerator downloadModBytesAndLoadAsync(string url)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+			yield return 0;
+			/*UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
 
             if(webRequest.isHttpError || webRequest.isNetworkError)
                 yield break;
 
-            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, _nameDisplay.text, false, out string error);
-            ModsPanelManager.Instance.ReloadModItems();
-        }
+            ModsManagerOld.Instance.LoadMod(webRequest.downloadHandler.data, _nameDisplay.text, false, out string error);
+            ModsPanelManager.Instance.ReloadModItems();*/
+		}
         
     }
 

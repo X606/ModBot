@@ -330,13 +330,6 @@
             Clears the cache for loaded assets
             </summary>
         </member>
-        <member name="M:ModLibrary.AssetLoader.GetSubdomain(System.String)">
-            <summary>
-            Gets the directory 1 step under a spesific directory
-            </summary>
-            <param name="path"></param>
-            <returns></returns>
-        </member>
         <member name="T:ModLibrary.AssetLoader.AsyncDownload">
             <summary>
             A download handeler than can be awaited in corutines with yield return
@@ -727,29 +720,10 @@
             Base class for all mods, contains virtual implementations for different events in the game.
             </summary>
         </member>
-        <member name="M:ModLibrary.Mod.GetModName">
+        <member name="P:ModLibrary.Mod.ModInfo">
             <summary>
-            Returns the name of the mod, override to set the name of you mod
+            The modinfo that goes with this Mod, this contains data about the mod name, version ect.
             </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetUniqueID">
-            <summary>
-            Returns a unique ID for every mod
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetModDescription">
-            <summary>
-            Returns the description of the mod, override to change the description of your mod
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.Mod.GetModImageURL">
-            <summary>
-            Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
-            </summary>
-            <returns></returns>
         </member>
         <member name="P:ModLibrary.Mod.HarmonyID">
             <summary>
@@ -885,6 +859,11 @@
         <member name="M:ModLibrary.Mod.OnClientDisconnectedToServer">
             <summary>
             Called when we disconnect from a multiplayer server
+            </summary>
+        </member>
+        <member name="P:ModLibrary.ModInfo.IsModEnabled">
+            <summary>
+            NOTE: setting this value only sets the playerPrefs, use <see cref="P:InternalModBot.LoadedModInfo.IsEnabled"/> to work with loaded mods
             </summary>
         </member>
         <member name="T:ModLibrary.KeyCodeInput">
@@ -1635,7 +1614,6 @@
             </summary>
             <param name="mod"></param>
             <returns><see langword="true"/> of the <see cref="T:ModLibrary.Mod"/> is enabled, <see langword="false"/> if it's disabled</returns>
-            <exception cref="T:System.Exception">If the <see cref="T:ModLibrary.Mod"/> has not been loaded by <see cref="T:InternalModBot.ModsManager"/></exception>
         </member>
         <member name="T:ModLibrary.Vector3Extensions">
             <summary>
@@ -2407,7 +2385,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 1.4.9.1.
+              Looks up a localized string similar to 2.0.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
@@ -2490,6 +2468,16 @@
             <summary>
             The text that displays the numbers
             </summary>
+        </member>
+        <member name="T:InternalModBot.InternalUtils">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:InternalModBot.InternalUtils.GetSubdomain(System.String)">
+            <summary> </summary>
+            <param name="path"></param>
+            <returns></returns>
         </member>
         <member name="T:InternalModBot.LineInfo">
             <summary>
@@ -2848,13 +2836,13 @@
             Removes all modded upgrades and sets the current page to 0
             </summary>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.RemoveModdedUpgradesFor(ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.RemoveModdedUpgradesFor(System.String)">
             <summary>
             Removes all of the upgrades in <see cref="F:UpgradeManager.UpgradeDescriptions"/> placed there by a mod 
             </summary>
-            <param name="mod"></param>
+            <param name="modID"></param>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.AddUpgrade(UpgradeType,System.Int32,ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.AddUpgrade(UpgradeType,System.Int32,System.String)">
             <summary>
             Adds an upgrade to keep track of, this upgrade will be displayed on the page of the mod passed
             </summary>
@@ -2862,14 +2850,14 @@
             <param name="level"></param>
             <param name="mod"></param>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.SetAngleOfModdedUpgrade(System.Single,UpgradeType,System.Int32,ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.SetAngleOfModdedUpgrade(System.Single,UpgradeType,System.Int32,System.String)">
             <summary>
             Sets the angle of a modded upgrade, this method will throw an exeption if the upgrade is not on the page of the mod
             </summary>
             <param name="angle"></param>
             <param name="upgradeType"></param>
             <param name="upgradeLevel"></param>
-            <param name="mod"></param>
+            <param name="modID"></param>
         </member>
         <member name="M:InternalModBot.UpgradePagesManager.GetAngleOfUpgrade(UpgradeType,System.Int32)">
             <summary>
@@ -2879,7 +2867,7 @@
             <param name="upgradeLevel"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(System.String)">
             <summary>
             If mod already has a page does nothing
             </summary>
@@ -2891,29 +2879,29 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.String)">
             <summary>
             Generates a list of pages, and then gets the page index of the mod passed
             </summary>
-            <param name="mod"></param>
+            <param name="modID"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.String)">
             <summary>
             Gets the page index of the mod passed from the pages list passed
             </summary>
             <param name="pages"></param>
-            <param name="mod"></param>
+            <param name="modID"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Int32)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryGetModIDForPage(System.Int32)">
             <summary>
             Tries to get the mod responsable for a page, note that this generates a new pages list and uses that
             </summary>
             <param name="page"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.Int32)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryGetModIDForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.Int32)">
             <summary>
             Tries to get the mod responsable for a page
             </summary>
@@ -2960,11 +2948,11 @@
             <param name="UpgradeType"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.containsMod(ModLibrary.Mod)">
+        <member name="M:InternalModBot.UpgradePagesManager.containsMod(System.String)">
             <summary>
             returns true if AllModdedUpgradePages contains the passed mod
             </summary>
-            <param name="mod"></param>
+            <param name="modID"></param>
             <returns></returns>
         </member>
         <member name="T:InternalModBot.CloseModOptionsWindowOnEscapeKey">
@@ -2978,33 +2966,17 @@
             </summary>
             <param name="owner"></param>
         </member>
-        <member name="T:InternalModBot.LoadedMod">
+        <member name="T:InternalModBot.LoadedModInfo">
             <summary>
-            Class used to keep both a mod and bool that decides if the mod is active in same list
+            Stores all necessary data about a loaded mod
             </summary>
         </member>
-        <member name="M:InternalModBot.LoadedMod.#ctor(ModLibrary.Mod,System.Byte[],System.Boolean)">
+        <member name="M:InternalModBot.LoadedModInfo.#ctor(ModLibrary.Mod,ModLibrary.ModInfo)">
             <summary>
             Sets the mod field to the passed mod, and will not deactivate the mod
             </summary>
-            <param name="_mod"></param>
-            <param name="_rawAssemblyData"></param>
-            <param name="isLoadedFromFile"></param>
-        </member>
-        <member name="F:InternalModBot.LoadedMod.Mod">
-            <summary>
-            The Mod object the class is holding
-            </summary>
-        </member>
-        <member name="F:InternalModBot.LoadedMod.IsDeactivated">
-            <summary>
-            Decides if the mod is deactivated.
-            </summary>
-        </member>
-        <member name="F:InternalModBot.LoadedMod.IsOnlyLoadedInMemory">
-            <summary>
-            If this mod doesnt have a file
-            </summary>
+            <param name="mod"></param>
+            <param name="modInfo"></param>
         </member>
         <member name="T:InternalModBot.ModDownloadInfoItem">
             <summary>
@@ -3061,6 +3033,40 @@
             <summary>
             The name of the mod.
             </summary>
+        </member>
+        <member name="T:InternalModBot.ModsManager">
+            <summary>
+            Handles mod loading, disableing and enableing.
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.ClearCache">
+            <summary>
+            Clears all mod cache (including the AssetLoader cache)
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetInfo(ModLibrary.Mod)">
+            <summary>
+            Returns the <see cref="T:ModLibrary.ModInfo"/> assosiated with a specific mod, returns null if the mod is not loaded
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModsManager.RefreshAllLoadedActiveMods">
+            <summary>
+            Refreshes the cache for what mods are active and loaded
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetAllLoadedActiveMods">
+            <summary>
+            Gets all the currently loaded mods that are not disabled
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetActiveModInfos">
+            <summary>
+            Returns all the mods that are active Infos
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:InternalModBot.ModdedOptionButtonItem">
             <summary>
@@ -3305,84 +3311,6 @@
             <param name="holder"></param>
             <param name="owner"></param>
         </member>
-        <member name="T:InternalModBot.ModsManager">
-            <summary>
-            Handles mod loading, disableing and enableing.
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.Initialize">
-            <summary>
-            Loads all mods from the mods directory and deactivates remembered deactivated mods
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.ReloadMods">
-            <summary>
-            Clears all loaded mods and loads them again
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.String,System.Boolean,System.String@)">
-            <summary>
-            Loads a mod from only the bytes making up the assembly
-            </summary>
-            <param name="assemblyData"></param>
-            <param name="modName"></param>
-            <param name="hasFile"></param>
-            <param name="errorMessage"></param>
-        </member>
-        <member name="M:InternalModBot.ModsManager.WriteDllFileToModFolder(ModLibrary.Mod)">
-            <summary>
-            Adds the mod to the mods folder
-            </summary>
-            <param name="mod"></param>
-        </member>
-        <member name="M:InternalModBot.ModsManager.ClearCache">
-            <summary>
-            Clears all mod cache (including the AssetLoader cache)
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetAllLoadedMods">
-            <summary>
-            Gets a list of all mods that should currently be active
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetAllMods">
-            <summary>
-            Gets a list of all mods currently loaded, even mods that arent currently active
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.ModsManager.DisableMod(ModLibrary.Mod)">
-            <summary>
-            Disables a mod, this will call on OnModDeactivated on the mod, and Mod-Bot will not make any more calls to the mod until activated again 
-            </summary>
-            <param name="mod"></param>
-        </member>
-        <member name="M:InternalModBot.ModsManager.EnableMod(ModLibrary.Mod)">
-            <summary>
-            Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
-            </summary>
-            <param name="mod"></param>
-        </member>
-        <member name="M:InternalModBot.ModsManager.IsModDeactivated(ModLibrary.Mod)">
-            <summary>
-            Checks if a mod is deactivated
-            </summary>
-            <param name="mod"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetIsModOnlyLoadedInMemory(ModLibrary.Mod)">
-            <summary>
-            Returns true if the passed mod doesnt have a file to load from
-            </summary>
-            <param name="mod"></param>
-            <returns></returns>
-        </member>
-        <member name="F:InternalModBot.ModsManager.PassOnMod">
-            <summary>
-            A very special mod that will call all mods the most functions passed to it on all mods
-            </summary>
-        </member>
         <member name="T:InternalModBot.ModsPanelManager">
             <summary>
             Used by Mod-Bot to control most of the UI in Mod-Bot, this has control over the mod buttons and mods window. Note that all functions and fields on this class are private since they more or less work on their own.
@@ -3421,18 +3349,6 @@
             <summary>
             Used by Mod-Bot to call events on all loaded active mods, you probably dont want to use this from mods
             </summary>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.GetModName">
-            <summary>
-            Mods require us to override this one, but its never used
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.GetUniqueID">
-            <summary>
-            Mods require us to override this one, but its never used
-            </summary>
-            <returns></returns>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnFirstPersonMoverSpawned(FirstPersonMover)">
             <summary>

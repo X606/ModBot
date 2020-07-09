@@ -22,6 +22,9 @@ namespace ModLibrary
             ModName = modName;
             ErrorMessage = errorMessage;
         }
+		public ModLoadError(string errorMesage) : this("", "", errorMesage)
+		{
+		}
 
         public string FolderPath;
         public string ModName;

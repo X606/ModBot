@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using InternalModBot;
 
 namespace ModLibrary
 {
@@ -43,7 +44,7 @@ namespace ModLibrary
             if (_cachedAssetBundleInfos.ContainsKey(key))
                 return _cachedAssetBundleInfos[key];
 
-            string filePath = AssetLoader.GetSubdomain(Application.dataPath) + key;
+            string filePath = InternalUtils.GetSubdomain(Application.dataPath) + key;
 
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Could not find asset bundle file", filePath);
