@@ -63,12 +63,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
         {
-			StackFrame frame = new StackFrame(1);
-			System.Reflection.MethodBase method = frame.GetMethod();
-			Type type = method.DeclaringType;
-			
-			string path = InternalUtils.GetModFolderRootFromAssemblyPath(type.Assembly.Location);
-
+			string path = InternalUtils.GetCallerModPath();
 			return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path);
         }
 
@@ -81,12 +76,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
-			StackFrame frame = new StackFrame(1);
-			System.Reflection.MethodBase method = frame.GetMethod();
-			Type type = method.DeclaringType;
-
-			string path = InternalUtils.GetModFolderRootFromAssemblyPath(type.Assembly.Location);
-
+			string path = InternalUtils.GetCallerModPath();
 			return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path + customPath);
         }
 
@@ -99,12 +89,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
-			StackFrame frame = new StackFrame(1);
-			System.Reflection.MethodBase method = frame.GetMethod();
-			Type type = method.DeclaringType;
-
-			string path = InternalUtils.GetModFolderRootFromAssemblyPath(type.Assembly.Location);
-
+			string path = InternalUtils.GetCallerModPath();
 			return getObjectFromFileInternal<T>(assetBundleName, objectName, path);
         }
 
@@ -118,12 +103,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
         {
-			StackFrame frame = new StackFrame(1);
-			System.Reflection.MethodBase method = frame.GetMethod();
-			Type type = method.DeclaringType;
-
-			string path = InternalUtils.GetModFolderRootFromAssemblyPath(type.Assembly.Location);
-
+			string path = InternalUtils.GetCallerModPath();
 			return getObjectFromFileInternal<T>(assetBundleName, objectName, path + customPath);
         }
 		

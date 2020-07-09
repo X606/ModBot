@@ -333,6 +333,10 @@ namespace InternalModBot
 
 			Mod loadedMod = (Mod)Activator.CreateInstance(mainType);
 
+			string relativePath = InternalUtils.GetRelativePathFromFullPath(modInfo.FolderPath);
+
+			DataSaver.TryLoadDataFromFile(relativePath);
+
 			loadedMod.OnModLoaded();
 
 			bool foundExistingMod = false;

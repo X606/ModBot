@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
+using System.Reflection;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -34,16 +37,12 @@ namespace InternalModBot
 		{
 			assemblyPath = GetSubdomain(assemblyPath); // remove the dll file name from the path
 
-			while(true)
+			while(assemblyPath.Length > 0)
 			{
 				string possiblePath = assemblyPath + ModsManager.MOD_INFO_FILE_NAME;
 				if (File.Exists(possiblePath))
 				{
-					int lastIndex = assemblyPath.LastIndexOf(ModLibrary.AssetLoader.MODS_FOLDER_NAME);
-
-					assemblyPath = assemblyPath.Substring(lastIndex);
-
-					return assemblyPath;
+					return GetRelativePathFromFullPath(assemblyPath);
 				}
 
 				assemblyPath = GetSubdomain(assemblyPath);
@@ -52,6 +51,43 @@ namespace InternalModBot
 			}
 
 			return "Clone Drone in the Danger Zone_Data/";
+		}
+		
+		/// <summary>
+		/// Gets the path relative to the Clone drone folder of the mod that called the method this method was called from
+		/// </summary>
+		/// <returns></returns>
+		public static string GetCallerModPath(int methodsAbove=1)
+		{
+			StackFrame frame = new StackFrame(1 + methodsAbove);
+			MethodBase method = frame.GetMethod();
+			Type type = method.DeclaringType;
+
+			return GetModFolderRootFromAssemblyPath(type.Assembly.Location);
+		}
+
+		/// <summary>
+		/// Gets the full path from a path relative to the clone drone folder
+		/// </summary>
+		/// <param name="relativePath"></param>
+		/// <returns></returns>
+		public static string GetFullPathFromRelativePath(string relativePath)
+		{
+			if(!relativePath.EndsWith("/") && !relativePath.EndsWith("\\"))
+				relativePath += "/";
+
+			return GetSubdomain(Application.dataPath) + relativePath;
+		}
+		
+		/// <summary>
+		/// Gets the relative path from the clone drone folder from a full path
+		/// </summary>
+		/// <param name="fullPath"></param>
+		/// <returns></returns>
+		public static string GetRelativePathFromFullPath(string fullPath)
+		{
+			int lastIndex = fullPath.LastIndexOf(ModLibrary.AssetLoader.MODS_FOLDER_NAME);
+			return fullPath.Substring(lastIndex);
 		}
 	}
 }

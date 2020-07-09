@@ -42,6 +42,7 @@
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
+    <Compile Include="DataSaver.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
     <Compile Include="Internal\InternalAssetBundleReferences.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />

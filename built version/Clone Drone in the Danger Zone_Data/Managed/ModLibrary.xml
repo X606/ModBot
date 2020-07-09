@@ -2437,6 +2437,26 @@
             <param name="assemblyPath"></param>
             <returns></returns>
         </member>
+        <member name="M:InternalModBot.InternalUtils.GetCallerModPath(System.Int32)">
+            <summary>
+            Gets the path relative to the Clone drone folder of the mod that called the method this method was called from
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.InternalUtils.GetFullPathFromRelativePath(System.String)">
+            <summary>
+            Gets the full path from a path relative to the clone drone folder
+            </summary>
+            <param name="relativePath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.InternalUtils.GetRelativePathFromFullPath(System.String)">
+            <summary>
+            Gets the relative path from the clone drone folder from a full path
+            </summary>
+            <param name="fullPath"></param>
+            <returns></returns>
+        </member>
         <member name="T:InternalModBot.LineInfo">
             <summary>
             Describes a line in 3D space
