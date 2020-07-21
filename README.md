@@ -14,7 +14,7 @@ Feel free to join our Discord or check out the website below.<br/>
 
 ## Getting the Mod-Bot project set up on your local machine
 In order to build the mod-bot project on your local machine follow these steps:
-1. Install Visual studio.
+1. Install Visual Studio.
 2. Install Mod-Bot on your local copy of clone drone in the danger zone.
 3. Copy all of the files from the `Clone Drone in the Danger Zone/Clone Drone in the Danger Zone_Data/Managed` folder into the UsedDlls folder in the Mod-Bot project.
 3. You should now be able to open the .sln file and build Mod-Bot!
