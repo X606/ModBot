@@ -12,7 +12,7 @@ namespace ModLibrary
 	[Serializable]
 	public class ModInfo
 	{
-		internal bool AreAllEssentialFieldsAssigned(out string errorMessage)
+		public bool AreAllEssentialFieldsAssigned(out string errorMessage)
 		{
 			if(string.IsNullOrWhiteSpace(DisplayName))
 			{
@@ -42,7 +42,7 @@ namespace ModLibrary
 			return true;
 		}
 
-		internal void FixFieldValues()
+		public void FixFieldValues()
 		{
 			if(!MainDLLFileName.EndsWith(".dll"))
 				MainDLLFileName += ".dll";
