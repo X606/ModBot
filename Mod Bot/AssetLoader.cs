@@ -56,6 +56,28 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Loads the asset bundle and asynchronously caches all the assets in it, if they haven't already been cached
+        /// </summary>
+        /// <param name="assetBundleName">The name of the asset bundle to cache</param>
+        /// <param name="customPath">The custom path from root path to load the asset bundle from</param>
+        public static void CacheAssets(string assetBundleName, string customPath)
+        {
+            if (!customPath.EndsWith("/") && !customPath.EndsWith("\\"))
+                customPath += "/";
+
+            AssetBundleInfo.TryCacheAssetBundle(customPath + assetBundleName);
+        }
+
+        /// <summary>
+        /// Loads the asset bundle and asynchronously caches all the assets in it, if they haven't already been cached
+        /// </summary>
+        /// <param name="assetBundleName">The name of the asset bundle to cache</param>
+        public static void CacheAssets(string assetBundleName)
+        {
+            CacheAssets(assetBundleName, MODS_FOLDER_NAME);
+        }
+
+        /// <summary>
         /// Gets a <see cref="GameObject"/> from an asset bundle
         /// </summary>
         /// <param name="assetBundleName">The name of the asset bundle file (Must be located in the 'mods' folder for this method)</param>
@@ -99,7 +121,7 @@ namespace ModLibrary
         /// <typeparam name="T">The type of the object in the assetbundle</typeparam>
         /// <param name="assetBundleName">The name of the assetbundle file</param>
         /// <param name="objectName">The name of the object you want to get from the assetbundle</param>
-        /// <param name="customPath">The custom path where the assetbundle is located, from your mods root folder
+        /// <param name="customPath">The custom path where the assetbundle is located, from your mods root folder</param>
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
         {

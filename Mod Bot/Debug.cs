@@ -140,24 +140,40 @@ namespace ModLibrary
         static void recursivePrintAllChildren(string pre, Transform obj)
         {
             Component[] components = obj.GetComponents(typeof(Component));
-
-            if (components.Length != 0)
+            if (components != null && components.Length > 0)
+            {
                 writeToFile(pre + "Components: ");
 
-            for (int i = 0; i < components.Length; i++)
-            {
-                string componentString = components[i].name + " (" + components[i].GetType().FullName + ")";
-                writeToFile(pre + componentString);
+                for (int i = 0; i < components.Length; i++)
+                {
+                    if (components[i] == null)
+                    {
+                        writeToFile(pre + "null (Component)");
+                    }
+                    else
+                    {
+                        string componentString = components[i].name + " (" + components[i].GetType().FullName + ")";
+                        writeToFile(pre + componentString);
+                    }
+                }
             }
 
-            if (obj.childCount != 0)
-                writeToFile(pre + "Children: ");
-
-            for (int i = 0; i < obj.childCount; i++)
+            if (obj.childCount > 0)
             {
-                Transform child = obj.GetChild(i);
-                writeToFile(pre + i + ": " + child.name);
-                recursivePrintAllChildren(pre + "    ", child);
+                writeToFile(pre + "Children: ");
+                for (int i = 0; i < obj.childCount; i++)
+                {
+                    Transform child = obj.GetChild(i);
+                    if (child == null)
+                    {
+                        writeToFile(pre + i + ": null");
+                    }
+                    else
+                    {
+                        writeToFile(pre + i + ": " + child.name);
+                        recursivePrintAllChildren(pre + "    ", child);
+                    }
+                }
             }
         }
 

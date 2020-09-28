@@ -44,6 +44,11 @@ namespace ModLibrary
             if (_cachedAssetBundleInfos.ContainsKey(key))
                 return _cachedAssetBundleInfos[key];
 
+            return createAssetBundle(key);
+        }
+
+        static AssetBundleInfo createAssetBundle(string key)
+        {
             string filePath = InternalUtils.GetSubdomain(Application.dataPath) + key;
 
             if (!File.Exists(filePath))
@@ -53,6 +58,12 @@ namespace ModLibrary
             _cachedAssetBundleInfos.Add(key, assetBundleInfo);
 
             return assetBundleInfo;
+        }
+
+        internal static void TryCacheAssetBundle(string key)
+        {
+            if (!_cachedAssetBundleInfos.ContainsKey(key))
+                createAssetBundle(key);
         }
 
         internal static void ClearCache()

@@ -208,46 +208,6 @@
             <param name="propertyName">The name of the property.</param>
             <param name="instance">The instance the property is in.</param>
         </member>
-        <member name="T:ModLibrary.AssetBundleInfo">
-            <summary>
-            Contains information about an asset bundle with all the assets asynchronously cached
-            </summary>
-        </member>
-        <member name="M:ModLibrary.AssetBundleInfo.Finalize">
-            <summary>
-            Unloads the AssetBundle when this object is destroyed
-            </summary>
-        </member>
-        <member name="M:ModLibrary.AssetBundleInfo.GetObject``1(System.String)">
-            <summary>
-            Loads an object from the <see cref="T:UnityEngine.AssetBundle"/>. Note: This will most likely be a prefab, if you want to instantiate the object you might want to use <see cref="M:ModLibrary.AssetBundleInfo.InstantiateObject``1(System.String)"/> instead
-            </summary>
-            <typeparam name="T">The type of object to load</typeparam>
-            <param name="objectName">The name of the object to load</param>
-            <returns>The object loaded from the asset bundle</returns>
-        </member>
-        <member name="M:ModLibrary.AssetBundleInfo.GetObject(System.String)">
-            <summary>
-            Loads a <see cref="T:UnityEngine.GameObject"/> from the <see cref="T:UnityEngine.AssetBundle"/>. Note: This will most likely be a prefab, if you want to instantiate the <see cref="T:UnityEngine.GameObject"/> you might want to use <see cref="M:ModLibrary.AssetBundleInfo.InstantiateObject(System.String)"/> instead
-            </summary>
-            <param name="objectName">The name of the <see cref="T:UnityEngine.GameObject"/> to load</param>
-            <returns>The <see cref="T:UnityEngine.GameObject"/> loaded from the <see cref="T:UnityEngine.AssetBundle"/></returns>
-        </member>
-        <member name="M:ModLibrary.AssetBundleInfo.InstantiateObject``1(System.String)">
-            <summary>
-            Instantiates an object of type <typeparamref name="T"/> from the <see cref="T:UnityEngine.AssetBundle"/>
-            </summary>
-            <typeparam name="T">The type of the object to instantiate</typeparam>
-            <param name="objectName">The name of the object to instantiate</param>
-            <returns>The instantiated object</returns>
-        </member>
-        <member name="M:ModLibrary.AssetBundleInfo.InstantiateObject(System.String)">
-            <summary>
-            Instantiates a <see cref="T:UnityEngine.GameObject"/> from the <see cref="T:UnityEngine.AssetBundle"/>
-            </summary>
-            <param name="objectName">The name of the <see cref="T:UnityEngine.GameObject"/> to instantiate</param>
-            <returns>The instantiated <see cref="T:UnityEngine.GameObject"/></returns>
-        </member>
         <member name="T:ModLibrary.AssetLoader">
             <summary>
             Used to load assets from assetbundles (normally placed in the mods folder)
@@ -264,14 +224,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.AssetLoader.GetAssetBundle(System.String,System.String)">
-            <summary>
-            Gets the <see cref="T:ModLibrary.AssetBundleInfo"/> from the asset bundle with the specfied name at the given custom path
-            </summary>
-            <param name="name">The name of the asset bundle file</param>
-            <param name="customPath">The custom path to the asset bundle, relative to the game root folder</param>
-            <returns></returns>
-        </member>
         <member name="M:ModLibrary.AssetLoader.GetObjectFromFile(System.String,System.String)">
             <summary>
             Gets a <see cref="T:UnityEngine.GameObject"/> from an asset bundle
@@ -286,7 +238,7 @@
             </summary>
             <param name="assetBundleName">The name of the asset bundle file</param>
             <param name="objectName">The name of the object you want to get from the asset bundle</param>
-            <param name="customPath">The custom path of the asset bundle, starts from your mods root folder</param>
+            <param name="customPath">The custom path of the asset bundle, starts from the 'Clone Drone in the Danger Zone' folder</param>
             <returns></returns>
         </member>
         <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String)">
@@ -298,10 +250,58 @@
             <param name="objectName">The name of the object you want to get from the asset bundle</param>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String,System.String)" -->
+        <member name="M:ModLibrary.AssetLoader.GetObjectFromFile``1(System.String,System.String,System.String)">
+            <summary>
+            Gets an Object of type <typeparamref name="T"/> from an assetbundle
+            </summary>
+            <typeparam name="T">The type of the object in the assetbundle</typeparam>
+            <param name="assetBundleName">The name of the assetbundle file</param>
+            <param name="objectName">The name of the object you want to get from the assetbundle</param>
+            <param name="customPath">The custom path where the assetbundle is located (goes from <seealso cref="P:UnityEngine.Application.dataPath"/>)</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.TrySaveFileToMods(System.String,System.String)">
+            <summary>Tries to save the file from the specified directory, (will not save file if one with the same already exists)</summary>
+            <param name="url">The URL to download the file from.</param>
+            <param name="name">The name of the file that will be created.</param>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.SaveFileToMods(System.String,System.String)">
+            <param name="url">The URL to download the file from.</param>
+            <param name="name">The name of the file that will be created.</param>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.SaveFileToModsAsync(System.String,System.String)">
+            <summary>
+            Saves a file into the mods folder, but does so asynchronously, returns a <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in a corutine with yield return
+            </summary>
+            <param name="url">The url to download.</param>
+            <param name="fileName">The name you want to give the file once you have downloaded it.</param>
+            <returns>A <see cref="T:ModLibrary.AssetLoader.AsyncDownload"/> that can be awaited in corutines with yield return</returns>
+        </member>
         <member name="M:ModLibrary.AssetLoader.ClearCache">
             <summary>
             Clears the cache for loaded assets
+            </summary>
+        </member>
+        <member name="M:ModLibrary.AssetLoader.GetSubdomain(System.String)">
+            <summary>
+            Gets the directory 1 step under a spesific directory
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ModLibrary.AssetLoader.AsyncDownload">
+            <summary>
+            A download handeler than can be awaited in corutines with yield return
+            </summary>
+        </member>
+        <member name="P:ModLibrary.AssetLoader.AsyncDownload.keepWaiting">
+            <summary>
+            If this return true, the download is not done yet
+            </summary>
+        </member>
+        <member name="P:ModLibrary.AssetLoader.AsyncDownload.IsError">
+            <summary>
+            If this return true, there was an error during downloading
             </summary>
         </member>
         <member name="T:ModLibrary.Generic2ButtonDialogue">
@@ -679,10 +679,29 @@
             Base class for all mods, contains virtual implementations for different events in the game.
             </summary>
         </member>
-        <member name="P:ModLibrary.Mod.ModInfo">
+        <member name="M:ModLibrary.Mod.GetModName">
             <summary>
-            The modinfo that goes with this Mod, this contains data about the mod name, version ect.
+            Returns the name of the mod, override to set the name of you mod
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetUniqueID">
+            <summary>
+            Returns a unique ID for every mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModDescription">
+            <summary>
+            Returns the description of the mod, override to change the description of your mod
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.Mod.GetModImageURL">
+            <summary>
+            Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+            </summary>
+            <returns></returns>
         </member>
         <member name="P:ModLibrary.Mod.HarmonyID">
             <summary>
@@ -743,6 +762,77 @@
             <param name="owner"></param>
             <param name="upgrades">The <see cref="T:UpgradeCollection"/> on the <see cref="T:FirstPersonMover"/> object</param>
         </member>
+        <member name="M:ModLibrary.Mod.OnProjectileStartedMoving(Projectile)">
+            <summary>
+            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/>
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileUpdate(Projectile)">
+            <summary>
+            Called in <see cref="M:Projectile.FixedUpdate"/>
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnProjectileDestroyed(Projectile)">
+            <summary>
+            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/>
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileStartedMoving(ArrowProjectile)">
+            <summary>
+            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileUpdate(ArrowProjectile)">
+            <summary>
+            Called in <see cref="M:Projectile.FixedUpdate"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnArrowProjectileDestroyed(ArrowProjectile)">
+            <summary>
+            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:ArrowProjectile"/>
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileStartedMoving(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called in <see cref="M:Projectile.StartFlying(UnityEngine.Vector3,UnityEngine.Vector3,System.Boolean,Character,System.Int32,System.Single)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
+            </summary>
+            <param name="bullet"></param>
+            <param name="isRepairFire"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isFlameBreath"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileUpdate(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called in <see cref="M:Projectile.FixedUpdate"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
+            </summary>
+            <param name="bullet"></param>
+            <param name="isFlameBreath"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isRepairFire"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnBulletProjectileDestroyed(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Called in <see cref="M:Projectile.DestroyProjectile"/> and <see cref="M:Projectile.OnEnvironmentCollided(System.Boolean)"/> if the <see cref="T:Projectile"/> is of type <see cref="T:BulletProjectile"/>
+            </summary>
+            <param name="bullet"></param>
+            <param name="isRepairFire"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isFlameBreath"></param>
+        </member>
+        <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType)">
+            <summary>
+            Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
+            </summary>
+            <param name="killedCharacter">The <see cref="T:Character"/> that was killed</param>
+            <param name="killerCharacter">The killer <see cref="T:Character"/></param>
+            <param name="damageSourceType">The cause of death</param>
+        </member>
         <member name="M:ModLibrary.Mod.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Called in <see cref="M:Character.onDeath(Character,DamageSourceType,System.Int32)"/>
@@ -798,7 +888,7 @@
             <param name="path">The path specified</param>
             <returns></returns>
         </member>
-        <member name="M:ModLibrary.Mod.OnLanguageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:ModLibrary.Mod.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Gets called when the language dictionary gets populated, use this method to add or change the dictionary when the language will be changed
             </summary>
@@ -818,11 +908,6 @@
         <member name="M:ModLibrary.Mod.OnClientDisconnectedToServer">
             <summary>
             Called when we disconnect from a multiplayer server
-            </summary>
-        </member>
-        <member name="P:ModLibrary.ModInfo.IsModEnabled">
-            <summary>
-            NOTE: setting this value only sets the playerPrefs, use <see cref="P:InternalModBot.LoadedModInfo.IsEnabled"/> to work with loaded mods
             </summary>
         </member>
         <member name="T:ModLibrary.KeyCodeInput">
@@ -972,6 +1057,14 @@
             <param name="onCreate">Called when the <see cref="T:ModLibrary.KeyCodeInput"/> is created, use this to change properties of the <see cref="T:ModLibrary.KeyCodeInput"/></param>
             <param name="customRect">The custom rect of the <see cref="T:ModLibrary.KeyCodeInput"/>, use this to change the position and scale of the <see cref="T:ModLibrary.KeyCodeInput"/></param>
             <param name="onChange">Called when the value of the <see cref="T:ModLibrary.KeyCodeInput"/> is changed</param>
+        </member>
+        <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddButton(System.String,System.Action,System.Action{UnityEngine.UI.Button})">
+            <summary>
+            Adds a <see cref="T:UnityEngine.UI.Button"/> to the page with the passed arguements
+            </summary>
+            <param name="displayName">The text you want to display next to the <see cref="T:UnityEngine.UI.Button"/></param>
+            <param name="onClick">Called when the user clicks on the created <see cref="T:UnityEngine.UI.Button"/></param>
+            <param name="onCreate">Called when the <see cref="T:UnityEngine.UI.Button"/> is created, use this to change properties of the <see cref="T:UnityEngine.UI.Button"/></param>
         </member>
         <member name="M:ModLibrary.ModOptionsWindowBuilder.Page.AddButton(System.String,System.Action,System.Nullable{ModLibrary.ModOptionsWindowBuilder.Rect},System.Action{UnityEngine.UI.Button})">
             <summary>
@@ -1565,6 +1658,7 @@
             </summary>
             <param name="mod"></param>
             <returns><see langword="true"/> of the <see cref="T:ModLibrary.Mod"/> is enabled, <see langword="false"/> if it's disabled</returns>
+            <exception cref="T:System.Exception">If the <see cref="T:ModLibrary.Mod"/> has not been loaded by <see cref="T:InternalModBot.ModsManager"/></exception>
         </member>
         <member name="T:ModLibrary.Vector3Extensions">
             <summary>
@@ -2297,17 +2391,17 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBot_Simplified_Chinese">
              <summary>
-               Looks up a localized string similar to modsbutton:模组
-            newversion_message:新的Mod-Bot版本可用: {0}\n(当前版本: {1})
-            newversion_dismiss:解除
+               Looks up a localized string similar to modsbutton:模式
+            newversion_message:新的Mod-Bot版本可用：{0}\n（当前版本：{1}）
+            newversion_dismiss:解雇
             newversion_install:安装
-            modbotversion:Mod-Bot 版本: {0}
-            modbotuptodate:Mod-Bot 版本 &apos;{0}&apos; 是最新的！
-            ignoreallcrashes_savedwarning:保存的选项消息 (忽略崩溃): 所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
-            ignoreallcrashes_on:游戏现在将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是崩溃仍然可能发生。
-            ignoreallcrashes_off:游戏不再忽略崩溃，为游戏稳定起见，应始终关闭此选项。
+            modbotversion:Mod-Bot版本：{0}
+            modbotuptodate:最新的Mod-Bot版本&apos;{0}&apos;！
+            ignoreallcrashes_savedwarning:已保存的选项消息（IgnoreCrashes）：所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
+            ignoreallcrashes_on:现在，游戏将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是硬崩溃仍然可能发生。
+            ignoreallcrashes_off:游戏不再忽略崩溃，为稳定起见，应始终关闭此选项。
             crashscreen_customtitle:Mod-Bot开发人员很乐意看到这一点！
-            crashscreen_customdescription:将我们的屏幕截图发送给“机器人角斗场Mod-Bot”问题，以便 [rest of string was truncated]&quot;;.
+            crashscreen_customdescription:将我们的屏幕截图发送给Clone Drone Mod-Bot矛 [rest of string was truncated]&quot;;.
              </summary>
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBot_Spanish_LatinAmerica">
@@ -2336,13 +2430,20 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 2.0.
+              Looks up a localized string similar to 1.4.9.
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
             <summary>
             Contains methods that get called from the game itself
             </summary>
+        </member>
+        <member name="M:InternalModBot.CalledFromInjections.FromGetPositionForAIToAimAt(Character)">
+            <summary>
+            Called from <see cref="M:MortarWalker.GetPositionForAIToAimAt"/>
+            </summary>
+            <param name="character"></param>
+            <returns></returns>
         </member>
         <member name="M:InternalModBot.CalledFromInjections.FromResourcesLoad(System.String)">
             <summary>
@@ -2419,43 +2520,6 @@
             <summary>
             The text that displays the numbers
             </summary>
-        </member>
-        <member name="T:InternalModBot.InternalUtils">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:InternalModBot.InternalUtils.GetSubdomain(System.String)">
-            <summary> </summary>
-            <param name="path"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.InternalUtils.GetModFolderRootFromAssemblyPath(System.String)">
-            <summary>
-            Gets the mod root folder from a specified assembly path
-            </summary>
-            <param name="assemblyPath"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.InternalUtils.GetCallerModPath(System.Int32)">
-            <summary>
-            Gets the path relative to the Clone drone folder of the mod that called the method this method was called from
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.InternalUtils.GetFullPathFromRelativePath(System.String)">
-            <summary>
-            Gets the full path from a path relative to the clone drone folder
-            </summary>
-            <param name="relativePath"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.InternalUtils.GetRelativePathFromFullPath(System.String)">
-            <summary>
-            Gets the relative path from the clone drone folder from a full path
-            </summary>
-            <param name="fullPath"></param>
-            <returns></returns>
         </member>
         <member name="T:InternalModBot.LineInfo">
             <summary>
@@ -2814,13 +2878,13 @@
             Removes all modded upgrades and sets the current page to 0
             </summary>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.RemoveModdedUpgradesFor(System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.RemoveModdedUpgradesFor(ModLibrary.Mod)">
             <summary>
             Removes all of the upgrades in <see cref="F:UpgradeManager.UpgradeDescriptions"/> placed there by a mod 
             </summary>
-            <param name="modID"></param>
+            <param name="mod"></param>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.AddUpgrade(UpgradeType,System.Int32,System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.AddUpgrade(UpgradeType,System.Int32,ModLibrary.Mod)">
             <summary>
             Adds an upgrade to keep track of, this upgrade will be displayed on the page of the mod passed
             </summary>
@@ -2828,14 +2892,14 @@
             <param name="level"></param>
             <param name="mod"></param>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.SetAngleOfModdedUpgrade(System.Single,UpgradeType,System.Int32,System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.SetAngleOfModdedUpgrade(System.Single,UpgradeType,System.Int32,ModLibrary.Mod)">
             <summary>
             Sets the angle of a modded upgrade, this method will throw an exeption if the upgrade is not on the page of the mod
             </summary>
             <param name="angle"></param>
             <param name="upgradeType"></param>
             <param name="upgradeLevel"></param>
-            <param name="modID"></param>
+            <param name="mod"></param>
         </member>
         <member name="M:InternalModBot.UpgradePagesManager.GetAngleOfUpgrade(UpgradeType,System.Int32)">
             <summary>
@@ -2845,7 +2909,7 @@
             <param name="upgradeLevel"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryAddPage(ModLibrary.Mod)">
             <summary>
             If mod already has a page does nothing
             </summary>
@@ -2857,29 +2921,29 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(ModLibrary.Mod)">
             <summary>
             Generates a list of pages, and then gets the page index of the mod passed
             </summary>
-            <param name="modID"></param>
+            <param name="mod"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.GetPageForMod(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},ModLibrary.Mod)">
             <summary>
             Gets the page index of the mod passed from the pages list passed
             </summary>
             <param name="pages"></param>
-            <param name="modID"></param>
+            <param name="mod"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryGetModIDForPage(System.Int32)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Int32)">
             <summary>
             Tries to get the mod responsable for a page, note that this generates a new pages list and uses that
             </summary>
             <param name="page"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.TryGetModIDForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.Int32)">
+        <member name="M:InternalModBot.UpgradePagesManager.TryGetModForPage(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{ModLibrary.Mod,System.Collections.Generic.List{InternalModBot.ModdedUpgradeRepresenter}}},System.Int32)">
             <summary>
             Tries to get the mod responsable for a page
             </summary>
@@ -2926,11 +2990,11 @@
             <param name="UpgradeType"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.UpgradePagesManager.containsMod(System.String)">
+        <member name="M:InternalModBot.UpgradePagesManager.containsMod(ModLibrary.Mod)">
             <summary>
             returns true if AllModdedUpgradePages contains the passed mod
             </summary>
-            <param name="modID"></param>
+            <param name="mod"></param>
             <returns></returns>
         </member>
         <member name="T:InternalModBot.CloseModOptionsWindowOnEscapeKey">
@@ -2944,17 +3008,33 @@
             </summary>
             <param name="owner"></param>
         </member>
-        <member name="T:InternalModBot.LoadedModInfo">
+        <member name="T:InternalModBot.LoadedMod">
             <summary>
-            Stores all necessary data about a loaded mod
+            Class used to keep both a mod and bool that decides if the mod is active in same list
             </summary>
         </member>
-        <member name="M:InternalModBot.LoadedModInfo.#ctor(ModLibrary.Mod,ModLibrary.ModInfo)">
+        <member name="M:InternalModBot.LoadedMod.#ctor(ModLibrary.Mod,System.Byte[],System.Boolean)">
             <summary>
             Sets the mod field to the passed mod, and will not deactivate the mod
             </summary>
-            <param name="mod"></param>
-            <param name="modInfo"></param>
+            <param name="_mod"></param>
+            <param name="_rawAssemblyData"></param>
+            <param name="isLoadedFromFile"></param>
+        </member>
+        <member name="F:InternalModBot.LoadedMod.Mod">
+            <summary>
+            The Mod object the class is holding
+            </summary>
+        </member>
+        <member name="F:InternalModBot.LoadedMod.IsDeactivated">
+            <summary>
+            Decides if the mod is deactivated.
+            </summary>
+        </member>
+        <member name="F:InternalModBot.LoadedMod.IsOnlyLoadedInMemory">
+            <summary>
+            If this mod doesnt have a file
+            </summary>
         </member>
         <member name="T:InternalModBot.ModDownloadInfoItem">
             <summary>
@@ -3011,40 +3091,6 @@
             <summary>
             The name of the mod.
             </summary>
-        </member>
-        <member name="T:InternalModBot.ModsManager">
-            <summary>
-            Handles mod loading, disableing and enableing.
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.ClearCache">
-            <summary>
-            Clears all mod cache (including the AssetLoader cache)
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetInfo(ModLibrary.Mod)">
-            <summary>
-            Returns the <see cref="T:ModLibrary.ModInfo"/> assosiated with a specific mod, returns null if the mod is not loaded
-            </summary>
-            <param name="mod"></param>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.ModsManager.RefreshAllLoadedActiveMods">
-            <summary>
-            Refreshes the cache for what mods are active and loaded
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetAllLoadedActiveMods">
-            <summary>
-            Gets all the currently loaded mods that are not disabled
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:InternalModBot.ModsManager.GetActiveModInfos">
-            <summary>
-            Returns all the mods that are active Infos
-            </summary>
-            <returns></returns>
         </member>
         <member name="T:InternalModBot.ModdedOptionButtonItem">
             <summary>
@@ -3289,6 +3335,83 @@
             <param name="holder"></param>
             <param name="owner"></param>
         </member>
+        <member name="T:InternalModBot.ModsManager">
+            <summary>
+            Handles mod loading, disableing and enableing.
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.Initialize">
+            <summary>
+            Loads all mods from the mods directory and deactivates remembered deactivated mods
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.ReloadMods">
+            <summary>
+            Clears all loaded mods and loads them again
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.LoadMod(System.Byte[],System.Boolean,System.String@)">
+            <summary>
+            Loads a mod from only the bytes making up the assembly
+            </summary>
+            <param name="assemblyData"></param>
+            <param name="hasFile"></param>
+            <param name="errorMessage"></param>
+        </member>
+        <member name="M:InternalModBot.ModsManager.WriteDllFileToModFolder(ModLibrary.Mod)">
+            <summary>
+            Adds the mod to the mods folder
+            </summary>
+            <param name="mod"></param>
+        </member>
+        <member name="M:InternalModBot.ModsManager.ClearCache">
+            <summary>
+            Clears all mod cache (including the AssetLoader cache)
+            </summary>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetAllLoadedMods">
+            <summary>
+            Gets a list of all mods that should currently be active
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetAllMods">
+            <summary>
+            Gets a list of all mods currently loaded, even mods that arent currently active
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModsManager.DisableMod(ModLibrary.Mod)">
+            <summary>
+            Disables a mod, this will call on OnModDeactivated on the mod, and Mod-Bot will not make any more calls to the mod until activated again 
+            </summary>
+            <param name="mod"></param>
+        </member>
+        <member name="M:InternalModBot.ModsManager.EnableMod(ModLibrary.Mod)">
+            <summary>
+            Enables a mod, this will make Mod-Bot start calling it again and also call OnModRefreshed on it
+            </summary>
+            <param name="mod"></param>
+        </member>
+        <member name="M:InternalModBot.ModsManager.IsModDeactivated(ModLibrary.Mod)">
+            <summary>
+            Checks if a mod is deactivated
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.ModsManager.GetIsModOnlyLoadedInMemory(ModLibrary.Mod)">
+            <summary>
+            Returns true if the passed mod doesnt have a file to load from
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="F:InternalModBot.ModsManager.PassOnMod">
+            <summary>
+            A very special mod that will call all mods the most functions passed to it on all mods
+            </summary>
+        </member>
         <member name="T:InternalModBot.ModsPanelManager">
             <summary>
             Used by Mod-Bot to control most of the UI in Mod-Bot, this has control over the mod buttons and mods window. Note that all functions and fields on this class are private since they more or less work on their own.
@@ -3327,6 +3450,18 @@
             <summary>
             Used by Mod-Bot to call events on all loaded active mods, you probably dont want to use this from mods
             </summary>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.GetModName">
+            <summary>
+            Mods require us to override this one, but its never used
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.GetUniqueID">
+            <summary>
+            Mods require us to override this one, but its never used
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnFirstPersonMoverSpawned(FirstPersonMover)">
             <summary>
@@ -3388,6 +3523,69 @@
             <param name="owner"></param>
             <param name="upgrades"></param>
         </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileStartedMoving(Projectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileUpdate(Projectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnProjectileDestroyed(Projectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="projectile"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileStartedMoving(ArrowProjectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileUpdate(ArrowProjectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnArrowProjectileDestroyed(ArrowProjectile)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="arrow"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileStartedMoving(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="bullet"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isFlameBreath"></param>
+            <param name="isRepairFire"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileUpdate(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="bullet"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isFlameBreath"></param>
+            <param name="isRepairFire"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnBulletProjectileDestroyed(BulletProjectile,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="bullet"></param>
+            <param name="isMortarShrapnel"></param>
+            <param name="isFlameBreath"></param>
+            <param name="isRepairFire"></param>
+        </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnCharacterKilled(Character,Character,DamageSourceType,System.Int32)">
             <summary>
             Calls this method on all mods
@@ -3426,7 +3624,7 @@
             <param name="path"></param>
             <returns></returns>
         </member>
-        <member name="M:InternalModBot.PassOnToModsManager.OnLanguageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:InternalModBot.PassOnToModsManager.OnLanugageChanged(System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
             Calls this method on all mods
             </summary>

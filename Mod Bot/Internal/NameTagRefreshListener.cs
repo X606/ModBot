@@ -36,12 +36,13 @@ namespace InternalModBot
 		void multiplayerNamePrefixManager_RefreshNameTags()
 		{
 			string playfabID = _owner.GetPlayFabID();
-			if(playfabID == null)
-				return;
-
-			_nameTag.NameText.text = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID);
+			if (playfabID != null)
+			{
+				MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID, delegate (string displayName)
+				{
+					_nameTag.NameText.text = displayName;
+				});
+			}
 		}
-
-		
 	}
 }

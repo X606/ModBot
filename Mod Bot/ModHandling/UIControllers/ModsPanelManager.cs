@@ -19,7 +19,7 @@ namespace InternalModBot
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(7).gameObject; // Gets the lower buttons container
+            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(8).gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
             GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(1).gameObject; // Gets the options button (we copy it and replace its organs and face)
@@ -31,7 +31,7 @@ namespace InternalModBot
             GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
             GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.transform.GetChild(1).GetChild(9).position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.AchievementsButton.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffset;

@@ -54,7 +54,16 @@ namespace InternalModBot
 
         IEnumerator suggestModMultiplayerCoroutine(string suggesterPlayfabID, string modName, byte[] data)
         {
-            string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
+            string displayName = null;
+
+            bool hasDisplayName = false;
+            MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID, delegate (string receivedDisplayName)
+            {
+                displayName = receivedDisplayName;
+                hasDisplayName = true;
+            });
+
+            yield return new WaitUntil(() => hasDisplayName);
 
             if (displayName == null)
                 displayName = "";

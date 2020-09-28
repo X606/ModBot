@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,21 +27,15 @@ namespace InternalModBot
     {
         const BindingFlags TARGET_METHOD_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        static bool hasInjected()
-        {
-            return false;
-        }
-
         /// <summary>
         /// Injects all patches if it is not already done
         /// </summary>
         public static void TryInject()
         {
-            if (hasInjected())
+            Harmony harmony = new Harmony("com.Mod-Bot.Internal");
+            if (harmony.GetPatchedMethods().Any())
                 return;
 
-            Harmony harmony = new Harmony("com.Mod-Bot.Internal");
             MethodInfo[] methods = typeof(Injections).GetMethods(BindingFlags.Public | BindingFlags.Static);
             foreach (MethodInfo injectionSource in methods)
             {
@@ -250,12 +245,6 @@ namespace InternalModBot
 
         static class Injections
         {
-            [ExtraInjectionData(Namespace = "InternalModBot")]
-            public static bool ModBotHarmonyInjectionManager_hasInjected_Postfix(bool __result)
-            {
-                return true;
-            }
-
             public static void FirstPersonMover_RefreshUpgrades_Prefix(FirstPersonMover __instance)
             {
                 if (__instance == null || __instance.gameObject == null || !__instance.IsAlive() || __instance.GetCharacterModel() == null)
@@ -521,21 +510,73 @@ namespace InternalModBot
                 return false;
             }
 
-			public static string MultiplayerPlayerInfoManager_TryGetDisplayName_Postfix(string __result, string playFabID)
-			{
-				if(__result == null)
-					return null;
+            public static bool MultiplayerPlayerInfoState_GetOrPrepareSafeDisplayName_Prefix(MultiplayerPlayerInfoState __instance, Action<string> onSafeDisplayNameReceived, ref bool ____isSafeDisplayNameBeingPrepared)
+            {
+                if (string.IsNullOrEmpty(Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)))
+                {
+                    Action<string> singleCallback = null;
+                    singleCallback = delegate (string safeDisplayName)
+                    {
+                        __instance.OnSafeDisplayNamePrepared -= singleCallback;
+                        Action<string> onSafeDisplayNameReceived3 = onSafeDisplayNameReceived;
+                        if (onSafeDisplayNameReceived3 != null)
+                            onSafeDisplayNameReceived3(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, safeDisplayName));
+                    };
 
-				return MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(playFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(playFabID, __result);
-			}
-			public static void MultiplayerPlayerInfoLabel_RefreshVisuals_Postfix(ref MultiplayerPlayerInfoState ____playerInfoState, ref Text ___PlayerNameLabel)
+                    __instance.OnSafeDisplayNamePrepared += singleCallback;
+                    
+                    if (____isSafeDisplayNameBeingPrepared)
+                        return false;
+
+                    ____isSafeDisplayNameBeingPrepared = true;
+                    ProfanityChecker.FilterForProfanities(__instance.state.DisplayName, delegate (string preparedName)
+                    {
+                        Accessor.SetPrivateProperty("SafeDisplayName", __instance, preparedName);
+                        Accessor.SetPrivateField("_isSafeDisplayNameBeingPrepared", __instance, false);
+
+                        EventInfo safeDisplayNamePreparedEvent = typeof(MultiplayerPlayerInfoState).GetEvent("OnSafeDisplayNamePrepared", BindingFlags.Public | BindingFlags.Instance);
+                        if (safeDisplayNamePreparedEvent.RaiseMethod != null)
+                            safeDisplayNamePreparedEvent.RaiseMethod.Invoke(__instance, new object[] { Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance) });
+                    });
+                }
+                else
+                {
+                    Action<string> onSafeDisplayNameReceived2 = onSafeDisplayNameReceived;
+                    if (onSafeDisplayNameReceived2 != null)
+                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)));
+                }
+
+                return false;
+            }
+
+            public static bool CharacterNameTagManager_updateNameTag_Prefix(Character character)
+            {
+                if (!GameModeManager.ShouldCreateNameTagsForOtherPlayers())
+                    return false;
+                
+                MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(character.state.PlayFabID, delegate (string displayName)
+                {
+                    if (displayName != null && !character.HasNameTag())
+                    {
+                        displayName = MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(character.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(character.state.PlayFabID, displayName);
+                        CharacterNameTagManager.Instance.StartCoroutine(Accessor.CallPrivateMethod<CharacterNameTagManager, IEnumerator>("addNameTagWithDelay", CharacterNameTagManager.Instance, new object[] { character, displayName }));
+                    }
+                });
+
+                return false;
+            }
+
+            public static void MultiplayerPlayerInfoLabel_RefreshVisuals_Postfix(ref MultiplayerPlayerInfoState ____playerInfoState, Text ___PlayerNameLabel)
 			{
 				if(____playerInfoState == null || ____playerInfoState.IsDetached())
 					return;
 
-				___PlayerNameLabel.supportRichText = true; // allow custom colors
-				___PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-				___PlayerNameLabel.text = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(____playerInfoState.state.PlayFabID);
+                MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(____playerInfoState.state.PlayFabID, delegate (string displayName)
+                {
+                    ___PlayerNameLabel.supportRichText = true; // allow custom colors
+                    ___PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    ___PlayerNameLabel.text = displayName;
+                });
 			}
 			
 			public static void EnemyNameTag_Initialize_Postfix(EnemyNameTag __instance, Character character)
@@ -561,40 +602,12 @@ namespace InternalModBot
                 form.AddField("LoadedMods", loadedModNames);
             }
 
-            public static Vector3 Character_GetPositionForAIToAimAt_Postfix(Vector3 __result, Character __instance)
-            {
-                if (!(__instance is MortarWalker))
-                    return __result;
-
-                List<MechBodyPart> powerCrystals = __instance.GetBodyParts(MechBodyPartType.PowerCrystal);
-                for (int i = powerCrystals.Count - 1; i >= 0; i--)
-                {
-                    if (powerCrystals[i] == null || (powerCrystals[i].ParentConnection != null && powerCrystals[i].ParentConnection.HasBeenSevered()))
-                        powerCrystals.RemoveAt(i);
-                }
-
-                if (powerCrystals.Count == 0)
-                    return __result;
-
-                return powerCrystals[0].GetVolumeWorldCenterPosition();
-            }
-
             public static Vector3 Character_GetPositionToDeflectArrowsAt_Postfix(Vector3 __result, Character __instance)
             {
-                if (!(__instance is MortarWalker))
-                    return __result;
+                if (__instance is MortarWalker)
+                    return __instance.GetPositionForAIToAimAt(true);
 
-                List<MechBodyPart> powerCrystals = __instance.GetBodyParts(MechBodyPartType.PowerCrystal);
-                for (int i = powerCrystals.Count - 1; i >= 0; i--)
-                {
-                    if (powerCrystals[i] == null || (powerCrystals[i].ParentConnection != null && powerCrystals[i].ParentConnection.HasBeenSevered()))
-                        powerCrystals.RemoveAt(i);
-                }
-
-                if (powerCrystals.Count == 0)
-                    return __result;
-
-                return powerCrystals[0].GetVolumeWorldCenterPosition();
+                return __result;
             }
         }
     }

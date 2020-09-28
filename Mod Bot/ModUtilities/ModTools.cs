@@ -70,7 +70,7 @@ namespace ModLibrary
 
             for (int i = 0; i < characters.Count; i++)
             {
-                if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].GetPositionForAIToAimAt()) <= radius)
+                if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].transform.position) <= radius)
                     charactersInRange.Add(characters[i]);
             }
 

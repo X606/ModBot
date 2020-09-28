@@ -69,11 +69,11 @@ namespace InternalModBot
 				foreach(FirstPersonMover player in players)
 				{
 					string playfabID = player.state.PlayFabID;
-					string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID);
-					if(displayName != null)
-					{
-						debug.Log(displayName + ": " + playfabID);
-					}
+                    MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID, delegate (string displayName)
+                    {
+                        if (displayName != null)
+                            debug.Log(displayName + ": " + playfabID);
+                    });
 				}
 			}
 			if (subCommands[0] == "redownloaddata")

@@ -102,7 +102,10 @@ namespace InternalModBot
 		}
 		internal static void OnNameTagRefreshed(EnemyNameTag nameTag, string ownerPlayfabID)
 		{
-			nameTag.NameText.text = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(ownerPlayfabID);
+			MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(ownerPlayfabID, delegate (string displayName)
+			{
+				nameTag.NameText.text = displayName;
+			});
 		}
 	}
 }
