@@ -19,7 +19,7 @@ namespace ModLibrary.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -142,12 +142,12 @@ namespace ModLibrary.Properties {
         /// <summary>
         ///   Looks up a localized string similar to modsbutton:моды
         ///newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
-        ///newversion_dismiss:отклонять
-        ///newversion_install:устанавливать
+        ///newversion_dismiss:Отклонить
+        ///newversion_install:Установить
         ///modbotversion:Версия Mod-Bot: {0}
-        ///modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена!
+        ///modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена до последней версии!
         ///ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
-        ///ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция дол [rest of string was truncated]&quot;;.
+        ///ignoreallcrashes_on:Игра теперь игнорирует все сб [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Russian {
             get {
@@ -175,14 +175,14 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:MODIFICACIONES
-        ///newversion_message:Nueva versión Mod-Bot disponible: {0}\n(Versión actual: {1})
-        ///newversion_dismiss:Descartar
-        ///newversion_install:Instalar en pc
-        ///modbotversion:Versión Mod-Bot: {0}
-        ///modbotuptodate:¡Versión de Mod-Bot &apos;{0}&apos; actualizada!
-        ///ignoreallcrashes_savedwarning:Mensaje de opción guardada (IgnoreCrashes): se ignoran todos los bloqueos, esto solo debe habilitarse con fines de prueba, apáguelo escribiendo &quot;ignoreallcrashes 0&quot; en la consola.
-        ///ignoreallcrashes_on:El juego ahora ig [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to modsbutton:MODS
+        ///newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
+        ///newversion_dismiss:Dismiss
+        ///newversion_install:Install
+        ///modbotversion:Mod-Bot Version: {0}
+        ///modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
+        ///ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
+        ///ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Spanish_LatinAmerica {
             get {
@@ -207,7 +207,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2.0.
+        ///   Looks up a localized string similar to 1.5.
         /// </summary>
         internal static string ModBotVersion {
             get {
