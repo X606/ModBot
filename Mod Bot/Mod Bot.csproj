@@ -54,6 +54,7 @@
     <Compile Include="Internal\FPSCounter.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
     <Compile Include="Internal\LineInfo.cs" />
+    <Compile Include="Internal\LoadedMod.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotUnitTestManager.cs" />

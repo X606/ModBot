@@ -597,8 +597,11 @@ namespace InternalModBot
             public static void ErrorManager_SendDataToLoggly_Prefix(WWWForm form)
             {
                 form.AddField("IsModdedClient", "true");
-				
-				string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetActiveModInfos().GetPropertyValues<ModInfo, string>("DisplayName"));
+
+                string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetAllLoadedMods().CallMethods<Mod, string>("GetModName"));
+
+                // Old mod loading system
+                // string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetActiveModInfos().GetPropertyValues<ModInfo, string>("DisplayName"));
                 form.AddField("LoadedMods", loadedModNames);
             }
 

@@ -1,4 +1,12 @@
-﻿using HarmonyLib;
+﻿/*
+ * This class is only used in the new mod loading system,
+ * and since that system isn't done yet I am reverting back to the old system
+ * 
+ */
+
+
+/*
+using HarmonyLib;
 using ModLibrary;
 using System;
 using UnityEngine;
@@ -67,3 +75,4 @@ namespace InternalModBot
 
     }
 }
+*/

@@ -14,6 +14,8 @@ namespace InternalModBot
     /// </summary>
     public static class ModBotLocalizationManager
     {
+        static Dictionary<string, string> _fallbackModdedUpgradeLocalization = new Dictionary<string, string>();
+
         static List<Tuple<string, string>> _localizedStringsToAdd = new List<Tuple<string, string>>();
         static bool _isAddStringsCoroutineRunning;
 
@@ -97,6 +99,20 @@ namespace InternalModBot
 
                 languageDictionary.Add(id, translatedText);
             }
+
+            foreach (KeyValuePair<string, string> localizationPair in _fallbackModdedUpgradeLocalization)
+            {
+                if (!languageDictionary.ContainsKey(localizationPair.Key))
+                    languageDictionary.Add(localizationPair.Key, localizationPair.Value);
+            }
+        }
+
+        internal static void TryAddModdedUpgradeLocalizationStringToDictionary(string ID, string text)
+        {
+            if (!_fallbackModdedUpgradeLocalization.ContainsKey(ID))
+                _fallbackModdedUpgradeLocalization.Add(ID, text);
+
+            TryAddLocalizationStringToDictionary(ID, text);
         }
 
         internal static void TryAddLocalizationStringToDictionary(string ID, string text)

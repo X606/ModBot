@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * This class is only used in the new mod loading system,
+ * and since that system isn't done yet I am reverting back to the old system
+ * 
+ */
+
+/*
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,3 +38,4 @@ namespace ModLibrary
         public string ErrorMessage;
     }
 }
+*/

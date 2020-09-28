@@ -11,15 +11,50 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
+        #region Reverted
+        /// <summary>
+        /// Returns the name of the mod, override to set the name of you mod
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetModName();
+
+        /// <summary>
+        /// Returns a unique ID for every mod
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetUniqueID();
+
+        /// <summary>
+        /// Returns the description of the mod, override to change the description of your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModDescription()
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Returns the url to the image to be displayed in the mods menu, override to set a custom image for your mod
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetModImageURL()
+        {
+            return "";
+        }
+        #endregion
+
+        /*
 		/// <summary>
 		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
 		/// </summary>
         protected internal ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
+        */
 
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
-        public string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
+        public string HarmonyID => "com.Mod-Bot.Mod." + GetUniqueID();
+        // public string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>

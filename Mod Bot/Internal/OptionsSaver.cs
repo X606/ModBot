@@ -118,7 +118,8 @@ namespace InternalModBot
 
         static string getSaveIDForSetting(Mod owner, string providedSaveID)
         {
-            return owner.ModInfo.UniqueID + providedSaveID;
+            return owner.GetUniqueID() + providedSaveID;
+            // return owner.ModInfo.UniqueID + providedSaveID;
         }
 
         internal static void SaveToFile()
@@ -145,7 +146,8 @@ namespace InternalModBot
 
             foreach (string typeString in _oldSaveFormatTypeStrings) // If the setting can't be found, look for it with the old save format instead, if a match is found with the old format, it is converted to the new
             {
-                string oldSaveID = owner.ModInfo.UniqueID + typeString + providedSaveID;
+                string oldSaveID = owner.GetUniqueID() + typeString + providedSaveID;
+                // string oldSaveID = owner.ModInfo.UniqueID + typeString + providedSaveID;
 
                 if (_savedSettingsDictionary.TryGetValue(oldSaveID, out object valueOldKey))
                 {

@@ -77,6 +77,7 @@ namespace ModLibrary
             CacheAssets(assetBundleName, MODS_FOLDER_NAME);
         }
 
+        #region Reverted
         /// <summary>
         /// Gets a <see cref="GameObject"/> from an asset bundle
         /// </summary>
@@ -85,8 +86,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
         {
-			string path = InternalUtils.GetCallerModPath();
-			return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path);
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName);
         }
 
         /// <summary>
@@ -94,12 +94,11 @@ namespace ModLibrary
         /// </summary>
         /// <param name="assetBundleName">The name of the asset bundle file</param>
         /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
-        /// <param name="customPath">The custom path of the asset bundle, starts from your mods root folder</param>
+        /// <param name="customPath">The custom path of the asset bundle, starts from the 'Clone Drone in the Danger Zone' folder</param>
         /// <returns></returns>
         public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
         {
-			string path = InternalUtils.GetCallerModPath();
-			return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path + customPath);
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, customPath);
         }
 
         /// <summary>
@@ -111,8 +110,61 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
         {
-			string path = InternalUtils.GetCallerModPath();
-			return getObjectFromFileInternal<T>(assetBundleName, objectName, path);
+            return getObjectFromFileInternal<T>(assetBundleName, objectName);
+        }
+
+        /// <summary>
+        /// Gets an Object of type <typeparamref name="T"/> from an assetbundle
+        /// </summary>
+        /// <typeparam name="T">The type of the object in the assetbundle</typeparam>
+        /// <param name="assetBundleName">The name of the assetbundle file</param>
+        /// <param name="objectName">The name of the object you want to get from the assetbundle</param>
+        /// <param name="customPath">The custom path where the assetbundle is located (goes from <seealso cref="Application.dataPath"/>)</param>
+        /// <returns></returns>
+        public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
+        {
+            return getObjectFromFileInternal<T>(assetBundleName, objectName, customPath);
+        }
+        #endregion
+
+        // New mod loading system
+        /*
+        /// <summary>
+        /// Gets a <see cref="GameObject"/> from an asset bundle
+        /// </summary>
+        /// <param name="assetBundleName">The name of the asset bundle file (Must be located in the 'mods' folder for this method)</param>
+        /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
+        /// <returns></returns>
+        public static GameObject GetObjectFromFile(string assetBundleName, string objectName)
+        {
+            string path = InternalUtils.GetCallerModPath();
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path);
+        }
+
+        /// <summary>
+        /// Gets a <see cref="GameObject"/> from an asset bundle
+        /// </summary>
+        /// <param name="assetBundleName">The name of the asset bundle file</param>
+        /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
+        /// <param name="customPath">The custom path of the asset bundle, starts from your mods root folder</param>
+        /// <returns></returns>
+        public static GameObject GetObjectFromFile(string assetBundleName, string objectName, string customPath)
+        {
+            string path = InternalUtils.GetCallerModPath();
+            return getObjectFromFileInternal<GameObject>(assetBundleName, objectName, path + customPath);
+        }
+
+        /// <summary>
+        /// Gets an Object of type <typeparamref name="T"/> from an asset bundle
+        /// </summary>
+        /// <typeparam name="T">The type of the object</typeparam>
+        /// <param name="assetBundleName">The name of the asset bundle file</param>
+        /// <param name="objectName">The name of the object you want to get from the asset bundle</param>
+        /// <returns></returns>
+        public static T GetObjectFromFile<T>(string assetBundleName, string objectName) where T : UnityEngine.Object
+        {
+            string path = InternalUtils.GetCallerModPath();
+            return getObjectFromFileInternal<T>(assetBundleName, objectName, path);
         }
 
         /// <summary>
@@ -125,10 +177,11 @@ namespace ModLibrary
         /// <returns></returns>
         public static T GetObjectFromFile<T>(string assetBundleName, string objectName, string customPath) where T : UnityEngine.Object
         {
-			string path = InternalUtils.GetCallerModPath();
-			return getObjectFromFileInternal<T>(assetBundleName, objectName, path + customPath);
+            string path = InternalUtils.GetCallerModPath();
+            return getObjectFromFileInternal<T>(assetBundleName, objectName, path + customPath);
         }
-		
+        */
+
         /// <summary>
         /// Clears the cache for loaded assets
         /// </summary>

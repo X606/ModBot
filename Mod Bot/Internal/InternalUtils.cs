@@ -28,6 +28,8 @@ namespace InternalModBot
 			return subDomainsList.Join("/") + "/";
 		}
 
+		// New mod loading system
+		/*
 		/// <summary>
 		/// Gets the mod root folder from a specified assembly path
 		/// </summary>
@@ -65,6 +67,7 @@ namespace InternalModBot
 
 			return GetModFolderRootFromAssemblyPath(type.Assembly.Location);
 		}
+		*/
 
 		/// <summary>
 		/// Gets the full path from a path relative to the clone drone folder
