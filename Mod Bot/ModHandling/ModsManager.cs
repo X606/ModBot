@@ -534,17 +534,14 @@ namespace InternalModBot
 			List<string> errors = new List<string>();
 			List<string> invalidModsFilePaths = new List<string>();
 
-			string[] files = Directory.GetFiles(getModsFolderPath());
-			for (int i = 0; i < files.Length; i++)
+			string[] dllFiles = Directory.GetFiles(getModsFolderPath(), "*.dll", SearchOption.TopDirectoryOnly);
+			for (int i = 0; i < dllFiles.Length; i++)
 			{
-				if (files[i].EndsWith(".dll"))
+				byte[] modBytes = File.ReadAllBytes(dllFiles[i]);
+				if (!LoadMod(modBytes, true, out string error))
 				{
-					byte[] modData = File.ReadAllBytes(files[i]);
-					if (!LoadMod(modData, true, out string error))
-					{
-						errors.Add(error);
-						invalidModsFilePaths.Add(files[i]);
-					}
+					errors.Add(error);
+					invalidModsFilePaths.Add(dllFiles[i]);
 				}
 			}
 
