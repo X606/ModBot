@@ -64,7 +64,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Gets the translated string via <see cref="LocalizationManager.GetTranslatedString(string)"/> and formats the returned <see langword="string"/> with the given arguments
+        /// Gets the translated string via <see cref="LocalizationManager.GetTranslatedString(string, int)"/> and formats the returned <see langword="string"/> with the given arguments
         /// </summary>
         /// <param name="ID">The localization ID to get the translated string of</param>
         /// <param name="arguments">The arguments to format into the string</param>
