@@ -24,13 +24,7 @@ namespace ModLibrary.YieldInstructions
         /// <summary>
         /// Returns if the <see cref="Coroutine"/> should keep waiting
         /// </summary>
-        public override bool keepWaiting
-        {
-            get
-            {
-                return !_firstPersonMover.HasCharacterModel();
-            }
-        }
+        public override bool keepWaiting => !_firstPersonMover.HasCharacterModel();
 
         FirstPersonMover _firstPersonMover;
     }

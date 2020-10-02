@@ -1,5 +1,6 @@
 ﻿using ModLibrary;
 using System;
+using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,9 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             ErrorChanger.ChangeError(); // Change error message so that crashes are sent to us and/or the developers of any mods installed instead of the actual game developers
 
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
@@ -52,11 +56,14 @@ namespace InternalModBot
             IgnoreCrashesManager.Start();
 
             ModBotHarmonyInjectionManager.TryInject();
+
+            stopwatch.Stop();
+            debug.Log("Initialized Mod-Bot in " + stopwatch.Elapsed.TotalSeconds + " seconds");
         }
 
         static void initilizeUI()
         {
-            GameObject spawnedUI = UnityEngine.Object.Instantiate(AssetLoader.GetObjectFromFile("twitchmode", "Canvas", "Clone Drone in the Danger Zone_Data/"));
+            GameObject spawnedUI = InternalAssetBundleReferences.TwitchMode.InstantiateObject("Canvas");
             ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
 
             Logger logger = spawnedUI.AddComponent<Logger>();

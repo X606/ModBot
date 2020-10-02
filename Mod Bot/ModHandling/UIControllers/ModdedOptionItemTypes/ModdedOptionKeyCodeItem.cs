@@ -35,7 +35,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            KeyCodeInput keyCodeInput = GameObject.Instantiate(AssetLoader.GetObjectFromFile("modswindow", "CustomKeyCodeInput", "Clone Drone in the Danger Zone_Data/")).AddComponent<KeyCodeInput>();
+            KeyCodeInput keyCodeInput = InternalAssetBundleReferences.ModsWindow.InstantiateObject("CustomKeyCodeInput").AddComponent<KeyCodeInput>();
             keyCodeInput.transform.parent = holder.transform;
             keyCodeInput.Init(DefaultValue, delegate (KeyCode keyCode)
             {

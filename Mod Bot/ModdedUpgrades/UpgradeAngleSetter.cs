@@ -41,9 +41,7 @@ namespace InternalModBot
 
         void createSaveButton()
         {
-            GameObject buttonPrefab = AssetLoader.GetObjectFromFile("modswindow", "GenerateButton", "Clone Drone in the Danger Zone_Data/");
-
-			_saveButtonObject = Instantiate(buttonPrefab);
+            _saveButtonObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
 			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 
@@ -118,7 +116,11 @@ namespace InternalModBot
             if (upgradeDescription == null)
                 return;
 
+            // Old mod loading system
             upgradeDescription.SetAngleOffset(newAngle, UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage));
+
+            // New mod loading system
+            // upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
         }
 
         void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)

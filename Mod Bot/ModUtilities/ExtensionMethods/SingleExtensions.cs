@@ -41,7 +41,6 @@ namespace ModLibrary
         /// </summary>
         /// <param name="mod"></param>
         /// <returns><see langword="true"/> of the <see cref="Mod"/> is enabled, <see langword="false"/> if it's disabled</returns>
-        /// <exception cref="Exception">If the <see cref="Mod"/> has not been loaded by <see cref="ModsManager"/></exception>
         public static bool IsModEnabled(this Mod mod)
         {
             bool? isModDeactivated = ModsManager.Instance.IsModDeactivated(mod);
@@ -50,6 +49,9 @@ namespace ModLibrary
                 throw new Exception("Mod \"" + mod.GetModName() + "\" with unique id \"" + mod.GetUniqueID() + "\" could not found in ModsManager's list of mods!");
 
             return !isModDeactivated.Value;
+
+            // New mod loading system
+            // return mod.ModInfo.IsModEnabled;
         }
     }
 }

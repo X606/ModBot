@@ -11,6 +11,7 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
+        #region Reverted
         /// <summary>
         /// Returns the name of the mod, override to set the name of you mod
         /// </summary>
@@ -40,11 +41,20 @@ namespace ModLibrary
         {
             return "";
         }
+        #endregion
+
+        /*
+		/// <summary>
+		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
+		/// </summary>
+        protected internal ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
+        */
 
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
         public string HarmonyID => "com.Mod-Bot.Mod." + GetUniqueID();
+        // public string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
@@ -79,7 +89,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called in <see cref="ModsManager.ReloadMods"/>
+        /// Called in <see cref="ModsManager.ReloadMods()"/>
         /// </summary>
         public virtual void OnModRefreshed()
         {
@@ -115,107 +125,6 @@ namespace ModLibrary
         /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
         public virtual void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/>
-        /// </summary>
-        /// <param name="projectile"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnProjectileStartedMoving(Projectile projectile)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.FixedUpdate"/>
-        /// </summary>
-        /// <param name="projectile"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnProjectileUpdate(Projectile projectile)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/>
-        /// </summary>
-        /// <param name="projectile"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnProjectileDestroyed(Projectile projectile)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
-        /// </summary>
-        /// <param name="arrow"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnArrowProjectileStartedMoving(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.FixedUpdate"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
-        /// </summary>
-        /// <param name="arrow"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnArrowProjectileUpdate(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/> if the <see cref="Projectile"/> is of type <see cref="ArrowProjectile"/>
-        /// </summary>
-        /// <param name="arrow"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnArrowProjectileDestroyed(ArrowProjectile arrow)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.StartFlying(Vector3, Vector3, bool, Character, int, float)"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isRepairFire"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isFlameBreath"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnBulletProjectileStartedMoving(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.FixedUpdate"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isFlameBreath"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isRepairFire"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnBulletProjectileUpdate(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Projectile.DestroyProjectile"/> and <see cref="Projectile.OnEnvironmentCollided(bool)"/> if the <see cref="Projectile"/> is of type <see cref="BulletProjectile"/>
-        /// </summary>
-        /// <param name="bullet"></param>
-        /// <param name="isRepairFire"></param>
-        /// <param name="isMortarShrapnel"></param>
-        /// <param name="isFlameBreath"></param>
-        [Obsolete("This event will be removed in a future version, use the Injector class instead")]
-        public virtual void OnBulletProjectileDestroyed(BulletProjectile bullet, bool isMortarShrapnel, bool isFlameBreath, bool isRepairFire)
-        {
-        }
-
-        /// <summary>
-        /// Called in <see cref="Character.onDeath(Character, DamageSourceType, int)"/>
-        /// </summary>
-        /// <param name="killedCharacter">The <see cref="Character"/> that was killed</param>
-        /// <param name="killerCharacter">The killer <see cref="Character"/></param>
-        /// <param name="damageSourceType">The cause of death</param>
-        [Obsolete("Use OnCharacterKilled(Character, Character, DamageSourceType, Int32) instead")]
-        public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType)
         {
         }
 
@@ -300,7 +209,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="newLanguageID">The language ID that was switched to</param>
         /// <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
-        public virtual void OnLanugageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        public virtual void OnLanguageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
         {
         }
 

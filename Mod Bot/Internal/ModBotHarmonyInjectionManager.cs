@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,21 +27,15 @@ namespace InternalModBot
     {
         const BindingFlags TARGET_METHOD_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        static bool hasInjected()
-        {
-            return false;
-        }
-
         /// <summary>
         /// Injects all patches if it is not already done
         /// </summary>
         public static void TryInject()
         {
-            if (hasInjected())
+            Harmony harmony = new Harmony("com.Mod-Bot.Internal");
+            if (harmony.GetPatchedMethods().Any())
                 return;
 
-            Harmony harmony = new Harmony("com.Mod-Bot.Internal");
             MethodInfo[] methods = typeof(Injections).GetMethods(BindingFlags.Public | BindingFlags.Static);
             foreach (MethodInfo injectionSource in methods)
             {
@@ -51,10 +46,14 @@ namespace InternalModBot
                 bool isTargetMethodSetProperty = mode.StartsWith("set");
                 bool isTargetMethodGetProperty = mode.StartsWith("get");
 
+                if (isTargetMethodSetProperty || isTargetMethodGetProperty)
+                    mode = mode.Remove(0, 3); // Remove the first 3 characters (ie. "get" or "set")
+
                 string typeNamePrefix = "";
                 Type[] argumentTypes = null;
                 bool hasGenericParameters = false;
                 Type[] genericParameterTypes = null;
+                BindingFlags bindingFlags = BindingFlags.Default;
 
                 ExtraInjectionDataAttribute injectionExtraData = injectionSource.GetCustomAttribute<ExtraInjectionDataAttribute>();
                 if (injectionExtraData != null)
@@ -70,7 +69,12 @@ namespace InternalModBot
                         hasGenericParameters = true;
                         genericParameterTypes = injectionExtraData.GenericParameterTypes;
                     }
+
+                    bindingFlags = injectionExtraData.BindingFlagsOverride;
                 }
+
+                if (bindingFlags == BindingFlags.Default)
+                    bindingFlags = TARGET_METHOD_FLAGS;
 
                 Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
                 Type type = null;
@@ -90,27 +94,27 @@ namespace InternalModBot
                 {
                     if (isTargetMethodGetProperty)
                     {
-                        targetMethod = type.GetProperty(methodName).GetGetMethod(false);
+                        targetMethod = type.GetProperty(methodName, bindingFlags).GetMethod;
                     }
                     else if (isTargetMethodSetProperty)
                     {
-                        targetMethod = type.GetProperty(methodName).SetMethod;
+                        targetMethod = type.GetProperty(methodName, bindingFlags).SetMethod;
                     }
                     else
                     {
                         if (argumentTypes != null)
                         {
-                            targetMethod = type.GetMethod(methodName, TARGET_METHOD_FLAGS, null, argumentTypes, null);
+                            targetMethod = type.GetMethod(methodName, bindingFlags, null, argumentTypes, null);
                         }
                         else
                         {
-                            targetMethod = type.GetMethod(methodName, TARGET_METHOD_FLAGS);
+                            targetMethod = type.GetMethod(methodName, bindingFlags);
                         }
                     }
                 }
                 catch (AmbiguousMatchException ambiguousMatch)
                 {
-                    List<MethodInfo> matchingMethods = type.GetMethods(TARGET_METHOD_FLAGS).Where((MethodInfo m) => m.Name == methodName).ToList();
+                    List<MethodInfo> matchingMethods = type.GetMethods(bindingFlags).Where((MethodInfo m) => m.Name == methodName).ToList();
                     if (argumentTypes != null)
                     {
                         for (int i = 0; i < matchingMethods.Count;)
@@ -150,7 +154,7 @@ namespace InternalModBot
 
                             if (matchingMethods.Count == 1)
                             {
-                                targetMethod = matchingMethods[0];
+                                targetMethod = matchingMethods[0].MakeGenericMethod(genericParameterTypes);
                             }
                             else if (matchingMethods.Count == 0)
                             {
@@ -235,16 +239,12 @@ namespace InternalModBot
             public bool HasGenericParameters { get; set; }
 
             public Type[] GenericParameterTypes { get; set; }
+
+            public BindingFlags BindingFlagsOverride { get; set; }
         }
 
         static class Injections
         {
-            [ExtraInjectionData(Namespace = "InternalModBot")]
-            public static bool ModBotHarmonyInjectionManager_hasInjected_Postfix(bool __result)
-            {
-                return true;
-            }
-
             public static void FirstPersonMover_RefreshUpgrades_Prefix(FirstPersonMover __instance)
             {
                 if (__instance == null || __instance.gameObject == null || !__instance.IsAlive() || __instance.GetCharacterModel() == null)
@@ -392,95 +392,9 @@ namespace InternalModBot
                 ModsManager.Instance.PassOnMod.OnCharacterKilled(__instance, killer, damageSourceType, attackID);
             }
 
-            public static bool UpgradeUI_CreateChildIcons_Prefix(UpgradeDescription root, Vector2 rootPosition, float parentAngle, float angleIncrement, int recursionLevel,
-                                                             ref UpgradeDescription ____emptyUpgradeDescriptionForConsumablesBranch,
-                                                             ref bool ____isInStoryCutsceneMode,
-                                                             ref bool ____authoringChallengeUpgrades,
-                                                             ref List<UpgradeUIIcon> ____icons)
+            public static float UpgradeDescription_GetAngleOffset_Postfix(float __result, UpgradeDescription __instance)
             {
-                bool isConsumablesBranch = root == ____emptyUpgradeDescriptionForConsumablesBranch;
-                List<UpgradeDescription> list;
-                if (!isConsumablesBranch)
-                {
-                    list = UpgradeManager.Instance.GetVisibleUpgradesWithRequirement(root);
-                }
-                else
-                {
-                    list = UpgradeManager.Instance.GetVisibleUpgradesWithRequirement(null).Where((UpgradeDescription upgrade) => upgrade.IsConsumable).ToList();
-                }
-
-                List<UpgradeDescription> list2 = list;
-
-                bool hasConsumablesNotInConsumablesBranch = list2.Count((UpgradeDescription description) => description.IsConsumable) > 1 && !isConsumablesBranch;
-
-                if (hasConsumablesNotInConsumablesBranch)
-                    list2.RemoveAll((UpgradeDescription description) => description.IsConsumable);
-
-                float num = angleIncrement;
-                float num2;
-                if (recursionLevel > 0)
-                {
-                    if (isConsumablesBranch)
-                    {
-                        if (list2.Count >= 3)
-                        {
-                            num2 = GameUIRoot.Instance.UpgradeUI.Consumables3PlusChildRadius;
-                            num = GameUIRoot.Instance.UpgradeUI.Consumables3PlusChildAngle * 0.0174532924f;
-                        }
-                        else
-                        {
-                            num2 = GameUIRoot.Instance.UpgradeUI.UpgradeLevelRadius;
-                            num = GameUIRoot.Instance.UpgradeUI.ConsumablesChildAngle * 0.0174532924f;
-                        }
-                    }
-                    else
-                    {
-                        num = GameUIRoot.Instance.UpgradeUI.ChildAngle * 0.0174532924f;
-                        num2 = GameUIRoot.Instance.UpgradeUI.UpgradeLevelRadius;
-                    }
-                }
-                else
-                {
-                    if (hasConsumablesNotInConsumablesBranch)
-                        list2.Add(____emptyUpgradeDescriptionForConsumablesBranch);
-
-                    num2 = GameUIRoot.Instance.UpgradeUI.FirstCircleRadius;
-
-                    if (____isInStoryCutsceneMode)
-                        num2 += GameUIRoot.Instance.UpgradeUI.Chapter3RadiusDelta;
-                }
-
-                float num3 = (list2.Count - 1) * num;
-
-                for (int i = 0; i < list2.Count; i++)
-                {
-                    float num4 = parentAngle - (num3 * 0.5f) + (num * i) + (UpgradePagesManager.GetAngleOfUpgrade(list2[i].UpgradeType, list2[i].Level) * 0.0174532924f);
-                    bool flag3 = list2[i] == ____emptyUpgradeDescriptionForConsumablesBranch;
-                    float num5 = flag3 ? GameUIRoot.Instance.UpgradeUI.ConsumablesBranchRadius : num2;
-
-                    if (list2[i].ApplyRadiusOffsetIfVisible == null || list2[i].ApplyRadiusOffsetIfVisible.IsUpgradeCurrentlyVisible())
-                        num5 += list2[i].RadiusOffset;
-
-                    RectTransform rectTransform = UnityEngine.Object.Instantiate(GameUIRoot.Instance.UpgradeUI.IconLinePrefab);
-                    rectTransform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
-                    rectTransform.SetAsFirstSibling();
-                    rectTransform.anchoredPosition = rootPosition;
-                    rectTransform.localEulerAngles = new Vector3(0f, 0f, num4 * 57.29578f);
-                    rectTransform.sizeDelta = new Vector2(num5, rectTransform.sizeDelta.y);
-                    Vector2 vector = rootPosition + (num5 * new Vector2(Mathf.Cos(num4), Mathf.Sin(num4)));
-                    if (!flag3)
-                    {
-                        UpgradeUIIcon upgradeUIIcon = UnityEngine.Object.Instantiate(____authoringChallengeUpgrades ? GameUIRoot.Instance.UpgradeUI.UpgradeConfigIconPrefab : GameUIRoot.Instance.UpgradeUI.IconPrefab);
-                        upgradeUIIcon.transform.SetParent(GameUIRoot.Instance.UpgradeUI.IconContainer, false);
-                        upgradeUIIcon.GetComponent<RectTransform>().anchoredPosition = vector;
-                        upgradeUIIcon.Populate(list2[i], rectTransform.GetComponent<Image>());
-                        ____icons.Add(upgradeUIIcon);
-                    }
-
-                    Accessor.CallPrivateMethod("CreateChildIcons", GameUIRoot.Instance.UpgradeUI, new object[] { list2[i], vector, num4, angleIncrement, recursionLevel + 1 });
-                }
-
-                return false;
+                return UpgradePagesManager.GetAngleOfUpgrade(__instance.UpgradeType, __instance.Level);
             }
 
             public static bool UpgradeDescription_IsUpgradeCurrentlyVisible_Postfix(bool __result, UpgradeDescription __instance)
@@ -498,40 +412,6 @@ namespace InternalModBot
             {
                 return !IgnoreCrashesManager.GetIsIgnoringCrashes();
             }
-
-            #region Remove when removing projectile events
-            public static void Projectile_FixedUpdate_Prefix(Projectile __instance)
-            {
-                if (!__instance.IsFlying())
-                    return;
-
-                ModsManager.Instance.PassOnMod.OnProjectileUpdate(__instance);
-            }
-
-            [ExtraInjectionData(ArgumentTypes = new Type[] { typeof(Vector3), typeof(Vector3), typeof(bool), typeof(Character), typeof(int), typeof(float) })]
-            public static void Projectile_StartFlying_Postfix(Projectile __instance)
-            {
-                ModsManager.Instance.PassOnMod.OnProjectileStartedMoving(__instance);
-            }
-
-            public static void Projectile_DestroyProjectile_Prefix(Projectile __instance)
-            {
-
-				ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-
-			}
-
-            public static void Projectile_OnEnvironmentCollided_Prefix(Projectile __instance)
-            {
-                if (__instance.PassThroughEnvironment || !__instance.IsFlying())
-                    return;
-
-                if (__instance.MainCollider != null)
-                    __instance.MainCollider.enabled = false;
-
-                ModsManager.Instance.PassOnMod.OnProjectileDestroyed(__instance);
-            }
-            #endregion
 
             public static bool GameUIRoot_RefreshCursorEnabled_Prefix()
             {
@@ -561,8 +441,7 @@ namespace InternalModBot
                 return __result;
             }
 
-            // TODO: Harmony does not like patching generic methods, fix this eventually, for now it will be injected in Injector.exe
-            /*
+            /* Harmony REALLY does not like generic methods, I have given up on trying to make this work, it will continue being in Injector.exe
             [ExtraInjectionData(Namespace = "UnityEngine", HasGenericParameters = true, GenericParameterTypes = new Type[] { typeof(UnityEngine.Object) }, ArgumentTypes = new Type[] { typeof(string) })]
             public static UnityEngine.Object Resources_Load_Postfix_T(UnityEngine.Object __result, string path)
             {
@@ -577,19 +456,13 @@ namespace InternalModBot
                         return moddedResource;
                 }
 
-                debug.Log(path + " loaded (" + __result.GetType().Name + ")");
-
                 return __result;
             }
             */
 
-            // TODO: For some reason this doesn't want to inject, fix this eventually, for now it will be injected in Injector.exe
-            /*
             [ExtraInjectionData(Namespace = "UnityEngine")]
-            public static UnityEngine.Object ResourceRequest_asset_GetPrefix(UnityEngine.Object __result, ref string ___m_Path)
+            public static UnityEngine.Object ResourceRequest_asset_GetPostfix(UnityEngine.Object __result, ref string ___m_Path)
             {
-                debug.Log(___m_Path + " loaded async");
-
                 UnityEngine.Object moddedResource = LevelEditorObjectAdder.GetObjectData(___m_Path);
                 if (moddedResource != null)
                     return moddedResource;
@@ -603,12 +476,11 @@ namespace InternalModBot
 
                 return __result;
             }
-            */
 
             public static void LocalizationManager_populateDictionaryForCurrentLanguage_Postfix(ref Dictionary<string, string> ____translatedStringsDictionary)
             {
                 ModBotLocalizationManager.AddAllLocalizationStringsToDictionary(____translatedStringsDictionary);
-                ModsManager.Instance.PassOnMod.OnLanugageChanged(SettingsManager.Instance.GetCurrentLanguageID(), ____translatedStringsDictionary);
+                ModsManager.Instance.PassOnMod.OnLanguageChanged(SettingsManager.Instance.GetCurrentLanguageID(), ____translatedStringsDictionary);
             }
 
             public static bool TwitchWhoIsLiveManager_onGameLiveStreamRequestFinished_Prefix(HTTPResponse response, ref List<TwitchStreamInfo> ____streamInfos, ref bool ____hasEverRetirevedLiveUsers)
@@ -638,21 +510,73 @@ namespace InternalModBot
                 return false;
             }
 
-			public static string MultiplayerPlayerInfoManager_TryGetDisplayName_Postfix(string __result, string playFabID)
-			{
-				if(__result == null)
-					return null;
+            public static bool MultiplayerPlayerInfoState_GetOrPrepareSafeDisplayName_Prefix(MultiplayerPlayerInfoState __instance, Action<string> onSafeDisplayNameReceived, ref bool ____isSafeDisplayNameBeingPrepared)
+            {
+                if (string.IsNullOrEmpty(Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)))
+                {
+                    Action<string> singleCallback = null;
+                    singleCallback = delegate (string safeDisplayName)
+                    {
+                        __instance.OnSafeDisplayNamePrepared -= singleCallback;
+                        Action<string> onSafeDisplayNameReceived3 = onSafeDisplayNameReceived;
+                        if (onSafeDisplayNameReceived3 != null)
+                            onSafeDisplayNameReceived3(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, safeDisplayName));
+                    };
 
-				return MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(playFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(playFabID, __result);
-			}
-			public static void MultiplayerPlayerInfoLabel_RefreshVisuals_Postfix(ref MultiplayerPlayerInfoState ____playerInfoState, ref Text ___PlayerNameLabel)
+                    __instance.OnSafeDisplayNamePrepared += singleCallback;
+                    
+                    if (____isSafeDisplayNameBeingPrepared)
+                        return false;
+
+                    ____isSafeDisplayNameBeingPrepared = true;
+                    ProfanityChecker.FilterForProfanities(__instance.state.DisplayName, delegate (string preparedName)
+                    {
+                        Accessor.SetPrivateProperty("SafeDisplayName", __instance, preparedName);
+                        Accessor.SetPrivateField("_isSafeDisplayNameBeingPrepared", __instance, false);
+
+                        EventInfo safeDisplayNamePreparedEvent = typeof(MultiplayerPlayerInfoState).GetEvent("OnSafeDisplayNamePrepared", BindingFlags.Public | BindingFlags.Instance);
+                        if (safeDisplayNamePreparedEvent.RaiseMethod != null)
+                            safeDisplayNamePreparedEvent.RaiseMethod.Invoke(__instance, new object[] { Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance) });
+                    });
+                }
+                else
+                {
+                    Action<string> onSafeDisplayNameReceived2 = onSafeDisplayNameReceived;
+                    if (onSafeDisplayNameReceived2 != null)
+                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)));
+                }
+
+                return false;
+            }
+
+            public static bool CharacterNameTagManager_updateNameTag_Prefix(Character character)
+            {
+                if (!GameModeManager.ShouldCreateNameTagsForOtherPlayers())
+                    return false;
+                
+                MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(character.state.PlayFabID, delegate (string displayName)
+                {
+                    if (displayName != null && !character.HasNameTag())
+                    {
+                        displayName = MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(character.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(character.state.PlayFabID, displayName);
+                        CharacterNameTagManager.Instance.StartCoroutine(Accessor.CallPrivateMethod<CharacterNameTagManager, IEnumerator>("addNameTagWithDelay", CharacterNameTagManager.Instance, new object[] { character, displayName }));
+                    }
+                });
+
+                return false;
+            }
+
+            public static void MultiplayerPlayerInfoLabel_RefreshVisuals_Postfix(ref MultiplayerPlayerInfoState ____playerInfoState, Text ___PlayerNameLabel)
 			{
 				if(____playerInfoState == null || ____playerInfoState.IsDetached())
 					return;
 
-				___PlayerNameLabel.supportRichText = true; // allow custom colors
-				___PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-				___PlayerNameLabel.text = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(____playerInfoState.state.PlayFabID);
+                MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(____playerInfoState.state.PlayFabID, delegate (string displayName)
+                {
+                    ___PlayerNameLabel.supportRichText = true; // allow custom colors
+                    ___PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    ___PlayerNameLabel.text = displayName;
+                });
 			}
 			
 			public static void EnemyNameTag_Initialize_Postfix(EnemyNameTag __instance, Character character)
@@ -675,7 +599,18 @@ namespace InternalModBot
                 form.AddField("IsModdedClient", "true");
 
                 string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetAllLoadedMods().CallMethods<Mod, string>("GetModName"));
+
+                // Old mod loading system
+                // string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetActiveModInfos().GetPropertyValues<ModInfo, string>("DisplayName"));
                 form.AddField("LoadedMods", loadedModNames);
+            }
+
+            public static Vector3 Character_GetPositionToDeflectArrowsAt_Postfix(Vector3 __result, Character __instance)
+            {
+                if (__instance is MortarWalker)
+                    return __instance.GetPositionForAIToAimAt(true);
+
+                return __result;
             }
         }
     }

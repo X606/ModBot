@@ -35,8 +35,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject CheckBoxPrefab = AssetLoader.GetObjectFromFile("modswindow", "Checkbox", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedObject = GameObject.Instantiate(CheckBoxPrefab);
+            GameObject spawnedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Checkbox");
             spawnedObject.transform.parent = holder.transform;
             ModdedObject moddedObject = spawnedObject.GetComponent<ModdedObject>();
             Toggle toggle = moddedObject.GetObject<Toggle>(0);

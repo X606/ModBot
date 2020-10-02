@@ -142,12 +142,12 @@ namespace ModLibrary.Properties {
         /// <summary>
         ///   Looks up a localized string similar to modsbutton:моды
         ///newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
-        ///newversion_dismiss:отклонять
-        ///newversion_install:устанавливать
+        ///newversion_dismiss:Отклонить
+        ///newversion_install:Установить
         ///modbotversion:Версия Mod-Bot: {0}
-        ///modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена!
+        ///modbotuptodate:Версия Mod-Bot &apos;{0}&apos; обновлена до последней версии!
         ///ignoreallcrashes_savedwarning:Сохраненная опция сообщения (IgnoreCrashes): все сбои игнорируются, это следует включить только для целей тестирования, отключите его, введя «ignoreallcrashes 0» в консоли.
-        ///ignoreallcrashes_on:Игра теперь игнорирует все сбои, эта опция дол [rest of string was truncated]&quot;;.
+        ///ignoreallcrashes_on:Игра теперь игнорирует все сб [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Russian {
             get {
@@ -156,17 +156,17 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:模式
-        ///newversion_message:新的Mod-Bot版本可用：{0}\n（当前版本：{1}）
-        ///newversion_dismiss:解雇
+        ///   Looks up a localized string similar to modsbutton:模组
+        ///newversion_message:新的Mod-Bot版本可用: {0}\n(当前版本: {1})
+        ///newversion_dismiss:解除
         ///newversion_install:安装
-        ///modbotversion:Mod-Bot版本：{0}
-        ///modbotuptodate:最新的Mod-Bot版本&apos;{0}&apos;！
-        ///ignoreallcrashes_savedwarning:已保存的选项消息（IgnoreCrashes）：所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
-        ///ignoreallcrashes_on:现在，游戏将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是硬崩溃仍然可能发生。
-        ///ignoreallcrashes_off:游戏不再忽略崩溃，为稳定起见，应始终关闭此选项。
+        ///modbotversion:Mod-Bot 版本: {0}
+        ///modbotuptodate:Mod-Bot 版本 &apos;{0}&apos; 是最新的！
+        ///ignoreallcrashes_savedwarning:保存的选项消息 (忽略崩溃): 所有崩溃均被忽略，仅应出于测试目的而启用，请在控制台中键入“ ignoreallcrashes 0”将其关闭。
+        ///ignoreallcrashes_on:游戏现在将忽略所有崩溃，仅应启用此选项进行测试。 启用此选项将忽略软崩溃，但是崩溃仍然可能发生。
+        ///ignoreallcrashes_off:游戏不再忽略崩溃，为游戏稳定起见，应始终关闭此选项。
         ///crashscreen_customtitle:Mod-Bot开发人员很乐意看到这一点！
-        ///crashscreen_customdescription:将我们的屏幕截图发送给Clone Drone Mod-Bot矛 [rest of string was truncated]&quot;;.
+        ///crashscreen_customdescription:将我们的屏幕截图发送给“机器人角斗场Mod-Bot”问题，以便 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Simplified_Chinese {
             get {
@@ -175,14 +175,14 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:MODIFICACIONES
-        ///newversion_message:Nueva versión Mod-Bot disponible: {0}\n(Versión actual: {1})
-        ///newversion_dismiss:Descartar
-        ///newversion_install:Instalar en pc
-        ///modbotversion:Versión Mod-Bot: {0}
-        ///modbotuptodate:¡Versión de Mod-Bot &apos;{0}&apos; actualizada!
-        ///ignoreallcrashes_savedwarning:Mensaje de opción guardada (IgnoreCrashes): se ignoran todos los bloqueos, esto solo debe habilitarse con fines de prueba, apáguelo escribiendo &quot;ignoreallcrashes 0&quot; en la consola.
-        ///ignoreallcrashes_on:El juego ahora ig [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to modsbutton:MODS
+        ///newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
+        ///newversion_dismiss:Dismiss
+        ///newversion_install:Install
+        ///modbotversion:Mod-Bot Version: {0}
+        ///modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
+        ///ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
+        ///ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Spanish_LatinAmerica {
             get {
@@ -207,7 +207,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.4.9.
+        ///   Looks up a localized string similar to 1.5.
         /// </summary>
         internal static string ModBotVersion {
             get {

@@ -19,9 +19,13 @@ namespace ModLibrary
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
             if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
-                upgradeManager.UpgradeDescriptions.Add(upgrade);
-            
+                UpgradeManager.Instance.UpgradeDescriptions.Add(upgrade);
+
+            // Old mod loading system
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
+            
+            // New mod loading system
+            // UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
 
             if (upgrade is AbilityUpgrade)
             {
@@ -33,10 +37,10 @@ namespace ModLibrary
                 recursivelyAddRequirments(upgrade, mod);
 
             string nameID = upgrade.UpgradeName.ToLower().Trim();
-            ModBotLocalizationManager.TryAddLocalizationStringToDictionary(nameID, upgrade.UpgradeName);
+            ModBotLocalizationManager.TryAddModdedUpgradeLocalizationStringToDictionary(nameID, upgrade.UpgradeName);
 
             string descriptionID = upgrade.Description.ToLower().Trim();
-            ModBotLocalizationManager.TryAddLocalizationStringToDictionary(descriptionID, upgrade.Description);
+            ModBotLocalizationManager.TryAddModdedUpgradeLocalizationStringToDictionary(descriptionID, upgrade.Description);
         }
 
         /// <summary>
@@ -84,7 +88,11 @@ namespace ModLibrary
         /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
+            // Old mod loading system
             UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod);
+            
+            // New mod loading system
+            // UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
         }
 
         /// <summary>
@@ -102,7 +110,11 @@ namespace ModLibrary
             if (upgrade == null)
                 return;
 
+            // Old mod loading system
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod);
+
+            // New mod loading system
+            // UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
 
             if (upgrade.Requirement2 != null)
                 recursivelyAddRequirments(upgrade.Requirement2, mod);

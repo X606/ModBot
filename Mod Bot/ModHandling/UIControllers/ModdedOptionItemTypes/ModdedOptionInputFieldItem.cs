@@ -35,8 +35,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject InputFieldPrefab = AssetLoader.GetObjectFromFile("modswindow", "InputField", "Clone Drone in the Danger Zone_Data/");
-            GameObject spawnedPrefab = GameObject.Instantiate(InputFieldPrefab);
+            GameObject spawnedPrefab = InternalAssetBundleReferences.ModsWindow.InstantiateObject("InputField");
             spawnedPrefab.transform.parent = holder.transform;
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = DisplayName;

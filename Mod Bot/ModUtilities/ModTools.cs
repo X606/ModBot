@@ -70,7 +70,7 @@ namespace ModLibrary
 
             for (int i = 0; i < characters.Count; i++)
             {
-                if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].GetPositionForAIToAimAt()) <= radius)
+                if (!characters[i].IsPlayerTeam && !characters[i].IsMainPlayer() && Vector3.Distance(origin, characters[i].transform.position) <= radius)
                     charactersInRange.Add(characters[i]);
             }
 
@@ -120,7 +120,38 @@ namespace ModLibrary
         /// <returns></returns>
         public static MechBodyPart GetBodyPart(this Character character, MechBodyPartType type)
         {
-            List<MechBodyPart> bodyParts = character.GetAllBodyParts();
+            return character.GetBaseBodyPart(type) as MechBodyPart;
+        }
+
+        /// <summary>
+        /// Gets all <see cref="MechBodyPart"/>s of the given <see cref="MechBodyPartType"/>
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<MechBodyPart> GetBodyParts(this Character character, MechBodyPartType type)
+        {
+            List<BaseBodyPart> baseBodyParts = character.GetBaseBodyParts(type);
+            List<MechBodyPart> mechBodyParts = new List<MechBodyPart>();
+
+            foreach (BaseBodyPart baseBodyPart in baseBodyParts)
+            {
+                if (baseBodyPart is MechBodyPart mechBodyPart)
+                    mechBodyParts.Add(mechBodyPart);
+            }
+
+            return mechBodyParts;
+        }
+
+        /// <summary>
+        /// Gets the first found <see cref="BaseBodyPart"/> of the given <see cref="MechBodyPartType"/> (Returns <see langword="null"/> if the given <see cref="Character"/> does not have the specified <see cref="MechBodyPartType"/>)
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static BaseBodyPart GetBaseBodyPart(this Character character, MechBodyPartType type)
+        {
+            List<BaseBodyPart> bodyParts = character.GetAllBaseBodyParts();
 
             for (int i = 0; i < bodyParts.Count; i++)
             {
@@ -132,22 +163,53 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Gets all <see cref="MechBodyPart"/>s of the given <see cref="MechBodyPartType"/>
+        /// Gets all <see cref="BaseBodyPart"/>s of the given <see cref="MechBodyPartType"/>
         /// </summary>
         /// <param name="character"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static List<MechBodyPart> GetBodyParts(this Character character, MechBodyPartType type)
+        public static List<BaseBodyPart> GetBaseBodyParts(this Character character, MechBodyPartType type)
         {
-            List<MechBodyPart> bodyParts = new List<MechBodyPart>();
+            List<BaseBodyPart> bodyParts = new List<BaseBodyPart>();
 
-            for (int i = 0; i < character.GetAllBodyParts().Count; i++)
+            for (int i = 0; i < character.GetAllBaseBodyParts().Count; i++)
             {
-                if (character.GetAllBodyParts()[i].PartType == type)
-                    bodyParts.Add(character.GetAllBodyParts()[i]);
+                if (character.GetAllBaseBodyParts()[i].PartType == type)
+                    bodyParts.Add(character.GetAllBaseBodyParts()[i]);
             }
 
             return bodyParts;
+        }
+
+        /// <summary>
+        /// Gets the first found <see cref="MindSpaceBodyPart"/> of the given <see cref="MechBodyPartType"/> (Returns <see langword="null"/> if the given <see cref="Character"/> does not have the specified <see cref="MechBodyPartType"/>)
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static MindSpaceBodyPart GetMindSpaceBodyPart(this Character character, MechBodyPartType type)
+        {
+            return character.GetBaseBodyPart(type) as MindSpaceBodyPart;
+        }
+
+        /// <summary>
+        /// Gets all <see cref="MindSpaceBodyPart"/>s of the given <see cref="MechBodyPartType"/>
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<MindSpaceBodyPart> GetMindSpaceBodyParts(this Character character, MechBodyPartType type)
+        {
+            List<BaseBodyPart> baseBodyParts = character.GetBaseBodyParts(type);
+            List<MindSpaceBodyPart> mindSpaceBodyParts = new List<MindSpaceBodyPart>();
+
+            foreach (BaseBodyPart baseBodyPart in baseBodyParts)
+            {
+                if (baseBodyPart is MindSpaceBodyPart mindSpaceBodyPart)
+                    mindSpaceBodyParts.Add(mindSpaceBodyPart);
+            }
+
+            return mindSpaceBodyParts;
         }
     }
 }

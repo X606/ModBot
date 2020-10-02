@@ -68,18 +68,18 @@ namespace InternalModBot
 
             void Awake()
             {
-                _lineMaterial = AssetLoader.GetObjectFromFile<Material>("modswindow", "Line", "Clone Drone in the Danger Zone_Data/");
+                _lineMaterial = InternalAssetBundleReferences.ModsWindow.GetObject<Material>("Line");
             }
 
             void OnPostRender()
             {
                 GL.Begin(GL.LINES);
 
-                for(int i = 0; i < DebugLineDrawingManager.Instance._linesToDraw.Count; i++)
+                for(int i = 0; i < Instance._linesToDraw.Count; i++)
                 {
                     _lineMaterial.SetPass(0);
 
-                    LineInfo info = DebugLineDrawingManager.Instance._linesToDraw[i];
+                    LineInfo info = Instance._linesToDraw[i];
                     GL.Color(info.Color);
                     GL.Vertex(info.Point1);
                     GL.Vertex(info.Point2);

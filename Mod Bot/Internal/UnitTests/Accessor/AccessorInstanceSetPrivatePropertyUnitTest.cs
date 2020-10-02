@@ -60,26 +60,14 @@ namespace InternalModBot.UnitTests
 
             public float FloatingPointValueProperty
             {
-                get
-                {
-                    return _floatingPointValue;
-                }
-                private set
-                {
-                    _floatingPointValue = value;
-                }
+                get => _floatingPointValue;
+                private set => _floatingPointValue = value;
             }
 
             public string StringValueProperty
             {
-                get
-                {
-                    return _stringValue;
-                }
-                private set
-                {
-                    _stringValue = value;
-                }
+                get => _stringValue;
+                private set => _stringValue = value;
             }
 
             public AccessorTestFields(float floatingPointValue, string stringValue)

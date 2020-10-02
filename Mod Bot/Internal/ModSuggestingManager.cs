@@ -49,12 +49,21 @@ namespace InternalModBot
         /// <param name="data"></param>
         public void SuggestModMultiplayer(string suggesterPlayfabID, string modName, byte[] data)
         {
-            StartCoroutine(suggestModMultiplayerIEnumerator(suggesterPlayfabID, modName, data));
+            StartCoroutine(suggestModMultiplayerCoroutine(suggesterPlayfabID, modName, data));
         }
 
-        IEnumerator suggestModMultiplayerIEnumerator(string suggesterPlayfabID, string modName, byte[] data)
+        IEnumerator suggestModMultiplayerCoroutine(string suggesterPlayfabID, string modName, byte[] data)
         {
-            string displayName = MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID);
+            string displayName = null;
+
+            bool hasDisplayName = false;
+            MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(suggesterPlayfabID, delegate (string receivedDisplayName)
+            {
+                displayName = receivedDisplayName;
+                hasDisplayName = true;
+            });
+
+            yield return new WaitUntil(() => hasDisplayName);
 
             if (displayName == null)
                 displayName = "";
@@ -80,10 +89,11 @@ namespace InternalModBot
                 yield return 0;
             }
 
+
+            // Old mod loading system, re-introduced to revert back to it
             if (clickedKey == KeyCode.PageUp)
             {
                 ModSuggestionAnimator.Play("AcceptMod");
-
                 if (!ModsManager.Instance.LoadMod(data, false, out string error))
                 {
                     debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_fail"), Color.red);
@@ -98,6 +108,27 @@ namespace InternalModBot
                 ModSuggestionAnimator.Play("DenyMod");
             }
 
+			//TODO: Update this to work with the new mod loading system
+
+			/*
+            if (clickedKey == KeyCode.PageUp)
+            {
+                ModSuggestionAnimator.Play("AcceptMod");
+
+                if (!ModsManager.Instance.LoadMod(data, modName, false, out string error))
+                {
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_fail"), Color.red);
+                }
+                else
+                {
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_success"), Color.green);
+                }
+            }
+            else if (clickedKey == KeyCode.PageDown)
+            {
+                ModSuggestionAnimator.Play("DenyMod");
+            }
+			*/
         }
 
         IEnumerator suggestMod(ModSuggestion mod)
@@ -123,14 +154,13 @@ namespace InternalModBot
                 yield return 0;
             }
 
+            // Reverted code
             if (clickedKey == KeyCode.PageUp)
             {
                 ModSuggestionAnimator.Play("AcceptMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
                 UnityWebRequest webRequest = UnityWebRequest.Get(mod.Url);
-
                 yield return webRequest.SendWebRequest();
-
                 byte[] data = webRequest.downloadHandler.data;
                 if (!ModsManager.Instance.LoadMod(data, false, out string error))
                 {
@@ -143,6 +173,30 @@ namespace InternalModBot
                 ModSuggestionAnimator.Play("DenyMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
             }
+
+			// TODO: Make this work with the new mod loading system
+			/*
+            if (clickedKey == KeyCode.PageUp)
+            {
+                ModSuggestionAnimator.Play("AcceptMod");
+                TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
+                UnityWebRequest webRequest = UnityWebRequest.Get(mod.Url);
+
+                yield return webRequest.SendWebRequest();
+
+                byte[] data = webRequest.downloadHandler.data;
+                if (!ModsManager.Instance.LoadMod(data, mod.ModName, false, out string error))
+                {
+                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_twitch_load_fail"), Color.red);
+                    TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");
+                }
+            }
+            if (clickedKey == KeyCode.PageDown)
+            {
+                ModSuggestionAnimator.Play("DenyMod");
+                TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
+            }
+			*/
 
         }
 
@@ -184,11 +238,16 @@ namespace InternalModBot
             if (subCommands[0].ToLower() == "!mods")
             {
                 List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
+                // List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+
                 string allMods = "";
                 for(int i = 0; i < mods.Count; i++)
                 {
                     Mod mod = mods[i];
-                    allMods += mod.GetModName();
+
+					allMods += mod.GetModName();
+                    // allMods += mod.ModInfo.DisplayName;
+
                     if (i != mods.Count-1)
                     {
                         allMods += ", ";

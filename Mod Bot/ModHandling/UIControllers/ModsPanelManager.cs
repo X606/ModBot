@@ -1,10 +1,12 @@
 ﻿using ModLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.IO;
 
 namespace InternalModBot
 {
@@ -17,7 +19,7 @@ namespace InternalModBot
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(7).gameObject; // Gets the lower buttons container
+            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(8).gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
             GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(1).gameObject; // Gets the options button (we copy it and replace its organs and face)
@@ -29,7 +31,7 @@ namespace InternalModBot
             GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
             GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.transform.GetChild(1).GetChild(9).position -= pauseScreenButtonOffset;
+            GameUIRoot.Instance.EscMenu.AchievementsButton.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffset;
             GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffset;
@@ -38,8 +40,7 @@ namespace InternalModBot
             pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton";
 
-            GameObject modsWindowPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModsMenu", "Clone Drone in the Danger Zone_Data/");
-            _modsWindow = Instantiate(modsWindowPrefab);
+            _modsWindow = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModsMenu");
 
             _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
             _modsWindow.SetActive(false);
@@ -55,7 +56,7 @@ namespace InternalModBot
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
-            image.GetComponent<Image>().sprite = AssetLoader.GetObjectFromFile<Sprite>("modswindow", "modbot", "Clone Drone in the Danger Zone_Data/");
+            image.GetComponent<Image>().sprite = InternalAssetBundleReferences.ModsWindow.GetObject<Sprite>("modbot");
             image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1f);
             image.GetComponent<RectTransform>().position -= new Vector3(7f, 0f);
 
@@ -90,9 +91,7 @@ namespace InternalModBot
 
         void onGetMoreModsClicked()
         {
-            GameObject modDownloadsPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "Mod downloads", "Clone Drone in the Danger Zone_Data/");
-            
-            ModdedObject spawnedModdedObject = Instantiate(modDownloadsPrefab).GetComponent<ModdedObject>();
+            ModdedObject spawnedModdedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Mod downloads").GetComponent<ModdedObject>();
             GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
             spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
             {
@@ -104,8 +103,6 @@ namespace InternalModBot
 
         static IEnumerator downloadModData(GameObject content)
         {
-            GameObject modDownloadInfoPrefab = AssetLoader.GetObjectFromFile<GameObject>("modswindow", "ModDownloadInfo", "Clone Drone in the Danger Zone_Data/");
-            
             UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/mods/.json");
 
             yield return webRequest.SendWebRequest(); // wait for the web request to send
@@ -115,25 +112,34 @@ namespace InternalModBot
 
             TransformUtils.DestroyAllChildren(content.transform);
 
-            ModsHolder mods = Newtonsoft.Json.JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+            ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
-            foreach(ModsHolder.ModHolder mod in mods.Mods)
+            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("ModDownloadInfo");
+            foreach (ModsHolder.ModHolder modHolder in modsHolder.Mods)
             {
-                if(!mod.Checked) // do not want unchecked mods to come up in-game.
+                if(!modHolder.Checked) // do not want unchecked mods to come up in-game.
                     continue;
 
                 GameObject holder = Instantiate(modDownloadInfoPrefab);
                 holder.transform.parent = content.transform;
-                holder.AddComponent<ModDownloadInfoItem>().Init(mod);
+                holder.AddComponent<ModDownloadInfoItem>().Init(modHolder);
             }
 
         }
 
+        // Old mod loading system
         void openModsOptionsWindowForMod(Mod mod)
         {
             ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod);
             mod.CreateSettingsWindow(builder);
         }
+        /* New mod loading system
+        void openModsOptionsWindowForMod(LoadedModInfo mod)
+        {
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod.ModReference);
+            mod.ModReference.CreateSettingsWindow(builder);
+        }
+        */
 
         void toggleIsModDisabled(int ID)
         {
@@ -142,7 +148,7 @@ namespace InternalModBot
 
             if (!isNotActive.HasValue)
                 return;
-            
+
             if (isNotActive.Value)
             {
                 ModsManager.Instance.EnableMod(mod);
@@ -151,10 +157,21 @@ namespace InternalModBot
             {
                 ModsManager.Instance.DisableMod(mod);
             }
-            
+
             ReloadModItems();
         }
+        /* New mod loading system
+        void toggleIsModDisabled(LoadedModInfo mod)
+        {
+            if (mod == null)
+                return;
+			mod.IsEnabled = !mod.IsEnabled;
 
+            ReloadModItems();
+        }
+        */
+
+        // Old mod loading system
         void addModToList(Mod mod, GameObject parent)
         {
             bool? isModNotActive = ModsManager.Instance.IsModDeactivated(mod);
@@ -179,7 +196,6 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.GetUniqueID());
 
             Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
-            //enableOrDisableButton.transform.GetChild(0).gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_disable_mod";
             if (isModNotActive.Value)
             {
                 modItem.GetComponent<Image>().color = Color.red;
@@ -191,7 +207,7 @@ namespace InternalModBot
             }
 
             Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
-            BroadcastButton.onClick.AddListener( delegate { onBroadcastButtonClicked(mod); } );
+            BroadcastButton.onClick.AddListener(delegate { onBroadcastButtonClicked(mod); });
             BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
 
             Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
@@ -201,13 +217,69 @@ namespace InternalModBot
 
             int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
             modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(modId); }); // Add disable button callback
-            //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
         }
+        /* New mod loading system
+        void addModToList(LoadedModInfo mod, GameObject parent)
+        {
+			bool isModActive = mod.IsEnabled;
+
+            GameObject modItem = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModItemPrefab");
+            modItem.transform.parent = parent.transform;
+
+            string modName = mod.OwnerModInfo.DisplayName;
+			string imageFilePath = mod.OwnerModInfo.FolderPath + mod.OwnerModInfo.ImageFileName;
+
+            _modItems.Add(modItem);
+			
+			ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
+
+            modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
+			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
+            modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.OwnerModInfo.UniqueID);
+
+			if(File.Exists(imageFilePath) && !string.IsNullOrWhiteSpace(mod.OwnerModInfo.ImageFileName))
+			{
+				byte[] imgData = File.ReadAllBytes(imageFilePath);
+
+				Texture2D texture = new Texture2D(1, 1);
+				texture.LoadImage(imgData);
+
+				modItemModdedObject.GetObject<RawImage>(2).texture = texture;
+			}
+
+			Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
+            
+            if (!isModActive)
+            {
+                modItem.GetComponent<Image>().color = Color.red;
+                LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
+                localizedTextField.LocalizationID = "mods_menu_enable_mod";
+                Accessor.CallPrivateMethod("tryLocalizeTextField", localizedTextField);
+
+                enableOrDisableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
+            }
+
+			Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
+            BroadcastButton.onClick.AddListener( delegate { onBroadcastButtonClicked(mod.ModReference); } );
+            BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
+
+            Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
+            //DownloadButton.onClick.AddListener(delegate { onDownloadButtonClicked(mod); });
+            //bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
+            DownloadButton.gameObject.SetActive(false);
+
+			modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(mod); }); // Add disable button callback
+            //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
+            modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
+            modItemModdedObject.GetObject<Button>(4).interactable = mod.ModReference != null ? mod.ModReference.ImplementsSettingsWindow() : false;
+		}
+        */
 
         static void onBroadcastButtonClicked(Mod mod)
         {
+            // Old mod loading system
             new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_broadcast_confirm_message", mod.GetModName()),
             LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_no"), null,
             LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_yes"), delegate
@@ -218,15 +290,17 @@ namespace InternalModBot
 
         void onDownloadButtonClicked(Mod mod)
         {
-            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_download_confirm_message", mod.GetModName()), 
+            // Old mod loading system
+            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_download_confirm_message", mod.GetModName()),
             LocalizationManager.Instance.GetTranslatedString("mods_menu_download_confirm_no"), null,
-            LocalizationManager.Instance.GetTranslatedString("mods_menu_download_confirm_yes"), delegate 
+            LocalizationManager.Instance.GetTranslatedString("mods_menu_download_confirm_yes"), delegate
             {
                 ModsManager.Instance.WriteDllFileToModFolder(mod);
                 ReloadModItems();
             });
         }
 
+        // Old mod loading system
         void setImageFromURL(string url, Mod owner)
         {
             if (string.IsNullOrEmpty(url))
@@ -235,6 +309,7 @@ namespace InternalModBot
             StartCoroutine(setModImageFromURLRoutine(owner, url));
         }
 
+        // Old mod loading system
         IEnumerator setModImageFromURLRoutine(Mod mod, string url)
         {
             UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
@@ -269,16 +344,18 @@ namespace InternalModBot
                 }
             }
         }
-        
+
+        // Old mod loading system
         ModdedObject findModItemWithName(string id)
         {
-            foreach(GameObject moddedObject in _modItems)
+            foreach (GameObject moddedObject in _modItems)
             {
                 if (moddedObject.GetComponent<ModdedObject>().GetObject<Text>(5).text == ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", id))
                 {
                     return moddedObject.GetComponent<ModdedObject>();
                 }
             }
+
             return null;
         }
 
@@ -296,6 +373,7 @@ namespace InternalModBot
             }
 
             List<Mod> mods = ModsManager.Instance.GetAllMods();
+            // List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
             RectTransform size = _modsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>();

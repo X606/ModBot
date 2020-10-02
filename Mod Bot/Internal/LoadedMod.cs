@@ -1,4 +1,9 @@
-﻿using ModLibrary;
+﻿/*
+ * This class won't be used with the new mod loading system,
+ * but since that system isn't done yet I am reverting back to the old system
+*/
+
+using ModLibrary;
 
 namespace InternalModBot
 {
