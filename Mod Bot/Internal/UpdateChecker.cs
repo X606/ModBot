@@ -103,7 +103,7 @@ namespace InternalModBot
 					return false;
 			}
 
-			return true;
+			return installedVersion != cloudVersion;
 		}
 
         void onInstallButtonClicked()
