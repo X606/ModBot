@@ -1,0 +1,43 @@
+﻿modsbutton:개조
+newversion_message:새로운 Mod-Bot 버전 사용 가능 : {0}\n(현재 버전 : {1})
+newversion_dismiss:버리다
+newversion_install:설치
+modbotversion:Mod-Bot 버전 : {0}
+modbotuptodate:Mod-Bot 버전 '{0}'이 (가) 최신 상태입니다!
+ignoreallcrashes_savedwarning:저장된 옵션 메시지 (IgnoreCrashes) : 모든 충돌이 무시됩니다. 이것은 테스트 목적으로 만 활성화되어야합니다. 콘솔에 "ignoreallcrashes 0"을 입력하여 끄십시오.
+ignoreallcrashes_on:이제 게임이 모든 충돌을 무시하고 있습니다.이 옵션은 테스트 용으로 만 활성화해야합니다. 이 옵션을 활성화하면 소프트 크래시가 무시되지만 하드 크래시는 여전히 발생할 수 있습니다.
+ignoreallcrashes_off:게임이 더 이상 충돌을 무시하지 않습니다.이 옵션은 안정성을 위해 항상 꺼야합니다.
+crashscreen_customtitle:Mod-Bot 개발자들은 이것을보고 싶어합니다!
+crashscreen_customdescription:Clone Drone Mod-Bot 불화의 스크린 샷을 보내 주시면 고칠 수 있습니다!\n\n이것을 실제 게임 개발자에게 보내지 마십시오. 이것은 아마도 MOD-BOT 또는 설치된 MOD의 결함이며 그들의 것이 아닙니다.
+fps_label:{0} FPS
+command_failed_message:다음 오류로 인해 '{0}'명령이 실패했습니다. {1}
+mod_suggested_multiplayer:모드 다운로드 요청!\n{0} 님이 모드를 공유하려고합니다!\n모드 이름 : "{1}"
+mod_suggested_multiplayer_load_success:제안에서로드 된 모드!
+mod_suggested_multiplayer_load_fail:오류 : 멀티 플레이어 네트워크에서 모드를로드 할 수 없습니다.
+mod_suggested_twitch:모드가 제안되었습니다!\n{0}\n제안자 : {1}
+mod_suggested_twitch_load_fail:오류 : 링크에서 모드를로드 할 수 없습니다.
+upgrade_screen_next:다음
+upgrade_screen_back:뒤
+upgrade_screen_generate:일으키다
+mod_download_confirm_message:{0}을 (를) 다운로드하려고합니다. 그러면 mods 폴더에 .dll 파일이 저장되고 모든 모드가 다시로드됩니다 (이는 임시로로드 된 모드가 모두 사라짐을 의미합니다). 이 작업을 수행 하시겠습니까?
+mod_download_confirm_yes:예
+mod_download_confirm_no:아니
+mod_load_confirm_message:일시적으로 {0}에로드하려고합니다 (mods 폴더에 저장하지 않습니다. 다음에 게임을 종료하면 모드가 사라집니다). 이 작업을 수행 하시겠습니까?
+mod_load_confirm_yes:예
+mod_load_confirm_no:아니
+request_new_key:바인딩하려면 키를 누르십시오.
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander 과 HSCarsten</size>
+mod_bot_credits_by:Mod-Bot 기준 :
+mods_menu_get_more:더 많은 모드 얻기
+mods_menu_mod_options:모드 옵션
+mods_menu_enable_mod:모드 활성화
+mods_menu_disable_mod:모드 비활성화
+mods_menu_mod_id:Mod ID: {0}
+mods_menu_broadcast_confirm_message:Mod-Bot을 사용하는 서버의 다른 모든 사용자에게 {0} 다운로드를 요청합니다. 계속 하시겠습니까?
+mods_menu_broadcast_confirm_yes:예
+mods_menu_broadcast_confirm_no:아니
+mods_menu_download_confirm_message:그러면 mods 폴더에 {0}이 .dll 파일로 저장됩니다. 계속 하시겠습니까?
+mods_menu_download_confirm_yes:예
+mods_menu_download_confirm_no:아니
+clear_cache_success:캐시를 성공적으로 지 웠습니다.
+clear_cache_fail:캐시가 사용 중입니다.

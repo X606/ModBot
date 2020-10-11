@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ModBotVersion" xml:space="preserve">
-    <value>1.5</value>
+    <value>1.5.1</value>
     <comment>The current version of Mod-Bot</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
@@ -136,6 +136,12 @@
   </data>
   <data name="ModBot_Italian" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\localizationfiles\modbot_italian.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ModBot_Japanese" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LocalizationFiles\ModBot_Japanese.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ModBot_Korean" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\LocalizationFiles\ModBot_Korean.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ModBot_Russian" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\localizationfiles\modbot_russian.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

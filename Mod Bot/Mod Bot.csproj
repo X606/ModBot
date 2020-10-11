@@ -231,6 +231,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LocalizationFiles\ModBot_Brazilian_Portuguese.txt" />
+    <None Include="LocalizationFiles\ModBot_Japanese.txt" />
+    <None Include="LocalizationFiles\ModBot_Korean.txt" />
     <Content Include="LocalizationFiles\ModBot_Simplified_Chinese.txt" />
     <Content Include="LocalizationFiles\ModBot_German.txt" />
     <Content Include="LocalizationFiles\ModBot_French.txt" />
