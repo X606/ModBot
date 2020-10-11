@@ -140,6 +140,40 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to modsbutton:MODS
+        ///newversion_message:利用可能な新しいMod-Botバージョン：{0}\n（現在のバージョン：{1}）
+        ///newversion_dismiss:退出させる
+        ///newversion_install:インストール
+        ///modbotversion:Mod-Botバージョン：{0}
+        ///modbotuptodate:Mod-Botバージョン &apos;{0}&apos;が最新です！
+        ///ignoreallcrashes_savedwarning:保存されたオプションメッセージ（IgnoreCrashes）：すべてのクラッシュは無視されます。これはテスト目的でのみ有効にする必要があります。コンソールに「ignoreallcrashes 0」と入力してオフにしてください。
+        ///ignoreallcrashes_on:ゲームは現在すべてのクラッシュを無視しています。このオプションはテスト用にのみ有効にする必要があります。 このオプションを有効にすると、ソフトクラッシュは無視されますが、ハードクラッシュが発生する可能性があります。
+        ///ignoreallcrashes_off:ゲームはクラッシュを無視し [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ModBot_Japanese {
+            get {
+                return ResourceManager.GetString("ModBot_Japanese", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to modsbutton:개조
+        ///newversion_message:새로운 Mod-Bot 버전 사용 가능 : {0}\n(현재 버전 : {1})
+        ///newversion_dismiss:버리다
+        ///newversion_install:설치
+        ///modbotversion:Mod-Bot 버전 : {0}
+        ///modbotuptodate:Mod-Bot 버전 &apos;{0}&apos;이 (가) 최신 상태입니다!
+        ///ignoreallcrashes_savedwarning:저장된 옵션 메시지 (IgnoreCrashes) : 모든 충돌이 무시됩니다. 이것은 테스트 목적으로 만 활성화되어야합니다. 콘솔에 &quot;ignoreallcrashes 0&quot;을 입력하여 끄십시오.
+        ///ignoreallcrashes_on:이제 게임이 모든 충돌을 무시하고 있습니다.이 옵션은 테스트 용으로 만 활성화해야합니다. 이 옵션을 활성화하면 소프트 크래시가 무시되지만 하드 크래시는 여전히 발생할 수 있습니다.
+        ///ignoreallcrashes_off:게임이 더 이상 충돌을 무시하지 않습니다.이 옵션은 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ModBot_Korean {
+            get {
+                return ResourceManager.GetString("ModBot_Korean", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to modsbutton:моды
         ///newversion_message:Доступна новая версия Mod-Bot: {0}\n(Текущая версия: {1})
         ///newversion_dismiss:Отклонить
@@ -175,14 +209,14 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to modsbutton:MODS
-        ///newversion_message:New Mod-Bot version available: {0}\n(Current version: {1})
-        ///newversion_dismiss:Dismiss
-        ///newversion_install:Install
-        ///modbotversion:Mod-Bot Version: {0}
-        ///modbotuptodate:Mod-Bot version &apos;{0}&apos; up to date!
-        ///ignoreallcrashes_savedwarning:Saved option message (IgnoreCrashes): All crashes are being ignored, this should only be enabled for testing purposes, turn it off by typing &quot;ignoreallcrashes 0&quot; into the console.
-        ///ignoreallcrashes_on:The game is now ignoring all crashes, this  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to modsbutton:MODIFICACIONES
+        ///newversion_message:Nueva versión Mod-Bot disponible: {0}\n(Versión actual: {1})
+        ///newversion_dismiss:Descartar
+        ///newversion_install:Instalar en pc
+        ///modbotversion:Versión Mod-Bot: {0}
+        ///modbotuptodate:¡Versión de Mod-Bot &apos;{0}&apos; actualizada!
+        ///ignoreallcrashes_savedwarning:Mensaje de opción guardada (IgnoreCrashes): se ignoran todos los bloqueos, esto solo debe habilitarse con fines de prueba, apáguelo escribiendo &quot;ignoreallcrashes 0&quot; en la consola.
+        ///ignoreallcrashes_on:El juego ahora ig [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ModBot_Spanish_LatinAmerica {
             get {
@@ -207,7 +241,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.5.
+        ///   Looks up a localized string similar to 1.5.1.
         /// </summary>
         internal static string ModBotVersion {
             get {

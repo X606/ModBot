@@ -21,6 +21,10 @@ namespace ModLibrary
         AssetBundle _assetBundle;
         Dictionary<string, UnityEngine.Object> _cachedObjects;
 
+        string assetBundleFilePath => InternalUtils.GetSubdomain(Application.dataPath) + _dictionaryKey;
+
+        bool _isCachingAssets;
+
         /// <summary>
         /// Unloads the AssetBundle when this object is destroyed
         /// </summary>
@@ -30,13 +34,12 @@ namespace ModLibrary
             clearObjectCache(true);
         }
 
-        private AssetBundleInfo(string assetBundlePath, string cacheDictionaryKey)
+        private AssetBundleInfo(string cacheDictionaryKey)
         {
             _dictionaryKey = cacheDictionaryKey;
             _cachedObjects = new Dictionary<string, UnityEngine.Object>();
-            _assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
 
-            StaticCoroutineRunner.StartStaticCoroutine(cacheAllAssets());
+            loadAssetBundle();
         }
 
         internal static AssetBundleInfo CreateOrGetCached(string key)
@@ -54,7 +57,7 @@ namespace ModLibrary
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("Could not find asset bundle file", filePath);
 
-            AssetBundleInfo assetBundleInfo = new AssetBundleInfo(filePath, key);
+            AssetBundleInfo assetBundleInfo = new AssetBundleInfo(key);
             _cachedAssetBundleInfos.Add(key, assetBundleInfo);
 
             return assetBundleInfo;
@@ -89,6 +92,15 @@ namespace ModLibrary
                 _cachedAssetBundleInfos.Remove(_dictionaryKey);
         }
 
+        void loadAssetBundle()
+        {
+            if (_assetBundle == null)
+            {
+                _assetBundle = AssetBundle.LoadFromFile(assetBundleFilePath);
+                startCachingAllAssets();
+            }
+        }
+
         void unloadAssetBundle()
         {
             if (_assetBundle != null)
@@ -98,16 +110,26 @@ namespace ModLibrary
             }
         }
 
+        void startCachingAllAssets()
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(cacheAllAssets());
+        }
+
         IEnumerator cacheAllAssets()
         {
             if (_assetBundle == null)
                 yield break;
 
+            _isCachingAssets = true;
+
             AssetBundleRequest allAssetsRequest = _assetBundle.LoadAllAssetsAsync();
             yield return allAssetsRequest;
 
             if (_assetBundle == null || _cachedObjects == null)
+            {
+                _isCachingAssets = false;
                 yield break;
+            }
 
             foreach (UnityEngine.Object asset in allAssetsRequest.allAssets)
             {
@@ -118,6 +140,7 @@ namespace ModLibrary
             }
 
             unloadAssetBundle();
+            _isCachingAssets = false;
         }
 
         /// <summary>
@@ -139,6 +162,10 @@ namespace ModLibrary
 
                 if (asset != null)
                     _cachedObjects.Add(objectName, asset);
+
+                // If we are not caching the assets but the asset is missing from the cache, start caching the assets if we aren't already doing so
+                if (!_isCachingAssets)
+                    startCachingAllAssets();
             }
             else
             {
@@ -149,7 +176,9 @@ namespace ModLibrary
             {
                 if (_assetBundle == null)
                 {
-                    throw new Exception("Could not load \"" + objectName + "\" of type \"" + typeof(T) + "\": Asset bundle not loaded");
+                    // Reload asset bundle and retry loading the asset
+                    loadAssetBundle();
+                    return GetObject<T>(objectName);
                 }
                 else
                 {

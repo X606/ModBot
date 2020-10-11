@@ -30,6 +30,8 @@ namespace InternalModBot
         const string LANGUAGE_ID_SPANISH_SPAIN = "es-ES";
         const string LANGUAGE_ID_SIMPLIFIED_CHINESE = "zh-CN";
         const string LANGUAGE_ID_BRAZILIAN_PORTUGUESE = "pt-BR"; // Currently normal Portuguese, Google Translate does not support Brazilian Portuguese
+        const string LANGUAGE_ID_JAPANESE = "ja";
+        const string LANGUAGE_ID_KOREAN = "ko";
 
         static Queue<string> _localizationIDsToLog;
         static bool _isLogQueueCoroutineRunning;
@@ -58,6 +60,10 @@ namespace InternalModBot
                     return Resources.ModBot_Simplified_Chinese;
                 case LANGUAGE_ID_BRAZILIAN_PORTUGUESE:
                     return Resources.ModBot_Brazilian_Portuguese;
+                case LANGUAGE_ID_JAPANESE:
+                    return Resources.ModBot_Japanese;
+                case LANGUAGE_ID_KOREAN:
+                    return Resources.ModBot_Korean;
                 default:
                     throw new ArgumentException("Unknown language ID: " + languageID);
             }

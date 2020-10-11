@@ -1,0 +1,43 @@
+﻿modsbutton:MODS
+newversion_message:利用可能な新しいMod-Botバージョン：{0}\n（現在のバージョン：{1}）
+newversion_dismiss:退出させる
+newversion_install:インストール
+modbotversion:Mod-Botバージョン：{0}
+modbotuptodate:Mod-Botバージョン '{0}'が最新です！
+ignoreallcrashes_savedwarning:保存されたオプションメッセージ（IgnoreCrashes）：すべてのクラッシュは無視されます。これはテスト目的でのみ有効にする必要があります。コンソールに「ignoreallcrashes 0」と入力してオフにしてください。
+ignoreallcrashes_on:ゲームは現在すべてのクラッシュを無視しています。このオプションはテスト用にのみ有効にする必要があります。 このオプションを有効にすると、ソフトクラッシュは無視されますが、ハードクラッシュが発生する可能性があります。
+ignoreallcrashes_off:ゲームはクラッシュを無視しなくなりました。安定性のために、このオプションは常にオフにする必要があります。
+crashscreen_customtitle:Mod-Botの開発者はこれを見たいと思っています！
+crashscreen_customdescription:修正できるように、Clone Drone Mod-Botの不和でスクリーンショットを送ってください。\n\nこれを実際のゲーム開発者に送信しないでください。これはおそらくMODボットまたはインストールされたMODの障害であり、それらの開発者ではありません。
+fps_label:{0} FPS
+command_failed_message:コマンド '{0}'は次のエラーで失敗しました：{1}
+mod_suggested_multiplayer:Modダウンロードリクエスト！\n{0}はあなたとmodを共有したいと思っています！\nMod名： "{1}"
+mod_suggested_multiplayer_load_success:提案からModが読み込まれました！
+mod_suggested_multiplayer_load_fail:エラー：マルチプレイヤーネットワークからmodを読み込めませんでした
+mod_suggested_twitch:Modが提案しました！\n{0}\n提案者：{1}
+mod_suggested_twitch_load_fail:エラー：リンクからmodを読み込めませんでした
+upgrade_screen_next:次
+upgrade_screen_back:前
+upgrade_screen_generate:生む
+mod_download_confirm_message:{0}をダウンロードしようとしています。 これにより、.dllファイルがmodsフォルダーに配置され、すべてのmodが再ロードされます（これは、一時的にロードされたmodがなくなることも意味します）。 これを実行してもよろしいですか？
+mod_download_confirm_yes:はい
+mod_download_confirm_no:番号
+mod_load_confirm_message:{0}を一時的にロードしようとしています（modsフォルダーには配置されません。次にゲームを終了するとmodは消えます）。 これを実行してもよろしいですか？
+mod_load_confirm_yes:はい
+mod_load_confirm_no:番号
+request_new_key:キーを押してバインドしてください
+mod_bot_credits_developers_list:X606, Gorakh,\n<size=9>Niek_Alexander そして HSCarsten</size>
+mod_bot_credits_by:Mod-Bot作成者：
+mods_menu_get_more:より多くの改造を取得する
+mods_menu_mod_options:Modオプション
+mods_menu_enable_mod:Modを有効にする
+mods_menu_disable_mod:Modを無効にする
+mods_menu_mod_id:Mod ID: {0}
+mods_menu_broadcast_confirm_message:これにより、Mod-Botを使用しているサーバー内の他のすべてのユーザーに{0}のダウンロードが要求されます。これを実行してもよろしいですか？
+mods_menu_broadcast_confirm_yes:はい
+mods_menu_broadcast_confirm_no:番号
+mods_menu_download_confirm_message:これにより、{0}が.dllファイルとしてmodsフォルダーに配置されます。これを実行してもよろしいですか？
+mods_menu_download_confirm_yes:はい
+mods_menu_download_confirm_no:番号
+clear_cache_success:キャッシュを正常にクリアしました。
+clear_cache_fail:キャッシュが使用されています。
