@@ -155,6 +155,13 @@ namespace ModLibrary
             if (_cachedObjects.TryGetValue(objectName, out UnityEngine.Object obj))
             {
                 asset = obj as T;
+                
+                if (asset == null || !asset)
+                {
+                    _cachedObjects.Clear();
+                    startCachingAllAssets();
+                    return GetObject<T>(objectName);
+                }
             }
             else if (_assetBundle != null)
             {

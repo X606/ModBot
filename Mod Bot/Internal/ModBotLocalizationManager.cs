@@ -139,7 +139,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Passes the output of <see cref="LocalizationManager.GetTranslatedString(string)"/> into <see cref="debug.Log(string)"/> once the <see cref="LocalizationManager"/> is initialized
+        /// Passes the output of <see cref="LocalizationManager.GetTranslatedString(string, int)"/> into <see cref="debug.Log(string)"/> once the <see cref="LocalizationManager"/> is initialized
         /// </summary>
         /// <param name="localizationID"></param>
         public static void LogLocalizedStringOnceLocalizationManagerInitialized(string localizationID)
