@@ -1,5 +1,4 @@
 ﻿// New mod loading system
-/*
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -285,4 +284,3 @@ namespace ModLibrary
 		}
 	}
 }
-*/

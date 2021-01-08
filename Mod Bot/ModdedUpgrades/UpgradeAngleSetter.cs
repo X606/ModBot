@@ -116,11 +116,7 @@ namespace InternalModBot
             if (upgradeDescription == null)
                 return;
 
-            // Old mod loading system
-            upgradeDescription.SetAngleOffset(newAngle, UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage));
-
-            // New mod loading system
-            // upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
+            upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
         }
 
         void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)

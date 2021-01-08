@@ -90,24 +90,6 @@ namespace InternalModBot
             }
 
 
-            // Old mod loading system, re-introduced to revert back to it
-            if (clickedKey == KeyCode.PageUp)
-            {
-                ModSuggestionAnimator.Play("AcceptMod");
-                if (!ModsManager.Instance.LoadMod(data, false, out string error))
-                {
-                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_fail"), Color.red);
-                }
-                else
-                {
-                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_multiplayer_load_success"), Color.green);
-                }
-            }
-            else if (clickedKey == KeyCode.PageDown)
-            {
-                ModSuggestionAnimator.Play("DenyMod");
-            }
-
 			//TODO: Update this to work with the new mod loading system
 
 			/*
@@ -152,26 +134,6 @@ namespace InternalModBot
                 }
 
                 yield return 0;
-            }
-
-            // Reverted code
-            if (clickedKey == KeyCode.PageUp)
-            {
-                ModSuggestionAnimator.Play("AcceptMod");
-                TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
-                UnityWebRequest webRequest = UnityWebRequest.Get(mod.Url);
-                yield return webRequest.SendWebRequest();
-                byte[] data = webRequest.downloadHandler.data;
-                if (!ModsManager.Instance.LoadMod(data, false, out string error))
-                {
-                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_twitch_load_fail"), Color.red);
-                    TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");
-                }
-            }
-            if (clickedKey == KeyCode.PageDown)
-            {
-                ModSuggestionAnimator.Play("DenyMod");
-                TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
             }
 
 			// TODO: Make this work with the new mod loading system
@@ -237,16 +199,14 @@ namespace InternalModBot
             }
             if (subCommands[0].ToLower() == "!mods")
             {
-                List<Mod> mods = ModsManager.Instance.GetAllLoadedMods();
-                // List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+                List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
 
                 string allMods = "";
                 for(int i = 0; i < mods.Count; i++)
                 {
                     Mod mod = mods[i];
 
-					allMods += mod.GetModName();
-                    // allMods += mod.ModInfo.DisplayName;
+                    allMods += mod.ModInfo.DisplayName;
 
                     if (i != mods.Count-1)
                     {

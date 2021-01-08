@@ -127,40 +127,12 @@ namespace InternalModBot
 
         }
 
-        // Old mod loading system
-        void openModsOptionsWindowForMod(Mod mod)
-        {
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod);
-            mod.CreateSettingsWindow(builder);
-        }
-        /* New mod loading system
         void openModsOptionsWindowForMod(LoadedModInfo mod)
         {
             ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod.ModReference);
             mod.ModReference.CreateSettingsWindow(builder);
         }
-        */
 
-        void toggleIsModDisabled(int ID)
-        {
-            Mod mod = ModsManager.Instance.GetAllMods()[ID];
-            bool? isNotActive = ModsManager.Instance.IsModDeactivated(mod);
-
-            if (!isNotActive.HasValue)
-                return;
-
-            if (isNotActive.Value)
-            {
-                ModsManager.Instance.EnableMod(mod);
-            }
-            else
-            {
-                ModsManager.Instance.DisableMod(mod);
-            }
-
-            ReloadModItems();
-        }
-        /* New mod loading system
         void toggleIsModDisabled(LoadedModInfo mod)
         {
             if (mod == null)
@@ -169,58 +141,8 @@ namespace InternalModBot
 
             ReloadModItems();
         }
-        */
 
-        // Old mod loading system
-        void addModToList(Mod mod, GameObject parent)
-        {
-            bool? isModNotActive = ModsManager.Instance.IsModDeactivated(mod);
-            if (!isModNotActive.HasValue)
-                return;
-
-            GameObject modItemPrefab = AssetLoader.GetObjectFromFile("modswindow", "ModItemPrefab", "Clone Drone in the Danger Zone_Data/");
-            GameObject modItem = Instantiate(modItemPrefab, parent.transform);
-
-            string modName = mod.GetModName();
-            string url = mod.GetModImageURL();
-
-            _modItems.Add(modItem);
-
-            if (!string.IsNullOrEmpty(url))
-                setImageFromURL(url, mod);
-
-            ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
-
-            modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
-            modItemModdedObject.GetObject<Text>(1).text = mod.GetModDescription(); // Set description
-            modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.GetUniqueID());
-
-            Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
-            if (isModNotActive.Value)
-            {
-                modItem.GetComponent<Image>().color = Color.red;
-                LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
-                localizedTextField.LocalizationID = "mods_menu_enable_mod";
-                Accessor.CallPrivateMethod("tryLocalizeTextField", localizedTextField);
-
-                enableOrDisableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
-            }
-
-            Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
-            BroadcastButton.onClick.AddListener(delegate { onBroadcastButtonClicked(mod); });
-            BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
-
-            Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
-            DownloadButton.onClick.AddListener(delegate { onDownloadButtonClicked(mod); });
-            bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
-            DownloadButton.gameObject.SetActive(hasNoFile);
-
-            int modId = ModsManager.Instance.GetAllMods().IndexOf(mod);
-            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(modId); }); // Add disable button callback
-            modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
-            modItemModdedObject.GetObject<Button>(4).interactable = mod.ImplementsSettingsWindow();
-        }
-        /* New mod loading system
+       
         void addModToList(LoadedModInfo mod, GameObject parent)
         {
 			bool isModActive = mod.IsEnabled;
@@ -275,64 +197,11 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modItemModdedObject.GetObject<Button>(4).interactable = mod.ModReference != null ? mod.ModReference.ImplementsSettingsWindow() : false;
 		}
-        */
-
         static void onBroadcastButtonClicked(Mod mod)
         {
-            // Old mod loading system
-            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_broadcast_confirm_message", mod.GetModName()),
-            LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_no"), null,
-            LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_yes"), delegate
-            {
-                ModSharingManager.SendModToAllModBotClients(ModsManager.Instance.GetModData(mod), mod.GetModName());
-            });
+            //TODO: implement this
         }
 
-        void onDownloadButtonClicked(Mod mod)
-        {
-            // Old mod loading system
-            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_download_confirm_message", mod.GetModName()),
-            LocalizationManager.Instance.GetTranslatedString("mods_menu_download_confirm_no"), null,
-            LocalizationManager.Instance.GetTranslatedString("mods_menu_download_confirm_yes"), delegate
-            {
-                ModsManager.Instance.WriteDllFileToModFolder(mod);
-                ReloadModItems();
-            });
-        }
-
-        // Old mod loading system
-        void setImageFromURL(string url, Mod owner)
-        {
-            if (string.IsNullOrEmpty(url))
-                return;
-
-            StartCoroutine(setModImageFromURLRoutine(owner, url));
-        }
-
-        // Old mod loading system
-        IEnumerator setModImageFromURLRoutine(Mod mod, string url)
-        {
-            UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
-
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.isNetworkError || webRequest.isHttpError)
-            {
-                debug.Log("Error dowloading preview image for mod: \"" + mod.GetUniqueID() + "\":\n" + webRequest.error, Color.red);
-                yield break;
-            }
-
-            ModdedObject modWindowItem = findModItemWithName(mod.GetUniqueID());
-            if (modWindowItem != null)
-            {
-                DownloadHandlerTexture textureDownloader = webRequest.downloadHandler as DownloadHandlerTexture;
-                modWindowItem.GetObject<RawImage>(2).texture = textureDownloader.texture;
-            }
-            else
-            {
-                debug.Log("Error: Could not find mod item in mods window for mod: \"" + mod.GetUniqueID() + "\"", Color.red);
-            }
-        }
 
         void Update()
         {
@@ -345,19 +214,6 @@ namespace InternalModBot
             }
         }
 
-        // Old mod loading system
-        ModdedObject findModItemWithName(string id)
-        {
-            foreach (GameObject moddedObject in _modItems)
-            {
-                if (moddedObject.GetComponent<ModdedObject>().GetObject<Text>(5).text == ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", id))
-                {
-                    return moddedObject.GetComponent<ModdedObject>();
-                }
-            }
-
-            return null;
-        }
 
         /// <summary>
         /// Refereshes what mods should be displayed in the mods menu
@@ -372,8 +228,7 @@ namespace InternalModBot
                 Destroy(child.gameObject);
             }
 
-            List<Mod> mods = ModsManager.Instance.GetAllMods();
-            // List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
+            List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
             RectTransform size = _modsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>();

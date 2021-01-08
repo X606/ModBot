@@ -110,9 +110,10 @@ namespace InternalModBot
 
         IEnumerator downloadModBytesAndLoadAsync(string url)
         {
-			//yield return 0;
+			yield return 0;
 
-            // Reverted
+            // Old pre 2.0 code code
+            /*
 			UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
 
@@ -121,6 +122,7 @@ namespace InternalModBot
 
             ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false, out string error);
             ModsPanelManager.Instance.ReloadModItems();
+            */
 		}
         
     }
