@@ -283,7 +283,7 @@ namespace InternalModBot
         {
             MultiplayerEventCallback.OnEventRecieved(evnt);
         }
-
+        
         /// <summary>
         /// Called when we recieve a <see cref="DismissAutomatedLaserBlastEvent"/>
         /// </summary>
@@ -463,8 +463,6 @@ namespace InternalModBot
 		/// <param name="connection"></param>
 		public override void Connected(BoltConnection connection)
 		{
-			StaticCoroutineRunner.StartStaticCoroutine(MultiplayerPlayerNameManager.DownloadDataFromFirebase());
-
 			ModBotUserIdentifier.Instance.OnLocalClientConnected();
 			ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
 		}

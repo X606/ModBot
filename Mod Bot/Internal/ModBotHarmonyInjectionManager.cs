@@ -4,6 +4,7 @@ using HarmonyLib;
 using ModLibrary;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PicaVoxel;
 using System;
 using System.CodeDom;
 using System.Collections;
@@ -253,6 +254,11 @@ namespace InternalModBot
                 UpgradeCollection upgrade = __instance.GetComponent<UpgradeCollection>();
                 ModsManager.Instance.PassOnMod.OnUpgradesRefreshed(__instance, upgrade);
             }
+
+            public static void FirstPersonMover_CreateCharacterModel_PostFix(FirstPersonMover __instance)
+			{
+                ModsManager.Instance.PassOnMod.OnCharacterModelCreated(__instance);
+			}
 
             public static void FirstPersonMover_ExecuteCommand_Prefix(FirstPersonMover __instance, ref Command command)
             {
@@ -520,7 +526,7 @@ namespace InternalModBot
                         __instance.OnSafeDisplayNamePrepared -= singleCallback;
                         Action<string> onSafeDisplayNameReceived3 = onSafeDisplayNameReceived;
                         if (onSafeDisplayNameReceived3 != null)
-                            onSafeDisplayNameReceived3(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, safeDisplayName));
+                            onSafeDisplayNameReceived3(MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(__instance.state.PlayFabID, safeDisplayName));
                     };
 
                     __instance.OnSafeDisplayNamePrepared += singleCallback;
@@ -543,7 +549,7 @@ namespace InternalModBot
                 {
                     Action<string> onSafeDisplayNameReceived2 = onSafeDisplayNameReceived;
                     if (onSafeDisplayNameReceived2 != null)
-                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(__instance.state.PlayFabID, Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)));
+                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(__instance.state.PlayFabID, Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)));
                 }
 
                 return false;
@@ -558,7 +564,7 @@ namespace InternalModBot
                 {
                     if (displayName != null && !character.HasNameTag())
                     {
-                        displayName = MultiplayerPlayerNameManager.GetFullPrefixForPlayfabID(character.state.PlayFabID) + MultiplayerPlayerNameManager.GetNameForPlayfabID(character.state.PlayFabID, displayName);
+                        displayName = MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(character.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(character.state.PlayFabID, displayName);
                         CharacterNameTagManager.Instance.StartCoroutine(Accessor.CallPrivateMethod<CharacterNameTagManager, IEnumerator>("addNameTagWithDelay", CharacterNameTagManager.Instance, new object[] { character, displayName }));
                     }
                 });

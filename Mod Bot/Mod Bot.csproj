@@ -57,6 +57,7 @@
     <Compile Include="Internal\LoadedMod.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
+    <Compile Include="Internal\ModBotSignInManager.cs" />
     <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\MultiplayerNamePrefixManager.cs" />
     <Compile Include="Internal\NameTagRefreshListener.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyGenericUnitTest.cs" />
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyUnitTest.cs" />
     <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldUnitTest.cs" />
+    <Compile Include="Internal\VersionLabelManager.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\Logger.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
@@ -154,6 +156,9 @@
     <Reference Include="bolt.user, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\bolt.user.dll</HintPath>
+    </Reference>
+    <Reference Include="ModBotWebsiteAPI">
+      <HintPath>..\UsedDlls\ModBotWebsiteAPI.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>..\UsedDlls\netstandard.dll</HintPath>

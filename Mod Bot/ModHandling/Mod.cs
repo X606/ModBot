@@ -57,6 +57,14 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// called at the end of <see cref="FirstPersonMover.CreateCharacterModel(CharacterModel)"/>
+        /// </summary>
+        /// <param name="owner">The owner of the new character model</param>
+        public virtual void OnCharacterModelCreated(FirstPersonMover owner)
+		{
+		}
+
+        /// <summary>
         /// Called in <see cref="ModsManager.ReloadMods()"/>
         /// </summary>
         public virtual void OnModRefreshed()

@@ -26,11 +26,11 @@ namespace InternalModBot
 			_owner = owner;
 			_nameTag = nameTag;
 
-			MultiplayerPlayerNameManager.RefreshNameTags += multiplayerNamePrefixManager_RefreshNameTags;
+			MultiplayerPlayerNameManager.Instance.RefreshNameTags += multiplayerNamePrefixManager_RefreshNameTags;
 		}
 		void OnDestroy()
 		{
-			MultiplayerPlayerNameManager.RefreshNameTags -= multiplayerNamePrefixManager_RefreshNameTags;
+			MultiplayerPlayerNameManager.Instance.RefreshNameTags -= multiplayerNamePrefixManager_RefreshNameTags;
 		}
 
 		void multiplayerNamePrefixManager_RefreshNameTags()

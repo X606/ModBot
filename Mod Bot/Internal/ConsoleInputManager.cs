@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using ModBotWebsiteAPI;
 
 namespace InternalModBot
 {
@@ -76,10 +77,14 @@ namespace InternalModBot
                     });
 				}
 			}
-			if (subCommands[0] == "redownloaddata")
+            if (subCommands[0] == "logout")
 			{
-				StaticCoroutineRunner.StartStaticCoroutine(MultiplayerPlayerNameManager.DownloadDataFromFirebase());
-				debug.Log("redownloading data...");
+                debug.Log("Logging out...");
+                API.SignOut(delegate (JsonObject json)
+                {
+                    debug.Log(json["message"]);
+                    VersionLabelManager.Instance.SetLine(2, "Not signed in");
+                }); 
 			}
         }
 

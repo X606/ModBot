@@ -36,6 +36,9 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModBotUserIdentifier>();              // Keeps track of what users are currently using Mod-Bot
             gameFlowManager.AddComponent<UpgradeAngleSetter>();                // Handles setting upgrade angles while in-game
             gameFlowManager.AddComponent<DebugLineDrawingManager>();           // Handles drawing lines on screen
+            gameFlowManager.AddComponent<ModBotSignInManager>();               // Handles signing in to the mod-bot website
+            gameFlowManager.AddComponent<VersionLabelManager>();               // Handles custom version label stuff
+            gameFlowManager.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
@@ -79,6 +82,15 @@ namespace InternalModBot
             ModdedObject modSuggestingManagerInfo = spawedUIModdedObject.GetObject<ModdedObject>(5);
             modSuggestingManager.DisplayText = modSuggestingManagerInfo.GetObject<Text>(0);
             modSuggestingManager.ModSuggestionAnimator = modSuggestingManagerInfo.GetObject<Animator>(1);
+            
+            ModdedObject signInFormModdedObject = spawedUIModdedObject.GetObject<ModdedObject>(6);
+            ModBotSignInManager.Instance.SignInFormGameObject = signInFormModdedObject.gameObject;
+            ModBotSignInManager.Instance.UsernameField = signInFormModdedObject.GetObject<InputField>(0);
+            ModBotSignInManager.Instance.PasswordField = signInFormModdedObject.GetObject<InputField>(1);
+            ModBotSignInManager.Instance.SignUpButton = signInFormModdedObject.GetObject<Button>(2);
+            ModBotSignInManager.Instance.SignInButton = signInFormModdedObject.GetObject<Button>(3);
+            ModBotSignInManager.Instance.ErrorText = signInFormModdedObject.GetObject<Text>(4);
+            ModBotSignInManager.Instance.XButton = signInFormModdedObject.GetObject<Button>(5);
         }
     }
 }

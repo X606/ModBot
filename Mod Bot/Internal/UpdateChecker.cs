@@ -29,8 +29,12 @@ namespace InternalModBot
         {
             string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
 
-            if (installedModBotVersion.ToLower().Contains("beta"))
-                yield break;
+			string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
+			VersionLabelManager.Instance.SetLine(1, modBotVersionLabel);
+
+			if (installedModBotVersion.ToLower().Contains("beta"))
+				yield break;
+                
 
             UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
             yield return modBotVersionRequest.SendWebRequest();
@@ -39,9 +43,6 @@ namespace InternalModBot
                 yield break;
 
             string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
-
-            string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
-            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\n" + modBotVersionLabel;
 
             if (!isCloudVersionNewer(installedModBotVersion, newestModBotVersion))
             {
@@ -108,7 +109,7 @@ namespace InternalModBot
 
         void onInstallButtonClicked()
         {
-            Application.OpenURL("http://clonedronemodbot.com/");
+            Application.OpenURL("https://modbot.org/");
         }
     }
 }
