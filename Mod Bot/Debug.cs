@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using InternalModBot;
+using System;
 
 namespace ModLibrary
 {
@@ -62,6 +63,13 @@ namespace ModLibrary
         /// <param name="_color">The <see cref="Color"/> to write in</param>
         public static void Log(string _log, Color _color)
         {
+            if (InternalModBot.Logger.Instance == null)
+			{
+                Console.WriteLine(_log);
+                throw new System.Exception("Logger is null");
+            }
+                
+
             InternalModBot.Logger.Instance.Log(_log, _color);
 
             if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)

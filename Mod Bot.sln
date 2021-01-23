@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mod Bot", "Mod Bot\Mod Bot.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injections", "InjectionClasses\Injections.csproj", "{4C008C40-89DA-4EB7-BC4C-F4CBD7722BB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Injector", "Injector\Injector.csproj", "{1579ADFD-8F1A-4188-9A65-867FDAB22F28}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{4C008C40-89DA-4EB7-BC4C-F4CBD7722BB9}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{4C008C40-89DA-4EB7-BC4C-F4CBD7722BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C008C40-89DA-4EB7-BC4C-F4CBD7722BB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1579ADFD-8F1A-4188-9A65-867FDAB22F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1579ADFD-8F1A-4188-9A65-867FDAB22F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1579ADFD-8F1A-4188-9A65-867FDAB22F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1579ADFD-8F1A-4188-9A65-867FDAB22F28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
