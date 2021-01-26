@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.IO;
+using System.Diagnostics;
 
 namespace InternalModBot
 {
@@ -51,8 +52,8 @@ namespace InternalModBot
             pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
 
             _modsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(closeModsMenu); // Add close menu button callback
-            _modsWindowModdedObject.GetObject<Button>(2).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_get_more";
             _modsWindowModdedObject.GetObject<Button>(2).onClick.AddListener(onGetMoreModsClicked); // Add more mods clicked callback
+            _modsWindowModdedObject.GetObject<Button>(3).onClick.AddListener(onModsFolderClicked); // Add mods folder clicked callback
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
@@ -100,6 +101,10 @@ namespace InternalModBot
 
             spawnedModdedObject.StartCoroutine(downloadModData(content));
         }
+        void onModsFolderClicked()
+		{
+            Process.Start("explorer.exe", ModsManager.Instance.ModFolderPath);
+		}
 
         static IEnumerator downloadModData(GameObject content)
         {
@@ -187,20 +192,24 @@ namespace InternalModBot
             BroadcastButton.onClick.AddListener( delegate { onBroadcastButtonClicked(mod.ModReference); } );
             BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
 
-            Button DownloadButton = modItemModdedObject.GetObject<Button>(7);
-            //DownloadButton.onClick.AddListener(delegate { onDownloadButtonClicked(mod); });
-            //bool hasNoFile = ModsManager.Instance.GetIsModOnlyLoadedInMemory(mod);
-            DownloadButton.gameObject.SetActive(false);
-
 			modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(mod); }); // Add disable button callback
             //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
-            modItemModdedObject.GetObject<Button>(4).onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
-            modItemModdedObject.GetObject<Button>(4).interactable = mod.ModReference != null ? mod.ModReference.ImplementsSettingsWindow() : false;
+            Button modsOptionButton = modItemModdedObject.GetObject<Button>(4);
+            modsOptionButton.onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
+            modsOptionButton.interactable = mod.ModReference != null ? mod.ModReference.ImplementsSettingsWindow() : false;
+
+            Button deleteButton = modItemModdedObject.GetObject<Button>(7);
+            deleteButton.onClick.AddListener(delegate { });
 		}
         static void onBroadcastButtonClicked(Mod mod)
         {
             //TODO: implement this
         }
+        void deleteMod(Mod mod)
+		{
+            //TODO: implemet this (possibly move mods to a temp path?)
+            debug.Log("TODO: implemet this (possibly move mods to a temp path?)");
+		}
 
 
         void Update()
