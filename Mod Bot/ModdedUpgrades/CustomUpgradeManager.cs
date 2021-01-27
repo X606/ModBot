@@ -17,8 +17,8 @@ namespace ModLibrary
 
         void Start()
         {
-            _backButton = createButtonAt(InternalAssetBundleReferences.ModsWindow.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
-			_nextButton = createButtonAt(InternalAssetBundleReferences.ModsWindow.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
+            _backButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
+			_nextButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }

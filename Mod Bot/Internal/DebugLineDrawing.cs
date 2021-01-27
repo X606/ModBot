@@ -68,7 +68,7 @@ namespace InternalModBot
 
             void Awake()
             {
-                _lineMaterial = InternalAssetBundleReferences.ModsWindow.GetObject<Material>("Line");
+                _lineMaterial = InternalAssetBundleReferences.ModBot.GetObject<Material>("Line");
             }
 
             void OnPostRender()

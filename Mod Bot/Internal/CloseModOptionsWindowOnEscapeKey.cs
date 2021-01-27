@@ -24,6 +24,7 @@ namespace InternalModBot
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 _owner.ForceCloseWindow();
+                Destroy(this);
             }
         }
     }

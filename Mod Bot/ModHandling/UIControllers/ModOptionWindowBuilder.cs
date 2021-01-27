@@ -15,10 +15,6 @@ namespace ModLibrary
     /// </summary>
     public partial class ModOptionsWindowBuilder
     {
-        readonly GameObject _pageButtonsHolder;
-        readonly GameObject _content;
-        readonly GameObject _spawnedBase;
-        readonly Button _xButton;
         readonly GameObject _owner;
         readonly Mod _ownerMod;
         List<Page> _pages = new List<Page>();
@@ -32,13 +28,11 @@ namespace ModLibrary
             owner.SetActive(false);
             _owner = owner;
             _ownerMod = ownerMod;
-            _spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
-            _spawnedBase.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
-            ModdedObject modObject = _spawnedBase.GetComponent<ModdedObject>();
-            _content = modObject.GetObject<GameObject>(0);
-            _xButton = modObject.GetObject<Button>(1);
-            _pageButtonsHolder = modObject.GetObject<GameObject>(2);
-            _xButton.onClick.AddListener(CloseWindow);
+            //_spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(true);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
+            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick = new Button.ButtonClickedEvent();
+            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick.AddListener(CloseWindow);
 
             DelegateScheduler.Instance.Schedule(delegate
             {
@@ -55,13 +49,13 @@ namespace ModLibrary
         /// </summary>
         public void PopulatePages()
         {
-            TransformUtils.DestroyAllChildren(_pageButtonsHolder.transform);
-            GameObject buttonPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("PageButton");
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
+            GameObject buttonPrefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton");
 
             foreach(Page page in _pages)
             {
                 GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
-                spawnedButton.transform.parent = _pageButtonsHolder.transform;
+                spawnedButton.transform.parent = ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform;
                 ModdedObject moddedObject = spawnedButton.GetComponent<ModdedObject>();
                 moddedObject.GetObject<Text>(0).text = page.Name;
                 moddedObject.GetObject<Button>(1).onClick.AddListener(delegate { SetPage(page); });
@@ -70,8 +64,8 @@ namespace ModLibrary
 
         void SetPage(Page page)
         {
-            TransformUtils.DestroyAllChildren(_content.transform);
-            page.Populate(_content, _ownerMod);
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.Content.transform);
+            page.Populate(ModBotUIRoot.Instance.ModOptionsWindow.Content, _ownerMod);
         }
 
         /// <summary>
@@ -105,7 +99,7 @@ namespace ModLibrary
             RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
 
             GameUIRoot.Instance.SetEscMenuDisabled(false);
-            GameObject.Destroy(_spawnedBase);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             _owner.SetActive(true);
 
             GameUIRoot.Instance.RefreshCursorEnabled();
@@ -118,7 +112,7 @@ namespace ModLibrary
         {
             RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
 
-            GameObject.Destroy(_spawnedBase);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
 
             GameUIRoot.Instance.RefreshCursorEnabled();

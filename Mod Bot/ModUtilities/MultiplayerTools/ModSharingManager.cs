@@ -95,7 +95,8 @@ namespace InternalModBot
             string fullDataAsString = string.Concat(_downloadingData[id]);
             byte[] fullData = fullDataAsString.ToBytes();
 
-            ModSuggestingManager.Instance.SuggestModMultiplayer(senderPlayfabID, modName, fullData);
+
+            ModBotUIRoot.Instance.ModSuggestingUI.SuggestModMultiplayer(senderPlayfabID, modName, fullData);
             _downloadingData.Remove(id);
         }
 

@@ -35,7 +35,7 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject spawnedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Checkbox");
+            GameObject spawnedObject = InternalAssetBundleReferences.ModBot.InstantiateObject("Checkbox");
             spawnedObject.transform.parent = holder.transform;
             ModdedObject moddedObject = spawnedObject.GetComponent<ModdedObject>();
             Toggle toggle = moddedObject.GetObject<Toggle>(0);

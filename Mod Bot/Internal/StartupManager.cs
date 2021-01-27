@@ -36,7 +36,6 @@ namespace InternalModBot
             gameFlowManager.AddComponent<ModBotUserIdentifier>();              // Keeps track of what users are currently using Mod-Bot
             gameFlowManager.AddComponent<UpgradeAngleSetter>();                // Handles setting upgrade angles while in-game
             gameFlowManager.AddComponent<DebugLineDrawingManager>();           // Handles drawing lines on screen
-            gameFlowManager.AddComponent<ModBotSignInManager>();               // Handles signing in to the mod-bot website
             gameFlowManager.AddComponent<VersionLabelManager>();               // Handles custom version label stuff
             gameFlowManager.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
 
@@ -50,7 +49,7 @@ namespace InternalModBot
             catch (Exception e)
             {
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
-                Logger.Instance.Animator.Play("hideConsole");
+                ModBotUIRoot.Instance.ConsoleUI.Animator.Play("hideConsole");
             }
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
@@ -66,31 +65,12 @@ namespace InternalModBot
 
         static void initilizeUI()
         {
-            GameObject spawnedUI = InternalAssetBundleReferences.TwitchMode.InstantiateObject("Canvas");
+            GameObject spawnedUI = InternalAssetBundleReferences.ModBot.InstantiateObject("Canvas");
             ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
 
-            Logger logger = spawnedUI.AddComponent<Logger>();
-            logger.Animator = spawedUIModdedObject.GetObject<Animator>(0);
-            logger.LogText = spawedUIModdedObject.GetObject<Text>(1);
-            logger.Container = spawedUIModdedObject.GetObject<GameObject>(2);
-            logger.InputField = spawedUIModdedObject.GetObject<InputField>(3);
-
-            FPSCount fps = spawnedUI.AddComponent<FPSCount>();
-            fps.Counter = spawedUIModdedObject.GetObject<Text>(4);
-
-            ModSuggestingManager modSuggestingManager = spawnedUI.AddComponent<ModSuggestingManager>();
-            ModdedObject modSuggestingManagerInfo = spawedUIModdedObject.GetObject<ModdedObject>(5);
-            modSuggestingManager.DisplayText = modSuggestingManagerInfo.GetObject<Text>(0);
-            modSuggestingManager.ModSuggestionAnimator = modSuggestingManagerInfo.GetObject<Animator>(1);
+            ModBotUIRoot modBotUIRoot = spawnedUI.AddComponent<ModBotUIRoot>();
+            modBotUIRoot.Init(spawedUIModdedObject);
             
-            ModdedObject signInFormModdedObject = spawedUIModdedObject.GetObject<ModdedObject>(6);
-            ModBotSignInManager.Instance.SignInFormGameObject = signInFormModdedObject.gameObject;
-            ModBotSignInManager.Instance.UsernameField = signInFormModdedObject.GetObject<InputField>(0);
-            ModBotSignInManager.Instance.PasswordField = signInFormModdedObject.GetObject<InputField>(1);
-            ModBotSignInManager.Instance.SignUpButton = signInFormModdedObject.GetObject<Button>(2);
-            ModBotSignInManager.Instance.SignInButton = signInFormModdedObject.GetObject<Button>(3);
-            ModBotSignInManager.Instance.ErrorText = signInFormModdedObject.GetObject<Text>(4);
-            ModBotSignInManager.Instance.XButton = signInFormModdedObject.GetObject<Button>(5);
         }
     }
 }

@@ -28,12 +28,12 @@ namespace ModLibrary
         /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
-            InternalModBot.Logger.Instance.Log(_log);
+            ModBotUIRoot.Instance.ConsoleUI.Log(_log);
 
-            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            if (ModBotUIRoot.Instance.ConsoleUI.Content.text.Length > CONSOLE_CHARACTER_LIMIT)
             {
-                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
-                InternalModBot.Logger.Instance.LogText.text = newText;
+                string newText = ModBotUIRoot.Instance.ConsoleUI.Content.text.Substring(ModBotUIRoot.Instance.ConsoleUI.Content.text.Length - CONSOLE_CHARACTER_LIMIT);
+                ModBotUIRoot.Instance.ConsoleUI.Content.text = newText;
             }
         }
 
@@ -63,19 +63,19 @@ namespace ModLibrary
         /// <param name="_color">The <see cref="Color"/> to write in</param>
         public static void Log(string _log, Color _color)
         {
-            if (InternalModBot.Logger.Instance == null)
+            if (ModBotUIRoot.Instance == null)
 			{
                 Console.WriteLine(_log);
                 throw new System.Exception("Logger is null");
             }
-                
 
-            InternalModBot.Logger.Instance.Log(_log, _color);
 
-            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
+            ModBotUIRoot.Instance.ConsoleUI.Log(_log, _color);
+
+            if (ModBotUIRoot.Instance.ConsoleUI.Content.text.Length > CONSOLE_CHARACTER_LIMIT)
             {
-                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
-                InternalModBot.Logger.Instance.LogText.text = newText;
+                string newText = ModBotUIRoot.Instance.ConsoleUI.Content.text.Substring(ModBotUIRoot.Instance.ConsoleUI.Content.text.Length - CONSOLE_CHARACTER_LIMIT);
+                ModBotUIRoot.Instance.ConsoleUI.Content.text = newText;
             }
         }
 

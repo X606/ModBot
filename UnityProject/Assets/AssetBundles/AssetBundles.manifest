@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 3057386223
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: modbot
+      Dependencies: {}

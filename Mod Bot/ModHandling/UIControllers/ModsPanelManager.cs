@@ -41,23 +41,20 @@ namespace InternalModBot
             pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton";
 
-            _modsWindow = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModsMenu");
-
-            _modsWindowModdedObject = _modsWindow.GetComponent<ModdedObject>();
-            _modsWindow.SetActive(false);
+            ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(false);
 
             mainMenuModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
             mainMenuModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
             pauseScreenModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
             pauseScreenModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
 
-            _modsWindowModdedObject.GetObject<Button>(1).onClick.AddListener(closeModsMenu); // Add close menu button callback
-            _modsWindowModdedObject.GetObject<Button>(2).onClick.AddListener(onGetMoreModsClicked); // Add more mods clicked callback
-            _modsWindowModdedObject.GetObject<Button>(3).onClick.AddListener(onModsFolderClicked); // Add mods folder clicked callback
+            ModBotUIRoot.Instance.ModsWindow.CloseButton.onClick.AddListener(closeModsMenu); // Add close menu button callback
+            ModBotUIRoot.Instance.ModsWindow.GetMoreModsButton.onClick.AddListener(onGetMoreModsClicked); // Add more mods clicked callback
+            ModBotUIRoot.Instance.ModsWindow.OpenModsFolderButton.onClick.AddListener(onModsFolderClicked); // Add mods folder clicked callback
 
             Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
             image.gameObject.SetActive(true);
-            image.GetComponent<Image>().sprite = InternalAssetBundleReferences.ModsWindow.GetObject<Sprite>("modbot");
+            image.GetComponent<Image>().sprite = InternalAssetBundleReferences.ModBot.GetObject<Sprite>("modbot");
             image.GetComponent<RectTransform>().localScale = new Vector3(image.GetComponent<RectTransform>().localScale.x * 1.5f, image.GetComponent<RectTransform>().localScale.y * 0.375f, 1f);
             image.GetComponent<RectTransform>().position -= new Vector3(7f, 0f);
 
@@ -81,25 +78,26 @@ namespace InternalModBot
 
         void openModsMenu()
         {
-            _modsWindow.SetActive(true);
+            ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(true);
             ReloadModItems();
         }
 
         void closeModsMenu()
         {
-            _modsWindow.SetActive(false);
+            ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(false);
         }
 
         void onGetMoreModsClicked()
         {
-            ModdedObject spawnedModdedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Mod downloads").GetComponent<ModdedObject>();
-            GameObject content = spawnedModdedObject.GetObject<GameObject>(0);
-            spawnedModdedObject.GetObject<Button>(1).onClick.AddListener(delegate
+            ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(true);
+
+            ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick = new Button.ButtonClickedEvent();
+            ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick.AddListener(delegate
             {
-                Destroy(spawnedModdedObject.gameObject);
+                ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(false);
             });
 
-            spawnedModdedObject.StartCoroutine(downloadModData(content));
+            ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadModData(ModBotUIRoot.Instance.ModDownloadPage.Content));
         }
         void onModsFolderClicked()
 		{
@@ -119,7 +117,7 @@ namespace InternalModBot
 
             ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
-            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("ModDownloadInfo");
+            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
             foreach (ModsHolder.ModHolder modHolder in modsHolder.Mods)
             {
                 if(!modHolder.Checked) // do not want unchecked mods to come up in-game.
@@ -134,7 +132,7 @@ namespace InternalModBot
 
         void openModsOptionsWindowForMod(LoadedModInfo mod)
         {
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_modsWindow, mod.ModReference);
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModBotUIRoot.Instance.ModOptionsWindow.gameObject, mod.ModReference);
             mod.ModReference.CreateSettingsWindow(builder);
         }
 
@@ -152,7 +150,7 @@ namespace InternalModBot
         {
 			bool isModActive = mod.IsEnabled;
 
-            GameObject modItem = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModItemPrefab");
+            GameObject modItem = InternalAssetBundleReferences.ModBot.InstantiateObject("ModItemPrefab");
             modItem.transform.parent = parent.transform;
 
             string modName = mod.OwnerModInfo.DisplayName;
@@ -161,6 +159,12 @@ namespace InternalModBot
             _modItems.Add(modItem);
 			
 			ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
+
+            debug.Log("count: " + modItemModdedObject.objects.Count);
+			for (int i = 0; i < modItemModdedObject.objects.Count; i++)
+			{
+                debug.Log(i + ": " + modItemModdedObject.objects[i].ToString());
+			}
 
             modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
 			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
@@ -214,7 +218,7 @@ namespace InternalModBot
 
         void Update()
         {
-            if (_modsWindow.activeInHierarchy)
+            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
@@ -232,7 +236,7 @@ namespace InternalModBot
             _modItems.Clear();
 
             // Remove all mods from list
-            foreach (Transform child in ((GameObject)_modsWindowModdedObject.objects[0]).transform)
+            foreach (Transform child in ModBotUIRoot.Instance.ModsWindow.Content.transform)
             {
                 Destroy(child.gameObject);
             }
@@ -240,21 +244,17 @@ namespace InternalModBot
             List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
-            RectTransform size = _modsWindowModdedObject.GetObject<GameObject>(0).GetComponent<RectTransform>();
+            RectTransform size = ModBotUIRoot.Instance.ModsWindow.Content.GetComponent<RectTransform>();
             size.sizeDelta = new Vector2(size.sizeDelta.x, MOD_ITEM_HEIGHT * mods.Count);
 
             // Add all mods back to list
             for (int i = 0; i < mods.Count; i++)
             {
-                addModToList(mods[i], _modsWindowModdedObject.GetObject<GameObject>(0));
+                addModToList(mods[i], ModBotUIRoot.Instance.ModsWindow.Content);
             }
         }
 
         List<GameObject> _modItems = new List<GameObject>();
-
-        GameObject _modsWindow;
-
-        ModdedObject _modsWindowModdedObject;
 
         const int MOD_ITEM_HEIGHT = 100;
     }
