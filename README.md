@@ -10,7 +10,7 @@ A mod loader for clone drone in the danger zone! If you want to help improve the
 
 ## Community
 Feel free to join our Discord or check out the website below.<br/>
-[Discord](https://discord.gg/Em4n6gB) - [Website](http://clonedronemodbot.com)
+[Discord](https://discord.gg/Em4n6gB) - [Website](https://modbot.org)
 
 ## Getting the Mod-Bot project set up on your local machine
 In order to build the mod-bot project on your local machine follow these steps:
