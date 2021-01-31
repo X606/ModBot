@@ -1,13 +1,9 @@
-﻿/*
- * This class is only used in the new mod loading system,
- * and since that system isn't done yet I am reverting back to the old system
- * 
- */
-
-using HarmonyLib;
+﻿using HarmonyLib;
 using ModLibrary;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace InternalModBot
 {
@@ -55,7 +51,22 @@ namespace InternalModBot
 						ModReference.OnModEnabled();
 					}
 
-						
+                    Harmony harmony = new Harmony(ModReference.HarmonyID);
+                    KeyValuePair<InjectionTargetAttribute, MethodInfo>[] injections = InjectionTargetAttribute.GetInjectionTargetsInAssembly(ModReference.GetType().Assembly);
+					foreach (KeyValuePair<InjectionTargetAttribute, MethodInfo> injection in injections)
+					{
+                        HarmonyMethod prefix = null;
+                        if (injection.Key.InjectionType == InjectionType.Prefix)
+                            prefix = new HarmonyMethod(injection.Value);
+
+                        HarmonyMethod postfix = null;
+                        if (injection.Key.InjectionType == InjectionType.Postfix)
+                            postfix = new HarmonyMethod(injection.Value);
+
+                        harmony.Patch(injection.Key.SelectedMethod, prefix, postfix);
+                    }
+
+					
 				}
                 else // If the mod is being disabled
                 {
