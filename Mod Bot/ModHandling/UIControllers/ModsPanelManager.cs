@@ -74,6 +74,48 @@ namespace InternalModBot
             GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4).GetComponent<RectTransform>().position += new Vector3(7f, 0f);
 
             ReloadModItems();
+
+            Transform settingsButtonHolder = GameUIRoot.Instance.SettingsMenu.RootContainer.transform.GetChild(2).transform;
+
+            int buttonCount = settingsButtonHolder.childCount;
+
+            for (int i = 0; i < buttonCount; i++)
+            {
+                RectTransform button = settingsButtonHolder.GetChild(i).GetComponent<RectTransform>();
+
+                float buttonSize = button.sizeDelta.x;
+
+                float newSize = buttonSize * (((float)buttonCount) / (((float)buttonCount) + 1f));
+
+                button.sizeDelta = new Vector2(newSize, button.sizeDelta.y);
+
+                button.anchoredPosition -= new Vector2((newSize * 0.2f * (i+0)), 0);
+            }
+
+            GameObject buttonPrefab = settingsButtonHolder.GetChild(0).gameObject;
+            RectTransform spawnedButton = Instantiate(buttonPrefab, settingsButtonHolder).GetComponent<RectTransform>();
+            spawnedButton.anchoredPosition = settingsButtonHolder.GetChild(0).GetComponent<RectTransform>().anchoredPosition;
+            spawnedButton.sizeDelta = buttonPrefab.GetComponent<RectTransform>().sizeDelta;
+            spawnedButton.GetComponentInChildren<Text>().text = "Mod-Bot";
+
+            float size = spawnedButton.sizeDelta.x * (((float)buttonCount) / (((float)buttonCount) + 1f));
+            spawnedButton.anchoredPosition += new Vector2(size*(buttonCount+1f)*1.03f, 0);
+            
+            SettingsMenuTabButton[] buttons = new SettingsMenuTabButton[GameUIRoot.Instance.SettingsMenu.TabButtons.Length + 1];
+			for (int i = 0; i < GameUIRoot.Instance.SettingsMenu.TabButtons.Length; i++)
+			{
+                buttons[i] = GameUIRoot.Instance.SettingsMenu.TabButtons[i];
+			}
+            SettingsMenuTabButton tabButton = spawnedButton.GetComponent<SettingsMenuTabButton>();
+            buttons[buttons.Length - 1] = tabButton;
+            GameUIRoot.Instance.SettingsMenu.TabButtons = buttons;
+            GameUIRoot.Instance.SettingsMenu.TabNavigationSetter.TabButtons = null;
+            GameUIRoot.Instance.SettingsMenu.TabNavigationSetter.InitializeSetter();
+
+            GameObject settingsPage = Instantiate(InternalAssetBundleReferences.ModBot.GetObject("ModBotSettings"), tabButton.ContentToShow.parent);
+            tabButton.ContentToShow = settingsPage.transform;
+            ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
+
         }
 
         void openModsMenu()
@@ -132,7 +174,7 @@ namespace InternalModBot
 
         void openModsOptionsWindowForMod(LoadedModInfo mod)
         {
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModBotUIRoot.Instance.ModOptionsWindow.gameObject, mod.ModReference);
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModBotUIRoot.Instance.ModsWindow.WindowObject, mod.ModReference);
             mod.ModReference.CreateSettingsWindow(builder);
         }
 
@@ -159,12 +201,6 @@ namespace InternalModBot
             _modItems.Add(modItem);
 			
 			ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
-
-            debug.Log("count: " + modItemModdedObject.objects.Count);
-			for (int i = 0; i < modItemModdedObject.objects.Count; i++)
-			{
-                debug.Log(i + ": " + modItemModdedObject.objects[i].ToString());
-			}
 
             modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
 			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
@@ -200,7 +236,7 @@ namespace InternalModBot
             //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
             Button modsOptionButton = modItemModdedObject.GetObject<Button>(4);
             modsOptionButton.onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
-            modsOptionButton.interactable = mod.ModReference != null ? mod.ModReference.ImplementsSettingsWindow() : false;
+            modsOptionButton.interactable = mod.ModReference != null && mod.ModReference.ImplementsSettingsWindow() && isModActive;
 
             Button deleteButton = modItemModdedObject.GetObject<Button>(7);
             deleteButton.onClick.AddListener(delegate { });

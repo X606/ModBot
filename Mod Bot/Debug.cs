@@ -20,8 +20,6 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
-        const int CONSOLE_CHARACTER_LIMIT = 1000;
-
         /// <summary>
         /// Writes to the in-game console.
         /// </summary>
@@ -29,12 +27,6 @@ namespace ModLibrary
         public static void Log(string _log)
         {
             ModBotUIRoot.Instance.ConsoleUI.Log(_log);
-
-            if (ModBotUIRoot.Instance.ConsoleUI.Content.text.Length > CONSOLE_CHARACTER_LIMIT)
-            {
-                string newText = ModBotUIRoot.Instance.ConsoleUI.Content.text.Substring(ModBotUIRoot.Instance.ConsoleUI.Content.text.Length - CONSOLE_CHARACTER_LIMIT);
-                ModBotUIRoot.Instance.ConsoleUI.Content.text = newText;
-            }
         }
 
         /// <summary>
@@ -71,12 +63,6 @@ namespace ModLibrary
 
 
             ModBotUIRoot.Instance.ConsoleUI.Log(_log, _color);
-
-            if (ModBotUIRoot.Instance.ConsoleUI.Content.text.Length > CONSOLE_CHARACTER_LIMIT)
-            {
-                string newText = ModBotUIRoot.Instance.ConsoleUI.Content.text.Substring(ModBotUIRoot.Instance.ConsoleUI.Content.text.Length - CONSOLE_CHARACTER_LIMIT);
-                ModBotUIRoot.Instance.ConsoleUI.Content.text = newText;
-            }
         }
 
         /// <summary>

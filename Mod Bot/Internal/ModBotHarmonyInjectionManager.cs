@@ -224,6 +224,23 @@ namespace InternalModBot
 
                 //debug.Log("Injected " + mode + " into '" + targetMethod.FullDescription() + "' from '" + injectionSource.FullDescription() + "'");
             }
+
+
+            // Get all the custom injection targets in the modlibrary assembly and inject them
+            KeyValuePair<InjectionTargetAttribute, MethodInfo>[] injections = InjectionTargetAttribute.GetInjectionTargetsInAssembly(Assembly.GetExecutingAssembly());
+			foreach (KeyValuePair<InjectionTargetAttribute, MethodInfo> injection in injections)
+			{
+                HarmonyMethod prefix = null;
+                if (injection.Key.InjectionType == InjectionType.Prefix)
+                    prefix = new HarmonyMethod(injection.Value);
+
+                HarmonyMethod postfix = null;
+                if (injection.Key.InjectionType == InjectionType.Postfix)
+                    postfix = new HarmonyMethod(injection.Value);
+
+                harmony.Patch(injection.Key.SelectedMethod, prefix, postfix);
+            }
+
         }
 
         [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]

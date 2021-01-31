@@ -28,11 +28,11 @@ namespace InternalModBot
 
 		void Start()
 		{
-			GlobalEventManager.Instance.AddEventListener(GlobalEvents.MultiplayerPlayerInfoStateAttached, new Action<IPlayerInfoState>(onPlayerInfoStateAttachced));
+			GlobalEventManager.Instance.AddEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttachced);
 		}
 		void OnDestroy()
 		{
-			GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.MultiplayerPlayerInfoStateAttached, new Action<IPlayerInfoState>(onPlayerInfoStateAttachced));
+			GlobalEventManager.Instance.RemoveEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttachced);
 		}
 
 		void onPlayerInfoStateAttachced(IPlayerInfoState playerInfoState)

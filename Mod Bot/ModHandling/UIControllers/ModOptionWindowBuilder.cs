@@ -15,18 +15,18 @@ namespace ModLibrary
     /// </summary>
     public partial class ModOptionsWindowBuilder
     {
-        readonly GameObject _owner;
+        readonly GameObject _parentWindow;
         readonly Mod _ownerMod;
         List<Page> _pages = new List<Page>();
 
-        internal ModOptionsWindowBuilder(GameObject owner, Mod ownerMod)
+        internal ModOptionsWindowBuilder(GameObject parentWindow, Mod ownerMod)
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
             RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
             GameUIRoot.Instance.RefreshCursorEnabled();
 
-            owner.SetActive(false);
-            _owner = owner;
+            parentWindow.SetActive(false);
+            _parentWindow = parentWindow;
             _ownerMod = ownerMod;
             //_spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
             ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(true);
@@ -100,7 +100,7 @@ namespace ModLibrary
 
             GameUIRoot.Instance.SetEscMenuDisabled(false);
             ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
-            _owner.SetActive(true);
+            _parentWindow.SetActive(true);
 
             GameUIRoot.Instance.RefreshCursorEnabled();
         }

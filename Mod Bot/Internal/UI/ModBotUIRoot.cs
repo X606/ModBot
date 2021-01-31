@@ -18,11 +18,13 @@ namespace InternalModBot
 		public Generic2ButtonDialogeUI Generic2ButtonDialogeUI;
 		public ModOptionsWindow ModOptionsWindow;
 		public ModDownloadPage ModDownloadPage;
-
+		public Canvas Root;
 		public void Init(ModdedObject moddedObject)
 		{
+			Root = moddedObject.GetComponent<Canvas>();
+
 			ConsoleUI = gameObject.AddComponent<ConsoleUI>();
-			ConsoleUI.Init(moddedObject.GetObject<Animator>(0), moddedObject.GetObject<Text>(1), moddedObject.GetObject<GameObject>(2), moddedObject.GetObject<InputField>(3));
+			ConsoleUI.Init(moddedObject.GetObject<Animator>(0), moddedObject.GetObject<GameObject>(1), moddedObject.GetObject<GameObject>(2), moddedObject.GetObject<InputField>(3));
 
 			FPSCounter = gameObject.AddComponent<FPSCounterUI>();
 			FPSCounter.Init(moddedObject.GetObject<Text>(4));

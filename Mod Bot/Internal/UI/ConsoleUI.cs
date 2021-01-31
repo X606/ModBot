@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,31 +10,58 @@ namespace InternalModBot
     /// </summary>
     public class ConsoleUI : MonoBehaviour
     {
-        public void Init(Animator animator, Text content, GameObject innerHolder, InputField input)
+        GameObject _consoleTextElementPrefab;
+        public Animator Animator;
+        GameObject _content;
+        GameObject _innerHolder;
+        InputField _input;
+        ScrollRect _scroll;
+
+        /// <summary>
+        /// The amount of lines we should allow in the console before we start removing lines
+        /// </summary>
+        public const int MAX_LINES_COUNT = 100;
+
+        Queue<Text> _lines = new Queue<Text>();
+
+        public void Init(Animator animator, GameObject content, GameObject innerHolder, InputField input)
         {
             Animator = animator;
-            Content = content;
-            InnerHolder = innerHolder;
-            Input = input;
-        }
-        void Update()
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.F1))
-				Flip();
+            _content = content;
+            _innerHolder = innerHolder;
+            _input = input;
+            _scroll = innerHolder.GetComponentInChildren<ScrollRect>();
 
-            if (!InnerHolder.activeSelf)
+            _consoleTextElementPrefab = InternalAssetBundleReferences.ModBot.GetObject("ConsoleTextElement");
+
+            _input.onEndEdit.AddListener(OnEndEdit);
+        }
+
+		private void OnEndEdit(string arg0)
+		{
+            // If the console is not up, dont run any commands
+            if (!_innerHolder.activeSelf)
                 return;
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Return))
+            // If the edit ended because we clicked away, don't do anything extra
+            if (!Input.GetKeyDown(KeyCode.Return))
             {
-				RunCommand(Input.text);
-				Input.text = "";
+                return;
             }
+
+            RunCommand(_input.text);
+            _input.text = "";
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.OpenConsole)))
+				Flip();
         }
 
         internal void Flip()
         {
-            if (InnerHolder.activeSelf)
+            if (_innerHolder.activeSelf)
             {
                 Animator.Play("hideConsole");
                 return;
@@ -48,10 +76,98 @@ namespace InternalModBot
         /// <param name="whatToLog"></param>
         public void Log(string whatToLog)
         {
-            Text logText = Content;
-            logText.text = logText.text + "\n" + whatToLog;
+            log(whatToLog);
 
             Console.WriteLine(whatToLog);
+        }
+
+        void log(string whatToLog, string prefix = "", string postfix = "")
+		{
+            Text spawnedText = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+            _lines.Enqueue(spawnedText);
+
+            spawnedText.text = whatToLog;
+
+            Canvas.ForceUpdateCanvases();
+
+            Stack<TagHolder> stack = new Stack<TagHolder>();
+
+            for (int i = 0; i < spawnedText.cachedTextGenerator.lines.Count; i++)
+            {
+                int startIndex = spawnedText.cachedTextGenerator.lines[i].startCharIdx;
+                int endIndex = (i == (spawnedText.cachedTextGenerator.lines.Count - 1)) ? whatToLog.Length
+                    : spawnedText.cachedTextGenerator.lines[i + 1].startCharIdx;
+
+                int length = endIndex - startIndex;
+                string lineText = whatToLog.Substring(startIndex, length);
+
+                string tagPrefix = "";
+                Stack<TagHolder> tagsToOpen = new Stack<TagHolder>(stack);
+                while (tagsToOpen.Count > 0)
+                {
+                    tagPrefix += tagsToOpen.Pop().GetStartTag();
+                }
+
+                for (int j = 0; j < lineText.Length; j++)
+				{
+                    if (containsStringAt(j, lineText, "<color="))
+					{
+                        if ((j + "<color=".Length) < lineText.Length)
+                        {
+                            string value = lineText.Substring(j + "<color=".Length, "#ff00ff".Length);
+                            stack.Push(new TagHolder(TagHolder.TagTypes.Color, false, value));
+                        }
+					}
+                    else if(containsStringAt(j, lineText, "<b>"))
+					{
+                        stack.Push(new TagHolder(TagHolder.TagTypes.Bold, false, null));
+                    }
+                    else if (containsStringAt(j, lineText, "<i>"))
+                    {
+                        stack.Push(new TagHolder(TagHolder.TagTypes.Italics, false, null));
+                    }
+                    else if (containsStringAt(j, lineText, "</i>") || containsStringAt(j, lineText, "</b>") || containsStringAt(j, lineText, "</color>"))
+					{
+                        if (stack.Count > 0)
+						{
+                            stack.Pop();
+
+                        }
+                            
+                    }
+                }
+
+                lineText = prefix + tagPrefix + lineText;
+
+                Queue<TagHolder> tagsToClose = new Queue<TagHolder>(stack);
+				while (tagsToClose.Count > 0)
+				{
+                    lineText += tagsToClose.Dequeue().GetEndTag();
+				}
+                lineText += postfix;
+
+                if (i == 0)
+                {
+                    spawnedText.text = lineText;
+                }
+                else
+                {
+                    Text newLine = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+                    newLine.text = lineText;
+                    _lines.Enqueue(newLine);
+                }
+            }
+
+            while(_lines.Count > MAX_LINES_COUNT)
+			{
+                Destroy(_lines.Dequeue().gameObject);
+            }
+
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _scroll.ScrollToBottom();
+            }, -1f); // Run this next frame
+
         }
 
         /// <summary>
@@ -62,8 +178,8 @@ namespace InternalModBot
         public void Log(string whatToLog, Color color)
         {
             string colorText = ColorUtility.ToHtmlStringRGB(color);
-            Text logText = Content;
-            logText.text = logText.text + "\n<color=#" + colorText + ">" + whatToLog + "</color>";
+
+            log(whatToLog, "<color=#" + colorText + ">", "</color>");
 
             Console.WriteLine(whatToLog);
         }
@@ -74,6 +190,7 @@ namespace InternalModBot
         /// <param name="command"></param>
         public void RunCommand(string command)
         {
+            Log(command);
             try
             {
                 ConsoleInputManager.OnCommandRan(command);
@@ -86,24 +203,80 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// The animator containing the animations for opening and closeing the console
-        /// </summary>
-        public Animator Animator;
+        bool containsStringAt(int index, string str, string substr)
+		{
+			for (int i = index; i < str.Length; i++)
+			{
+                int subStrIndex = i - index;
 
-        /// <summary>
-        /// The complete text of the console
-        /// </summary>
-        public Text Content;
+                if (substr.Length <= subStrIndex)
+                    return true;
 
-        /// <summary>
-        /// The GameObject thats holding the console
-        /// </summary>
-        public GameObject InnerHolder;
+                if (str[i] != substr[subStrIndex])
+                    return false;
+            }
 
-        /// <summary>
-        /// the input field that commands are typed into
-        /// </summary>
-        public InputField Input;
+            return true;
+		}
+
+        class TagHolder
+		{
+            public TagHolder(TagTypes tagType, bool isEndTag, string content)
+			{
+                TagType = tagType;
+                Content = content;
+			}
+
+            public TagTypes TagType;
+            public string Content;
+
+            public enum TagTypes
+            {
+                Color,
+                Bold,
+                Italics
+            }
+
+            public string GetStartTag()
+            {
+                switch (TagType)
+                {
+                    case TagTypes.Color:
+                        return "<color=" + Content + ">";
+                    case TagTypes.Bold:
+                        return "<b>";
+                    case TagTypes.Italics:
+                        return "<i>";
+                    default:
+                        return "";
+                }
+            }
+            public string GetEndTag()
+			{
+                switch (TagType)
+                {
+                    case TagTypes.Color:
+                        return "</color>";
+                    case TagTypes.Bold:
+                        return "</b>";
+                    case TagTypes.Italics:
+                        return "</i>";
+                    default:
+                        return "";
+                }
+            }
+        }
+    }
+
+    public static class ScrollRectExtensions
+    {
+        public static void ScrollToTop(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 1);
+        }
+        public static void ScrollToBottom(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 0);
+        }
     }
 }

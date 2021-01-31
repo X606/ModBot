@@ -35,14 +35,16 @@ namespace InternalModBot
         }
         void Start()
         {
-            TwitchChatClient.singleton.AddChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
+            TwitchChatClient.singleton.AddChatListener(OnTwitchChatMessage);
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, ShowNextInSuggestedModsQueue);
         }
         
         void OnDestroy()
         {
-            TwitchChatClient.singleton.RemoveChatListener(new ChatMessageNotificationDelegate(OnTwitchChatMessage));
-            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.LevelSpawned, new Action(ShowNextInSuggestedModsQueue));
+            if (TwitchChatClient.singleton != null)
+                TwitchChatClient.singleton.RemoveChatListener(OnTwitchChatMessage);
+
+            GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.LevelSpawned, ShowNextInSuggestedModsQueue);
         }
         
         /// <summary>

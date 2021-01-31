@@ -44,6 +44,7 @@
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
+    <Compile Include="InjectionTarget.cs" />
     <Compile Include="Internal\InternalAssetBundleReferences.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
@@ -55,7 +56,9 @@
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\LoadedMod.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
+    <Compile Include="Internal\ModBotInputManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
+    <Compile Include="Internal\ModBotSettingsManager.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
@@ -65,14 +68,6 @@
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodGenericUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceCallPrivateMethodUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceGetPrivateFieldGenericUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldGenericUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceGetPrivateFieldUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyGenericUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivatePropertyUnitTest.cs" />
-    <Compile Include="Internal\UnitTests\Accessor\AccessorInstanceSetPrivateFieldUnitTest.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />
@@ -167,6 +162,10 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\UsedDlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Rewired_Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\Rewired_Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
@@ -250,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Internal\UnitTests\Accessor\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

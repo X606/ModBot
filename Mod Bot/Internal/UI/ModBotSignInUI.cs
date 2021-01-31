@@ -35,22 +35,18 @@ namespace InternalModBot
 		}
 
 		readonly string _sessionIdFilePath = Application.persistentDataPath + "/SessionID.txt";
-
-		private string _sessionID = "";
-
+			
 		void Start()
 		{
 			if (File.Exists(_sessionIdFilePath))
 			{
 				string sessionId = File.ReadAllText(_sessionIdFilePath);
-				_sessionID = sessionId;
 				API.SetSessionID(sessionId);
 
 				API.IsValidSession(sessionId, delegate (string data)
 				{
 					if(data == "false")
 					{
-						_sessionID = "";
 						API.SetSessionID("");
 
 						File.Delete(_sessionIdFilePath);
@@ -61,7 +57,7 @@ namespace InternalModBot
 						return;
 					}
 
-					OnSignedIn();
+					onSignedIn();
 
 				});
 			} else
@@ -71,37 +67,38 @@ namespace InternalModBot
 				OpenSignInForm();
 			}
 
-			//API.getcu
+			SignUpButton.onClick.AddListener(new UnityAction(onSignUpButtonClicked));
+			SignInButton.onClick.AddListener(new UnityAction(onSignInButtonClicked));
 
-			SignUpButton.onClick.AddListener(new UnityAction(OnSignUpButtonClicked));
-			SignInButton.onClick.AddListener(new UnityAction(OnSignInButtonClicked));
-
-			XButton.onClick.AddListener(new UnityAction(OnCloseButton));
+			XButton.onClick.AddListener(new UnityAction(onCloseButton));
 		}
 
-		void setSession(string sessionId)
+		public void SetSession(string sessionId)
 		{
-			_sessionID = sessionId;
 			API.SetSessionID(sessionId);
 
 			File.WriteAllText(_sessionIdFilePath, sessionId);
 		}
 
-		void OpenSignInForm()
+		public void OpenSignInForm()
 		{
 			UsernameField.text = "";
 			PasswordField.text = "";
 
 			ErrorText.text = "";
 
+			SignInButton.gameObject.SetActive(true);
+			SignUpButton.gameObject.SetActive(true);
+			XButton.gameObject.SetActive(true);
+
 			SignInFormGameObject.SetActive(true);
 		}
 
-		void OnSignUpButtonClicked()
+		void onSignUpButtonClicked()
 		{
 			System.Diagnostics.Process.Start("https://modbot.org/");
 		}
-		void OnSignInButtonClicked()
+		void onSignInButtonClicked()
 		{
 			string playfabId = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
 
@@ -131,20 +128,20 @@ namespace InternalModBot
 
 				ErrorText.text = "";
 				string sessionID = Convert.ToString(json["sessionID"]).Trim('\"');
-				setSession(sessionID);
+				SetSession(sessionID);
 
-				OnCloseButton();
+				onCloseButton();
 
-				OnSignedIn();
+				onSignedIn();
 			});
 		}
 
-		void OnCloseButton()
+		void onCloseButton()
 		{
 			SignInFormGameObject.SetActive(false);
 		}
 
-		void OnSignedIn()
+		void onSignedIn()
 		{
 			API.GetCurrentUser(delegate (string userId)
 			{

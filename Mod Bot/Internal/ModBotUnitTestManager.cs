@@ -1,4 +1,4 @@
-﻿using InternalModBot.UnitTests;
+﻿//using InternalModBot.UnitTests;
 using ModLibrary;
 using PlayFab.GroupsModels;
 using System;
@@ -17,14 +17,7 @@ namespace InternalModBot
     {
         static readonly UnitTest[] _unitTests = new UnitTest[]
         {
-            new AccessorInstanceCallPrivateMethodUnitTest(),
-            new AccessorInstanceCallPrivateMethodGenericUnitTest(),
-            new AccessorInstanceSetPrivateFieldUnitTest(),
-            new AccessorInstanceSetPrivateFieldGenericUnitTest(),
-            new AccessorInstanceGetPrivateFieldUnitTest(),
-            new AccessorInstanceGetPrivateFieldGenericUnitTest(),
-            new AccessorInstanceSetPrivatePropertyUnitTest(),
-            new AccessorInstanceSetPrivatePropertyGenericUnitTest()
+            
         };
 
         /// <summary>

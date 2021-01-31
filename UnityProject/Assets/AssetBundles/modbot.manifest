@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4096050244
+CRC: 1664541822
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ff0a55c48528aec4fb5cd12e01f487a2
+    Hash: 8e4101c8f11101ce30a29e75b424a964
   TypeTreeHash:
     serializedVersion: 2
     Hash: be18dbc27bd64e0a978831cbdf629929
@@ -80,18 +80,23 @@ ClassTypes:
 Assets:
 - Assets/Prefabs/ModOptions/DropDown.prefab
 - Assets/Prefabs/ModOptions/PageButton.prefab
+- Assets/Prefabs/Console/ConsoleTextElement.prefab
 - Assets/Prefabs/ModOptions/Label.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsSingleButton.prefab
 - Assets/Prefabs/ModDownloadPage/ModDownloadInfo.prefab
 - Assets/Prefabs/ModOptions/Slider.prefab
 - Assets/Prefabs/ModOptions/CustomKeyCodeInput.prefab
 - Assets/Prefabs/ModsMenu/ModItemPrefab.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsLabelAndButton.prefab
 - Assets/Prefabs/ModOptions/InputField.prefab
 - Assets/Prefabs/ModOptions/Checkbox.prefab
 - Assets/Images/modbot.png
+- Assets/Prefabs/ModBotSettings.prefab
 - Assets/Materials/Line.mat
 - Assets/Prefabs/ModOptions/Button.prefab
 - Assets/Prefabs/UpgradeScreenButtons/PreviousPageButton.prefab
 - Assets/Prefabs/UpgradeScreenButtons/NextPageButton.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsLabel.prefab
 - Assets/Prefabs/Canvas.prefab
 - Assets/Prefabs/UpgradeScreenButtons/GenerateButton.prefab
 Dependencies: []

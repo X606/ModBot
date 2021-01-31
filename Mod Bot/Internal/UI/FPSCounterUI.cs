@@ -10,7 +10,7 @@ namespace InternalModBot
 
 		void Update()
 		{
-			if (Input.GetKeyDown(KeyCode.F3))
+			if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.ToggleFPSLabel)))
 				FpsCounter.gameObject.SetActive(!FpsCounter.gameObject.activeSelf);
 
 			float FPS = 1f / Time.unscaledDeltaTime;
