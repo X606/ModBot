@@ -146,6 +146,8 @@ namespace InternalModBot
 				}
                 lineText += postfix;
 
+                lineText = lineText.Replace("\n", ""); // we are already splitting by newlines, no need to have the newline characters anymore
+
                 if (i == 0)
                 {
                     spawnedText.text = lineText;

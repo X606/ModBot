@@ -1,21 +1,31 @@
 ManifestFileVersion: 0
-CRC: 1664541822
+CRC: 2793023825
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 8e4101c8f11101ce30a29e75b424a964
+    Hash: bde38d66b59b80d1bb1d7433093da939
   TypeTreeHash:
     serializedVersion: 2
-    Hash: be18dbc27bd64e0a978831cbdf629929
+    Hash: 7003eb6ad59c2c7e955786ed10be32b4
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
 - Class: 21
+  Script: {instanceID: 0}
+- Class: 23
   Script: {instanceID: 0}
 - Class: 28
   Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 65
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
@@ -80,23 +90,28 @@ ClassTypes:
 Assets:
 - Assets/Prefabs/ModOptions/DropDown.prefab
 - Assets/Prefabs/ModOptions/PageButton.prefab
+- Assets/Images/script.png
 - Assets/Prefabs/Console/ConsoleTextElement.prefab
 - Assets/Prefabs/ModOptions/Label.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsSingleButton.prefab
 - Assets/Prefabs/ModDownloadPage/ModDownloadInfo.prefab
 - Assets/Prefabs/ModOptions/Slider.prefab
 - Assets/Prefabs/ModOptions/CustomKeyCodeInput.prefab
+- Assets/Materials/ScriptableObject.mat
 - Assets/Prefabs/ModsMenu/ModItemPrefab.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabelAndButton.prefab
 - Assets/Prefabs/ModOptions/InputField.prefab
 - Assets/Prefabs/ModOptions/Checkbox.prefab
 - Assets/Images/modbot.png
+- Assets/Images/lua.png
 - Assets/Prefabs/ModBotSettings.prefab
 - Assets/Materials/Line.mat
+- Assets/Prefabs/LevelEditor/ScriptableObject.prefab
 - Assets/Prefabs/ModOptions/Button.prefab
 - Assets/Prefabs/UpgradeScreenButtons/PreviousPageButton.prefab
 - Assets/Prefabs/UpgradeScreenButtons/NextPageButton.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabel.prefab
 - Assets/Prefabs/Canvas.prefab
 - Assets/Prefabs/UpgradeScreenButtons/GenerateButton.prefab
+- Assets/Images/javascript.png
 Dependencies: []

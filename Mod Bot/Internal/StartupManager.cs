@@ -55,6 +55,8 @@ namespace InternalModBot
                 ModBotUIRoot.Instance.ConsoleUI.Animator.Play("hideConsole");
             }
 
+            LevelEditor.ModBotCustomLevelEditorManager.Init();
+
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
 

@@ -46,6 +46,7 @@ namespace InternalModBot
 
 			PassOnMod.GlobalUpdate();
 
+			ThreadedDelegateScheduler.Update();
 		}
 
 		static IEnumerator showModInvalidMessage(List<ModLoadError> errors)

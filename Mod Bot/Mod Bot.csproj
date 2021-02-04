@@ -53,12 +53,24 @@
     <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
+    <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
+    <Compile Include="Internal\LevelEditor\Scriptable.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\LoadedMod.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotInputManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotSettingsManager.cs" />
+    <Compile Include="Internal\Scripting\JavascriptScriptObject.cs" />
+    <Compile Include="Internal\Scripting\LuaScriptObject.cs" />
+    <Compile Include="Internal\Scripting\ScriptObject.cs" />
+    <Compile Include="Internal\Scripting\Types\DebugRef.cs" />
+    <Compile Include="Internal\Scripting\Types\GlobalScriptFunctions.cs" />
+    <Compile Include="Internal\Scripting\Types\InputRef.cs" />
+    <Compile Include="Internal\Scripting\Types\LevelObjectsRef.cs" />
+    <Compile Include="Internal\Scripting\Types\InstanceTypes\GameObjectRef.cs" />
+    <Compile Include="Internal\Scripting\Types\InstanceTypes\Vector3Ref.cs" />
+    <Compile Include="Internal\ThreadedDelegateScheduler.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
@@ -153,8 +165,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\bolt.user.dll</HintPath>
     </Reference>
+    <Reference Include="Esprima, Version=1.0.1258.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Esprima.1.0.1258\lib\net45\Esprima.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.3.0.0-beta-1715\lib\net45\Jint.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="ModBotWebsiteAPI">
       <HintPath>..\UsedDlls\ModBotWebsiteAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="MoonSharp.Interpreter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\MoonSharp.2.0.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>..\UsedDlls\netstandard.dll</HintPath>
@@ -170,9 +192,12 @@
     <Reference Include="System.Core">
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime">
       <HintPath>..\UsedDlls\System.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.dll</HintPath>
@@ -196,6 +221,10 @@
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -236,6 +265,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LocalizationFiles\ModBot_Brazilian_Portuguese.txt" />
+    <None Include="app.config" />
     <None Include="LocalizationFiles\ModBot_Japanese.txt" />
     <None Include="LocalizationFiles\ModBot_Korean.txt" />
     <Content Include="LocalizationFiles\ModBot_Simplified_Chinese.txt" />
@@ -246,6 +276,7 @@
     <Content Include="LocalizationFiles\ModBot_Spanish %28Latin America%29.txt" />
     <Content Include="LocalizationFiles\ModBot_Italian.txt" />
     <Content Include="LocalizationFiles\ModBot_English.txt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

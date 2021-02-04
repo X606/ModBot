@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using ModBotWebsiteAPI;
+using InternalModBot.Scripting;
 
 namespace InternalModBot
 {
@@ -77,21 +78,32 @@ namespace InternalModBot
                     });
 				}
 			}
-            if (subCommands[0] == "logout")
+            if (subCommands[0] == "debug")
 			{
-                debug.Log("Logging out...");
-                API.SignOut(delegate (JsonObject json)
+                DelegateScheduler.Instance.Schedule(delegate
                 {
-                    debug.Log(json["message"]);
-                    VersionLabelManager.Instance.SetLine(2, "Not signed in");
-                }); 
+                    ScriptObject scriptObject = new JavascriptScriptObject();
+                    scriptObject.OnError += delegate (ScriptErrorType type, string message)
+                    {
+                        debug.Log("ERROR (" + type + "): " + message);
+                    };
+
+                    scriptObject.RunCode(@"
+                        i = 25
+                        j = 26
+                        a = i + j
+                        debug.log('aaaaaa')
+                    ");
+
+                }, -1f);
+                
 			}
         }
 
-        /// <summary>
-        /// Crashes the game
-        /// </summary>
-        public static void Crash()
+		/// <summary>
+		/// Crashes the game
+		/// </summary>
+		public static void Crash()
         {
             throw new Exception("-Crashed from console-");
         }
