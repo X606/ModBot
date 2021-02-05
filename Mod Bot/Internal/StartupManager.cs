@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using InternalModBot.LevelEditor;
 
 namespace InternalModBot
 {
@@ -55,7 +56,7 @@ namespace InternalModBot
                 ModBotUIRoot.Instance.ConsoleUI.Animator.Play("hideConsole");
             }
 
-            LevelEditor.ModBotCustomLevelEditorManager.Init();
+            ModBotCustomLevelEditorManager.Init();
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
