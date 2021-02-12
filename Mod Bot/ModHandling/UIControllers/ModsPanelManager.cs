@@ -19,10 +19,10 @@ namespace InternalModBot
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(8).gameObject; // Gets the lower buttons container
+            GameObject titleScreenContainer = TransformUtils.FindChildRecursive(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer, "BottomButtons").gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
-            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(1).gameObject; // Gets the options button (we copy it and replace its organs and face)
+            GameObject modsButtonPrefab = TransformUtils.FindChildRecursive(titleScreenContainer.transform, "OptionsButton").gameObject; // Gets the options button (we copy it and replace its organs and face)
             GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
             mainMenuModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton"; // Set LocalizationID
