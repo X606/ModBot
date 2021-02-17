@@ -55,6 +55,9 @@ namespace InternalModBot
 			if(!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.ContainsKey(playfabID))
 				prefix += playfabIDToCustomPrefixDictionary[playfabID] + " ";
 
+			if(playfabID == "9EA644AC918B223F") // Hard-coded exception for hr_community_cost, who deserves a poop tag.
+				prefix = "<color=#402A05>[Poop Tag]</color>";
+
 			if (ModBotUserIdentifier.Instance != null && ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
 			{
 				if (!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.TryGetValue(MOD_BOT_USER_KEY, out string modBotUserPrefix))
