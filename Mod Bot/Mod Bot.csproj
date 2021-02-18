@@ -193,6 +193,7 @@
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime">
       <HintPath>..\UsedDlls\System.Runtime.dll</HintPath>
     </Reference>

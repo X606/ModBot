@@ -1,7 +1,11 @@
-﻿using ModLibrary;
+﻿using Jint.Runtime.Debugger;
+using ModLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -17,7 +21,6 @@ namespace InternalModBot
     /// </summary>
     public class ModSuggestingUI : MonoBehaviour
     {
-
         /// <summary>
         /// The animator that plays the slide in and out animation
         /// </summary>
@@ -27,6 +30,8 @@ namespace InternalModBot
         /// Text text display where all info will be displayed
         /// </summary>
         public Text DisplayText;
+
+        public static HashSet<string> DeniedModIds = new HashSet<string>();
 
         public void Init(ModdedObject moddedObject)
         {
@@ -154,29 +159,46 @@ namespace InternalModBot
                 yield return 0;
             }
 
-			// TODO: Make this work with the new mod loading system
-			/*
             if (clickedKey == KeyCode.PageUp)
             {
+                AudioManager.Instance.PlayClipGlobal(AudioLibrary.Instance.DogVoteUpZap);
                 ModSuggestionAnimator.Play("AcceptMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
-                UnityWebRequest webRequest = UnityWebRequest.Get(mod.Url);
+                UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + mod.ModID);
 
                 yield return webRequest.SendWebRequest();
 
                 byte[] data = webRequest.downloadHandler.data;
-                if (!ModsManager.Instance.LoadMod(data, mod.ModName, false, out string error))
+
+                string tempFile= Path.GetTempFileName();
+                File.WriteAllBytes(tempFile, data);
+
+                string folderName = mod.ModName;
+                foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
                 {
-                    debug.Log(LocalizationManager.Instance.GetTranslatedString("mod_suggested_twitch_load_fail"), Color.red);
-                    TwitchManager.Instance.EnqueueChatMessage("Suggested mod \"" + mod.ModName + "\" failed to load, the link may be incorrect or the mod could be outdated.");
+                    folderName = folderName.Replace(invalidCharacter, '_');
                 }
+
+                string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
+                if (Directory.Exists(targetDirectory))
+                {
+                    TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
+                    yield break;
+                }
+                Directory.CreateDirectory(targetDirectory);
+                ZipFile.ExtractToDirectory(tempFile, targetDirectory);
+
+                ModsManager.Instance.ReloadMods();
+
+                File.Delete(tempFile);
             }
             if (clickedKey == KeyCode.PageDown)
             {
+                AudioManager.Instance.PlayClipGlobal(AudioLibrary.Instance.DogVoteDown);
                 ModSuggestionAnimator.Play("DenyMod");
                 TwitchManager.Instance.EnqueueChatMessage("Mod denied :(");
+                DeniedModIds.Add(mod.ModID);
             }
-			*/
 
         }
 
@@ -194,25 +216,16 @@ namespace InternalModBot
 
             if (subCommands[0].ToLower() == "!modsuggest")
             {
-                if (subCommands.Length < 3)
+                if (subCommands.Length < 2)
                 {
-                    TwitchManager.Instance.EnqueueChatMessage("Usage: !modsuggest <mod_name> <mod_link>");
+                    TwitchManager.Instance.EnqueueChatMessage("Usage: !modsuggest <modid>");
                     return;
                 }
-
-                string url = subCommands[2];
                 string suggester = "<color=" + msg.userNameColor + ">" + msg.userName + "</color>";
-                string modName = subCommands[1];
-                ModSuggestion suggestedMod = new ModSuggestion(modName, suggester, url);
-                _modSuggestionQueue.Enqueue(suggestedMod);
+                string modId = subCommands[1];
 
-                if (!GameFlowManager.Instance.IsInCombat())
-                {
-                    ModSuggestion modSuggestion = _modSuggestionQueue.Dequeue();
-                    StartCoroutine(suggestMod(modSuggestion));
-                }
+                StartCoroutine(onModSuggest(suggester, modId));
 
-                TwitchManager.Instance.EnqueueChatMessage("Mod suggested!");
                 return;
             }
             if (subCommands[0].ToLower() == "!mods")
@@ -239,20 +252,70 @@ namespace InternalModBot
 
         }
 
+        IEnumerator onModSuggest(string suggester, string modId)
+        {
+            if (DeniedModIds.Contains(modId))
+            {
+                TwitchManager.Instance.EnqueueChatMessage("That mod has already been rejected FailFish");
+                yield break;
+            }
+            if (ModsManager.Instance.GetLoadedModWithID(modId) != null)
+            {
+                TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
+                yield break;
+            }
+
+            UnityWebRequest unityWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId);
+            unityWebRequest.timeout = 5;
+            yield return unityWebRequest.SendWebRequest();
+
+            if (!string.IsNullOrWhiteSpace(unityWebRequest.error))
+            {
+                TwitchManager.Instance.EnqueueChatMessage("Error while trying to fetch mod data. MrDestructoid");
+                yield break;
+            }
+
+            try
+            {
+                string response = unityWebRequest.downloadHandler.text;
+
+                if (response == "null")
+                {
+                    TwitchManager.Instance.EnqueueChatMessage("No mod with the provided Id could be found NotLikeThis");
+                    yield break;
+                }
+
+                Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
+
+
+                ModSuggestion suggestedMod = new ModSuggestion((string)responseDict["DisplayName"], (string)responseDict["Author"], suggester, modId);
+                _modSuggestionQueue.Enqueue(suggestedMod);
+
+                TwitchManager.Instance.EnqueueChatMessage("Suggested the \"" + responseDict["DisplayName"] + "\" mod! BloodTrail");
+            }
+            catch
+            {
+                TwitchManager.Instance.EnqueueChatMessage("Something went wrong NotLikeThis");
+                yield break;
+            }
+        }
+
         Queue<ModSuggestion> _modSuggestionQueue = new Queue<ModSuggestion>();
 
         struct ModSuggestion
         {
-            public ModSuggestion(string modName, string suggesterName, string url)
+            public ModSuggestion(string modName, string modCreator, string suggesterName, string modID)
             {
                 ModName = modName;
+                ModCreator = modCreator;
                 SuggesterName = suggesterName;
-                Url = url;
+                ModID = modID;
             }
 
             public string ModName;
+            public string ModCreator;
             public string SuggesterName;
-            public string Url;
+            public string ModID;
 
         }
     }

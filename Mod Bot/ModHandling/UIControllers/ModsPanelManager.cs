@@ -143,7 +143,7 @@ namespace InternalModBot
         }
         void onModsFolderClicked()
 		{
-            Process.Start("explorer.exe", ModsManager.Instance.ModFolderPath);
+            Process.Start("explorer.exe", "\"" + ModsManager.Instance.ModFolderPath + "\"");
 		}
 
         static IEnumerator downloadModData(GameObject content)

@@ -380,7 +380,8 @@ namespace InternalModBot
 		{
 			foreach(LoadedModInfo loadedMod in _loadedMods)
 			{
-				loadedMod.ModReference.OnModDeactivated();
+				if (loadedMod != null && loadedMod.ModReference != null)
+					loadedMod.ModReference.OnModDeactivated();
 			}
 
 			_loadedMods.Clear();

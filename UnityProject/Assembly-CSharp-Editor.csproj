@@ -65,6 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Editor\SaveAssetBundles.cs" />
+    <Compile Include="Assets\Mod-Bot Unity plugin\Editor\ModBotWindow.cs" />
+    <Compile Include="Assets\Mod-Bot Unity plugin\Editor\ModsData.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/efors/Desktop/git/ModBot/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
