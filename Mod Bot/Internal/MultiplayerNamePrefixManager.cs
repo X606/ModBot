@@ -20,8 +20,6 @@ namespace InternalModBot
 		const string MOD_BOT_USER_KEY = "ModBotUser";
 
 		const string DEFUALT_MOD_BOT_USER_PREFIX = "<color=#ffac00>[Mod-Bot]</color>";
-		const string PREFIXES_URL = "https://modbot-d8a58.firebaseio.com/playerPrefixes/.json";
-		const string NAME_OVERRIDE_URL = "https://modbot-d8a58.firebaseio.com/playerNameOverrides/.json";
 
 		Dictionary<string, string> playfabIDToCustomPrefixDictionary = new Dictionary<string, string>();
 		Dictionary<string, string> playfabIDToOverrideNameDictionary = new Dictionary<string, string>();

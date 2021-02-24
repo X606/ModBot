@@ -36,7 +36,7 @@ namespace InternalModBot
 				yield break;
                 
 
-            UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
+            UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getCurrentModBotVersion");
             yield return modBotVersionRequest.SendWebRequest();
 
             if(modBotVersionRequest.isNetworkError || modBotVersionRequest.isHttpError)

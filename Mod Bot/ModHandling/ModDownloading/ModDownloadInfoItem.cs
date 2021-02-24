@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
 using System.IO;
+using System.Diagnostics;
 
 namespace InternalModBot
 {
@@ -27,11 +28,13 @@ namespace InternalModBot
 
         string _modDownloadUrl;
 
+        ModInfo _underlyingModInfo;
+
         /// <summary>
         /// Initilizes the <see cref="ModDownloadInfoItem"/>
         /// </summary>
         /// <param name="holder"></param>
-        public void Init(ModsHolder.ModHolder holder)
+        public void Init(ModInfo holder)
         {
             ModdedObject moddedObject = GetComponent<ModdedObject>();
             _modImage = moddedObject.GetObject<Image>(0);
@@ -41,16 +44,18 @@ namespace InternalModBot
             _downloadButton = moddedObject.GetObject<Button>(4);
             _loadButton = moddedObject.GetObject<Button>(5);
 
-            _modDownloadUrl = holder.DownloadLink;
+            _modDownloadUrl = "modbot.org/api?operation=downloadMod&id=" + holder.UniqueID;
 
             _downloadButton.onClick.AddListener(onDownloadButtonClicked);
-            _loadButton.onClick.AddListener(onLoadButtonClicked);
+            _loadButton.onClick.AddListener(onBrowseButtonClicked);
 
-            _nameDisplay.text = holder.ModName.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
+            _nameDisplay.text = holder.DisplayName.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
             _desciptionDisplay.text = holder.Description.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
-            _creatorText.text = "by: " + holder.CreatorID.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;";
+            _creatorText.text = "by: " + holder.Author.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;";
 
-            StartCoroutine(downloadImageAsync(holder.ImageLink));
+            StartCoroutine(downloadImageAsync("https://modbot.org/api?operation=getModImage&size=108x90&id=" + holder.UniqueID));
+
+            _underlyingModInfo = holder;
         }
 
         IEnumerator downloadImageAsync(string url)
@@ -76,14 +81,17 @@ namespace InternalModBot
             });
         }
 
-        void onLoadButtonClicked()
+        void onBrowseButtonClicked()
         {
+            Process.Start("https://modbot.org/modPreview.html?modID=" + _underlyingModInfo.UniqueID);
+            /*
             new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_load_confirm_message", _nameDisplay.text),
             LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_no"), null,
             LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_yes"), delegate
             {
                 StartCoroutine(downloadModBytesAndLoadAsync(_modDownloadUrl));
             });
+            */
         }
 
         static IEnumerator downloadModFileAndLoadAsync(string url)
@@ -135,45 +143,8 @@ namespace InternalModBot
         /// <summary>
         /// A list of all the mods downloaded.
         /// </summary>
-        [JsonProperty(PropertyName = "mods")]
-        public ModHolder[] Mods;
-
-        /// <summary>
-        /// Used when deserilizing data from the site and represents 1 mod
-        /// </summary>
-        public struct ModHolder
-        {
-            /// <summary>
-            /// Whether or not the mod is "checked", this means that its working and is checked so that it doesnt have any viruses in it.
-            /// </summary>
-            [JsonProperty(PropertyName = "checked")]
-            public bool Checked;
-            /// <summary>
-            /// The name of the creator.
-            /// </summary>
-            [JsonProperty(PropertyName = "creatorID")]
-            public string CreatorID;
-            /// <summary>
-            /// The description of the mod.
-            /// </summary>
-            [JsonProperty(PropertyName = "description")]
-            public string Description;
-            /// <summary>
-            /// The download link for the mod.
-            /// </summary>
-            [JsonProperty(PropertyName = "downloadLink")]
-            public string DownloadLink;
-            /// <summary>
-            /// The link to the image that should be displayed.
-            /// </summary>
-            [JsonProperty(PropertyName = "imageLink")]
-            public string ImageLink;
-            /// <summary>
-            /// The name of the mod.
-            /// </summary>
-            [JsonProperty(PropertyName = "name")]
-            public string ModName;
-        }
+        [JsonProperty(PropertyName = "ModInfos")]
+        public ModInfo[] Mods;
     }
     
 }

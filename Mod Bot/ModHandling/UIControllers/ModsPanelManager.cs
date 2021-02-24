@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.IO;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace InternalModBot
 {
@@ -143,12 +144,12 @@ namespace InternalModBot
         }
         void onModsFolderClicked()
 		{
-            Process.Start("explorer.exe", "\"" + ModsManager.Instance.ModFolderPath + "\"");
+            Process.Start(ModsManager.Instance.ModFolderPath);
 		}
 
         static IEnumerator downloadModData(GameObject content)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/mods/.json");
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos");
 
             yield return webRequest.SendWebRequest(); // wait for the web request to send
 
@@ -160,16 +161,30 @@ namespace InternalModBot
             ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
             GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
-            foreach (ModsHolder.ModHolder modHolder in modsHolder.Mods)
+            foreach (ModInfo modInfo in modsHolder.Mods)
             {
-                if(!modHolder.Checked) // do not want unchecked mods to come up in-game.
-                    continue;
-
-                GameObject holder = Instantiate(modDownloadInfoPrefab);
-                holder.transform.parent = content.transform;
-                holder.AddComponent<ModDownloadInfoItem>().Init(modHolder);
+                ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
             }
 
+        }
+
+        static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
+        {
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID);
+
+            yield return webRequest.SendWebRequest(); // wait for the web request to send
+
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+                yield break;
+
+            Dictionary<string, JToken> specialModData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text);
+
+            if (!specialModData["Verified"].ToObject<bool>()) // do not want unchecked mods to come up in-game.
+                yield break;
+
+            GameObject holder = Instantiate(modDownloadInfoPrefab);
+            holder.transform.parent = content.transform;
+            holder.AddComponent<ModDownloadInfoItem>().Init(modInfo);
         }
 
         void openModsOptionsWindowForMod(LoadedModInfo mod)
