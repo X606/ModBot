@@ -17,6 +17,8 @@ namespace InternalModBot
     /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
+        public readonly Color DisabledModColor = new Color32(123, 14, 14, 255);
+
         void Start()
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
@@ -235,7 +237,7 @@ namespace InternalModBot
             
             if (!isModActive)
             {
-                modItem.GetComponent<Image>().color = Color.red;
+                modItem.GetComponent<Image>().color = DisabledModColor;
                 LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
                 localizedTextField.LocalizationID = "mods_menu_enable_mod";
                 Accessor.CallPrivateMethod("tryLocalizeTextField", localizedTextField);
