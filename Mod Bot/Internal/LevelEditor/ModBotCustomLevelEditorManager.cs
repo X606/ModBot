@@ -9,8 +9,14 @@ using UnityEngine;
 
 namespace InternalModBot.LevelEditor
 {
+	/// <summary>
+	/// Used by mod-bot to handle custom leveleditor stuff
+	/// </summary>
 	public static class ModBotCustomLevelEditorManager
 	{
+		/// <summary>
+		/// Sets up the all custom leveleditor things
+		/// </summary>
 		public static void Init()
 		{
 			GameObject scriptableObject = InternalAssetBundleReferences.ModBot.GetObject("ScriptableObject");

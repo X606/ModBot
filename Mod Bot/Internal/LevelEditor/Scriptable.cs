@@ -12,11 +12,20 @@ using System.Diagnostics;
 
 namespace InternalModBot.LevelEditor
 {
+	/// <summary>
+	/// The component used in the editor to handle custom scriptable objects
+	/// </summary>
 	public class Scriptable : MonoBehaviour, ITriggerActivationReceiver, IDropdownOptions
 	{
+		/// <summary>
+		/// The actual field that saves the code that should run
+		/// </summary>
 		[IncludeInLevelEditor(true, true)]
 		public string Code;
 
+		/// <summary>
+		/// What programing language this code is in, js or lua
+		/// </summary>
 		[IncludeInLevelEditor(false, false)]
 		public int Language;
 
@@ -28,6 +37,10 @@ namespace InternalModBot.LevelEditor
 		ScriptObject _scriptEngine;
 		ScriptValue _triggers;
 
+		/// <summary>
+		/// Sets the code and tells the level editor that the value was changed
+		/// </summary>
+		/// <param name="code"></param>
 		public void SetCode(string code)
 		{
 			Code = code;
@@ -35,6 +48,9 @@ namespace InternalModBot.LevelEditor
 			GlobalEventManager.Instance.Dispatch(GlobalEvents.LevelEditorLevelChanged);
 		}
 
+		/// <summary>
+		/// Method exposed to the editor, called when user clicks button in editor
+		/// </summary>
 		[IncludeInLevelEditor]
 		public void OpenCodeEditor()
 		{
@@ -163,6 +179,10 @@ namespace InternalModBot.LevelEditor
 			return fileName + extension;
 		}
 
+		/// <summary>
+		/// Part of the <see cref="ITriggerActivationReceiver"/> interface
+		/// </summary>
+		/// <param name="zoneID"></param>
 		public void ActivateFromTrigger(string zoneID)
 		{
 			if (_triggers.IsNull)
@@ -192,8 +212,15 @@ namespace InternalModBot.LevelEditor
 			throw new Exception("Unable to find trigger with id \"" + zoneID + "\"");
 		}
 
+		/// <summary>
+		/// Part of the <see cref="ITriggerActivationReceiver"/> interface
+		/// </summary>
 		public int GetTriggerPriority() => 0;
 
+		/// <summary>
+		/// Part of the <see cref="IDropdownOptions"/> interface
+		/// </summary>
+		/// <param name="fieldName"></param>
 		public List<Dropdown.OptionData> GetDropdownOptions(string fieldName)
 		{
 			if (fieldName == "Language")
@@ -208,8 +235,16 @@ namespace InternalModBot.LevelEditor
 			throw new NotImplementedException("Unknown fieldName: " + fieldName);
 		}
 
+		/// <summary>
+		/// Part of the <see cref="IDropdownOptions"/> interface
+		/// </summary>
+		/// <param name="fieldName"></param>
 		public bool ShouldShowDropdownOptions(string fieldName) => fieldName == "Language";
 
+		/// <summary>
+		/// Part of the <see cref="IDropdownOptions"/> interface
+		/// </summary>
+		/// <param name="fieldName"></param>
 		public bool HasDropDownForValue(string fieldName) => fieldName == "Language";
 	}
 }

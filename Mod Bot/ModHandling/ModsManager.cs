@@ -22,17 +22,33 @@ namespace InternalModBot
 	/// </summary>
 	public class ModsManager : Singleton<ModsManager>
 	{
+		/// <summary>
+		/// The name of the json file containing the mod data
+		/// </summary>
 		public const string MOD_INFO_FILE_NAME = "ModInfo.json";
+
+		/// <summary>
+		/// The name of the mods folder
+		/// </summary>
 		public const string MOD_FOLDER_NAME = "mods";
 
 		List<LoadedModInfo> _loadedMods = new List<LoadedModInfo>();
 
 		static Dictionary<string, uint> _firstLoadedVersionOfMod = new Dictionary<string, uint>(); // this keeps track of what version of mods have been loaded, this is to make sure that if a new version of a mod gets loaded the user get alerted that they have to restart
 		
+		/// <summary>
+		/// Gets the mod folder path
+		/// </summary>
 		public string ModFolderPath => InternalUtils.GetSubdomain(Application.dataPath) + MOD_FOLDER_NAME + "/";
 
+		/// <summary>
+		/// The "pass on mod" that calls everything called on it on all loaded mods
+		/// </summary>
 		public PassOnToModsManager PassOnMod = new PassOnToModsManager();
 
+		/// <summary>
+		/// Initializes the mods manager
+		/// </summary>
 		public void Initialize()
 		{
 			ReloadMods();
@@ -65,6 +81,9 @@ namespace InternalModBot
 			}
 		}
 
+		/// <summary>
+		/// Reloads all loaded mods
+		/// </summary>
 		public void ReloadMods()
 		{
 			Stopwatch stopwatch = new Stopwatch();
@@ -312,7 +331,7 @@ namespace InternalModBot
 			try
 			{
 				loadedAssembly = Assembly.LoadFile(dllPath);
-			} catch(Exception e)
+			} catch
 			{
 				error = new ModLoadError(modInfo, "Could not load \"" + modInfo.MainDLLFileName + "\"");
 				return false;

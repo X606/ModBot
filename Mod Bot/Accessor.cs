@@ -31,6 +31,13 @@ namespace ModLibrary
             return (ReturnType)method.Invoke(instance, args);
         }
 
+        /// <summary>
+        /// Calls a method even if its private and returns its return value.
+        /// </summary>
+        /// <typeparam name="ReturnType">The return type of the method.</typeparam>
+        /// <param name="methodName">The name of the method.</param>
+        /// <param name="instance">The instance of the class you want to call the method in.</param>
+        /// <param name="args">The arguments to pass to the method.</param>
         public static ReturnType CallPrivateMethod<ReturnType>(this object instance, string methodName, object[] args = null)
         {
             MethodInfo method = instance.GetType().GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
@@ -58,6 +65,12 @@ namespace ModLibrary
             method.Invoke(instance, args);
         }
 
+        /// <summary>
+        /// Calls a method even if its private but does not return its return value. (Use only for methods that have no return value or you dont need it)
+        /// </summary>
+        /// <param name="methodName">The name of the method.</param>
+        /// <param name="instance">The instance of the class you want to call the method in.</param>
+        /// <param name="args">The arguments to pass to the method.</param>
         public static void CallPrivateMethod(this object instance, string methodName, object[] args = null)
         {
             MethodInfo method = instance.GetType().GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
@@ -103,6 +116,13 @@ namespace ModLibrary
             field.SetValue(instance, value);
         }
 
+        /// <summary>
+        /// Sets field value even if its private.
+        /// </summary>
+        /// <typeparam name="FieldType">The type of the field.</typeparam>
+        /// <param name="fieldName">The name of the field.</param>
+        /// <param name="instance">The instance of the class the field is in.</param>
+        /// <param name="value">The value to set the field to</param>
         public static void SetPrivateField<FieldType>(this object instance, string fieldName, FieldType value)
         {
             FieldInfo field = instance.GetType().GetField(fieldName, FLAGS);
@@ -130,6 +150,12 @@ namespace ModLibrary
             return (FieldType)field.GetValue(instance);
         }
 
+        /// <summary>
+        /// Gets field value even if its private.
+        /// </summary>
+        /// <typeparam name="FieldType">The type of the field.</typeparam>
+        /// <param name="fieldName">The name of the field.</param>
+        /// <param name="instance">The instance the field is in.</param>
         public static FieldType GetPrivateField<FieldType>(this object instance, string fieldName)
         {
             FieldInfo field = instance.GetType().GetField(fieldName, FLAGS);
@@ -175,6 +201,13 @@ namespace ModLibrary
             property.SetValue(instance, value, null);
         }
 
+        /// <summary>
+        /// Sets property value even if its private.
+        /// </summary>
+        /// <typeparam name="PropertyType">The type of the property.</typeparam>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <param name="instance">The instance the property is in.</param>
+        /// <param name="value">The value to set the property to.</param>
         public static void SetPrivateProperty<PropertyType>(this object instance, string propertyName, PropertyType value)
         {
             PropertyInfo property = instance.GetType().GetProperty(propertyName, FLAGS);
@@ -192,6 +225,7 @@ namespace ModLibrary
         /// <typeparam name="PropertyType">The type of the property.</typeparam>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="instance">The instance the property is in.</param>
+        /// <param name="index">Used, if the property has a index parementer as the index parameter</param>
         public static PropertyType GetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, object[] index = null)
         {
             PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, FLAGS);
@@ -202,6 +236,13 @@ namespace ModLibrary
             return (PropertyType)property.GetValue(instance, index);
         }
 
+        /// <summary>
+        /// Sets property value even if its private.
+        /// </summary>
+        /// <typeparam name="PropertyType">The type of the property.</typeparam>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <param name="instance">The instance the property is in.</param>
+        /// <param name="index">Used, if the property has a index parementer as the index parameter</param>
         public static PropertyType GetPrivateProperty<PropertyType>(this object instance, string propertyName, object[] index = null)
         {
             PropertyInfo property = instance.GetType().GetProperty(propertyName, FLAGS);

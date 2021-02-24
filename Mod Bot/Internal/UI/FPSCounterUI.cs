@@ -4,24 +4,31 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+	/// <summary>
+	/// Handles the fps counter in the corner
+	/// </summary>
 	public class FPSCounterUI : MonoBehaviour
 	{
-		public Text FpsCounter;
+		Text _fpsCounter;
 
 		void Update()
 		{
 			if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.ToggleFPSLabel)))
-				FpsCounter.gameObject.SetActive(!FpsCounter.gameObject.activeSelf);
+				_fpsCounter.gameObject.SetActive(!_fpsCounter.gameObject.activeSelf);
 
 			float FPS = 1f / Time.unscaledDeltaTime;
 			int FPSInt = Convert.ToInt32(FPS);
 
-			FpsCounter.text = ModBotLocalizationManager.FormatLocalizedStringFromID("fps_label", FPSInt);
+			_fpsCounter.text = ModBotLocalizationManager.FormatLocalizedStringFromID("fps_label", FPSInt);
 		}
 
+		/// <summary>
+		/// Sets up the FPS conter
+		/// </summary>
+		/// <param name="text"></param>
 		public void Init(Text text)
 		{
-			FpsCounter = text;
+			_fpsCounter = text;
 		}
 	}
 

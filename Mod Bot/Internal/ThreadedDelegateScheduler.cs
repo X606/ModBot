@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace InternalModBot
 {
+	/// <summary>
+	/// Allows us to schedule an action to run on the next update from another thread
+	/// </summary>
 	public static class ThreadedDelegateScheduler
 	{
 		static ConcurrentQueue<Action> _scheduledActions = new ConcurrentQueue<Action>();
 
+		/// <summary>
+		/// Calls the passed action on the next update on the main thread
+		/// </summary>
+		/// <param name="action"></param>
 		public static void CallActionNextUpdate(Action action)
 		{
 			_scheduledActions.Enqueue(action);

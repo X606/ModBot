@@ -11,24 +11,38 @@ using Esprima;
 
 namespace InternalModBot.Scripting
 {
+	/// <summary>
+	/// Implements a javascript code engine to the <see cref="ScriptObject"/> wrapper
+	/// </summary>
 	public class JavascriptScriptObject : ScriptObject
 	{
-		Engine javascriptEngine;
+		readonly Engine _javascriptEngine;
 
+		/// <summary>
+		/// Creates a new javascript engine
+		/// </summary>
 		public JavascriptScriptObject()
 		{
-			javascriptEngine = new Engine();
+			_javascriptEngine = new Engine();
 
 			Initialize();
 		}
 
+		/// <summary>
+		/// What language this engine is in
+		/// </summary>
 		public override ScriptLanguage ScriptLanguage => ScriptLanguage.Javascript;
 
+		/// <summary>
+		/// Calls a global function
+		/// </summary>
+		/// <param name="function"></param>
+		/// <param name="parameters"></param>
 		public override void Call(string function, params object[] parameters)
 		{
 			try
 			{
-				javascriptEngine.Invoke(function, parameters);
+				_javascriptEngine.Invoke(function, parameters);
 			}
 			catch (ParserException e)
 			{
@@ -45,11 +59,17 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Calls a global function with a return value
+		/// </summary>
+		/// <param name="function"></param>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
 		public override ScriptValue CallWithReturn(string function, params object[] parameters)
 		{
 			try
 			{
-				return new JavascriptScriptValue(javascriptEngine.Invoke(function, parameters), this);
+				return new JavascriptScriptValue(_javascriptEngine.Invoke(function, parameters), this);
 			}
 			catch (ParserException e)
 			{
@@ -68,11 +88,16 @@ namespace InternalModBot.Scripting
 			return null;
 		}
 
+		/// <summary>
+		/// Gets a global value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public override ScriptValue GetGlobal(string name)
 		{
 			try
 			{
-				return new JavascriptScriptValue(javascriptEngine.GetValue(name), this);
+				return new JavascriptScriptValue(_javascriptEngine.GetValue(name), this);
 			}
 			catch (ParserException e)
 			{
@@ -91,11 +116,15 @@ namespace InternalModBot.Scripting
 			return null;
 		}
 
+		/// <summary>
+		/// Runs a bit of raw code
+		/// </summary>
+		/// <param name="code"></param>
 		public override void RunCode(string code)
 		{
 			try
 			{
-				javascriptEngine.Execute(code);
+				_javascriptEngine.Execute(code);
 			}
 			catch (ParserException e)
 			{
@@ -112,11 +141,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Sets a global bool value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public override void SetGlobal(string name, bool value)
 		{
 			try
 			{
-				javascriptEngine.SetValue(name, value);
+				_javascriptEngine.SetValue(name, value);
 			}
 			catch (ParserException e)
 			{
@@ -133,11 +167,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Sets a global delegate value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public override void SetGlobal(string name, Delegate value)
 		{
 			try
 			{
-				javascriptEngine.SetValue(name, value);
+				_javascriptEngine.SetValue(name, value);
 			}
 			catch (ParserException e)
 			{
@@ -154,11 +193,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Sets a global number value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public override void SetGlobal(string name, double value)
 		{
 			try
 			{
-				javascriptEngine.SetValue(name, value);
+				_javascriptEngine.SetValue(name, value);
 			}
 			catch (ParserException e)
 			{
@@ -175,11 +219,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Sets a global object value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public override void SetGlobal(string name, object value)
 		{
 			try
 			{
-				javascriptEngine.SetValue(name, value);
+				_javascriptEngine.SetValue(name, value);
 			}
 			catch (ParserException e)
 			{
@@ -196,11 +245,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Sets a global string value
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		public override void SetGlobal(string name, string value)
 		{
 			try
 			{
-				javascriptEngine.SetValue(name, value);
+				_javascriptEngine.SetValue(name, value);
 			}
 			catch (ParserException e)
 			{
@@ -218,17 +272,30 @@ namespace InternalModBot.Scripting
 		}
 	}
 
+	/// <summary>
+	/// A wrapper for a javascript value
+	/// </summary>
 	public class JavascriptScriptValue : ScriptValue
 	{
 		JsValue _value;
 		JavascriptScriptObject _scriptObject;
 
+		/// <summary>
+		/// Sets up the wrapper for a javascript value
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="scriptObject"></param>
 		public JavascriptScriptValue(JsValue value, JavascriptScriptObject scriptObject)
 		{
 			_value = value;
 			_scriptObject = scriptObject;
 		}
 
+		/// <summary>
+		/// Gets a value out of the value, at the provided index
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		public override ScriptValue this[string index]
 		{
 			get
@@ -237,6 +304,11 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets a value out of the value, at the provided index
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		public override ScriptValue this[int index]
 		{
 			get
@@ -245,6 +317,9 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets the value as a bool
+		/// </summary>
 		public override bool AsBool
 		{
 			get
@@ -253,6 +328,9 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets the value as a string
+		/// </summary>
 		public override string AsString
 		{
 			get
@@ -261,6 +339,9 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets the value as a number
+		/// </summary>
 		public override double AsNumber
 		{
 			get
@@ -269,6 +350,9 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets the length of the object
+		/// </summary>
 		public override int ArrayLength
 		{
 			get
@@ -277,8 +361,16 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Gets if the object is null
+		/// </summary>
 		public override bool IsNull => _value.IsNull() || _value.IsUndefined();
 
+		/// <summary>
+		/// Gets if the provided object is a number
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static bool IsNumber(object value)
 		{
 			return value is sbyte
@@ -294,6 +386,10 @@ namespace InternalModBot.Scripting
 					|| value is decimal;
 		}
 
+		/// <summary>
+		/// Calls the value as a function
+		/// </summary>
+		/// <param name="parameters"></param>
 		public override void CallAsFunction(params object[] parameters)
 		{
 			try
@@ -336,6 +432,11 @@ namespace InternalModBot.Scripting
 			}
 		}
 
+		/// <summary>
+		/// Calls the value as a function, with a return value
+		/// </summary>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
 		public override ScriptValue CallAsFunctionWithReturn(params object[] parameters)
 		{
 			try

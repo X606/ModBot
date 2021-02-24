@@ -8,20 +8,31 @@ using ModLibrary;
 
 namespace InternalModBot
 {
+	/// <summary>
+	/// Takes care of editing the version label
+	/// </summary>
 	public class VersionLabelManager : Singleton<VersionLabelManager>
 	{
-		public Text Text;
+		/// <summary>
+		/// The version label itself
+		/// </summary>
+		public Text VersionLabel;
 
+		/// <summary>
+		/// Sets the provided line of the version label to the provided text, creating new lines if neccicary
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="value"></param>
 		public void SetLine(int line, string value)
 		{
-			if (Text == null)
+			if (VersionLabel == null)
 			{
-				Text = GameUIRoot.Instance.TitleScreenUI.VersionLabel;
-				Text.horizontalOverflow = UnityEngine.HorizontalWrapMode.Overflow;
+				VersionLabel = GameUIRoot.Instance.TitleScreenUI.VersionLabel;
+				VersionLabel.horizontalOverflow = UnityEngine.HorizontalWrapMode.Overflow;
 			}
 				
 
-			string[] lines = Text.text.Split("\n".ToCharArray());
+			string[] lines = VersionLabel.text.Split("\n".ToCharArray());
 
 			if (lines.Length > line)
 			{
@@ -42,7 +53,7 @@ namespace InternalModBot
 			}
 
 			string joinedLines = lines.Join("\n");
-			Text.text = joinedLines;
+			VersionLabel.text = joinedLines;
 		}
 
 	}

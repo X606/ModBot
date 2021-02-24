@@ -10,8 +10,11 @@ namespace InternalModBot
     /// </summary>
     public class ConsoleUI : MonoBehaviour
     {
-        GameObject _consoleTextElementPrefab;
+        /// <summary>
+        /// The animator of the console
+        /// </summary>
         public Animator Animator;
+        GameObject _consoleTextElementPrefab;
         GameObject _content;
         GameObject _innerHolder;
         InputField _input;
@@ -24,6 +27,13 @@ namespace InternalModBot
 
         Queue<Text> _lines = new Queue<Text>();
 
+        /// <summary>
+        /// Initialized the <see cref="ConsoleUI"/>
+        /// </summary>
+        /// <param name="animator"></param>
+        /// <param name="content"></param>
+        /// <param name="innerHolder"></param>
+        /// <param name="input"></param>
         public void Init(Animator animator, GameObject content, GameObject innerHolder, InputField input)
         {
             Animator = animator;
@@ -270,12 +280,24 @@ namespace InternalModBot
         }
     }
 
+    /// <summary>
+    /// Adds a few extension methods to the <see cref="ScrollRect"/> class
+    /// </summary>
     public static class ScrollRectExtensions
     {
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the top
+        /// </summary>
+        /// <param name="scrollRect"></param>
         public static void ScrollToTop(this ScrollRect scrollRect)
         {
             scrollRect.normalizedPosition = new Vector2(0, 1);
         }
+
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the bottom
+        /// </summary>
+        /// <param name="scrollRect"></param>
         public static void ScrollToBottom(this ScrollRect scrollRect)
         {
             scrollRect.normalizedPosition = new Vector2(0, 0);

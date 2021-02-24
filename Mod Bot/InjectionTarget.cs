@@ -9,20 +9,22 @@ using System.Windows.Markup;
 
 namespace ModLibrary
 {
-
+	/// <summary>
+	/// The base type for injectiontargets used by mod-bot, use <see cref="InjectionPrefixTargetAttribute"/> or <see cref="InjectionPostfixTargetAttribute"/> instead
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-	public class InjectionTargetAttribute : Attribute
+	public abstract class InjectionTargetAttribute : Attribute
 	{
 		internal MethodInfo SelectedMethod;
-		public InjectionType InjectionType;
+		internal InjectionType InjectionType;
 
-		public InjectionTargetAttribute(Type type, string methodName, InjectionType injectionType, Type[] methodParameters = null)
-		{
+		internal void Init(Type type, string methodName, InjectionType injectionType, Type[] methodParameters = null)
+        {
 			MethodInfo selectedMethod = null;
 			if (methodParameters == null)
 			{
 				selectedMethod = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-			} 
+			}
 			else
 			{
 				selectedMethod = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, methodParameters, null);
@@ -30,7 +32,6 @@ namespace ModLibrary
 			SelectedMethod = selectedMethod;
 
 			InjectionType = injectionType;
-
 		}
 
 		internal static KeyValuePair<InjectionTargetAttribute, MethodInfo>[] GetInjectionTargetsInAssembly(Assembly assembly)
@@ -58,7 +59,44 @@ namespace ModLibrary
 			return output.ToArray();
 		}
 	}
-	public enum InjectionType
+
+	/// <summary>
+	/// Used to make mod-bot inject into the game code, and make it call the function this function is attached to before it runs the code in the target method
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+	public class InjectionPrefixTargetAttribute : InjectionTargetAttribute
+    {
+		/// <summary>
+		/// Used to make mod-bot inject into the game code, and make it call the function this function is attached to before it runs the code in the target method
+		/// </summary>
+		/// <param name="type">The type the target method is attached to</param>
+		/// <param name="methodName">The name of the taget method</param>
+		/// <param name="methodParameters">The parameter types on the target method</param>
+		public InjectionPrefixTargetAttribute(Type type, string methodName, Type[] methodParameters = null)
+        {
+			Init(type, methodName, InjectionType.Prefix, methodParameters);
+        }
+    }
+
+	/// <summary>
+	/// Used to make mod-bot inject into the game code, and make it call the function this function is attached to after it runs the code in the target method
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+	public class InjectionPostfixTargetAttribute : InjectionTargetAttribute
+	{
+		/// <summary>
+		/// Used to make mod-bot inject into the game code, and make it call the function this function is attached to after it runs the code in the target method
+		/// </summary>
+		/// <param name="type">The type the target method is attached to</param>
+		/// <param name="methodName">The name of the taget method</param>
+		/// <param name="methodParameters">The parameter types on the target method</param>
+		public InjectionPostfixTargetAttribute(Type type, string methodName, Type[] methodParameters = null)
+		{
+			Init(type, methodName, InjectionType.Postfix, methodParameters);
+		}
+	}
+
+	internal enum InjectionType
 	{
 		Prefix,
 		Postfix

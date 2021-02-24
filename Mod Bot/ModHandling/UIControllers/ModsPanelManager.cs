@@ -17,6 +17,9 @@ namespace InternalModBot
     /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
+        /// <summary>
+        /// The color used for disabled mods
+        /// </summary>
         public readonly Color DisabledModColor = new Color32(123, 14, 14, 255);
 
         void Start()

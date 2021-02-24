@@ -31,8 +31,15 @@ namespace InternalModBot
         /// </summary>
         public Text DisplayText;
 
+        /// <summary>
+        /// The mod ids of the mods the user has already rejected, static to persist across scene swiches
+        /// </summary>
         public static HashSet<string> DeniedModIds = new HashSet<string>();
 
+        /// <summary>
+        /// Sets up the mod suggesting ui from a modded object
+        /// </summary>
+        /// <param name="moddedObject"></param>
         public void Init(ModdedObject moddedObject)
         {
             DisplayText = moddedObject.GetObject<Text>(0);

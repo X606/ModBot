@@ -12,16 +12,23 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
+	/// <summary>
+	/// Handles settings on mod-bot page of the settings
+	/// </summary>
 	public static class ModBotSettingsManager
 	{
 		static ModdedObject _settingsPageModdedObject;
+		/// <summary>
+		/// Sets up the <see cref="ModBotSettingsManager"/>
+		/// </summary>
+		/// <param name="moddedObject"></param>
 		public static void Init(ModdedObject moddedObject)
 		{
 			_settingsPageModdedObject = moddedObject;
 
 		}
 
-		public class ModBotSettingsBuilder
+		class ModBotSettingsBuilder
 		{
 			Transform _holder;
 
@@ -66,7 +73,11 @@ namespace InternalModBot
 
 		}
 
-		public static void CreateSettingsWindow(ModBotSettingsBuilder builder)
+		/// <summary>
+		/// Populates the settings widow using the builder
+		/// </summary>
+		/// <param name="builder"></param>
+		static void CreateSettingsWindow(ModBotSettingsBuilder builder)
 		{
 			builder.AddLabel("Controls");
 			foreach (ModBotInputManager.InputOption inputOption in ModBotInputManager.InputOptions)
@@ -143,7 +154,10 @@ namespace InternalModBot
 
 			buttonText.text = input.Key.ToString();
 		}
-		[InjectionTarget(typeof(SettingsMenu), "populateSettings", InjectionType.Postfix)]
+		/// <summary>
+		/// Gets called from the end of the <see cref="SettingsMenu"/>.populateSettings()
+		/// </summary>
+		[InjectionPostfixTarget(typeof(SettingsMenu), "populateSettings")]
 		public static void OnPopulateSettings()
 		{
 			CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));

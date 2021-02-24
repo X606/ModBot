@@ -12,26 +12,33 @@ using ModBotWebsiteAPI;
 
 namespace InternalModBot
 {
+	/// <summary>
+	/// Handles the UI for signing into mod-bot
+	/// </summary>
 	public class ModBotSignInUI : MonoBehaviour
 	{
-		public InputField UsernameField;
-		public InputField PasswordField;
-		public Button SignUpButton;
-		public Button SignInButton;
-		public Text ErrorText;
-		public Button XButton;
-		public GameObject SignInFormGameObject;
+		InputField _usernameField;
+		InputField _passwordField;
+		Button _signUpButton;
+		Button _signInButton;
+		Text _errorText;
+		Button _xButton;
+		GameObject _signInFormGameObject;
 
+		/// <summary>
+		/// Sets up the sign in UI
+		/// </summary>
+		/// <param name="moddedObject"></param>
 		public void Init(ModdedObject moddedObject)
 		{
-			UsernameField = moddedObject.GetObject<InputField>(0);
-			PasswordField = moddedObject.GetObject<InputField>(1);
-			SignUpButton = moddedObject.GetObject<Button>(2);
-			SignInButton = moddedObject.GetObject<Button>(3);
-			ErrorText = moddedObject.GetObject<Text>(4);
-			XButton = moddedObject.GetObject<Button>(5);
+			_usernameField = moddedObject.GetObject<InputField>(0);
+			_passwordField = moddedObject.GetObject<InputField>(1);
+			_signUpButton = moddedObject.GetObject<Button>(2);
+			_signInButton = moddedObject.GetObject<Button>(3);
+			_errorText = moddedObject.GetObject<Text>(4);
+			_xButton = moddedObject.GetObject<Button>(5);
 			
-			SignInFormGameObject = moddedObject.gameObject;
+			_signInFormGameObject = moddedObject.gameObject;
 		}
 
 		readonly string _sessionIdFilePath = Application.persistentDataPath + "/SessionID.txt";
@@ -67,12 +74,16 @@ namespace InternalModBot
 				OpenSignInForm();
 			}
 
-			SignUpButton.onClick.AddListener(new UnityAction(onSignUpButtonClicked));
-			SignInButton.onClick.AddListener(new UnityAction(onSignInButtonClicked));
+			_signUpButton.onClick.AddListener(new UnityAction(onSignUpButtonClicked));
+			_signInButton.onClick.AddListener(new UnityAction(onSignInButtonClicked));
 
-			XButton.onClick.AddListener(new UnityAction(onCloseButton));
+			_xButton.onClick.AddListener(new UnityAction(onCloseButton));
 		}
 
+		/// <summary>
+		/// Sets the current session in the API
+		/// </summary>
+		/// <param name="sessionId"></param>
 		public void SetSession(string sessionId)
 		{
 			API.SetSessionID(sessionId);
@@ -80,18 +91,21 @@ namespace InternalModBot
 			File.WriteAllText(_sessionIdFilePath, sessionId);
 		}
 
+		/// <summary>
+		/// Opens the sign in form
+		/// </summary>
 		public void OpenSignInForm()
 		{
-			UsernameField.text = "";
-			PasswordField.text = "";
+			_usernameField.text = "";
+			_passwordField.text = "";
 
-			ErrorText.text = "";
+			_errorText.text = "";
 
-			SignInButton.gameObject.SetActive(true);
-			SignUpButton.gameObject.SetActive(true);
-			XButton.gameObject.SetActive(true);
+			_signInButton.gameObject.SetActive(true);
+			_signUpButton.gameObject.SetActive(true);
+			_xButton.gameObject.SetActive(true);
 
-			SignInFormGameObject.SetActive(true);
+			_signInFormGameObject.SetActive(true);
 		}
 
 		void onSignUpButtonClicked()
@@ -104,29 +118,29 @@ namespace InternalModBot
 
 			debug.Log(playfabId);
 
-			SignInButton.gameObject.SetActive(false);
-			SignUpButton.gameObject.SetActive(false);
-			XButton.gameObject.SetActive(false);
-			API.SignInFromGame(UsernameField.text, PasswordField.text, playfabId, delegate(JsonObject json)
+			_signInButton.gameObject.SetActive(false);
+			_signUpButton.gameObject.SetActive(false);
+			_xButton.gameObject.SetActive(false);
+			API.SignInFromGame(_usernameField.text, _passwordField.text, playfabId, delegate(JsonObject json)
 			{
 				string error = Convert.ToString(json["error"]);
 				if (error != "" && error != "null")
 				{
-					ErrorText.text = error;
-					SignInButton.gameObject.SetActive(true);
-					SignUpButton.gameObject.SetActive(true);
-					XButton.gameObject.SetActive(true);
+					_errorText.text = error;
+					_signInButton.gameObject.SetActive(true);
+					_signUpButton.gameObject.SetActive(true);
+					_xButton.gameObject.SetActive(true);
 					return;
 				}
 				if (Convert.ToString(json["isError"]) == "true")
 				{
-					ErrorText.text = "Unknown error";
-					SignInButton.gameObject.SetActive(true);
-					SignUpButton.gameObject.SetActive(true);
+					_errorText.text = "Unknown error";
+					_signInButton.gameObject.SetActive(true);
+					_signUpButton.gameObject.SetActive(true);
 					return;
 				}
 
-				ErrorText.text = "";
+				_errorText.text = "";
 				string sessionID = Convert.ToString(json["sessionID"]).Trim('\"');
 				SetSession(sessionID);
 
@@ -138,7 +152,7 @@ namespace InternalModBot
 
 		void onCloseButton()
 		{
-			SignInFormGameObject.SetActive(false);
+			_signInFormGameObject.SetActive(false);
 		}
 
 		void onSignedIn()
