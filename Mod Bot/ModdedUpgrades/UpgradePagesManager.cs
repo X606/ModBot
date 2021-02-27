@@ -71,7 +71,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="upgradeType"></param>
         /// <param name="level"></param>
-        /// <param name="mod"></param>
+        /// <param name="modID"></param>
         public static void AddUpgrade(UpgradeType upgradeType, int level, string modID)
         {
             if (modAlreadyHasUpgrade(modID, new ModdedUpgradeRepresenter(upgradeType, level))) // If the mod has already defined the upgrade on its page

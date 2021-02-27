@@ -263,7 +263,12 @@ namespace InternalModBot
 		}
         static void onBroadcastButtonClicked(Mod mod)
         {
-            //TODO: implement this
+            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_broadcast_confirm_message", mod.ModInfo.DisplayName),
+            LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_no"), null,
+            LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_yes"), delegate
+            {
+                ModSharingManager.SendModToAllModBotClients(mod.ModInfo.UniqueID);
+            });
         }
         void deleteMod(Mod mod)
 		{
