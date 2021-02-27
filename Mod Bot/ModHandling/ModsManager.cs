@@ -57,9 +57,6 @@ namespace InternalModBot
 
 		void Update()
 		{
-			if(Input.GetKey(KeyCode.F3) && Input.GetKeyDown(KeyCode.R))
-				ReloadMods();
-
 			PassOnMod.GlobalUpdate();
 
 			ThreadedDelegateScheduler.Update();
@@ -88,8 +85,6 @@ namespace InternalModBot
 		{
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-
-			ClearCache();
 
 			List<ModLoadError> errors = new List<ModLoadError>();
 			if(!reloadAllMods(errors))

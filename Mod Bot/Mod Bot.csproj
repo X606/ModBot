@@ -71,6 +71,7 @@
     <Compile Include="Internal\Scripting\Types\InstanceTypes\GameObjectRef.cs" />
     <Compile Include="Internal\Scripting\Types\InstanceTypes\Vector3Ref.cs" />
     <Compile Include="Internal\ThreadedDelegateScheduler.cs" />
+    <Compile Include="Internal\UI\Generic2ButtonDialogeUI.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
@@ -79,7 +80,10 @@
     <Compile Include="Internal\NameTagRefreshListener.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
+    <Compile Include="Internal\UI\ModDownloadPage.cs" />
+    <Compile Include="Internal\UI\ModOptionsWindow.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
+    <Compile Include="Internal\UI\ModsWindow.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />

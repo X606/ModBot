@@ -49,6 +49,12 @@ namespace InternalModBot
             if (subCommands[0] == "crash")
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
 
+            if (subCommands[0] == "clearcache")
+            {
+                ModsManager.ClearCache();
+                return;
+            }
+
             if (subCommands[0] == "unittest")
             {
                 if (subCommands.Length > 1)
