@@ -161,6 +161,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\UsedDlls\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PlayFab">
+      <HintPath>..\UsedDlls\PlayFab.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
