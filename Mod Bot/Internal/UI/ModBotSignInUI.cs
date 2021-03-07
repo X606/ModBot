@@ -116,27 +116,18 @@ namespace InternalModBot
 		{
 			string playfabId = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
 
-			debug.Log(playfabId);
-
 			_signInButton.gameObject.SetActive(false);
 			_signUpButton.gameObject.SetActive(false);
 			_xButton.gameObject.SetActive(false);
 			API.SignInFromGame(_usernameField.text, _passwordField.text, playfabId, delegate(JsonObject json)
 			{
-				string error = Convert.ToString(json["error"]);
+				string error = Convert.ToString(json["Error"]);
 				if (error != "" && error != "null")
 				{
 					_errorText.text = error;
 					_signInButton.gameObject.SetActive(true);
 					_signUpButton.gameObject.SetActive(true);
 					_xButton.gameObject.SetActive(true);
-					return;
-				}
-				if (Convert.ToString(json["isError"]) == "true")
-				{
-					_errorText.text = "Unknown error";
-					_signInButton.gameObject.SetActive(true);
-					_signUpButton.gameObject.SetActive(true);
 					return;
 				}
 

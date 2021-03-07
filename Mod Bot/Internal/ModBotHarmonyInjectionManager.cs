@@ -506,24 +506,22 @@ namespace InternalModBot
                 ModsManager.Instance.PassOnMod.OnLanguageChanged(SettingsManager.Instance.GetCurrentLanguageID(), ____translatedStringsDictionary);
             }
 
-            public static bool TwitchWhoIsLiveManager_onGameLiveStreamRequestFinished_Prefix(HTTPResponse response, ref List<TwitchStreamInfo> ____streamInfos, ref bool ____hasEverRetirevedLiveUsers)
+            public static bool TwitchWhoIsLiveManager_refreshGameLiveStreams_Prefix(ref List<TwitchStreamInfo> ____streamInfos, ref bool ____hasEverRetirevedLiveUsers)
             {
-                if (response == null || !response.IsSuccess)
-                    return false;
-
                 try
                 {
                     ____streamInfos = new List<TwitchStreamInfo>();
-
-                    foreach (JToken jtoken in JsonConvert.DeserializeObject<JContainer>(response.DataAsText).First.First.Children())
+                    List<TwitchStreamInfo> twitchGameStreams = PlayfabLevelDownloadManager.Instance.GetTwitchGameStreams();
+                    if (twitchGameStreams != null)
                     {
-                        TwitchStreamInfo twitchStreamInfo = jtoken.ToObject<TwitchStreamInfo>();
-                        ____streamInfos.Add(twitchStreamInfo);
+                        foreach (TwitchStreamInfo twitchStreamInfo in twitchGameStreams)
+                        {
+                            ____streamInfos.Add(twitchStreamInfo);
+                        }
+                        ____hasEverRetirevedLiveUsers = true;
+
+                        GlobalEventManager.Instance.Dispatch(GlobalEvents.TwitchLiveStreamsRefreshed);
                     }
-
-                    ____hasEverRetirevedLiveUsers = true;
-
-                    GlobalEventManager.Instance.Dispatch(GlobalEvents.TwitchLiveStreamsRefreshed);
                 }
                 catch (Exception exception)
                 {

@@ -36,6 +36,10 @@ namespace InternalModBot
 		void onPlayerInfoStateAttachced(IPlayerInfoState playerInfoState)
 		{
 			string playfabID = playerInfoState.PlayFabID;
+
+			if (string.IsNullOrWhiteSpace(playfabID))
+				return;
+
 			API.GetPlayerPrefix(playfabID, delegate (JsonObject json)
 			{
 				string nameOverride = Convert.ToString(json["nameOverride"]);

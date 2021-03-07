@@ -26,10 +26,10 @@ namespace InternalModBot
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
-            GameObject titleScreenContainer = GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer.GetChild(0).GetChild(8).gameObject; // Gets the lower buttons container
+            GameObject titleScreenContainer = TransformUtils.FindChildRecursive(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer, "BottomButtons").gameObject; // Gets the lower buttons container
 
             // Copy the options button to make into the Mods button
-            GameObject modsButtonPrefab = titleScreenContainer.transform.GetChild(1).gameObject; // Gets the options button (we copy it and replace its organs and face)
+            GameObject modsButtonPrefab = TransformUtils.FindChildRecursive(titleScreenContainer.transform, "OptionsButton").gameObject; // Gets the options button (we copy it and replace its organs and face)
             GameObject mainMenuModsButton = Instantiate(modsButtonPrefab, titleScreenContainer.transform);
 
             mainMenuModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton"; // Set LocalizationID
@@ -81,7 +81,7 @@ namespace InternalModBot
 
             ReloadModItems();
 
-            Transform settingsButtonHolder = GameUIRoot.Instance.SettingsMenu.RootContainer.transform.GetChild(2).transform;
+            Transform settingsButtonHolder = TransformUtils.FindChildRecursive(GameUIRoot.Instance.SettingsMenu.RootContainer.transform, "TabHolder");
 
             int buttonCount = settingsButtonHolder.childCount;
 
@@ -93,26 +93,23 @@ namespace InternalModBot
 
                 float newSize = buttonSize * (((float)buttonCount) / (((float)buttonCount) + 1f));
 
+                LayoutElement layoutElement = button.GetComponent<LayoutElement>();
+                layoutElement.preferredWidth = newSize;
+
                 button.sizeDelta = new Vector2(newSize, button.sizeDelta.y);
-
-                button.anchoredPosition -= new Vector2((newSize * 0.2f * (i+0)), 0);
+                button.anchoredPosition -= new Vector2((newSize * 0.2f * (i + 0)), 0);
             }
-
-            GameObject buttonPrefab = settingsButtonHolder.GetChild(0).gameObject;
-            RectTransform spawnedButton = Instantiate(buttonPrefab, settingsButtonHolder).GetComponent<RectTransform>();
-            spawnedButton.anchoredPosition = settingsButtonHolder.GetChild(0).GetComponent<RectTransform>().anchoredPosition;
-            spawnedButton.sizeDelta = buttonPrefab.GetComponent<RectTransform>().sizeDelta;
-            spawnedButton.GetComponentInChildren<Text>().text = "Mod-Bot";
-
-            float size = spawnedButton.sizeDelta.x * (((float)buttonCount) / (((float)buttonCount) + 1f));
-            spawnedButton.anchoredPosition += new Vector2(size*(buttonCount+1f)*1.03f, 0);
             
+            GameObject buttonContainerPrefab = settingsButtonHolder.GetChild(0).gameObject;
+            RectTransform spawnedButtonContainer = Instantiate(buttonContainerPrefab, settingsButtonHolder).GetComponent<RectTransform>();
+            spawnedButtonContainer.GetComponentInChildren<Text>().text = "Mod-Bot";
+
             SettingsMenuTabButton[] buttons = new SettingsMenuTabButton[GameUIRoot.Instance.SettingsMenu.TabButtons.Length + 1];
 			for (int i = 0; i < GameUIRoot.Instance.SettingsMenu.TabButtons.Length; i++)
 			{
                 buttons[i] = GameUIRoot.Instance.SettingsMenu.TabButtons[i];
 			}
-            SettingsMenuTabButton tabButton = spawnedButton.GetComponent<SettingsMenuTabButton>();
+            SettingsMenuTabButton tabButton = spawnedButtonContainer.GetComponentInChildren<SettingsMenuTabButton>();
             buttons[buttons.Length - 1] = tabButton;
             GameUIRoot.Instance.SettingsMenu.TabButtons = buttons;
             GameUIRoot.Instance.SettingsMenu.TabNavigationSetter.TabButtons = null;
@@ -121,7 +118,6 @@ namespace InternalModBot
             GameObject settingsPage = Instantiate(InternalAssetBundleReferences.ModBot.GetObject("ModBotSettings"), tabButton.ContentToShow.parent);
             tabButton.ContentToShow = settingsPage.transform;
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
-
         }
 
         void openModsMenu()
@@ -258,8 +254,6 @@ namespace InternalModBot
             modsOptionButton.onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modsOptionButton.interactable = mod.ModReference != null && mod.ModReference.ImplementsSettingsWindow() && isModActive;
 
-            Button deleteButton = modItemModdedObject.GetObject<Button>(7);
-            deleteButton.onClick.AddListener(delegate { });
 		}
         static void onBroadcastButtonClicked(Mod mod)
         {

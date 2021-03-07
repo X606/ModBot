@@ -117,7 +117,7 @@ MonoBehaviour:
   m_MinSize: {x: 787, y: 448}
   m_MaxSize: {x: 16012, y: 8048}
   vertical: 0
-  controlID: 75
+  controlID: 82
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -195,7 +195,7 @@ MonoBehaviour:
   m_MinSize: {x: 204, y: 448}
   m_MaxSize: {x: 4004, y: 8048}
   vertical: 1
-  controlID: 90
+  controlID: 83
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -449,20 +449,20 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs/ModDownloadPage
+    - Assets/Prefabs/ModsMenu
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Prefabs/ModDownloadPage
+  - Assets/Prefabs/ModsMenu
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Users\efors\Desktop\git\ModBot\UnityProject
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: de2c0000
-    m_LastClickedID: 11486
-    m_ExpandedIDs: 00000000dc2a0000542c0000ca2c000000ca9a3b
+    m_SelectedIDs: 2a0b0000
+    m_LastClickedID: 2858
+    m_ExpandedIDs: 00000000ae090000460b0000c00b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -490,7 +490,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000dc2a0000ca2c0000
+    m_ExpandedIDs: 00000000ae090000460b0000c00b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -515,8 +515,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: e4f9ffff
-    m_LastClickedInstanceID: -1564
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000ca270000c2270000a62700000813f9ff200a0000ac0a0000580a000000000000
     m_RenameOverlay:
@@ -576,21 +576,21 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: bef7ffff10f8ffff16f8ffff30f8ffff66f8ffffa6f8ffffe8f8ffff1cf9ffff7af9ffff7ef9ffff80f9ffff98f9ffffa0f9ffffc8f9ffffe2f9ffffe4f9ffffe6f9ffff
+      m_ExpandedIDs: 82f7ffff422e0000442e00004c2e0000562e0000b82e0000d22e0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: DeleteButton
+        m_OriginalName: DeleteButton
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 11962
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 7}
       m_SearchString: 
@@ -657,9 +657,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 275.92337, y: 1075.0558, z: 2.6875}
+    m_Target: {x: 1218.3308, y: 919.9264, z: 19}
     speed: 2
-    m_Value: {x: 275.92337, y: 1075.0558, z: 2.6875}
+    m_Value: {x: 1218.3308, y: 919.9264, z: 19}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -669,7 +669,7 @@ MonoBehaviour:
   m_SceneViewState:
     showFog: 1
     showMaterialUpdate: 0
-    showSkybox: 1
+    showSkybox: 0
     showFlares: 1
     showImageEffects: 1
     showParticleSystems: 1
@@ -691,15 +691,15 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 485.38214
+    m_Target: 249.4664
     speed: 2
-    m_Value: 485.38214
+    m_Value: 249.4664
   m_Ortho:
     m_Target: 1
     speed: 2
     m_Value: 1
   m_ShowGlobalGrid: 1
-  m_LastSceneViewRotation: {x: 0.016492553, y: -0.028492268, z: 0.00047016516, w: 0.9994579}
+  m_LastSceneViewRotation: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
   m_LastSceneViewOrtho: 0
   m_ReplacementShader: {fileID: 0}
   m_ReplacementString: 
