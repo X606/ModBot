@@ -111,7 +111,6 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionLabelItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
-    <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilderLegacySupport.cs" />
     <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
     <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
