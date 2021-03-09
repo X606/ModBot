@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ModLibrary;
 
-namespace ModLibrary
+namespace InternalModBot
 {
-    public class ModLoadError
+    internal class ModLoadError
     {
         public ModLoadError(ModInfo modInfo, string errorMessage) : this(modInfo.FolderPath, modInfo.DisplayName, errorMessage)
         {

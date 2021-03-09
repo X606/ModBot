@@ -472,7 +472,7 @@ namespace InternalModBot
 		/// <param name="connection"></param>
 		public override void Disconnected(BoltConnection connection)
 		{
-			ModsManager.Instance.PassOnMod.OnClientDisconnectedToServer();
+			ModsManager.Instance.PassOnMod.OnClientDisconnectedFromServer();
 		}
 	}
 }

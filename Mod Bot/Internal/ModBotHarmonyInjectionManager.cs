@@ -24,7 +24,7 @@ namespace InternalModBot
     /// <summary>
     /// Handles all of Mod-Bots runtils patching
     /// </summary>
-    public static class ModBotHarmonyInjectionManager
+    internal static class ModBotHarmonyInjectionManager
     {
         const BindingFlags TARGET_METHOD_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
 

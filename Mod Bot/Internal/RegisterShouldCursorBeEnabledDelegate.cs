@@ -9,7 +9,7 @@ namespace InternalModBot
     /// <summary>
     /// Used internally in mod-bot for telling if the cursor should be enabled or not
     /// </summary>
-    public static class RegisterShouldCursorBeEnabledDelegate
+    internal static class RegisterShouldCursorBeEnabledDelegate
     {
         static List<Func<bool>> _registeredHandlers = new List<Func<bool>>();
 

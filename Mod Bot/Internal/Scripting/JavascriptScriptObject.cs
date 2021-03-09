@@ -14,7 +14,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// Implements a javascript code engine to the <see cref="ScriptObject"/> wrapper
 	/// </summary>
-	public class JavascriptScriptObject : ScriptObject
+	internal class JavascriptScriptObject : ScriptObject
 	{
 		readonly Engine _javascriptEngine;
 
@@ -275,7 +275,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// A wrapper for a javascript value
 	/// </summary>
-	public class JavascriptScriptValue : ScriptValue
+	internal class JavascriptScriptValue : ScriptValue
 	{
 		JsValue _value;
 		JavascriptScriptObject _scriptObject;

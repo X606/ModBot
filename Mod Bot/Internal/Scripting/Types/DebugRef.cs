@@ -7,7 +7,7 @@ namespace InternalModBot.Scripting
 	/// Contains debug methods for scriptable objects
 	/// </summary>
 	[MoonSharpUserData]
-	public class DebugRef
+	internal class DebugRef
 	{
 		/// <summary>
 		/// Writes to the console

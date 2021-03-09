@@ -8,7 +8,7 @@ namespace InternalModBot.Scripting
 	/// Contains functions for handling level objects
 	/// </summary>
 	[MoonSharpUserData]
-	public class LevelObjectsRef
+	internal class LevelObjectsRef
 	{
 		/// <summary>
 		/// Gets all the Gameobjects in the curret level

@@ -15,7 +15,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// Abstract class used to wrap javascript and lua engines in
 	/// </summary>
-	public abstract class ScriptObject
+	internal abstract class ScriptObject
 	{
 		/// <summary>
 		/// Initializes the engine, stuff like setting up global functions

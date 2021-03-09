@@ -11,7 +11,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// A instance of a lua script engine
 	/// </summary>
-	public class LuaScriptObject : ScriptObject
+	internal class LuaScriptObject : ScriptObject
 	{
 		Script _luaEngine;
 

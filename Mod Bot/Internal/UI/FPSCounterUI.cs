@@ -7,7 +7,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Handles the fps counter in the corner
 	/// </summary>
-	public class FPSCounterUI : MonoBehaviour
+	internal class FPSCounterUI : MonoBehaviour
 	{
 		Text _fpsCounter;
 

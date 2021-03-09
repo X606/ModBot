@@ -7,7 +7,7 @@ namespace InternalModBot.Scripting
 	/// defines functions used in scriptable objects to detect key inputs
 	/// </summary>
 	[MoonSharpUserData]
-	public class InputRef
+	internal class InputRef
 	{
 		/// <summary>
 		/// Gets if a key was pressed this frame

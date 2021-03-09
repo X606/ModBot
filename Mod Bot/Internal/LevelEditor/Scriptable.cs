@@ -15,7 +15,7 @@ namespace InternalModBot.LevelEditor
 	/// <summary>
 	/// The component used in the editor to handle custom scriptable objects
 	/// </summary>
-	public class Scriptable : MonoBehaviour, ITriggerActivationReceiver, IDropdownOptions
+	internal class Scriptable : MonoBehaviour, ITriggerActivationReceiver, IDropdownOptions
 	{
 		/// <summary>
 		/// The actual field that saves the code that should run

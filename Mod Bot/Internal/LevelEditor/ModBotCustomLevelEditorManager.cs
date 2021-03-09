@@ -12,7 +12,7 @@ namespace InternalModBot.LevelEditor
 	/// <summary>
 	/// Used by mod-bot to handle custom leveleditor stuff
 	/// </summary>
-	public static class ModBotCustomLevelEditorManager
+	internal static class ModBotCustomLevelEditorManager
 	{
 		/// <summary>
 		/// Sets up the all custom leveleditor things

@@ -15,7 +15,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Handles settings on mod-bot page of the settings
 	/// </summary>
-	public static class ModBotSettingsManager
+	internal static class ModBotSettingsManager
 	{
 		static ModdedObject _settingsPageModdedObject;
 		/// <summary>

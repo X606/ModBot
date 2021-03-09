@@ -12,7 +12,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to draw lines on screen
     /// </summary>
-    public class DebugLineDrawingManager : Singleton<DebugLineDrawingManager>
+    internal class DebugLineDrawingManager : Singleton<DebugLineDrawingManager>
     {
         List<LineInfo> _linesToDraw = new List<LineInfo>();
 

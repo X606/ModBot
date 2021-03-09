@@ -5,7 +5,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// Contains all the defualt objects that can be called from custom script objects
 	/// </summary>
-	public static class GlobalScriptFunctions
+	internal static class GlobalScriptFunctions
 	{
 		/// <summary>
 		/// Creates a Vector3Ref

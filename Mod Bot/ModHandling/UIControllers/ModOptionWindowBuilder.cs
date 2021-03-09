@@ -291,7 +291,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
-            public void AddDropDown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
+            public void AddDropdown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
                 ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem
                 {
@@ -321,7 +321,7 @@ namespace ModLibrary
                     throw new InvalidOperationException("Generic type must be an enum");
 
                 string[] names = Enum.GetNames(typeof(T));
-                AddDropDown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
+                AddDropdown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
                 {
                     if (onChange != null)
                         onChange((T)(object)value);
@@ -392,7 +392,7 @@ namespace ModLibrary
             /// Adds a generic page item, use this to add your own item types! To create a new item type simply make a class that extends <see cref="ModdedOptionPageItem"/> and pass a instance of it to this class
             /// </summary>
             /// <param name="customItem">The generic <see cref="ModdedOptionPageItem"/> to add</param>
-            public void AddGeneric(ModdedOptionPageItem customItem)
+            public void AddCustom(ModdedOptionPageItem customItem)
             {
                 _items.Add(customItem);
             }

@@ -6,7 +6,7 @@ namespace InternalModBot
     /// <summary>
     /// Attaced to mod options windows to close the window when the user clicks escape
     /// </summary>
-    public class CloseModOptionsWindowOnEscapeKey : MonoBehaviour
+    internal class CloseModOptionsWindowOnEscapeKey : MonoBehaviour
     {
         ModOptionsWindowBuilder _owner;
         

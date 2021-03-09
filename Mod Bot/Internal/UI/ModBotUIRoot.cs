@@ -8,10 +8,10 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    /// <summary>
-    /// The UI root for all mod-bot UI
-    /// </summary>
-    public class ModBotUIRoot : Singleton<ModBotUIRoot>
+	/// <summary>
+	/// The UI root for all mod-bot UI
+	/// </summary>
+	internal class ModBotUIRoot : Singleton<ModBotUIRoot>
 	{
 		/// <summary>
 		/// The Console UI

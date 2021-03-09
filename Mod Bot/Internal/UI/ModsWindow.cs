@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    /// <summary>
-    /// The mods window UI
-    /// </summary>
-    public class ModsWindow : MonoBehaviour
+	/// <summary>
+	/// The mods window UI
+	/// </summary>
+	internal class ModsWindow : MonoBehaviour
 	{
 		/// <summary>
 		/// The holder for the content of the window

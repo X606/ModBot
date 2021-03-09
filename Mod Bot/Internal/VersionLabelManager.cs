@@ -11,7 +11,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Takes care of editing the version label
 	/// </summary>
-	public class VersionLabelManager : Singleton<VersionLabelManager>
+	internal class VersionLabelManager : Singleton<VersionLabelManager>
 	{
 		/// <summary>
 		/// The version label itself

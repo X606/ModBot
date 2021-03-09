@@ -8,7 +8,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot as the low level level of the debug console system
     /// </summary>
-    public class ConsoleUI : MonoBehaviour
+    internal class ConsoleUI : MonoBehaviour
     {
         /// <summary>
         /// The animator of the console

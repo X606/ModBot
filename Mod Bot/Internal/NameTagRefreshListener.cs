@@ -11,7 +11,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Add this component to a name tag and call Init to have it listen for <see cref="MultiplayerPlayerNameManager.RefreshNameTags"/> and refresh itself if that event gets called
 	/// </summary>
-	public class NameTagRefreshListener : MonoBehaviour
+	internal class NameTagRefreshListener : MonoBehaviour
 	{
 		Character _owner;
 		EnemyNameTag _nameTag;

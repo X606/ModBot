@@ -15,7 +15,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Used by mod-bot to manage custom name tags in multiplayer
 	/// </summary>
-	public class MultiplayerPlayerNameManager : Singleton<MultiplayerPlayerNameManager>
+	internal class MultiplayerPlayerNameManager : Singleton<MultiplayerPlayerNameManager>
 	{
 		const string MOD_BOT_USER_KEY = "ModBotUser";
 

@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    /// <summary>
-    /// The mod download page UI
-    /// </summary>
-    public class ModDownloadPage : MonoBehaviour
+	/// <summary>
+	/// The mod download page UI
+	/// </summary>
+	internal class ModDownloadPage : MonoBehaviour
 	{
 		/// <summary>
 		/// The content holder of the download page

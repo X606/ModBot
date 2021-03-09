@@ -12,7 +12,7 @@ namespace InternalModBot
     /// <summary>
     /// Handles the Unit Tests for the API methods in Mod-Bot
     /// </summary>
-    public static class ModBotUnitTestManager
+    internal static class ModBotUnitTestManager
     {
         static readonly UnitTest[] _unitTests = new UnitTest[]
         {

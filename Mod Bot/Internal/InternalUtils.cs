@@ -13,7 +13,7 @@ namespace InternalModBot
 	/// <summary>
 	/// 
 	/// </summary>
-	public class InternalUtils
+	internal class InternalUtils
 	{
 		/// <summary> </summary>
 		/// <param name="path"></param>

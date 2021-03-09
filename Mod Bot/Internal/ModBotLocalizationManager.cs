@@ -12,7 +12,7 @@ namespace InternalModBot
     /// <summary>
     /// Handles localization of string added in Mod-Bot
     /// </summary>
-    public static class ModBotLocalizationManager
+    internal static class ModBotLocalizationManager
     {
         static Dictionary<string, string> _fallbackModdedUpgradeLocalization = new Dictionary<string, string>();
 

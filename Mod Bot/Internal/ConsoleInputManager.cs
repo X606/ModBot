@@ -10,7 +10,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to define commands
     /// </summary>
-    public static class ConsoleInputManager
+    internal static class ConsoleInputManager
     {
         /// <summary>
         /// The same as <see cref="Mod.OnCommandRan(string)"/>, but called in Mod-Bot

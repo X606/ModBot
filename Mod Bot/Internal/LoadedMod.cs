@@ -10,7 +10,7 @@ namespace InternalModBot
     /// <summary>
     /// Class used to keep both a mod and bool that decides if the mod is active in same list
     /// </summary>
-    public class LoadedMod
+    internal class LoadedMod
     {
         private LoadedMod() // this will prevent people from createing now LoadedMod instances in mods
         {

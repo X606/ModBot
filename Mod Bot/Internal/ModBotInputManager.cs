@@ -13,7 +13,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Handles what keys are associated with what actions in mod-bot
 	/// </summary>
-	public static class ModBotInputManager
+	internal static class ModBotInputManager
 	{
 		/// <summary>
 		/// All the input options in mod-bot

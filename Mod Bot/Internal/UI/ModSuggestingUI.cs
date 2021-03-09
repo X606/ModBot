@@ -19,7 +19,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to control the Twich mode mod suggesting
     /// </summary>
-    public class ModSuggestingUI : MonoBehaviour
+    internal class ModSuggestingUI : MonoBehaviour
     {
         /// <summary>
         /// The animator that plays the slide in and out animation

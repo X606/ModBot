@@ -15,7 +15,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to check if there is a newer version available
     /// </summary>
-    public class UpdateChecker : MonoBehaviour
+    internal class UpdateChecker : MonoBehaviour
     {
         void Start()
         {

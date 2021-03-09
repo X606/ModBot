@@ -12,7 +12,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to save mod options
     /// </summary>
-    public static class OptionsSaver
+    internal static class OptionsSaver
     {
         static Dictionary<string, object> _savedSettingsDictionary = new Dictionary<string, object>();
 

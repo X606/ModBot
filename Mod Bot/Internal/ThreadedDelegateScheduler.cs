@@ -10,7 +10,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Allows us to schedule an action to run on the next update from another thread
 	/// </summary>
-	public static class ThreadedDelegateScheduler
+	internal static class ThreadedDelegateScheduler
 	{
 		static ConcurrentQueue<Action> _scheduledActions = new ConcurrentQueue<Action>();
 

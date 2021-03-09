@@ -11,7 +11,7 @@ namespace InternalModBot
     /// <summary>
     /// Contains methods that get called from the game itself
     /// </summary>
-    public static class CalledFromInjections
+    internal static class CalledFromInjections
     {
         /// <summary>
         /// Called from <see cref="UnityEngine.Resources.Load(string)"/>, <see cref="UnityEngine.Resources.Load{T}(string)"/> and <see cref="ResourceRequest.asset"/>

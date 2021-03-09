@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    /// <summary>
-    /// The generic 2 button dialoge window Ui
-    /// </summary>
-    public class Generic2ButtonDialogeUI : MonoBehaviour
+	/// <summary>
+	/// The generic 2 button dialoge window Ui
+	/// </summary>
+	internal class Generic2ButtonDialogeUI : MonoBehaviour
 	{
 		/// <summary>
 		/// The text element in the UI

@@ -15,7 +15,7 @@ namespace InternalModBot
 	/// <summary>
 	/// Handles the UI for signing into mod-bot
 	/// </summary>
-	public class ModBotSignInUI : MonoBehaviour
+	internal class ModBotSignInUI : MonoBehaviour
 	{
 		InputField _usernameField;
 		InputField _passwordField;
