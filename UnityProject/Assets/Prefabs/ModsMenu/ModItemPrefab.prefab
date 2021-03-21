@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34943be6dab1ac0428c14d66e2095cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocalizationID: 
+  LocalizationID: mods_menu_mod_options
   DontTranslateText: 0
   DisableWrappingForLogographicLanguages: 0
 --- !u!1 &1367992211880260
@@ -719,7 +719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34943be6dab1ac0428c14d66e2095cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LocalizationID: 
+  LocalizationID: mods_menu_disable_mod
   DontTranslateText: 0
   DisableWrappingForLogographicLanguages: 0
 --- !u!1 &1806662966197248

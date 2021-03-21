@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:Да
 mods_menu_download_confirm_no:Нет
 clear_cache_success:Очистка кэша прошла успешно.
 clear_cache_fail:Используеться кэш.
+mods_menu_open_folder:Папка модов

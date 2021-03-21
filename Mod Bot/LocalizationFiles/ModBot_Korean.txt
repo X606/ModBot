@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:예
 mods_menu_download_confirm_no:아니
 clear_cache_success:캐시를 성공적으로 지 웠습니다.
 clear_cache_fail:캐시가 사용 중입니다.
+mods_menu_open_folder:Mods 폴더

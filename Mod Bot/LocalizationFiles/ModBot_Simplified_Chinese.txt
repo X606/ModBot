@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:确定
 mods_menu_download_confirm_no:拒绝
 clear_cache_success:成功清除缓存。
 clear_cache_fail:正在使用缓存。
+mods_menu_open_folder:Mods文件夹

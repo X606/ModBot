@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:Yes
 mods_menu_download_confirm_no:No
 clear_cache_success:Successfully cleared the cache.
 clear_cache_fail:Cache is being used.
+mods_menu_open_folder:Mods folder

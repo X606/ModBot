@@ -65,7 +65,8 @@ namespace InternalModBot
                 case LANGUAGE_ID_KOREAN:
                     return Resources.ModBot_Korean;
                 default:
-                    throw new ArgumentException("Unknown language ID: " + languageID);
+                    return Resources.ModBot_English; // if the language is unknown, just default to english
+                    //throw new ArgumentException("Unknown language ID: " + languageID);
             }
         }
 

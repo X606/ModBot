@@ -26,6 +26,9 @@ namespace ModLibrary
         /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
+            if (_log == null)
+                _log = "null";
+
             ModBotUIRoot.Instance.ConsoleUI.Log(_log);
         }
 
@@ -35,6 +38,9 @@ namespace ModLibrary
         /// <param name="_log">The object to write</param>
         public static void Log(object _log)
         {
+            if (_log == null)
+                _log = "null";
+
             Log(_log.ToString());
         }
 
@@ -45,6 +51,9 @@ namespace ModLibrary
         /// <param name="color">The <see cref="Color"/> to write in</param>
         public static void Log(object _log, Color color)
         {
+            if (_log == null)
+                _log = "null";
+
             Log(_log.ToString(), color);
         }
 
@@ -55,6 +64,9 @@ namespace ModLibrary
         /// <param name="_color">The <see cref="Color"/> to write in</param>
         public static void Log(string _log, Color _color)
         {
+            if (_log == null)
+                _log = "null";
+
             if (ModBotUIRoot.Instance == null)
 			{
                 Console.WriteLine(_log);

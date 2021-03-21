@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:Sim
 mods_menu_download_confirm_no:Não
 clear_cache_success:O cache foi limpo com sucesso.
 clear_cache_fail:O cache está sendo usado.
+mods_menu_open_folder:Pasta Mods

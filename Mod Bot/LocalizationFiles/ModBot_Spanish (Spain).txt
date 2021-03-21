@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:Si
 mods_menu_download_confirm_no:No
 clear_cache_success:Se borró correctamente el caché.
 clear_cache_fail:Se está usando el caché.
+mods_menu_open_folder:Carpeta de mods

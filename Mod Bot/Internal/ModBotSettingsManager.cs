@@ -103,7 +103,6 @@ namespace InternalModBot
 					API.SignOut(delegate (JsonObject json)
 					{
 						ModBotUIRoot.Instance.ModBotSignInUI.SetSession("");
-						debug.Log(json["message"]);
 						VersionLabelManager.Instance.SetLine(2, "Not signed in");
 						CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
 					});
