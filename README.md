@@ -1,6 +1,6 @@
 ModBot
 ===
-A mod loader for Clone Drone in the Danger Zone! If you want to help improve the project feel free to submit pull requests.
+A mod loader for Clone Drone in the Danger Zone! If you want to help improve the project, feel free to submit pull requests.
 
 ## Features:
 * The ability to load in mods during runtime in Clone Drone in the Danger Zone.
