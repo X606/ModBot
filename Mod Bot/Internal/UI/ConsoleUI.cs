@@ -80,6 +80,12 @@ namespace InternalModBot
             Animator.Play("showConsole");
         }
 
+        internal void ShowConsole()
+        {
+            if (!_innerHolder.activeSelf)
+                Animator.Play("showConsole");
+        }
+
         /// <summary>
         /// Writes the specified text to the console
         /// </summary>

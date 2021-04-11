@@ -41,7 +41,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("Slider");
             spawnedPrefab.transform.parent = holder.transform;
@@ -54,10 +54,10 @@ namespace InternalModBot
             Text numberDisplay = spawnedModdedObject.GetObject<Text>(2);
 
             object loadedFloat = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedFloat != null && loadedFloat is float floatValue)
+            if (loadedFloat != null && loadedFloat is float floatValue)
                 slider.value = floatValue;
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(slider.value);
 
             numberDisplay.text = slider.value.ToString();
@@ -66,7 +66,7 @@ namespace InternalModBot
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
 
                 numberDisplay.text = value.ToString();

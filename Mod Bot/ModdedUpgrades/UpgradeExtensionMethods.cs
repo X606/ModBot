@@ -11,12 +11,12 @@ namespace ModLibrary
     public static class UpgradeExtensionMethods
     {
         /// <summary>
-        /// Adds an upgrade to the page of the specified <see cref="Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
+        /// Adds an upgrade to the page of the specified <see cref="IMod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
         /// </summary>
         /// <param name="upgradeManager"></param>
         /// <param name="upgrade">The <see cref="UpgradeDescription"/> of the upgrade to add</param>
-        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
-        public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
+        /// <param name="mod">The <see cref="IMod"/> that owns the upgrade</param>
+        public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, IMod mod)
         {
             if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
                 UpgradeManager.Instance.UpgradeDescriptions.Add(upgrade);
@@ -46,14 +46,14 @@ namespace ModLibrary
         /// <param name="upgradeType">The <see cref="UpgradeType"/> of the <see cref="UpgradeDescription"/> to set the angle on</param>
         /// <param name="level">The level of the <see cref="UpgradeDescription"/> to set the angle on</param>
         /// <param name="angle">The new angle to set</param>
-        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
-        public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, Mod mod)
+        /// <param name="mod">The <see cref="IMod"/> that owns the upgrade</param>
+        public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, IMod mod)
         {
             UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
             if (upgradeDescription == null)
                 return;
 
-            upgradeDescription.SetAngleOffset(angle, mod);
+            upgradeDescription.SetAngleOffset(angle, ModsManager.Instance.GetLoadedModWithID(mod.ModInfo.UniqueID));
         }
 
         /// <summary>
@@ -77,14 +77,13 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="UpgradeManager"/>.AddUpgrade(<see cref="UpgradeDescription"/>, <see cref="Mod"/>) is called
+        /// Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="UpgradeManager"/>.AddUpgrade(<see cref="UpgradeDescription"/>, <see cref="IMod"/>) is called
         /// </summary>
         /// <param name="upgradeDescription"></param>
         /// <param name="angle">The new angle of the <see cref="UpgradeDescription"/></param>
-        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
-        public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
+        /// <param name="mod">The <see cref="IMod"/> that owns the upgrade</param>
+        internal static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, LoadedModInfo mod)
         {
-            // New mod loading system
             UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
         }
 
@@ -98,12 +97,11 @@ namespace ModLibrary
             UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
         }
 
-        static void recursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
+        static void recursivelyAddRequirments(UpgradeDescription upgrade, IMod mod)
         {
             if (upgrade == null)
                 return;
 
-            // New mod loading system
             UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
 
             if (upgrade.Requirement2 != null)

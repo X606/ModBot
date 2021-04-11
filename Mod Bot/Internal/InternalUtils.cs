@@ -90,5 +90,21 @@ namespace InternalModBot
 			int lastIndex = fullPath.LastIndexOf(ModLibrary.AssetLoader.MODS_FOLDER_NAME);
 			return fullPath.Substring(lastIndex);
 		}
+
+		public static Type FindType(string name, bool ignoreCase, Predicate<Type> filter)
+        {
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+            foreach (Type type in types)
+            {
+				if (type.Name.Equals(name, ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture) && filter(type))
+					return type;
+            }
+
+			return null;
+        }
+		public static Type FindComponentType(string name, bool ignoreCase)
+        {
+            return FindType(name, ignoreCase, (t) => typeof(Component).IsAssignableFrom(t));
+        }
 	}
 }

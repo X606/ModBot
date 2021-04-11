@@ -33,7 +33,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             KeyCodeInput keyCodeInput = InternalAssetBundleReferences.ModBot.InstantiateObject("CustomKeyCodeInput").AddComponent<KeyCodeInput>();
             keyCodeInput.transform.parent = holder.transform;
@@ -46,14 +46,14 @@ namespace InternalModBot
             });
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is int intValue && intValue != (int)DefaultValue)
+            if (loadedValue != null && loadedValue is int intValue && intValue != (int)DefaultValue)
                 keyCodeInput.SelectedKey = (KeyCode)intValue;
 
             keyCodeInput.GetComponent<ModdedObject>().GetObject<Text>(2).text = DisplayName;
 
             applyCustomRect(keyCodeInput.gameObject);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(keyCodeInput);
         }
 

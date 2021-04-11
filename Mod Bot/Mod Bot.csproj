@@ -56,7 +56,28 @@
     <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
     <Compile Include="Internal\LevelEditor\Scriptable.cs" />
     <Compile Include="Internal\LineInfo.cs" />
-    <Compile Include="Internal\LoadedMod.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\FirstPersonMoverProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_BehaviourProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_ComponentProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_CoroutineProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_EventSystems_UIBehaviourProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_GameObjectProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_MonoBehaviourProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_TransformProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_YieldInstructionProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Types\LUAColor.cs" />
+    <Compile Include="Internal\LUAScripting\LUAManager.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\GenericProxyFactory.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\ProxyAttribute.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\ProxyManager.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_ObjectProxy.cs" />
+    <Compile Include="Internal\LUAScripting\Proxies\UnityEngine_UI_SliderProxy.cs" />
+    <Compile Include="Internal\LUAScripting\StaticLUACallbackFunctions.cs" />
+    <Compile Include="Internal\LUAScripting\Types\Mat4x4.cs" />
+    <Compile Include="Internal\LUAScripting\Types\Quat.cs" />
+    <Compile Include="Internal\LUAScripting\Types\Vec2.cs" />
+    <Compile Include="Internal\LUAScripting\Types\Vec3.cs" />
+    <Compile Include="Internal\LUAScripting\Types\Vec4.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotInputManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
@@ -94,10 +115,13 @@
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="Internal\CloseModOptionsWindowOnEscapeKey.cs" />
     <Compile Include="Internal\LoadedModInfo.cs" />
+    <Compile Include="ModHandling\IMod.cs" />
+    <Compile Include="ModHandling\LUAMod.cs" />
     <Compile Include="ModHandling\MainModClassAttribute.cs" />
     <Compile Include="ModHandling\Mod.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadInfoItem.cs" />
     <Compile Include="ModHandling\ModInfo\ModInfo.cs" />
+    <Compile Include="ModHandling\ModInfo\ModType.cs" />
     <Compile Include="ModHandling\ModLoadError.cs" />
     <Compile Include="ModHandling\ModsManager.cs" />
     <Compile Include="ModHandling\UIControllers\KeyCodeInput.cs" />
@@ -202,6 +226,10 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="udpkit.common, Version=0.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\udpkit.common.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.dll</HintPath>

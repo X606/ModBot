@@ -7,7 +7,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// Contains functions for handling level objects
 	/// </summary>
-	[MoonSharpUserData]
+	//[MoonSharpUserData]
 	internal class LevelObjectsRef
 	{
 		/// <summary>

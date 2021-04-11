@@ -2,7 +2,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using ModBotWebsiteAPI;
 using InternalModBot.Scripting;
 
 namespace InternalModBot
@@ -13,7 +12,7 @@ namespace InternalModBot
     internal static class ConsoleInputManager
     {
         /// <summary>
-        /// The same as <see cref="Mod.OnCommandRan(string)"/>, but called in Mod-Bot
+        /// The same as <see cref="IMod.OnCommandRan(string)"/>, but called in Mod-Bot
         /// </summary>
         /// <param name="command"></param>
         public static void OnCommandRan(string command)
@@ -84,6 +83,7 @@ namespace InternalModBot
                     });
 				}
 			}
+
             if (subCommands[0] == "debug")
 			{
                 DelegateScheduler.Instance.Schedule(delegate

@@ -33,7 +33,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("InputField");
             spawnedPrefab.transform.parent = holder.transform;
@@ -43,17 +43,17 @@ namespace InternalModBot
             inputField.text = DefaultValue;
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is string stringValue)
+            if (loadedValue != null && loadedValue is string stringValue)
                 inputField.text = stringValue;
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(inputField.text);
 
             inputField.onValueChanged.AddListener(delegate (string value)
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 

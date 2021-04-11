@@ -33,7 +33,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             GameObject spawnedObject = InternalAssetBundleReferences.ModBot.InstantiateObject("Checkbox");
             spawnedObject.transform.parent = holder.transform;

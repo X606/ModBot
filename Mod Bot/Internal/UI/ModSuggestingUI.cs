@@ -36,6 +36,8 @@ namespace InternalModBot
         /// </summary>
         public static HashSet<string> DeniedModIds = new HashSet<string>();
 
+        Queue<ModSuggestion> _modSuggestionQueue = new Queue<ModSuggestion>();
+
         /// <summary>
         /// Sets up the mod suggesting ui from a modded object
         /// </summary>
@@ -45,6 +47,7 @@ namespace InternalModBot
             DisplayText = moddedObject.GetObject<Text>(0);
             ModSuggestionAnimator = moddedObject.GetObject<Animator>(1);
         }
+
         void Start()
         {
             TwitchChatClient.singleton.AddChatListener(OnTwitchChatMessage);
@@ -250,26 +253,22 @@ namespace InternalModBot
             }
             if (subCommands[0].ToLower() == "!mods")
             {
-                List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+                List<IMod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
 
                 string allMods = "";
-                for(int i = 0; i < mods.Count; i++)
+                for (int i = 0; i < mods.Count; i++)
                 {
-                    Mod mod = mods[i];
+                    IMod mod = mods[i];
 
                     allMods += mod.ModInfo.DisplayName;
 
-                    if (i != mods.Count-1)
-                    {
+                    if (i != mods.Count - 1)
                         allMods += ", ";
-                    }
-                    
                 }
 
                 TwitchManager.Instance.EnqueueChatMessage("MrDestructoid " + msg.userName + " Loaded mods: " + allMods + " MrDestructoid");
                 return;
             }
-
         }
 
         IEnumerator onModSuggest(string suggester, string modId)
@@ -279,6 +278,7 @@ namespace InternalModBot
                 TwitchManager.Instance.EnqueueChatMessage("That mod has already been rejected FailFish");
                 yield break;
             }
+
             if (ModsManager.Instance.GetLoadedModWithID(modId) != null)
             {
                 TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
@@ -319,8 +319,6 @@ namespace InternalModBot
                 yield break;
             }
         }
-
-        Queue<ModSuggestion> _modSuggestionQueue = new Queue<ModSuggestion>();
 
         struct ModSuggestion
         {

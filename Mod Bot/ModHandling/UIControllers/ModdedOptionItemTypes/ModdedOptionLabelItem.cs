@@ -24,7 +24,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("Label");
             spawnedPrefab.transform.parent = holder.transform;
@@ -35,9 +35,8 @@ namespace InternalModBot
 
             applyCustomRect(spawnedPrefab);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(text);
         }
-
     }
 }

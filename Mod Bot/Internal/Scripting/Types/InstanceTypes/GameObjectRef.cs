@@ -7,7 +7,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// A wrapper for the <see cref="GameObject"/> for scriptable objects
 	/// </summary>
-	[MoonSharpUserData]
+	//[MoonSharpUserData]
 	internal class GameObjectRef
 	{
 		GameObject _gameObject;

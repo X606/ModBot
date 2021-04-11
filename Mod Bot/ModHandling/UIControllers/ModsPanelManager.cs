@@ -166,7 +166,6 @@ namespace InternalModBot
             {
                 ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
             }
-
         }
 
         static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
@@ -203,7 +202,6 @@ namespace InternalModBot
             ReloadModItems();
         }
 
-       
         void addModToList(LoadedModInfo mod, GameObject parent)
         {
 			bool isModActive = mod.IsEnabled;
@@ -211,18 +209,16 @@ namespace InternalModBot
             GameObject modItem = InternalAssetBundleReferences.ModBot.InstantiateObject("ModItemPrefab");
             modItem.transform.parent = parent.transform;
 
-            string modName = mod.OwnerModInfo.DisplayName;
-			string imageFilePath = mod.OwnerModInfo.FolderPath + mod.OwnerModInfo.ImageFileName;
-
             _modItems.Add(modItem);
 			
 			ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
 
-            modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
-			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
-            modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.OwnerModInfo.UniqueID);
+            modItemModdedObject.GetObject<Text>(0).text = mod.ModInfo.DisplayName; // Set title
+			modItemModdedObject.GetObject<Text>(1).text = mod.ModInfo.Description; // Set description
+            modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.ModInfo.UniqueID);
 
-			if(File.Exists(imageFilePath) && !string.IsNullOrWhiteSpace(mod.OwnerModInfo.ImageFileName))
+            string imageFilePath = mod.ModInfo.FolderPath + mod.ModInfo.ImageFileName;
+            if (!string.IsNullOrWhiteSpace(mod.ModInfo.ImageFileName) && File.Exists(imageFilePath))
 			{
 				byte[] imgData = File.ReadAllBytes(imageFilePath);
 
@@ -255,7 +251,7 @@ namespace InternalModBot
             modsOptionButton.interactable = mod.ModReference != null && mod.ModReference.ImplementsSettingsWindow() && isModActive;
 
 		}
-        static void onBroadcastButtonClicked(Mod mod)
+        static void onBroadcastButtonClicked(IMod mod)
         {
             new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_broadcast_confirm_message", mod.ModInfo.DisplayName),
             LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_no"), null,
@@ -264,24 +260,18 @@ namespace InternalModBot
                 ModSharingManager.SendModToAllModBotClients(mod.ModInfo.UniqueID);
             });
         }
-        void deleteMod(Mod mod)
+
+        void deleteMod(IMod mod)
 		{
             //TODO: implemet this (possibly move mods to a temp path?)
-            debug.Log("TODO: implemet this (possibly move mods to a temp path?)");
+            debug.Log("TODO: implement this (possibly move mods to a temp path?)");
 		}
-
 
         void Update()
         {
-            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    closeModsMenu();
-                }
-            }
+            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
+                closeModsMenu();
         }
-
 
         /// <summary>
         /// Refereshes what mods should be displayed in the mods menu
@@ -296,7 +286,7 @@ namespace InternalModBot
                 Destroy(child.gameObject);
             }
 
-            List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
+            List<LoadedModInfo> mods = ModsManager.Instance.GetAllLoadedMods();
 
             // Set the Content panel (ModdedObjectModsWindow.objects[0]) to appropriate height
             RectTransform size = ModBotUIRoot.Instance.ModsWindow.Content.GetComponent<RectTransform>();

@@ -7,7 +7,7 @@ namespace InternalModBot.Scripting
 	/// <summary>
 	/// A wrapper for the <see cref="Vector3"/> class
 	/// </summary>
-	[MoonSharpUserData]
+	//[MoonSharpUserData]
 	internal class Vector3Ref
 	{
 		Vector3 _value;

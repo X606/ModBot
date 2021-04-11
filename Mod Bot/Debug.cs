@@ -32,6 +32,15 @@ namespace ModLibrary
             ModBotUIRoot.Instance.ConsoleUI.Log(_log);
         }
 
+        internal static void LogAndShowConsole(string message)
+        {
+            if (message == null)
+                message = "null";
+
+            ModBotUIRoot.Instance.ConsoleUI.Log(message);
+            ModBotUIRoot.Instance.ConsoleUI.ShowConsole();
+        }
+
         /// <summary>
         /// Writes the given object's <see cref="object.ToString"/> value to the console
         /// </summary>

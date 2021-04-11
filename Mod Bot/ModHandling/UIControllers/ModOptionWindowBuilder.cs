@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using InternalModBot;
 using ModLibrary;
+using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Interop;
 
 #pragma warning disable IDE1005 // Delegate invocation can be simplefied
 
@@ -13,13 +15,14 @@ namespace ModLibrary
     /// <summary>
     /// Used to place all of the options in the options window
     /// </summary>
+    [MoonSharpUserData]
     public partial class ModOptionsWindowBuilder
     {
         readonly GameObject _parentWindow;
-        readonly Mod _ownerMod;
+        readonly IMod _ownerMod;
         List<Page> _pages = new List<Page>();
 
-        internal ModOptionsWindowBuilder(GameObject parentWindow, Mod ownerMod)
+        internal ModOptionsWindowBuilder(GameObject parentWindow, IMod ownerMod)
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
             RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
@@ -126,6 +129,7 @@ namespace ModLibrary
         /// <summary>
         /// Represents a page in the mod options window
         /// </summary>
+        [MoonSharpUserData]
         public class Page
         {
             internal Page(string name, float? forcedHeight)
@@ -135,7 +139,7 @@ namespace ModLibrary
                 _items = new List<ModdedOptionPageItem>();
             }
 
-            internal void Populate(GameObject container, Mod owner)
+            internal void Populate(GameObject container, IMod owner)
             {
                 foreach(ModdedOptionPageItem item in _items)
                 {
@@ -150,7 +154,7 @@ namespace ModLibrary
             public readonly float? ForcedHeight;
 
             readonly List<ModdedOptionPageItem> _items;
-            
+
             /// <summary>
             /// Adds a slider to the page with the passed arguements
             /// </summary>
@@ -162,6 +166,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
             /// <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
             /// <param name="onChange">Called when the value of the slider is changed</param>
+            [MoonSharpVisible(false)]
             public void AddSlider(float min, float max, float defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<float> onChange = null)
             {
                 ModdedOptionSliderItem slider = new ModdedOptionSliderItem
@@ -178,6 +183,23 @@ namespace ModLibrary
 
                 _items.Add(slider);
             }
+            [MoonSharpVisible(true)]
+            void addSlider(float min, float max, float defaultValue, string displayName, string saveID, DynValue onCreate, Vec2 overridePosition, Vec2 overrideScale, DynValue onChange)
+            {
+                Rect? customRect = null;
+                if (overridePosition != null || overrideScale != null)
+                    customRect = new Rect { Position = overridePosition, Scale = overrideScale };
+
+                Action<Slider> onCreateDelegate = null;
+                if (onCreate != null && onCreate.IsNotNil())
+                    onCreateDelegate = delegate (Slider slider) { LUAManager.CallFunctionSafe(onCreate.Function, slider); };
+
+                Action<float> onChangeDelegate = null;
+                if (onChange != null && onChange.IsNotNil())
+                    onChangeDelegate = delegate (float value) { LUAManager.CallFunctionSafe(onChange.Function, value); };
+
+                AddSlider(min, max, defaultValue, displayName, saveID, onCreateDelegate, customRect, onChangeDelegate);
+            }
 
             /// <summary>
             /// Adds a slider with only whole numbers to the page with the passed arguements
@@ -190,6 +212,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the slider is created, use this to change properties of the slider</param>
             /// <param name="customRect">The custom rect of the slider, use this to change the position and scale of the slider</param>
             /// <param name="onChange">Called when the value of the slider is changed</param>
+            [MoonSharpVisible(false)]
             public void AddIntSlider(int min, int max, int defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
                 ModdedOptionIntSliderItem slider = new ModdedOptionIntSliderItem
@@ -206,6 +229,23 @@ namespace ModLibrary
 
                 _items.Add(slider);
             }
+            [MoonSharpVisible(true)]
+            void addIntSlider(int min, int max, int defaultValue, string displayName, string saveID, DynValue onCreate, Vec2 overridePosition, Vec2 overrideScale, DynValue onChange)
+            {
+                Rect? customRect = null;
+                if (overridePosition != null || overrideScale != null)
+                    customRect = new Rect { Position = overridePosition, Scale = overrideScale };
+
+                Action<Slider> onCreateDelegate = null;
+                if (onCreate != null && onCreate.IsNotNil())
+                    onCreateDelegate = delegate (Slider slider) { LUAManager.CallFunctionSafe(onCreate.Function, slider); };
+
+                Action<int> onChangeDelegate = null;
+                if (onChange != null && onChange.IsNotNil())
+                    onChangeDelegate = delegate (int value) { LUAManager.CallFunctionSafe(onChange.Function, value); };
+
+                AddIntSlider(min, max, defaultValue, displayName, saveID, onCreateDelegate, customRect, onChangeDelegate);
+            }
 
             /// <summary>
             /// Adds a <see cref="InputField"/> to the page with the passed arguements
@@ -216,6 +256,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="InputField"/> is created, use this to change properties of the <see cref="InputField"/></param>
             /// <param name="customRect">The custom rect of the <see cref="InputField"/>, use this to change the position and scale of the <see cref="InputField"/></param>
             /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddInputField(string defaultValue, string displayName, string saveID, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
             {
                 ModdedOptionInputFieldItem input = new ModdedOptionInputFieldItem
@@ -230,6 +271,23 @@ namespace ModLibrary
 
                 _items.Add(input);
             }
+            [MoonSharpVisible(true)]
+            void addInputField(string defaultValue, string displayName, string saveID, DynValue onCreate, Vec2 overridePosition, Vec2 overrideScale, DynValue onChange)
+            {
+                Rect? customRect = null;
+                if (overridePosition != null || overrideScale != null)
+                    customRect = new Rect { Position = overridePosition, Scale = overrideScale };
+
+                Action<InputField> onCreateDelegate = null;
+                if (onCreate != null && onCreate.IsNotNil())
+                    onCreateDelegate = delegate (InputField inputField) { LUAManager.CallFunctionSafe(onCreate.Function, inputField); };
+
+                Action<int> onChangeDelegate = null;
+                if (onChange != null && onChange.IsNotNil())
+                    onChangeDelegate = delegate (int value) { LUAManager.CallFunctionSafe(onChange.Function, value); };
+
+                //AddInputField(min, max, defaultValue, displayName, saveID, onCreateDelegate, customRect, onChangeDelegate);
+            }
 
             /// <summary>
             /// Adds a verifying <see cref="InputField"/> to the page with the specified arguments
@@ -241,6 +299,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="InputField"/> is created, use this to change properties of the <see cref="InputField"/></param>
             /// <param name="customRect">The custom rect of the <see cref="InputField"/>, use this to change the position and scale of the <see cref="InputField"/></param>
             /// <param name="onChange">Called when the value of the <see cref="InputField"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddVerifyingInputField(string defaultValue, string displayName, string saveID, Predicate<string> verificationPredicate, Action<InputField> onCreate = null, Rect? customRect = null, Action<string> onChange = null)
             {
                 ModdedOptionVerifyingInputFieldItem verifyingInput = new ModdedOptionVerifyingInputFieldItem
@@ -266,6 +325,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Toggle"/> is created, use this to change properties of the <see cref="Toggle"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Toggle"/>, use this to change the position and scale of the <see cref="Toggle"/></param>
             /// <param name="onChange">Called when the value of the <see cref="Toggle"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddCheckbox(bool defaultValue, string displayName, string saveID, Action<Toggle> onCreate = null, Rect? customRect = null, Action<bool> onChange = null)
             {
                 ModdedOptionCheckboxItem checkBox = new ModdedOptionCheckboxItem
@@ -291,6 +351,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddDropdown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
                 ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem
@@ -315,6 +376,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddDropdown<T>(T defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<T> onChange = null)
             {
                 if(!typeof(T).IsEnum)
@@ -337,6 +399,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="KeyCodeInput"/> is created, use this to change properties of the <see cref="KeyCodeInput"/></param>
             /// <param name="customRect">The custom rect of the <see cref="KeyCodeInput"/>, use this to change the position and scale of the <see cref="KeyCodeInput"/></param>
             /// <param name="onChange">Called when the value of the <see cref="KeyCodeInput"/> is changed</param>
+            [MoonSharpVisible(false)]
             public void AddKeyCodeInput(KeyCode defaultValue, string displayName, string saveID, Action<KeyCodeInput> onCreate = null, Rect? customRect = null, Action<KeyCode> onChange = null)
             {
                 ModdedOptionKeyCodeItem keyCodeItem = new ModdedOptionKeyCodeItem
@@ -359,6 +422,7 @@ namespace ModLibrary
             /// <param name="onClick">Called when the user clicks on the created <see cref="Button"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Button"/>, use this to change the position and scale of the <see cref="Button"/></param>
             /// <param name="onCreate">Called when the <see cref="Button"/> is created, use this to change properties of the <see cref="Button"/></param>
+            [MoonSharpVisible(false)]
             public void AddButton(string displayName, Action onClick, Rect? customRect = null, Action<Button> onCreate = null)
             {
                 ModdedOptionButtonItem button = new ModdedOptionButtonItem
@@ -377,6 +441,7 @@ namespace ModLibrary
             /// </summary>
             /// <param name="displayName">The page to display</param>
             /// <param name="onCreate">Called when the label is created, use this to change the properties of the <see cref="Text"/></param>
+            [MoonSharpVisible(false)]
             public void AddLabel(string displayName, Action<Text> onCreate = null)
             {
                 ModdedOptionLabelItem label = new ModdedOptionLabelItem
@@ -392,11 +457,13 @@ namespace ModLibrary
             /// Adds a generic page item, use this to add your own item types! To create a new item type simply make a class that extends <see cref="ModdedOptionPageItem"/> and pass a instance of it to this class
             /// </summary>
             /// <param name="customItem">The generic <see cref="ModdedOptionPageItem"/> to add</param>
+            [MoonSharpVisible(false)]
             public void AddCustom(ModdedOptionPageItem customItem)
             {
                 _items.Add(customItem);
             }
         }
+
         /// <summary>
         /// Used to represent a position and scale of items in modded option window pages
         /// </summary>
@@ -410,7 +477,6 @@ namespace ModLibrary
             /// The Scale of the item, if null keeps defualt values
             /// </summary>
             public Vector2? Scale;
-
         }
     }
 
@@ -437,7 +503,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="holder">The object that the spawned object should be a child of</param>
         /// <param name="owner">The mod who spawned the option</param>
-        public abstract void CreatePageItem(GameObject holder, Mod owner);
+        public abstract void CreatePageItem(GameObject holder, IMod owner);
 
         /// <summary>
         /// Applies the <see cref="CustomRect"/> to the passed <see cref="GameObject"/>, if <see cref="CustomRect"/> is not <see langword="null"/>.
@@ -445,11 +511,11 @@ namespace ModLibrary
         /// <param name="spawnedObject"></param>
         protected void applyCustomRect(GameObject spawnedObject)
         {
-            if(!CustomRect.HasValue)
+            if (!CustomRect.HasValue)
                 return;
 
             LayoutElement element = spawnedObject.GetComponent<LayoutElement>();
-            if(element == null)
+            if (element == null)
                 element = spawnedObject.AddComponent<LayoutElement>();
 
             element.ignoreLayout = true;
@@ -457,7 +523,8 @@ namespace ModLibrary
             RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
             if (CustomRect.Value.Scale.HasValue)
                 rectTransform.sizeDelta = CustomRect.Value.Scale.Value;
-            if(CustomRect.Value.Position.HasValue)
+
+            if (CustomRect.Value.Position.HasValue)
                 rectTransform.anchoredPosition = CustomRect.Value.Position.Value;
         }
     }

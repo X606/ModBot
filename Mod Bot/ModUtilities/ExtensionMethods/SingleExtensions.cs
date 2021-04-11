@@ -37,11 +37,11 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Checks if the given <see cref="Mod"/> is currently activated
+        /// Checks if the given <see cref="IMod"/> is currently activated
         /// </summary>
         /// <param name="mod"></param>
-        /// <returns><see langword="true"/> of the <see cref="Mod"/> is enabled, <see langword="false"/> if it's disabled</returns>
-        public static bool IsModEnabled(this Mod mod)
+        /// <returns><see langword="true"/> of the <see cref="IMod"/> is enabled, <see langword="false"/> if it's disabled</returns>
+        public static bool IsModEnabled(this IMod mod)
         {
             return mod.ModInfo.IsModEnabled;
         }

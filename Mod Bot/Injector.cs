@@ -27,19 +27,17 @@ namespace ModLibrary
         /// <param name="injectTargetMethod">The name of the method to inject into</param>
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPrefix<InjectionTarget, PrefixTarget>(string injectTargetMethod, string prefixTargetMethod, Mod mod)
+        public static void InjectPrefix<InjectionTarget, PrefixTarget>(string injectTargetMethod, string prefixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
+            if (injectTarget == null)
+                throw new MissingMethodException(typeof(InjectionTarget).Name, injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, prefixTargetMethod);
 
-            instance.Patch(injectTarget, new HarmonyMethod(injectionPrefix));
+            mod.HarmonyInstance.Patch(injectTarget, new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -48,11 +46,9 @@ namespace ModLibrary
         /// <param name="targetMethod">The method to inject into</param>
         /// <param name="sourceMethod">The method to inject a call to</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPrefix(MethodInfo targetMethod, MethodInfo sourceMethod, Mod mod)
+        public static void InjectPrefix(MethodInfo targetMethod, MethodInfo sourceMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetMethod, new HarmonyMethod(sourceMethod));
+            mod.HarmonyInstance.Patch(targetMethod, new HarmonyMethod(sourceMethod));
         }
 
         /// <summary>
@@ -63,19 +59,17 @@ namespace ModLibrary
         /// <param name="injectTargetMethod">The name of the method to inject into</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPostfix<InjectionTarget, PostfixTarget>(string injectTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectPostfix<InjectionTarget, PostfixTarget>(string injectTargetMethod, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
+            if (injectTarget == null)
+                throw new MissingMethodException(typeof(InjectionTarget).Name, injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            instance.Patch(injectTarget, null, new HarmonyMethod(injectionPrefix));
+            mod.HarmonyInstance.Patch(injectTarget, null, new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -84,11 +78,9 @@ namespace ModLibrary
         /// <param name="targetMethod">The method to inject into</param>
         /// <param name="sourceMethod">The method to inject a call to</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPostfix(MethodInfo targetMethod, MethodInfo sourceMethod, Mod mod)
+        public static void InjectPostfix(MethodInfo targetMethod, MethodInfo sourceMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetMethod, null, new HarmonyMethod(sourceMethod));
+            mod.HarmonyInstance.Patch(targetMethod, null, new HarmonyMethod(sourceMethod));
         }
 
         /// <summary>
@@ -101,23 +93,21 @@ namespace ModLibrary
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
+            if (injectTarget == null)
+                throw new MissingMethodException(typeof(InjectionTarget).Name, injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, prefixTargetMethod);
 
             MethodInfo injectionPostfix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
+            if (injectionPostfix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            instance.Patch(injectTarget, new HarmonyMethod(injectionPrefix), new HarmonyMethod(injectionPostfix));
+            mod.HarmonyInstance.Patch(injectTarget, new HarmonyMethod(injectionPrefix), new HarmonyMethod(injectionPostfix));
         }
 
         /// <summary>
@@ -127,11 +117,9 @@ namespace ModLibrary
         /// <param name="sourceMethodPrefix">The prefix method</param>
         /// <param name="sourceMethodPostfix">The postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectPrefixAndPostfix(MethodInfo targetMethod, MethodInfo sourceMethodPrefix, MethodInfo sourceMethodPostfix, Mod mod)
+        public static void InjectPrefixAndPostfix(MethodInfo targetMethod, MethodInfo sourceMethodPrefix, MethodInfo sourceMethodPostfix, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetMethod, new HarmonyMethod(sourceMethodPrefix), new HarmonyMethod(sourceMethodPostfix));
+            mod.HarmonyInstance.Patch(targetMethod, new HarmonyMethod(sourceMethodPrefix), new HarmonyMethod(sourceMethodPostfix));
         }
         #endregion
 
@@ -142,21 +130,19 @@ namespace ModLibrary
         /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
         /// <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
-        /// <param name="prefixTargetProperty">The name of the prefix method</param>
+        /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
+        public static void InjectGetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetProperty, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetProperty);
+            MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, prefixTargetMethod);
 
-            instance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix.GetGetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -165,11 +151,9 @@ namespace ModLibrary
         /// <param name="targetProperty">The property to inject to</param>
         /// <param name="prefixSource">The source of the injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPrefix(PropertyInfo targetProperty, PropertyInfo prefixSource, Mod mod)
+        public static void InjectGetPropertyPrefix(PropertyInfo targetProperty, MethodInfo prefixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetGetMethod(), new HarmonyMethod(prefixSource.GetGetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetGetMethod(), new HarmonyMethod(prefixSource));
         }
 
         /// <summary>
@@ -178,21 +162,19 @@ namespace ModLibrary
         /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
         /// <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
-        /// <param name="postfixTargetProperty">The name of the postfix method</param>
+        /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
+        public static void InjectGetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectionPrefix = typeof(PostfixTarget).GetProperty(postfixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetProperty);
+            MethodInfo injectionPrefix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            instance.Patch(injectTarget.GetGetMethod(), null, new HarmonyMethod(injectionPrefix.GetGetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetGetMethod(), null, new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -201,40 +183,36 @@ namespace ModLibrary
         /// <param name="targetProperty">The property to inject to</param>
         /// <param name="postfixSource">The source of the injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPostfix(PropertyInfo targetProperty, PropertyInfo postfixSource, Mod mod)
+        public static void InjectGetPropertyPostfix(PropertyInfo targetProperty, MethodInfo postfixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetGetMethod(), null, new HarmonyMethod(postfixSource.GetGetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetGetMethod(), null, new HarmonyMethod(postfixSource));
         }
 
         /// <summary>
         /// Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
         /// </summary>
-        /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
-        /// <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
-        /// <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
-        /// <param name="injectTargetMethod">The name of the method to inject into</param>
+        /// <typeparam name="InjectionTarget">The declaring type of the method to inject into</typeparam>
+        /// <typeparam name="PrefixTarget">The declaring type of the prefix method</typeparam>
+        /// <typeparam name="PostfixTarget">The declaring type of the postfix method</typeparam>
+        /// <param name="injectTargetProperty">The name of the property to inject into</param>
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectGetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetProperty, string prefixTargetMethod, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
+            PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
+            MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, postfixTargetMethod);
 
-            PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
+            MethodInfo injectionPostfix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
+            if (injectionPostfix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            PropertyInfo injectionPostfix = typeof(PostfixTarget).GetProperty(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null || injectionPostfix.GetGetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
-
-            instance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix.GetGetMethod()), new HarmonyMethod(injectionPostfix.GetGetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix), new HarmonyMethod(injectionPostfix));
         }
 
         /// <summary>
@@ -244,11 +222,9 @@ namespace ModLibrary
         /// <param name="prefixSource">The source of the prefix injection</param>
         /// <param name="postfixSource">The source of the postfix injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectGetPropertyPrefixAndPostfix(PropertyInfo targetProperty, PropertyInfo prefixSource, PropertyInfo postfixSource, Mod mod)
+        public static void InjectGetPropertyPrefixAndPostfix(PropertyInfo targetProperty, MethodInfo prefixSource, MethodInfo postfixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetGetMethod(), null, new HarmonyMethod(postfixSource.GetGetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetGetMethod(), new HarmonyMethod(prefixSource), new HarmonyMethod(postfixSource));
         }
         #endregion
 
@@ -259,21 +235,19 @@ namespace ModLibrary
         /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
         /// <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
-        /// <param name="prefixTargetProperty">The name of the prefix method</param>
+        /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetProperty, Mod mod)
+        public static void InjectSetPropertyPrefix<InjectionTarget, PrefixTarget>(string injectTargetProperty, string prefixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetProperty);
+            MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, prefixTargetMethod);
 
-            instance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix.GetSetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -282,11 +256,9 @@ namespace ModLibrary
         /// <param name="targetProperty">The property to inject into</param>
         /// <param name="prefixSource">The source of the prefix injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPrefix(PropertyInfo targetProperty, PropertyInfo prefixSource, Mod mod)
+        public static void InjectSetPropertyPrefix(PropertyInfo targetProperty, MethodInfo prefixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource.GetSetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource));
         }
 
         /// <summary>
@@ -295,21 +267,19 @@ namespace ModLibrary
         /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
         /// <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
         /// <param name="injectTargetProperty">The name of the method to inject into</param>
-        /// <param name="postfixTargetProperty">The name of the postfix method</param>
+        /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetProperty, Mod mod)
+        public static void InjectSetPropertyPostfix<InjectionTarget, PostfixTarget>(string injectTargetProperty, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectionPrefix = typeof(PostfixTarget).GetProperty(postfixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetProperty);
+            MethodInfo injectionPrefix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            instance.Patch(injectTarget.GetSetMethod(), null, new HarmonyMethod(injectionPrefix.GetSetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetSetMethod(), null, new HarmonyMethod(injectionPrefix));
         }
 
         /// <summary>
@@ -318,40 +288,36 @@ namespace ModLibrary
         /// <param name="targetProperty">The property to inject into</param>
         /// <param name="postfixSource">The source of the postfix injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPostfix(PropertyInfo targetProperty, PropertyInfo postfixSource, Mod mod)
+        public static void InjectSetPropertyPostfix(PropertyInfo targetProperty, MethodInfo postfixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetSetMethod(), null, new HarmonyMethod(postfixSource.GetSetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetSetMethod(), null, new HarmonyMethod(postfixSource));
         }
 
         /// <summary>
         /// Adds a call to PrefixTarget.prefixTargetMethod and PostfixTarget.postfixTargetMethod to InjectionTarget.injectTargetMethod
         /// </summary>
-        /// <typeparam name="InjectionTarget">The type of the method to inject into</typeparam>
+        /// <typeparam name="InjectionTarget">The type of the property to inject into</typeparam>
         /// <typeparam name="PrefixTarget">The type of the prefix method</typeparam>
         /// <typeparam name="PostfixTarget">The type of the postfix method</typeparam>
-        /// <param name="injectTargetMethod">The name of the method to inject into</param>
+        /// <param name="injectTargetProperty">The name of the property to inject into</param>
         /// <param name="prefixTargetMethod">The name of the prefix method</param>
         /// <param name="postfixTargetMethod">The name of the postfix method</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetMethod, string prefixTargetMethod, string postfixTargetMethod, Mod mod)
+        public static void InjectSetPropertyPrefixAndPostfix<InjectionTarget, PrefixTarget, PostfixTarget>(string injectTargetProperty, string prefixTargetMethod, string postfixTargetMethod, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
+            PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
+                throw new MissingMemberException(typeof(InjectionTarget).Name, injectTargetProperty);
 
-            PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
+            MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
+            if (injectionPrefix == null)
+                throw new MissingMethodException(typeof(PrefixTarget).Name, prefixTargetMethod);
 
-            PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
+            MethodInfo injectionPostfix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
+            if (injectionPostfix == null)
+                throw new MissingMethodException(typeof(PostfixTarget).Name, postfixTargetMethod);
 
-            PropertyInfo injectionPostfix = typeof(PostfixTarget).GetProperty(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null || injectionPostfix.GetSetMethod() == null)
-                throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
-
-            instance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix.GetSetMethod()), new HarmonyMethod(injectionPostfix.GetSetMethod()));
+            mod.HarmonyInstance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix), new HarmonyMethod(injectionPostfix));
         }
 
         /// <summary>
@@ -361,11 +327,9 @@ namespace ModLibrary
         /// <param name="prefixSource">The source of the prefix injection</param>
         /// <param name="postfixSource">The source of the postfix injection</param>
         /// <param name="mod">The owner of this injection</param>
-        public static void InjectSetPropertyPrefixAndPostfix(PropertyInfo targetProperty, PropertyInfo prefixSource, PropertyInfo postfixSource, Mod mod)
+        public static void InjectSetPropertyPrefixAndPostfix(PropertyInfo targetProperty, MethodInfo prefixSource, MethodInfo postfixSource, IMod mod)
         {
-            Harmony instance = new Harmony(mod.HarmonyID);
-
-            instance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource.GetSetMethod()), new HarmonyMethod(postfixSource.GetSetMethod()));
+            mod.HarmonyInstance.Patch(targetProperty.GetSetMethod(), new HarmonyMethod(prefixSource), new HarmonyMethod(postfixSource));
         }
         #endregion
     }

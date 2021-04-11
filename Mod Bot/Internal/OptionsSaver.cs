@@ -116,7 +116,7 @@ namespace InternalModBot
             }
         }
 
-        static string getSaveIDForSetting(Mod owner, string providedSaveID)
+        static string getSaveIDForSetting(IMod owner, string providedSaveID)
         {
             return owner.ModInfo.UniqueID + providedSaveID;
         }
@@ -126,8 +126,11 @@ namespace InternalModBot
             File.WriteAllText(_settingsFilePath, JsonConvert.SerializeObject(_savedSettingsDictionary));
         }
 
-        internal static void SetSetting(Mod owner, string providedSaveID, object value, bool writeToFile)
+        internal static void SetSetting(IMod owner, string providedSaveID, object value, bool writeToFile)
         {
+            if (owner == null)
+                return;
+
             string saveID = getSaveIDForSetting(owner, providedSaveID);
 
             _savedSettingsDictionary[saveID] = value;
@@ -136,8 +139,11 @@ namespace InternalModBot
                 SaveToFile();
         }
 
-        internal static object LoadSetting(Mod owner, string providedSaveID)
+        internal static object LoadSetting(IMod owner, string providedSaveID)
         {
+            if (owner == null)
+                return null;
+
             string saveID = getSaveIDForSetting(owner, providedSaveID);
 
             if (_savedSettingsDictionary.TryGetValue(saveID, out object value))
@@ -159,7 +165,7 @@ namespace InternalModBot
             return null;
         }
 
-        internal static bool HasSettingSaved(Mod owner, string providedSaveID)
+        internal static bool HasSettingSaved(IMod owner, string providedSaveID)
         {
             return _savedSettingsDictionary.ContainsKey(getSaveIDForSetting(owner, providedSaveID));
         }

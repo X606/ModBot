@@ -9,7 +9,6 @@ using Bolt;
 
 namespace InternalModBot
 {
-
     /// <summary>
     /// Used by Mod-Bot to share local mods with others on the same server
     /// </summary>
@@ -56,5 +55,4 @@ namespace InternalModBot
             ModBotUIRoot.Instance.ModSuggestingUI.SuggestModMultiplayer(playfabId, modId);
         }
     }
-
 }

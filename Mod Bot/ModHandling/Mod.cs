@@ -3,32 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using ModLibrary;
 using InternalModBot;
+using HarmonyLib;
 
 namespace ModLibrary
 {
     /// <summary>
     /// Base class for all mods, contains virtual implementations for different events in the game.
     /// </summary>
-    public abstract class Mod
+    public abstract class Mod : IMod
     {
-        
 		/// <summary>
 		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
 		/// </summary>
         public ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
-        
 
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
-        //public string HarmonyID => "com.Mod-Bot.Mod." + GetUniqueID();
-        protected internal string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
+        public string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.Type + "." + ModInfo.UniqueID;
+
+        /// <summary>
+        /// Returns an instance of the <see cref="Harmony"/> class initialized with <see cref="HarmonyID"/>
+        /// </summary>
+        public Harmony HarmonyInstance => new Harmony(HarmonyID);
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
         /// </summary>
         /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was spawned</param>
-        protected internal virtual void OnFirstPersonMoverSpawned(FirstPersonMover firstPersonMover)
+        public virtual void OnFirstPersonMoverSpawned(FirstPersonMover firstPersonMover)
         {
         }
 
@@ -36,7 +39,7 @@ namespace ModLibrary
         /// Called in <see cref="Character.Update"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>
         /// </summary>
         /// <param name="firstPersonMover">The <see cref="FirstPersonMover"/> that was updated</param>
-        protected internal virtual void OnFirstPersonMoverUpdate(FirstPersonMover firstPersonMover)
+        public virtual void OnFirstPersonMoverUpdate(FirstPersonMover firstPersonMover)
         {
         }
 
@@ -44,7 +47,7 @@ namespace ModLibrary
         /// Called in <see cref="Character.Start"/>
         /// </summary>
         /// <param name="character">The <see cref="Character"/> that was spawned</param>
-        protected internal virtual void OnCharacterSpawned(Character character)
+        public virtual void OnCharacterSpawned(Character character)
         {
         }
 
@@ -52,7 +55,7 @@ namespace ModLibrary
         /// Called in <see cref="Character.Update"/>
         /// </summary>
         /// <param name="character">The <see cref="Character"/> that was updated</param>
-        protected internal virtual void OnCharacterUpdate(Character character)
+        public virtual void OnCharacterUpdate(Character character)
         {
         }
 
@@ -60,21 +63,21 @@ namespace ModLibrary
         /// called at the end of <see cref="FirstPersonMover.CreateCharacterModel(CharacterModel)"/>
         /// </summary>
         /// <param name="owner">The owner of the new character model</param>
-        protected internal virtual void OnCharacterModelCreated(FirstPersonMover owner)
+        public virtual void OnCharacterModelCreated(FirstPersonMover owner)
 		{
 		}
 
         /// <summary>
         /// Called in <see cref="ModsManager.ReloadMods()"/>
         /// </summary>
-        protected internal virtual void OnModRefreshed()
+        public virtual void OnModRefreshed()
         {
         }
 
         /// <summary>
         /// Called when the level editor is started.
         /// </summary>
-        protected internal virtual void OnLevelEditorStarted()
+        public virtual void OnLevelEditorStarted()
         {
         }
 
@@ -82,7 +85,7 @@ namespace ModLibrary
         /// Called when you run a command in the console (mostly for debuging).
         /// </summary>
         /// <param name="command">The text entered into the command field of the console</param>
-        protected internal virtual void OnCommandRan(string command)
+        public virtual void OnCommandRan(string command)
         {
         }
 
@@ -91,7 +94,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
-        protected internal virtual void OnUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
+        public virtual void OnUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
         }
 
@@ -100,7 +103,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="upgrades">The <see cref="UpgradeCollection"/> on the <see cref="FirstPersonMover"/> object</param>
-        protected internal virtual void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
+        public virtual void AfterUpgradesRefreshed(FirstPersonMover owner, UpgradeCollection upgrades)
         {
         }
 
@@ -111,14 +114,14 @@ namespace ModLibrary
         /// <param name="killerCharacter">The killer <see cref="Character"/></param>
         /// <param name="damageSourceType">The cause of death</param>
         /// <param name="attackID">The attack ID that killed <paramref name="killedCharacter"/></param>
-        protected internal virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType, int attackID)
+        public virtual void OnCharacterKilled(Character killedCharacter, Character killerCharacter, DamageSourceType damageSourceType, int attackID)
         {
         }
 
         /// <summary>
         /// Called when the mod is deactivated from the mods menu, override this method to perform additional cleanup, like remove/disable all added components, reset values in classes, etc. Modded upgrades are automatically hidden when the owner mod is disabled
         /// </summary>
-        protected internal virtual void OnModDeactivated()
+        public virtual void OnModDeactivated()
         {
         }
 
@@ -126,7 +129,7 @@ namespace ModLibrary
         /// If this returns <see langword="true"/> it will active the mod settings button in the mods window for this mod.
         /// </summary>
         /// <returns></returns>
-        protected internal virtual bool ImplementsSettingsWindow()
+        public virtual bool ImplementsSettingsWindow()
         {
             return false;
         }
@@ -135,7 +138,7 @@ namespace ModLibrary
         /// Gets called when the user clicks on the mod settings button in the mods window. Allows you to create a neat little UI that saves the values for you. Get the values set by this with SettingsManager.Instance.GetModdedSettingsBoolValue, GetModdedSettingsStringValue, GetModdedSettingsIntValue and GetModdedSettingsFloatValue
         /// </summary>
         /// <param name="builder">The object used to build the UI.</param>
-        protected internal virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
+        public virtual void CreateSettingsWindow(ModOptionsWindowBuilder builder)
         {
         }
 
@@ -143,7 +146,7 @@ namespace ModLibrary
         /// If this returns <see langword="true"/> the cursor will get enabled
         /// </summary>
         /// <returns></returns>
-        protected internal virtual bool ShouldCursorBeEnabled()
+        public virtual bool ShouldCursorBeEnabled()
         {
             return false;
         }
@@ -151,7 +154,7 @@ namespace ModLibrary
         /// <summary>
         /// Called every frame
         /// </summary>
-        protected internal virtual void GlobalUpdate()
+        public virtual void GlobalUpdate()
         {
         }
 
@@ -159,14 +162,14 @@ namespace ModLibrary
         /// Called whenever we received a <see cref="GenericStringForModdingEvent"/> from a client (including your own if you used <see cref="MultiplayerMessageSender.SendToAllClients(string)"/>)
         /// </summary>
         /// <param name="moddedEvent">The received <see cref="GenericStringForModdingEvent"/></param>
-        protected internal virtual void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
+        public virtual void OnMultiplayerEventReceived(GenericStringForModdingEvent moddedEvent)
         {
         }
 
         /// <summary>
         /// Called when the mod gets loaded or enabled after previously being disabled
         /// </summary>
-        protected internal virtual void OnModEnabled()
+        public virtual void OnModEnabled()
         {
         }
 
@@ -175,7 +178,7 @@ namespace ModLibrary
         /// </summary>
         /// <param name="path">The path specified</param>
         /// <returns></returns>
-        protected internal virtual UnityEngine.Object OnResourcesLoad(string path)
+        public virtual UnityEngine.Object OnResourcesLoad(string path)
         {
             return null;
         }
@@ -185,28 +188,28 @@ namespace ModLibrary
         /// </summary>
         /// <param name="newLanguageID">The language ID that was switched to</param>
         /// <param name="localizationDictionary">The dictionary containing all IDs and localized strings, key string is an ID, value string is the text that will be displayed</param>
-        protected internal virtual void OnLanguageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
+        public virtual void OnLanguageChanged(string newLanguageID, Dictionary<string, string> localizationDictionary)
         {
         }
 
         /// <summary>
-        /// Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+        /// Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crash log can still be found in the output_log.txt file
         /// </summary>
-        protected internal virtual void OnModLoaded()
+        public virtual void OnModLoaded()
         {
         }
 
         /// <summary>
         /// Called when we connect to a multiplayer server
         /// </summary>
-        protected internal virtual void OnClientConnectedToServer()
+        public virtual void OnClientConnectedToServer()
 		{
 		}
 
         /// <summary>
         /// Called when we disconnect from a multiplayer server
         /// </summary>
-        protected internal virtual void OnClientDisconnectedFromServer()
+        public virtual void OnClientDisconnectedFromServer()
 		{
 		}
     }

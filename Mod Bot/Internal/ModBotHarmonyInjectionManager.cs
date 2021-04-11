@@ -618,9 +618,6 @@ namespace InternalModBot
             public static void ErrorManager_SendDataToLoggly_Prefix(WWWForm form)
             {
                 form.AddField("IsModdedClient", "true");
-
-                string loadedModNames = string.Join<string>(", ", ModsManager.Instance.GetActiveModInfos().GetPropertyValues<ModInfo, string>("DisplayName"));
-                form.AddField("LoadedMods", loadedModNames);
             }
 
             public static Vector3 Character_GetPositionToDeflectArrowsAt_Postfix(Vector3 __result, Character __instance)

@@ -37,7 +37,7 @@ namespace InternalModBot
         /// </summary>
         /// <param name="holder"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        public override void CreatePageItem(GameObject holder, IMod owner)
         {
             if (Options.Length <= DefaultValue || DefaultValue < 0)
                 throw new ArgumentOutOfRangeException(nameof(DefaultValue) + " must be in the bounds of the passed options");
@@ -50,35 +50,36 @@ namespace InternalModBot
             Dropdown dropdown = spawnedModdedObject.GetObject<Dropdown>(1);
             dropdown.options.Clear();
 
-            foreach(string option in Options)
+            foreach (string option in Options)
             {
                 Dropdown.OptionData data = new Dropdown.OptionData(option);
                 dropdown.options.Add(data);
             }
+
             dropdown.value = DefaultValue;
             dropdown.RefreshShownValue();
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is int intValue)
+            if (loadedValue != null && loadedValue is int intValue)
             {
                 dropdown.value = intValue;
                 dropdown.RefreshShownValue();
             }
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(dropdown.value);
 
             dropdown.onValueChanged.AddListener(delegate (int value)
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 
             applyCustomRect(spawnedPrefab);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(dropdown);
         }
 

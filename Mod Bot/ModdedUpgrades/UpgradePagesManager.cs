@@ -196,7 +196,7 @@ namespace InternalModBot
                 return i;
             }
 
-            throw new Exception("Could not find page for mod \"" + ModsManager.Instance.GetLoadedModWithID(modID).OwnerModInfo.DisplayName + "\" with the unique id: \"" + modID + "\""); 
+            throw new Exception("Could not find page for mod \"" + ModsManager.Instance.GetLoadedModWithID(modID).ModInfo.DisplayName + "\" with the unique id: \"" + modID + "\""); 
         }
 
         /// <summary>
