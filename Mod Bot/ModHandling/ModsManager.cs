@@ -359,21 +359,24 @@ namespace InternalModBot
 
 			loadedMod.OnModLoaded();
 
-			bool foundExistingMod = false;
+			LoadedModInfo foundLoadedModInfo = null;
 			foreach(LoadedModInfo loadedModInfo in _loadedMods)
 			{
 				if (loadedModInfo.OwnerModInfo.UniqueID == modInfo.UniqueID)
 				{
 					loadedModInfo.ModReference = loadedMod;
 
-					foundExistingMod = true;
+					foundLoadedModInfo = loadedModInfo;
 				}
 			}
 
-			if(!foundExistingMod)
-				_loadedMods.Add(new LoadedModInfo(loadedMod, modInfo));
-
-			StartCoroutine(callOnModRefreshedNextFrame(loadedMod));
+			if(foundLoadedModInfo == null)
+            {
+				foundLoadedModInfo = new LoadedModInfo(loadedMod, modInfo);
+				_loadedMods.Add(foundLoadedModInfo);
+			}
+			
+			StartCoroutine(callOnModRefreshedNextFrame(foundLoadedModInfo));
 
 			error = null;
 			return true;
@@ -401,26 +404,28 @@ namespace InternalModBot
 			_loadedMods.Clear();
 		}
 
-		static IEnumerator callOnModRefreshedNextFrame(Mod mod)
+		static IEnumerator callOnModRefreshedNextFrame(LoadedModInfo mod)
 		{
 			yield return 0;
 
+			mod.AutoInject();
+
 			try
 			{
-				mod.OnModRefreshed();
+				mod.ModReference.OnModRefreshed();
 			}
 			catch(Exception exception)
 			{
-				throw new Exception("Exception in OnModRefreshed for \"" + mod.ModInfo.DisplayName + "\" (ID: " + mod.ModInfo.UniqueID + ")", exception);
+				throw new Exception("Exception in OnModRefreshed for \"" + mod.OwnerModInfo.DisplayName + "\" (ID: " + mod.OwnerModInfo.UniqueID + ")", exception);
 			}
 
 			try
 			{
-				mod.OnModEnabled();
+				mod.ModReference.OnModEnabled();
 			}
 			catch(Exception exception)
 			{
-				throw new Exception("Exception in OnModEnabled for \"" + mod.ModInfo.DisplayName + "\" (ID: " + mod.ModInfo.UniqueID + ")", exception);
+				throw new Exception("Exception in OnModEnabled for \"" + mod.OwnerModInfo.DisplayName + "\" (ID: " + mod.OwnerModInfo.UniqueID + ")", exception);
 			}
 		}
 

@@ -52,7 +52,7 @@ namespace InternalModBot
 				lines = newLines;
 			}
 
-			string joinedLines = lines.Join("\n");
+			string joinedLines = string.Join("\n", lines);
 			VersionLabel.text = joinedLines;
 		}
 

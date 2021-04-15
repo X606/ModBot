@@ -25,7 +25,7 @@ namespace InternalModBot
 			List<string> subDomainsList = new List<string>(subDomainsArray);
 			subDomainsList.RemoveAt(subDomainsList.Count - 1);
 
-			return subDomainsList.Join("/") + "/";
+			return string.Join("/", subDomainsList) + "/";
 		}
 
 		// New mod loading system
