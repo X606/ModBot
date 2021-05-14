@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using InternalModBot.Scripting;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace InternalModBot.LevelEditor
 {
@@ -17,6 +18,8 @@ namespace InternalModBot.LevelEditor
 	/// </summary>
 	internal class Scriptable : MonoBehaviour, ITriggerActivationReceiver, IDropdownOptions
 	{
+		public const string CODE_EDITOR_SAVE_ID = "CodeEditor";
+
 		/// <summary>
 		/// The actual field that saves the code that should run
 		/// </summary>
@@ -52,15 +55,37 @@ namespace InternalModBot.LevelEditor
 		/// Method exposed to the editor, called when user clicks button in editor
 		/// </summary>
 		[IncludeInLevelEditor]
-		public void OpenCodeEditor()
+		public void OpenCode()
 		{
 			string tempPath = Path.GetTempPath() + "/" + getFileName();
 			File.WriteAllText(tempPath, Code);
 
-			Process.Start("notepad++.exe", "\"" + tempPath + "\"");
+			string program = PlayerPrefs.GetString(CODE_EDITOR_SAVE_ID, "notepad.exe");
+
+			Process.Start(program, "\"" + tempPath + "\"");
 			_fileSystemWatcher.Path = Path.GetTempPath();
 			_fileSystemWatcher.Filter = getFileName();
 			_fileSystemWatcher.EnableRaisingEvents = true;
+		}
+
+		[IncludeInLevelEditor]
+		public void ChangeEditor()
+        {
+			OpenFileDialog file = new OpenFileDialog();
+
+			file.Filter = "Exe files (*.exe)|*.txt|All files (*.*)|*.*";
+			file.FilterIndex = 0;
+
+			if (file.ShowDialog() == DialogResult.OK)
+			{
+				debug.Log(file.FileName);
+
+				if (new FileInfo(file.FileName).Extension == ".exe")
+                {
+					PlayerPrefs.SetString(CODE_EDITOR_SAVE_ID, file.FileName);
+					debug.Log("Changed editor program to \"" + file.FileName + "\"");
+				}
+			}
 		}
 
 		void OnCodeFileChanged(object sender, FileSystemEventArgs e)
