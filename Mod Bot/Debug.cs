@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using InternalModBot;
+using System;
 
 namespace ModLibrary
 {
@@ -19,21 +20,16 @@ namespace ModLibrary
     /// </summary>
     public static class debug
     {
-        const int CONSOLE_CHARACTER_LIMIT = 1000;
-
         /// <summary>
         /// Writes to the in-game console.
         /// </summary>
         /// <param name="_log">What to write</param>
         public static void Log(string _log)
         {
-            InternalModBot.Logger.Instance.Log(_log);
+            if (_log == null)
+                _log = "null";
 
-            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
-            {
-                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
-                InternalModBot.Logger.Instance.LogText.text = newText;
-            }
+            ModBotUIRoot.Instance.ConsoleUI.Log(_log);
         }
 
         /// <summary>
@@ -42,6 +38,9 @@ namespace ModLibrary
         /// <param name="_log">The object to write</param>
         public static void Log(object _log)
         {
+            if (_log == null)
+                _log = "null";
+
             Log(_log.ToString());
         }
 
@@ -52,6 +51,9 @@ namespace ModLibrary
         /// <param name="color">The <see cref="Color"/> to write in</param>
         public static void Log(object _log, Color color)
         {
+            if (_log == null)
+                _log = "null";
+
             Log(_log.ToString(), color);
         }
 
@@ -62,13 +64,17 @@ namespace ModLibrary
         /// <param name="_color">The <see cref="Color"/> to write in</param>
         public static void Log(string _log, Color _color)
         {
-            InternalModBot.Logger.Instance.Log(_log, _color);
+            if (_log == null)
+                _log = "null";
 
-            if (InternalModBot.Logger.Instance.LogText.text.Length > CONSOLE_CHARACTER_LIMIT)
-            {
-                string newText = InternalModBot.Logger.Instance.LogText.text.Substring(InternalModBot.Logger.Instance.LogText.text.Length - CONSOLE_CHARACTER_LIMIT);
-                InternalModBot.Logger.Instance.LogText.text = newText;
+            if (ModBotUIRoot.Instance == null)
+			{
+                Console.WriteLine(_log);
+                throw new System.Exception("Logger is null");
             }
+
+
+            ModBotUIRoot.Instance.ConsoleUI.Log(_log, _color);
         }
 
         /// <summary>

@@ -51,7 +51,7 @@ namespace ModLibrary
 			{
 				_playFabIDs.Add(playfabID);
 			}
-			MultiplayerPlayerNameManager.TriggerRefreshNameTagsEvent();
+			MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
 		}
 
         /// <summary>
@@ -60,6 +60,7 @@ namespace ModLibrary
         /// <param name="moddedEvent"></param>
         internal void OnEvent(GenericStringForModdingEvent moddedEvent)
         {
+			
 			string message = moddedEvent.EventData;
 
 			if (message.StartsWith(CLIENT_CONNECTED_PREFIX))
@@ -72,7 +73,6 @@ namespace ModLibrary
 				string playfabID = message.Substring(BROADCAST_PLAYFAB_ID_PREFIX.Length);
 				onPlayfabIDBroadcastMessageRecived(playfabID);
 			}
-
 
 		}
 

@@ -41,7 +41,7 @@ namespace InternalModBot
 
         void createSaveButton()
         {
-            _saveButtonObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("GenerateButton");
+            _saveButtonObject = InternalAssetBundleReferences.ModBot.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
 			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 
@@ -116,11 +116,7 @@ namespace InternalModBot
             if (upgradeDescription == null)
                 return;
 
-            // Old mod loading system
-            upgradeDescription.SetAngleOffset(newAngle, UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage));
-
-            // New mod loading system
-            // upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
+            upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
         }
 
         void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)

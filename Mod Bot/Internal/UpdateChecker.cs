@@ -15,7 +15,7 @@ namespace InternalModBot
     /// <summary>
     /// Used by Mod-Bot to check if there is a newer version available
     /// </summary>
-    public class UpdateChecker : MonoBehaviour
+    internal class UpdateChecker : MonoBehaviour
     {
         void Start()
         {
@@ -29,19 +29,20 @@ namespace InternalModBot
         {
             string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
 
-            if (installedModBotVersion.ToLower().Contains("beta"))
-                yield break;
+			string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
+			VersionLabelManager.Instance.SetLine(1, modBotVersionLabel);
 
-            UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot-d8a58.firebaseio.com/ModBotVer/.json");
+			if (installedModBotVersion.ToLower().Contains("beta"))
+				yield break;
+                
+
+            UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getCurrentModBotVersion");
             yield return modBotVersionRequest.SendWebRequest();
 
             if(modBotVersionRequest.isNetworkError || modBotVersionRequest.isHttpError)
                 yield break;
 
             string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
-
-            string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
-            GameUIRoot.Instance.TitleScreenUI.VersionLabel.text += "\n" + modBotVersionLabel;
 
             if (!isCloudVersionNewer(installedModBotVersion, newestModBotVersion))
             {
@@ -108,7 +109,7 @@ namespace InternalModBot
 
         void onInstallButtonClicked()
         {
-            Application.OpenURL("http://clonedronemodbot.com/");
+            Application.OpenURL("https://modbot.org/");
         }
     }
 }

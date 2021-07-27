@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:はい
 mods_menu_download_confirm_no:番号
 clear_cache_success:キャッシュを正常にクリアしました。
 clear_cache_fail:キャッシュが使用されています。
+mods_menu_open_folder:Modsフォルダー

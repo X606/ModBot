@@ -41,3 +41,4 @@ mods_menu_download_confirm_yes:Ja
 mods_menu_download_confirm_no:Nein
 clear_cache_success:Erfolgreich den Zwischenspeicher geleert.
 clear_cache_fail:Zwischenspeicher wird benutzt.
+mods_menu_open_folder:Mods Ordner

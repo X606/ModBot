@@ -5,7 +5,7 @@ namespace InternalModBot
     /// <summary>
     /// Describes a line in 3D space
     /// </summary>
-    public class LineInfo
+    internal class LineInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LineInfo"/> class

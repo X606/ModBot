@@ -1,6 +1,5 @@
-﻿using InternalModBot.UnitTests;
+﻿//using InternalModBot.UnitTests;
 using ModLibrary;
-using PlayFab.GroupsModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +12,11 @@ namespace InternalModBot
     /// <summary>
     /// Handles the Unit Tests for the API methods in Mod-Bot
     /// </summary>
-    public static class ModBotUnitTestManager
+    internal static class ModBotUnitTestManager
     {
         static readonly UnitTest[] _unitTests = new UnitTest[]
         {
-            new AccessorInstanceCallPrivateMethodUnitTest(),
-            new AccessorInstanceCallPrivateMethodGenericUnitTest(),
-            new AccessorInstanceSetPrivateFieldUnitTest(),
-            new AccessorInstanceSetPrivateFieldGenericUnitTest(),
-            new AccessorInstanceGetPrivateFieldUnitTest(),
-            new AccessorInstanceGetPrivateFieldGenericUnitTest(),
-            new AccessorInstanceSetPrivatePropertyUnitTest(),
-            new AccessorInstanceSetPrivatePropertyGenericUnitTest()
+            
         };
 
         /// <summary>

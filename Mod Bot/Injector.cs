@@ -13,7 +13,10 @@ namespace ModLibrary
     /// </summary>
     public static class Injector
     {
-        const BindingFlags FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
+        /// <summary>
+        /// The flags that should be used when getting the methods to inject
+        /// </summary>
+        internal const BindingFlags FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
 
         #region Normal methods
         /// <summary>

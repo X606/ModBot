@@ -2,13 +2,15 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using ModBotWebsiteAPI;
+using InternalModBot.Scripting;
 
 namespace InternalModBot
 {
     /// <summary>
     /// Used by Mod-Bot to define commands
     /// </summary>
-    public static class ConsoleInputManager
+    internal static class ConsoleInputManager
     {
         /// <summary>
         /// The same as <see cref="Mod.OnCommandRan(string)"/>, but called in Mod-Bot
@@ -47,6 +49,12 @@ namespace InternalModBot
             if (subCommands[0] == "crash")
                 DelegateScheduler.Instance.Schedule(Crash, 1f);
 
+            if (subCommands[0] == "clearcache")
+            {
+                ModsManager.ClearCache();
+                return;
+            }
+
             if (subCommands[0] == "unittest")
             {
                 if (subCommands.Length > 1)
@@ -76,17 +84,32 @@ namespace InternalModBot
                     });
 				}
 			}
-			if (subCommands[0] == "redownloaddata")
+            if (subCommands[0] == "debug")
 			{
-				StaticCoroutineRunner.StartStaticCoroutine(MultiplayerPlayerNameManager.DownloadDataFromFirebase());
-				debug.Log("redownloading data...");
+                DelegateScheduler.Instance.Schedule(delegate
+                {
+                    ScriptObject scriptObject = new JavascriptScriptObject();
+                    scriptObject.OnError += delegate (ScriptErrorType type, string message)
+                    {
+                        debug.Log("ERROR (" + type + "): " + message);
+                    };
+
+                    scriptObject.RunCode(@"
+                        i = 25
+                        j = 26
+                        a = i + j
+                        debug.log('aaaaaa')
+                    ");
+
+                }, -1f);
+                
 			}
         }
 
-        /// <summary>
-        /// Crashes the game
-        /// </summary>
-        public static void Crash()
+		/// <summary>
+		/// Crashes the game
+		/// </summary>
+		public static void Crash()
         {
             throw new Exception("-Crashed from console-");
         }

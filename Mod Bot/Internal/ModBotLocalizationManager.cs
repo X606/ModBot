@@ -12,7 +12,7 @@ namespace InternalModBot
     /// <summary>
     /// Handles localization of string added in Mod-Bot
     /// </summary>
-    public static class ModBotLocalizationManager
+    internal static class ModBotLocalizationManager
     {
         static Dictionary<string, string> _fallbackModdedUpgradeLocalization = new Dictionary<string, string>();
 
@@ -65,7 +65,8 @@ namespace InternalModBot
                 case LANGUAGE_ID_KOREAN:
                     return Resources.ModBot_Korean;
                 default:
-                    return Resources.ModBot_English;
+                    return Resources.ModBot_English; // if the language is unknown, just default to english
+                    //throw new ArgumentException("Unknown language ID: " + languageID);
             }
         }
 

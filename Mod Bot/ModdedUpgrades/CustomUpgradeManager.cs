@@ -17,8 +17,8 @@ namespace ModLibrary
 
         void Start()
         {
-            _backButton = createButtonAt(InternalAssetBundleReferences.ModsWindow.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
-			_nextButton = createButtonAt(InternalAssetBundleReferences.ModsWindow.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
+            _backButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
+			_nextButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }
@@ -83,17 +83,8 @@ namespace ModLibrary
             Accessor.CallPrivateMethod("tryLocalizeTextField", GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>()); // Re-localize "Select Upgrade" text field
             GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
 
-            // Old mod loading system
-            Mod mod = UpgradePagesManager.TryGetModForPage(UpgradePagesManager.CurrentPage);
-            if (mod != null)
-            {
-                GameUIRoot.Instance.UpgradeUI.TitleText.text += "\n[" + mod.GetModName() + "]";
-                GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
 
-                UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
-            }
-
-            /* New mod loading system
+            
             string modID = UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage);
 			LoadedModInfo modInfo = ModsManager.Instance.GetLoadedModWithID(modID);
             if (modInfo != null)
@@ -103,7 +94,6 @@ namespace ModLibrary
 
                 UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
             }
-            */
         }
     }
 }

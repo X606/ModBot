@@ -1,0 +1,117 @@
+ManifestFileVersion: 0
+CRC: 550679962
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: ec10edfe8e3431eba3399c26558afdfa
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 7003eb6ad59c2c7e955786ed10be32b4
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: -1254083943, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 853051423, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -2095666955, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -405508275, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 575553740, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -2061169968, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1367256648, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 2109663825, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3b7d267312dd80a418d4ed264b40a537, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 34943be6dab1ac0428c14d66e2095cba, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 223
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+Assets:
+- Assets/Prefabs/ModOptions/DropDown.prefab
+- Assets/Prefabs/ModOptions/PageButton.prefab
+- Assets/Images/script.png
+- Assets/Prefabs/Console/ConsoleTextElement.prefab
+- Assets/Prefabs/ModOptions/Label.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsSingleButton.prefab
+- Assets/Prefabs/ModDownloadPage/ModDownloadInfo.prefab
+- Assets/Prefabs/ModOptions/Slider.prefab
+- Assets/Prefabs/ModOptions/CustomKeyCodeInput.prefab
+- Assets/Materials/ScriptableObject.mat
+- Assets/Prefabs/ModsMenu/ModItemPrefab.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsLabelAndButton.prefab
+- Assets/Prefabs/ModOptions/InputField.prefab
+- Assets/Prefabs/ModOptions/Checkbox.prefab
+- Assets/Images/modbot.png
+- Assets/Images/lua.png
+- Assets/Prefabs/ModBotSettings.prefab
+- Assets/Materials/Line.mat
+- Assets/Prefabs/LevelEditor/ScriptableObject.prefab
+- Assets/Prefabs/ModOptions/Button.prefab
+- Assets/Prefabs/UpgradeScreenButtons/PreviousPageButton.prefab
+- Assets/Prefabs/UpgradeScreenButtons/NextPageButton.prefab
+- Assets/Prefabs/ModBotOptions/ModBotOptionsLabel.prefab
+- Assets/Prefabs/Canvas.prefab
+- Assets/Prefabs/UpgradeScreenButtons/GenerateButton.prefab
+- Assets/Images/javascript.png
+Dependencies: []

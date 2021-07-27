@@ -24,12 +24,6 @@ namespace ModLibrary
         Action _onButton1ClickedCallback;
         Action _onButton2ClickedCallback;
 
-        Text _displayText;
-        Button _button1;
-        Button _button2;
-
-        ModdedObject _spawnedObject;
-
         /// <summary>
         /// If this is <see langword="true"/> there is currently a <see cref="Generic2ButtonDialogue"/> open
         /// </summary>
@@ -45,18 +39,14 @@ namespace ModLibrary
         /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
         {
-            _spawnedObject = InternalAssetBundleReferences.ModsWindow.InstantiateObject("Generic2ButtonDialoge").GetComponent<ModdedObject>();
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.UIRoot.SetActive(true);
 
-            _displayText = _spawnedObject.GetObject<Text>(0);
-            _button1 = _spawnedObject.GetObject<Button>(1);
-            _button2 = _spawnedObject.GetObject<Button>(2);
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.GetComponentInChildren<Text>().text = button1Text;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.GetComponentInChildren<Text>().text = button2Text;
 
-            _button1.GetComponentInChildren<Text>().text = button1Text;
-            _button2.GetComponentInChildren<Text>().text = button2Text;
-
-            _displayText.text = message;
-            _button1.onClick.AddListener(onButton1Clicked);
-            _button2.onClick.AddListener(onButton2Clicked);
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Text.text = message;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.onClick.AddListener(onButton1Clicked);
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.onClick.AddListener(onButton2Clicked);
 
             _onButton1ClickedCallback = onPressButton1;
             _onButton2ClickedCallback = onPressButton2;
@@ -70,7 +60,7 @@ namespace ModLibrary
         /// <param name="color">The color to set the button to</param>
         public void SetColorOfFirstButton(Color color)
         {
-            _button1.GetComponent<Image>().color = color;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.GetComponent<Image>().color = color;
         }
         /// <summary>
         /// Sets the color of the second button
@@ -78,7 +68,7 @@ namespace ModLibrary
         /// <param name="color">The color to set the button to</param>
         public void SetColorOfSecondButton(Color color)
         {
-            _button2.GetComponent<Image>().color = color;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.GetComponent<Image>().color = color;
         }
 
         /// <summary>
@@ -86,7 +76,9 @@ namespace ModLibrary
         /// </summary>
         public void Close()
         {
-            GameObject.Destroy(_spawnedObject.gameObject);
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.onClick = new Button.ButtonClickedEvent();
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.onClick = new Button.ButtonClickedEvent();
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.UIRoot.SetActive(false);
             IsWindowOpen = false;
         }
 

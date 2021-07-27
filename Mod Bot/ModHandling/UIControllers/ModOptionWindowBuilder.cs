@@ -15,30 +15,24 @@ namespace ModLibrary
     /// </summary>
     public partial class ModOptionsWindowBuilder
     {
-        readonly GameObject _pageButtonsHolder;
-        readonly GameObject _content;
-        readonly GameObject _spawnedBase;
-        readonly Button _xButton;
-        readonly GameObject _owner;
+        readonly GameObject _parentWindow;
         readonly Mod _ownerMod;
         List<Page> _pages = new List<Page>();
 
-        internal ModOptionsWindowBuilder(GameObject owner, Mod ownerMod)
+        internal ModOptionsWindowBuilder(GameObject parentWindow, Mod ownerMod)
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
             RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
             GameUIRoot.Instance.RefreshCursorEnabled();
 
-            owner.SetActive(false);
-            _owner = owner;
+            parentWindow.SetActive(false);
+            _parentWindow = parentWindow;
             _ownerMod = ownerMod;
-            _spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
-            _spawnedBase.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
-            ModdedObject modObject = _spawnedBase.GetComponent<ModdedObject>();
-            _content = modObject.GetObject<GameObject>(0);
-            _xButton = modObject.GetObject<Button>(1);
-            _pageButtonsHolder = modObject.GetObject<GameObject>(2);
-            _xButton.onClick.AddListener(CloseWindow);
+            //_spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(true);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
+            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick = new Button.ButtonClickedEvent();
+            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick.AddListener(CloseWindow);
 
             DelegateScheduler.Instance.Schedule(delegate
             {
@@ -55,13 +49,13 @@ namespace ModLibrary
         /// </summary>
         public void PopulatePages()
         {
-            TransformUtils.DestroyAllChildren(_pageButtonsHolder.transform);
-            GameObject buttonPrefab = InternalAssetBundleReferences.ModsWindow.GetObject("PageButton");
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
+            GameObject buttonPrefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton");
 
             foreach(Page page in _pages)
             {
                 GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
-                spawnedButton.transform.parent = _pageButtonsHolder.transform;
+                spawnedButton.transform.parent = ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform;
                 ModdedObject moddedObject = spawnedButton.GetComponent<ModdedObject>();
                 moddedObject.GetObject<Text>(0).text = page.Name;
                 moddedObject.GetObject<Button>(1).onClick.AddListener(delegate { SetPage(page); });
@@ -70,8 +64,8 @@ namespace ModLibrary
 
         void SetPage(Page page)
         {
-            TransformUtils.DestroyAllChildren(_content.transform);
-            page.Populate(_content, _ownerMod);
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.Content.transform);
+            page.Populate(ModBotUIRoot.Instance.ModOptionsWindow.Content, _ownerMod);
         }
 
         /// <summary>
@@ -105,8 +99,8 @@ namespace ModLibrary
             RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
 
             GameUIRoot.Instance.SetEscMenuDisabled(false);
-            GameObject.Destroy(_spawnedBase);
-            _owner.SetActive(true);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
+            _parentWindow.SetActive(true);
 
             GameUIRoot.Instance.RefreshCursorEnabled();
         }
@@ -118,7 +112,7 @@ namespace ModLibrary
         {
             RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
 
-            GameObject.Destroy(_spawnedBase);
+            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
 
             GameUIRoot.Instance.RefreshCursorEnabled();
@@ -297,7 +291,7 @@ namespace ModLibrary
             /// <param name="onCreate">Called when the <see cref="Dropdown"/> is created, use this to change properties of the <see cref="Dropdown"/></param>
             /// <param name="customRect">The custom rect of the <see cref="Dropdown"/>, use this to change the position and scale of the <see cref="Dropdown"/></param>
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
-            public void AddDropDown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
+            public void AddDropdown(string[] options, int defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<int> onChange = null)
             {
                 ModdedOptionDropDownItem dropdown = new ModdedOptionDropDownItem
                 {
@@ -327,7 +321,7 @@ namespace ModLibrary
                     throw new InvalidOperationException("Generic type must be an enum");
 
                 string[] names = Enum.GetNames(typeof(T));
-                AddDropDown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
+                AddDropdown(names, (int)(object)defaultValue, displayName, saveID, onCreate, customRect, delegate (int value)
                 {
                     if (onChange != null)
                         onChange((T)(object)value);
@@ -398,7 +392,7 @@ namespace ModLibrary
             /// Adds a generic page item, use this to add your own item types! To create a new item type simply make a class that extends <see cref="ModdedOptionPageItem"/> and pass a instance of it to this class
             /// </summary>
             /// <param name="customItem">The generic <see cref="ModdedOptionPageItem"/> to add</param>
-            public void AddGeneric(ModdedOptionPageItem customItem)
+            public void AddCustom(ModdedOptionPageItem customItem)
             {
                 _items.Add(customItem);
             }
