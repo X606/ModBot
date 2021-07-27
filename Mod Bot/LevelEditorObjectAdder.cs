@@ -22,7 +22,7 @@ namespace ModLibrary
         static readonly List<Tuple<string, string>> _moddedLevelObjects = new List<Tuple<string, string>>();
 
         /// <summary>
-        /// Adds an object to the editor
+        /// Adds an object to the editor (temporarily disabled)
         /// </summary>
         /// <param name="folderName">The name of the folder you want to add item to, if the folder doesnt already exist a new one will be created.</param>
         /// <param name="itemName">The name of the new item in the assets list.</param>
@@ -30,6 +30,13 @@ namespace ModLibrary
         /// <param name="texture">The texture to display in the assets list.</param>
         public static void AddObject(string folderName, string itemName, Transform transform, Texture2D texture)
         {
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                debug.Log("Adding custom level editor objects is temporarily disabled", Color.yellow);
+            }, 1);
+            // This will be re-added in mod-bot 2.1
+
+            /*
             string fullPath = LEVEL_OBJECT_PREFIX + folderName + "/" + itemName;
             string texturePath = TEXTURE_PREFIX + folderName + "/" + itemName;
             
@@ -43,7 +50,7 @@ namespace ModLibrary
 
             if (!_moddedLevelObjects.Contains(tuple))
                 _moddedLevelObjects.Add(tuple);
-
+            */
         }
 
         internal static UnityEngine.Object GetObjectData(string path)
@@ -59,6 +66,8 @@ namespace ModLibrary
 
         internal static void OnLevelEditorStarted()
         {
+            // Temporarily disabled until mod-bot 2.1
+            /*
             List<LevelObjectEntry> levelObjects = LevelObjectsLibraryManager.Instance.GetLevelObjectsInLibrary();
             List<LevelObjectEntry> visibleLevelObjects = LevelObjectsLibraryManager.Instance.GetVisibleLevelEditorObjects();
 
@@ -75,6 +84,7 @@ namespace ModLibrary
             }
             
             GameUIRoot.Instance.LevelEditorUI.LibraryUI.Populate();
+            */
         }
     }
 }
