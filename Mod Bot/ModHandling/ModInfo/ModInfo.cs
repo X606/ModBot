@@ -9,9 +9,17 @@ using InternalModBot;
 
 namespace ModLibrary
 {
+	/// <summary>
+	/// Describes information about a mod, most of this information will come from the ModInfo.json file in your mod
+	/// </summary>
 	[Serializable]
 	public class ModInfo
 	{
+		/// <summary>
+		/// Checks if all required fields are filled out
+		/// </summary>
+		/// <param name="errorMessage">If some field is not filled out, information about which field wasn't filled out. Otherwise null</param>
+		/// <returns></returns>
 		public bool AreAllEssentialFieldsAssigned(out string errorMessage)
 		{
 			if(string.IsNullOrWhiteSpace(DisplayName))
@@ -42,6 +50,9 @@ namespace ModLibrary
 			return true;
 		}
 
+		/// <summary>
+		/// Fixes some fields if they are not properly assigned, should only really be used from mod-bot internals
+		/// </summary>
 		public void FixFieldValues()
 		{
 			if(!MainDLLFileName.EndsWith(".dll"))
@@ -51,42 +62,78 @@ namespace ModLibrary
 				ModDependencies = new string[0];
 		}
 
+		/// <summary>
+		/// The name of the mod
+		/// </summary>
 		[JsonRequired]
 		[JsonProperty]
 		public string DisplayName { get; internal set; }
 
+		/// <summary>
+		/// The uuid of the mod
+		/// </summary>
 		[JsonRequired]
 		[JsonProperty]
 		public string UniqueID { get; internal set; }
 
+		/// <summary>
+		/// The name of the main dll of the mod
+		/// </summary>
 		[JsonRequired]
 		[JsonProperty]
 		public string MainDLLFileName { get; internal set; }
 
+		/// <summary>
+		/// The author of the mod
+		/// </summary>
 		[JsonRequired]
 		[JsonProperty]
 		public string Author { get; internal set; }
 
+		/// <summary>
+		/// The mod version
+		/// </summary>
 		[JsonRequired]
 		[JsonProperty]
 		public uint Version { get; internal set; }
 
+		/// <summary>
+		/// The name of the tumbnail image that goes with the mod
+		/// </summary>
 		[JsonProperty]
 		public string ImageFileName { get; internal set; }
 
+		/// <summary>
+		/// A brief description of the mod
+		/// </summary>
 		[JsonProperty]
 		public string Description { get; internal set; }
 
+		/// <summary>
+		/// The uuids of the dependecies of this mod
+		/// </summary>
 		[JsonProperty]
 		public string[] ModDependencies { get; internal set; }
 
+		/// <summary>
+		/// The tags used on this mod
+		/// </summary>
 		[JsonProperty]
 		public string[] Tags { get; internal set; }
 
+		/// <summary>
+		/// The complete path to this mods folder
+		/// </summary>
 		public string FolderPath { get; internal set; }
 
+		/// <summary>
+		/// The complete path to the main dll file of the mod
+		/// </summary>
 		public string DLLPath => FolderPath + MainDLLFileName;
 
+		/// <summary>
+		/// True if this mod has an image provided, false otherwise
+		/// </summary>
 		public bool HasImage => !string.IsNullOrWhiteSpace(ImageFileName);
 
 		/// <summary>
