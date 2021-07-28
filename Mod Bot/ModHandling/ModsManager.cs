@@ -14,6 +14,7 @@ using UnityEngine;
 using HarmonyLib;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace InternalModBot
 {
@@ -113,6 +114,19 @@ namespace InternalModBot
 		bool reloadAllMods(List<ModLoadError> errors)
 		{
 			unloadAllLoadedMods();
+
+			// first we take a pass to see if there any zip files we want to convert into folders
+			string[] zipFiles = Directory.GetFiles(ModFolderPath, "*.zip");
+            foreach (string zipFilePath in zipFiles)
+            {
+				string newDirectory = ModFolderPath + Path.GetFileNameWithoutExtension(zipFilePath);
+				Directory.CreateDirectory(newDirectory);
+				FastZip fastZip = new FastZip();
+				fastZip.ExtractZip(zipFilePath, newDirectory, null);
+				File.Delete(zipFilePath);
+
+				debug.Log("Unpacked " + Path.GetFileName(zipFilePath) + "...");
+            }
 
 			string[] folders = Directory.GetDirectories(ModFolderPath);
 			List<ModInfo> modsToLoad = new List<ModInfo>();

@@ -1,4 +1,5 @@
-﻿using Jint.Runtime.Debugger;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using Jint.Runtime.Debugger;
 using ModLibrary;
 using Newtonsoft.Json;
 using System;
@@ -201,7 +202,8 @@ namespace InternalModBot
                     yield break;
                 }
                 Directory.CreateDirectory(targetDirectory);
-                ZipFile.ExtractToDirectory(tempFile, targetDirectory);
+                FastZip fastZip = new FastZip();
+                fastZip.ExtractZip(tempFile, targetDirectory, null);
 
                 ModsManager.Instance.ReloadMods();
 
@@ -285,11 +287,14 @@ namespace InternalModBot
                 yield break;
             }
 
-            UnityWebRequest unityWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId);
-            unityWebRequest.timeout = 5;
-            yield return unityWebRequest.SendWebRequest();
+            UnityWebRequest unityDataWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId);
+            UnityWebRequest unityVerifiedWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=isModVerified&modId=" + modId);
+            unityDataWebRequest.timeout = 5;
+            unityVerifiedWebRequest.timeout = 5;
+            yield return unityDataWebRequest.SendWebRequest();
+            yield return unityVerifiedWebRequest.SendWebRequest();
 
-            if (!string.IsNullOrWhiteSpace(unityWebRequest.error))
+            if (!string.IsNullOrWhiteSpace(unityDataWebRequest.error) || !string.IsNullOrWhiteSpace(unityVerifiedWebRequest.error))
             {
                 TwitchManager.Instance.EnqueueChatMessage("Error while trying to fetch mod data. MrDestructoid");
                 yield break;
@@ -297,7 +302,13 @@ namespace InternalModBot
 
             try
             {
-                string response = unityWebRequest.downloadHandler.text;
+                if (unityVerifiedWebRequest.downloadHandler.text == "false")
+                {
+                    TwitchManager.Instance.EnqueueChatMessage("That mod isn't verified SoonerLater");
+                    yield break;
+                }
+
+                string response = unityDataWebRequest.downloadHandler.text;
 
                 if (response == "null")
                 {

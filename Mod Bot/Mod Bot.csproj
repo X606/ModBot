@@ -171,6 +171,9 @@
     <Reference Include="Esprima, Version=1.0.1258.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\packages\Esprima.1.0.1258\lib\net45\Esprima.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.3.2\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
       <HintPath>..\packages\Jint.3.0.0-beta-1715\lib\net45\Jint.dll</HintPath>
     </Reference>
@@ -196,7 +199,6 @@
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime">
       <HintPath>..\UsedDlls\System.Runtime.dll</HintPath>
     </Reference>

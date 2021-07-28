@@ -11,6 +11,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.IO;
 using System.Diagnostics;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace InternalModBot
 {
@@ -94,11 +95,42 @@ namespace InternalModBot
             */
         }
 
-        static IEnumerator downloadModFileAndLoadAsync(string url)
+        IEnumerator downloadModFileAndLoadAsync(string url)
         {
-			// yield return 0;
-			
-            // Reverted
+            if (ModsManager.Instance.GetLoadedModWithID(_underlyingModInfo.UniqueID) != null)
+            {
+                throw new Exception("That mod is already installed");
+            }
+
+            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + _underlyingModInfo.UniqueID);
+
+            yield return webRequest.SendWebRequest();
+
+            byte[] data = webRequest.downloadHandler.data;
+
+            string tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, data);
+
+            string folderName = _underlyingModInfo.DisplayName;
+            foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
+            {
+                folderName = folderName.Replace(invalidCharacter, '_');
+            }
+
+            string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
+            if (Directory.Exists(targetDirectory))
+            {
+                throw new Exception("That mod is already installed");
+            }
+            Directory.CreateDirectory(targetDirectory);
+            FastZip fastZip = new FastZip();
+            fastZip.ExtractZip(tempFile, targetDirectory, null);
+            
+
+            ModsManager.Instance.ReloadMods();
+
+            File.Delete(tempFile);
+            /*
             UnityWebRequest webRequest = UnityWebRequest.Get(url);
             yield return webRequest.SendWebRequest();
 
@@ -114,7 +146,8 @@ namespace InternalModBot
             ModsManager.Instance.ReloadMods();
 
             ModsPanelManager.Instance.ReloadModItems();
-		}
+            */
+        }
 
         IEnumerator downloadModBytesAndLoadAsync(string url)
         {

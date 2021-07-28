@@ -23,11 +23,11 @@ namespace ModLibrary
 			MethodInfo selectedMethod = null;
 			if (methodParameters == null)
 			{
-				selectedMethod = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				selectedMethod = type.GetMethod(methodName, Injector.FLAGS);
 			}
 			else
 			{
-				selectedMethod = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, methodParameters, null);
+				selectedMethod = type.GetMethod(methodName, Injector.FLAGS, null, methodParameters, null);
 			}
 			SelectedMethod = selectedMethod;
 
