@@ -630,6 +630,22 @@ namespace InternalModBot
 
                 return __result;
             }
+
+            public static bool EscMenu_Hide_Prefix()
+            {
+                if (GameUIRoot.Instance.GetPrivateField<bool>("_isEscMenuDisabled"))
+                    return false;
+
+                return true;
+            }
+
+            public static bool EscMenu_Show_Prefix()
+            {
+                if (GameUIRoot.Instance.GetPrivateField<bool>("_isEscMenuDisabled"))
+                    return false;
+
+                return true;
+            }
         }
     }
 }

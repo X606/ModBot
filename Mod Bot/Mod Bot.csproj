@@ -56,7 +56,6 @@
     <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
     <Compile Include="Internal\LevelEditor\Scriptable.cs" />
     <Compile Include="Internal\LineInfo.cs" />
-    <Compile Include="Internal\LoadedMod.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotInputManager.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />

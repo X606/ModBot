@@ -27,6 +27,8 @@ namespace InternalModBot
 
         Queue<Text> _lines = new Queue<Text>();
 
+        bool _isInitialized = false;
+
         /// <summary>
         /// Initialized the <see cref="ConsoleUI"/>
         /// </summary>
@@ -45,6 +47,8 @@ namespace InternalModBot
             _consoleTextElementPrefab = InternalAssetBundleReferences.ModBot.GetObject("ConsoleTextElement");
 
             _input.onEndEdit.AddListener(OnEndEdit);
+
+            _isInitialized = true;
         }
 
 		private void OnEndEdit(string arg0)
@@ -55,9 +59,7 @@ namespace InternalModBot
 
             // If the edit ended because we clicked away, don't do anything extra
             if (!Input.GetKeyDown(KeyCode.Return))
-            {
                 return;
-            }
 
             RunCommand(_input.text);
             _input.text = "";
@@ -65,6 +67,9 @@ namespace InternalModBot
 
         void Update()
         {
+            if (!_isInitialized)
+                return;
+
             if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.OpenConsole)))
 				Flip();
         }
@@ -93,6 +98,9 @@ namespace InternalModBot
 
         void log(string whatToLog, string prefix = "", string postfix = "")
 		{
+            if (!_isInitialized)
+                return;
+
             Text spawnedText = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
             _lines.Enqueue(spawnedText);
 
@@ -179,7 +187,6 @@ namespace InternalModBot
             {
                 _scroll.ScrollToBottom();
             }, -1f); // Run this next frame
-
         }
 
         /// <summary>
@@ -190,7 +197,6 @@ namespace InternalModBot
         public void Log(string whatToLog, Color color)
         {
             string colorText = ColorUtility.ToHtmlStringRGB(color);
-
             log(whatToLog, "<color=#" + colorText + ">", "</color>");
 
             Console.WriteLine(whatToLog);

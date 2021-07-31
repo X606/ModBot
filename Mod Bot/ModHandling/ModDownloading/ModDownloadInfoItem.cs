@@ -27,8 +27,6 @@ namespace InternalModBot
         Button _downloadButton;
         Button _loadButton;
 
-        string _modDownloadUrl;
-
         ModInfo _underlyingModInfo;
 
         /// <summary>
@@ -44,8 +42,6 @@ namespace InternalModBot
             _creatorText = moddedObject.GetObject<Text>(3);
             _downloadButton = moddedObject.GetObject<Button>(4);
             _loadButton = moddedObject.GetObject<Button>(5);
-
-            _modDownloadUrl = "modbot.org/api?operation=downloadMod&id=" + holder.UniqueID;
 
             _downloadButton.onClick.AddListener(onDownloadButtonClicked);
             _loadButton.onClick.AddListener(onBrowseButtonClicked);
@@ -78,29 +74,30 @@ namespace InternalModBot
             LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_no"), null,
             LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), delegate
             {
-                StartCoroutine(downloadModFileAndLoadAsync(_modDownloadUrl));
+                StartCoroutine(downloadModFileAndLoadAsync());
             });
         }
 
         void onBrowseButtonClicked()
         {
             Process.Start("https://modbot.org/modPreview.html?modID=" + _underlyingModInfo.UniqueID);
-            /*
-            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_load_confirm_message", _nameDisplay.text),
-            LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_no"), null,
-            LocalizationManager.Instance.GetTranslatedString("mod_load_confirm_yes"), delegate
-            {
-                StartCoroutine(downloadModBytesAndLoadAsync(_modDownloadUrl));
-            });
-            */
         }
 
-        IEnumerator downloadModFileAndLoadAsync(string url)
+        IEnumerator downloadModFileAndLoadAsync()
         {
+            // If mod is already loaded, just cancel the download instead of throwing an exception
             if (ModsManager.Instance.GetLoadedModWithID(_underlyingModInfo.UniqueID) != null)
+                yield break;
+
+            string folderName = _underlyingModInfo.DisplayName;
+            foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
             {
-                throw new Exception("That mod is already installed");
+                folderName = folderName.Replace(invalidCharacter, '_');
             }
+
+            string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
+            if (Directory.Exists(targetDirectory))
+                yield break;
 
             UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + _underlyingModInfo.UniqueID);
 
@@ -111,61 +108,14 @@ namespace InternalModBot
             string tempFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, data);
 
-            string folderName = _underlyingModInfo.DisplayName;
-            foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
-            {
-                folderName = folderName.Replace(invalidCharacter, '_');
-            }
-
-            string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
-            if (Directory.Exists(targetDirectory))
-            {
-                throw new Exception("That mod is already installed");
-            }
             Directory.CreateDirectory(targetDirectory);
             FastZip fastZip = new FastZip();
             fastZip.ExtractZip(tempFile, targetDirectory, null);
             
-
             ModsManager.Instance.ReloadMods();
 
             File.Delete(tempFile);
-            /*
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
-            yield return webRequest.SendWebRequest();
-
-            if(webRequest.isHttpError || webRequest.isNetworkError)
-                yield break;
-
-            string[] subUrls = url.Split('/');
-            string fileName = subUrls[subUrls.Length-1];
-
-            string path = AssetLoader.GetModsFolderDirectory() + fileName;
-            File.WriteAllBytes(path, webRequest.downloadHandler.data);
-
-            ModsManager.Instance.ReloadMods();
-
-            ModsPanelManager.Instance.ReloadModItems();
-            */
         }
-
-        IEnumerator downloadModBytesAndLoadAsync(string url)
-        {
-			yield return 0;
-
-            // Old pre 2.0 code code
-            /*
-			UnityWebRequest webRequest = UnityWebRequest.Get(url);
-            yield return webRequest.SendWebRequest();
-
-            if(webRequest.isHttpError || webRequest.isNetworkError)
-                yield break;
-
-            ModsManager.Instance.LoadMod(webRequest.downloadHandler.data, false, out string error);
-            ModsPanelManager.Instance.ReloadModItems();
-            */
-		}
-        
     }
 
     /// <summary>
@@ -179,5 +129,4 @@ namespace InternalModBot
         [JsonProperty(PropertyName = "ModInfos")]
         public ModInfo[] Mods;
     }
-    
 }

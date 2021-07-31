@@ -23,7 +23,7 @@ namespace InternalModBot
         {
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                _owner.ForceCloseWindow();
+                _owner.CloseWindow();
                 Destroy(this);
             }
         }

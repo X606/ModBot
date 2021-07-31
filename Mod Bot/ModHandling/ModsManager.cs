@@ -53,7 +53,6 @@ namespace InternalModBot
 		public void Initialize()
 		{
 			ReloadMods();
-			
 		}
 
 		void Update()
@@ -65,7 +64,7 @@ namespace InternalModBot
 
 		static IEnumerator showModInvalidMessage(List<ModLoadError> errors)
 		{
-			for(int i = 0; i < errors.Count; i++)
+			for (int i = 0; i < errors.Count; i++)
 			{
 				new Generic2ButtonDialogue("Mod \"" + errors[i].ModName + "\" could not be loaded (" + errors[i].ErrorMessage + "). Do you want to remove the mod?",
 					"Yes",
@@ -88,10 +87,8 @@ namespace InternalModBot
 			stopwatch.Start();
 
 			List<ModLoadError> errors = new List<ModLoadError>();
-			if(!reloadAllMods(errors))
-			{
+			if (!reloadAllMods(errors))
 				StartCoroutine(showModInvalidMessage(errors));
-			}
 
 			stopwatch.Stop();
 			debug.Log("(re)loaded " + _loadedMods.Count + " mods in " + stopwatch.Elapsed.TotalSeconds + " seconds");
@@ -103,11 +100,12 @@ namespace InternalModBot
 		public static void ClearCache()
 		{
 			AssetLoader.ClearCache();
-			if(Caching.ClearCache())
+			if (Caching.ClearCache())
 			{
 				ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_success");
 				return;
 			}
+
 			ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_fail");
 		}
 
@@ -340,11 +338,13 @@ namespace InternalModBot
 			try
 			{
 				loadedAssembly = Assembly.LoadFile(dllPath);
-			} catch
+			}
+			catch
 			{
 				error = new ModLoadError(modInfo, "Could not load \"" + modInfo.MainDLLFileName + "\"");
 				return false;
 			}
+
 			Type[] types = loadedAssembly.GetTypes();
 			Type mainType = null;
 			foreach(Type type in types)
@@ -354,11 +354,13 @@ namespace InternalModBot
 					mainType = type;
 				}
 			}
+
 			if (mainType == null)
 			{
 				error = new ModLoadError(modInfo, "Could not find type with the " + nameof(MainModClassAttribute) + " attribute");
 				return false;
 			}
+
 			if (mainType.BaseType != typeof(Mod))
 			{
 				error = new ModLoadError(modInfo, "The type with the " + nameof(MainModClassAttribute) + " attribute was not of type " + nameof(Mod));
@@ -366,31 +368,31 @@ namespace InternalModBot
 			}
 
 			Mod loadedMod = (Mod)Activator.CreateInstance(mainType);
+			loadedMod.SourceAssembly = loadedAssembly;
 
 			string relativePath = InternalUtils.GetRelativePathFromFullPath(modInfo.FolderPath);
 
 			DataSaver.TryLoadDataFromFile(relativePath);
 
-			loadedMod.OnModLoaded();
-
-			LoadedModInfo foundLoadedModInfo = null;
-			foreach(LoadedModInfo loadedModInfo in _loadedMods)
+			LoadedModInfo loadedModInfo = null;
+            foreach (LoadedModInfo existingModInfo in _loadedMods)
 			{
-				if (loadedModInfo.OwnerModInfo.UniqueID == modInfo.UniqueID)
+                if (existingModInfo.OwnerModInfo.UniqueID == modInfo.UniqueID)
 				{
-					loadedModInfo.ModReference = loadedMod;
-
-					foundLoadedModInfo = loadedModInfo;
+					existingModInfo.ModReference = loadedMod;
+					loadedModInfo = existingModInfo;
 				}
 			}
 
-			if(foundLoadedModInfo == null)
-            {
-				foundLoadedModInfo = new LoadedModInfo(loadedMod, modInfo);
-				_loadedMods.Add(foundLoadedModInfo);
+			if (loadedModInfo == null)
+			{
+				loadedModInfo = new LoadedModInfo(loadedMod, modInfo);
+				_loadedMods.Add(loadedModInfo);
 			}
-			
-			StartCoroutine(callOnModRefreshedNextFrame(foundLoadedModInfo));
+
+			loadedMod.OnModLoaded();
+
+			StartCoroutine(callOnModRefreshedNextFrame(loadedModInfo));
 
 			error = null;
 			return true;
@@ -428,7 +430,7 @@ namespace InternalModBot
 			{
 				mod.ModReference.OnModRefreshed();
 			}
-			catch(Exception exception)
+			catch (Exception exception)
 			{
 				throw new Exception("Exception in OnModRefreshed for \"" + mod.OwnerModInfo.DisplayName + "\" (ID: " + mod.OwnerModInfo.UniqueID + ")", exception);
 			}
@@ -437,7 +439,7 @@ namespace InternalModBot
 			{
 				mod.ModReference.OnModEnabled();
 			}
-			catch(Exception exception)
+			catch (Exception exception)
 			{
 				throw new Exception("Exception in OnModEnabled for \"" + mod.OwnerModInfo.DisplayName + "\" (ID: " + mod.OwnerModInfo.UniqueID + ")", exception);
 			}
@@ -458,20 +460,20 @@ namespace InternalModBot
 			return null;
 		}
 
-		internal List<Mod> allLoadedActiveMods = new List<Mod>();
+		internal List<Mod> _allLoadedActiveMods = new List<Mod>();
 
 		/// <summary>
 		/// Refreshes the cache for what mods are active and loaded
 		/// </summary>
 		public void RefreshAllLoadedActiveMods()
 		{
-			allLoadedActiveMods.Clear();
+			_allLoadedActiveMods.Clear();
 
 			foreach(LoadedModInfo modInfo in _loadedMods)
 			{
 				if (modInfo.IsEnabled)
 				{
-					allLoadedActiveMods.Add(modInfo.ModReference);
+					_allLoadedActiveMods.Add(modInfo.ModReference);
 				}
 			}
 		}
@@ -482,7 +484,7 @@ namespace InternalModBot
 		/// <returns></returns>
 		public List<Mod> GetAllLoadedActiveMods()
 		{
-			return allLoadedActiveMods;
+			return _allLoadedActiveMods;
 		}
 
 		/// <summary>
@@ -516,5 +518,20 @@ namespace InternalModBot
 
 			return null;
 		}
+
+		internal LoadedModInfo GetLoadedModInstanceForAssembly(Assembly assembly)
+        {
+            foreach (LoadedModInfo loadedMod in _loadedMods)
+            {
+				// Only search through loaded mods
+				if (!loadedMod.IsEnabled)
+					continue;
+
+				if (loadedMod.ModReference.SourceAssembly == assembly)
+					return loadedMod;
+            }
+
+			return null;
+        }
 	}
 }

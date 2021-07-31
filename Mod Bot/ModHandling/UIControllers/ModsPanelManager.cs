@@ -122,6 +122,8 @@ namespace InternalModBot
 
         void openModsMenu()
         {
+            GameUIRoot.Instance.SetEscMenuDisabled(true);
+
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(true);
             ReloadModItems();
         }
@@ -129,6 +131,7 @@ namespace InternalModBot
         void closeModsMenu()
         {
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(false);
+            GameUIRoot.Instance.SetEscMenuDisabled(false);
         }
 
         void onGetMoreModsClicked()

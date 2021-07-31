@@ -128,8 +128,10 @@ namespace InternalModBot
 
         internal static void SetSetting(Mod owner, string providedSaveID, object value, bool writeToFile)
         {
-            string saveID = getSaveIDForSetting(owner, providedSaveID);
+            if (string.IsNullOrEmpty(providedSaveID))
+                throw new ArgumentException("The ID of the setting cannot be null or empty", nameof(providedSaveID));
 
+            string saveID = getSaveIDForSetting(owner, providedSaveID);
             _savedSettingsDictionary[saveID] = value;
 
             if (writeToFile)
@@ -138,6 +140,9 @@ namespace InternalModBot
 
         internal static object LoadSetting(Mod owner, string providedSaveID)
         {
+            if (string.IsNullOrEmpty(providedSaveID))
+                throw new ArgumentException("The ID of the setting cannot be null or empty", nameof(providedSaveID));
+
             string saveID = getSaveIDForSetting(owner, providedSaveID);
 
             if (_savedSettingsDictionary.TryGetValue(saveID, out object value))

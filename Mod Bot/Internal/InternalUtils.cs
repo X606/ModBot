@@ -7,6 +7,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Reflection;
 using UnityEngine;
+using ModLibrary;
 
 namespace InternalModBot
 {
@@ -65,6 +66,19 @@ namespace InternalModBot
 			Type type = method.DeclaringType;
 
 			return GetModFolderRootFromAssemblyPath(type.Assembly.Location);
+		}
+
+		public static Mod GetCallerModInstance(int methodsAbove = 1)
+        {
+			StackFrame frame = new StackFrame(1 + methodsAbove);
+			MethodBase method = frame.GetMethod();
+			Type type = method.DeclaringType;
+
+			LoadedModInfo loadedModInfo = ModsManager.Instance.GetLoadedModInstanceForAssembly(type.Assembly);
+			if (loadedModInfo != null)
+				return loadedModInfo.ModReference;
+
+			return null;
 		}
 
 		/// <summary>

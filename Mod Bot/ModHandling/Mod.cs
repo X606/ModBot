@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ModLibrary;
 using InternalModBot;
+using System.Reflection;
 
 namespace ModLibrary
 {
@@ -11,7 +12,6 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
-        
 		/// <summary>
 		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
 		/// </summary>
@@ -21,8 +21,9 @@ namespace ModLibrary
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
-        //public string HarmonyID => "com.Mod-Bot.Mod." + GetUniqueID();
         protected internal string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
+
+        internal Assembly SourceAssembly;
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>

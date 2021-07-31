@@ -21,10 +21,6 @@ namespace ModLibrary
 
         internal ModOptionsWindowBuilder(GameObject parentWindow, Mod ownerMod)
         {
-            GameUIRoot.Instance.SetEscMenuDisabled(true);
-            RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
-            GameUIRoot.Instance.RefreshCursorEnabled();
-
             parentWindow.SetActive(false);
             _parentWindow = parentWindow;
             _ownerMod = ownerMod;
@@ -49,6 +45,10 @@ namespace ModLibrary
         /// </summary>
         public void PopulatePages()
         {
+            GameUIRoot.Instance.SetEscMenuDisabled(true);
+            RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
+            GameUIRoot.Instance.RefreshCursorEnabled();
+
             TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
             GameObject buttonPrefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton");
 
@@ -98,7 +98,6 @@ namespace ModLibrary
         {
             RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
 
-            GameUIRoot.Instance.SetEscMenuDisabled(false);
             ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             _parentWindow.SetActive(true);
 
