@@ -23,6 +23,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static string GetModdedSettingsStringValue(Mod mod, string id, string defaultValue)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return defaultValue;
+            }
+
             object value = OptionsSaver.LoadSetting(mod, id);
             if (value != null && value is string)
                 return value as string;
@@ -59,6 +66,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static float GetModdedSettingsFloatValue(Mod mod, string id, float defaultValue)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return defaultValue;
+            }
+
             object value = OptionsSaver.LoadSetting(mod, id);
             if (value != null)
             {
@@ -107,6 +121,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static int GetModdedSettingsIntValue(Mod mod, string id, int defaultValue)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return defaultValue;
+            }
+
             object value = OptionsSaver.LoadSetting(mod, id);
             if (value != null)
             {
@@ -155,6 +176,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static bool GetModdedSettingsBoolValue(Mod mod, string id, bool defaultValue)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return defaultValue;
+            }
+
             object value = OptionsSaver.LoadSetting(mod, id);
             if (value != null && value is bool boolValue)
                 return boolValue;
@@ -191,6 +219,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static KeyCode GetModdedSettingsKeyCodeValue(Mod mod, string id, KeyCode defaultValue)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return defaultValue;
+            }
+
             object value = OptionsSaver.LoadSetting(mod, id);
             if (value != null && value is int intValue)
                 return (KeyCode)intValue;
@@ -230,6 +265,13 @@ namespace ModLibrary
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
+            if (owner == null)
+            {
+                owner = InternalUtils.GetCallerModInstance();
+                if (owner == null)
+                    return;
+            }
+
             OptionsSaver.SetSetting(owner, saveID, value, writeToFile);
         }
 
@@ -261,6 +303,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static void SetModdedSettingsFloatValue(Mod owner, string saveID, float value, bool writeToFile = true)
         {
+            if (owner == null)
+            {
+                owner = InternalUtils.GetCallerModInstance();
+                if (owner == null)
+                    return;
+            }
+
             OptionsSaver.SetSetting(owner, saveID, value, writeToFile);
         }
 
@@ -289,6 +338,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static void SetModdedSettingsIntValue(Mod owner, string saveID, int value, bool writeToFile = true)
         {
+            if (owner == null)
+            {
+                owner = InternalUtils.GetCallerModInstance();
+                if (owner == null)
+                    return;
+            }
+
             OptionsSaver.SetSetting(owner, saveID, value, writeToFile);
         }
 
@@ -317,6 +373,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static void SetModdedSettingsBoolValue(Mod mod, string id, bool value, bool writeToFile = true)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return;
+            }
+
             OptionsSaver.SetSetting(mod, id, value, writeToFile);
         }
 
@@ -345,6 +408,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static void SetModdedSettingsKeyCodeValue(Mod mod, string id, KeyCode value, bool writeToFile = true)
         {
+            if (mod == null)
+            {
+                mod = InternalUtils.GetCallerModInstance();
+                if (mod == null)
+                    return;
+            }
+
             OptionsSaver.SetSetting(mod, id, (int)value, writeToFile);
         }
 
@@ -379,6 +449,13 @@ namespace ModLibrary
         [Obsolete("Passing a mod instance is no longer required")]
         public static bool HasSetting(Mod owner, string saveID)
         {
+            if (owner == null)
+            {
+                owner = InternalUtils.GetCallerModInstance();
+                if (owner == null)
+                    return false;
+            }
+
             return OptionsSaver.HasSettingSaved(owner, saveID);
         }
 
