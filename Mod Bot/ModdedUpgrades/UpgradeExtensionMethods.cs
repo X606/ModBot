@@ -25,7 +25,7 @@ namespace ModLibrary
 
             if (upgrade is AbilityUpgrade)
             {
-                Dictionary<UpgradeType, bool> _abilityUpgradeTypes = Accessor.GetPrivateField<UpgradeManager, Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes", UpgradeManager.Instance);
+                Dictionary<UpgradeType, bool> _abilityUpgradeTypes = UpgradeManager.Instance.GetPrivateField<Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes");
                 _abilityUpgradeTypes[upgrade.UpgradeType] = true;
             }
 

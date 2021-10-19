@@ -11,7 +11,40 @@ namespace ModLibrary
         /// <summary>
         /// The <see cref="BindingFlags"/> used to access members
         /// </summary>
-        public const BindingFlags FLAGS = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        public const BindingFlags FLAGS = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
+        static Type[] getArgumentTypeArray(object[] args)
+        {
+            return args == null ? new Type[0] : Type.GetTypeArray(args);
+        }
+
+        static MethodInfo findMethodRecursive(Type instanceType, string methodName, object[] args)
+        {
+            MethodInfo methodInfo = instanceType.GetMethod(methodName, FLAGS, null, getArgumentTypeArray(args), null);
+
+            if (Equals(methodInfo, null))
+            {
+                // Recursively go down the hierarchy to find the method
+                if (instanceType.BaseType != null)
+                {
+                    methodInfo = findMethodRecursive(instanceType.BaseType, methodName, args);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return methodInfo;
+        }
+        static MethodInfo findMethod(Type instanceType, string methodName, object[] args)
+        {
+            MethodInfo methodInfo = findMethodRecursive(instanceType, methodName, args);
+            if (Equals(methodInfo, null))
+                throw new MissingMethodException(instanceType.FullName, methodName);
+
+            return methodInfo;
+        }
 
         /// <summary>
         /// Calls a method even if its private and returns its return value.
@@ -23,11 +56,7 @@ namespace ModLibrary
         /// <param name="args">The arguments to pass to the method.</param>
         public static ReturnType CallPrivateMethod<InstanceType, ReturnType>(string methodName, InstanceType instance, object[] args = null)
         {
-            MethodInfo method = typeof(InstanceType).GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
-
-            if (Equals(method, null))
-                throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
-
+            MethodInfo method = findMethod(typeof(InstanceType), methodName, args);
             return (ReturnType)method.Invoke(instance, args);
         }
 
@@ -40,11 +69,7 @@ namespace ModLibrary
         /// <param name="args">The arguments to pass to the method.</param>
         public static ReturnType CallPrivateMethod<ReturnType>(this object instance, string methodName, object[] args = null)
         {
-            MethodInfo method = instance.GetType().GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
-
-            if (Equals(method, null))
-                throw new MissingMethodException(instance.GetType().FullName, methodName);
-
+            MethodInfo method = findMethod(instance.GetType(), methodName, args);
             return (ReturnType)method.Invoke(instance, args);
         }
 
@@ -57,11 +82,7 @@ namespace ModLibrary
         /// <param name="args">The arguments to pass to the method.</param>
         public static void CallPrivateMethod<InstanceType>(string methodName, InstanceType instance, object[] args = null)
         {
-            MethodInfo method = typeof(InstanceType).GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
-
-            if (Equals(method, null))
-                throw new MissingMethodException(typeof(InstanceType).FullName, methodName);
-
+            MethodInfo method = findMethod(typeof(InstanceType), methodName, args);
             method.Invoke(instance, args);
         }
 
@@ -73,12 +94,36 @@ namespace ModLibrary
         /// <param name="args">The arguments to pass to the method.</param>
         public static void CallPrivateMethod(this object instance, string methodName, object[] args = null)
         {
-            MethodInfo method = instance.GetType().GetMethod(methodName, FLAGS, null, args == null ? new Type[0] : Type.GetTypeArray(args), null);
-
-            if (Equals(method, null))
-                throw new MissingMethodException(instance.GetType().FullName, methodName);
-
+            MethodInfo method = findMethod(instance.GetType(), methodName, args);
             method.Invoke(instance, args);
+        }
+
+        static FieldInfo findFieldRecursive(Type instanceType, string fieldName)
+        {
+            FieldInfo fieldInfo = instanceType.GetField(fieldName, FLAGS);
+
+            if (Equals(fieldInfo, null))
+            {
+                // Recursively go down the hierarchy to find the field
+                if (instanceType.BaseType != null)
+                {
+                    fieldInfo = findFieldRecursive(instanceType.BaseType, fieldName);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return fieldInfo;
+        }
+        static FieldInfo findField(Type instanceType, string fieldName)
+        {
+            FieldInfo fieldInfo = findFieldRecursive(instanceType, fieldName);
+            if (Equals(fieldInfo, null))
+                throw new MissingFieldException(instanceType.FullName, fieldName);
+
+            return fieldInfo;
         }
 
         /// <summary>
@@ -90,10 +135,7 @@ namespace ModLibrary
         /// <param name="value">The value that the field should be set to.</param>
         public static void SetPrivateField(Type type, string fieldName, object instance, object value)
         {
-            FieldInfo field = type.GetField(fieldName, FLAGS);
-
-            if (Equals(field, null))
-                throw new MissingFieldException(type.FullName, fieldName);
+            FieldInfo field = findField(type, fieldName);
 
             field.SetValue(instance, value);
         }
@@ -108,10 +150,7 @@ namespace ModLibrary
         /// <param name="value">The value to set the field to</param>
         public static void SetPrivateField<InstanceType, FieldType>(string fieldName, InstanceType instance, FieldType value)
         {
-            FieldInfo field = typeof(InstanceType).GetField(fieldName, FLAGS);
-
-            if (Equals(field, null))
-                throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
+            FieldInfo field = findField(typeof(InstanceType), fieldName);
 
             field.SetValue(instance, value);
         }
@@ -125,10 +164,7 @@ namespace ModLibrary
         /// <param name="value">The value to set the field to</param>
         public static void SetPrivateField<FieldType>(this object instance, string fieldName, FieldType value)
         {
-            FieldInfo field = instance.GetType().GetField(fieldName, FLAGS);
-
-            if (Equals(field, null))
-                throw new MissingFieldException(instance.GetType().FullName, fieldName);
+            FieldInfo field = findField(instance.GetType(), fieldName);
 
             field.SetValue(instance, value);
         }
@@ -142,10 +178,7 @@ namespace ModLibrary
         /// <param name="instance">The instance the field is in.</param>
         public static FieldType GetPrivateField<InstanceType, FieldType>(string fieldName, InstanceType instance)
         {
-            FieldInfo field = typeof(InstanceType).GetField(fieldName, FLAGS);
-
-            if (Equals(field, null))
-                throw new MissingFieldException(typeof(InstanceType).FullName, fieldName);
+            FieldInfo field = findField(typeof(InstanceType), fieldName);
 
             return (FieldType)field.GetValue(instance);
         }
@@ -158,12 +191,37 @@ namespace ModLibrary
         /// <param name="instance">The instance the field is in.</param>
         public static FieldType GetPrivateField<FieldType>(this object instance, string fieldName)
         {
-            FieldInfo field = instance.GetType().GetField(fieldName, FLAGS);
-
-            if (Equals(field, null))
-                throw new MissingFieldException(instance.GetType().FullName, fieldName);
+            FieldInfo field = findField(instance.GetType(), fieldName);
 
             return (FieldType)field.GetValue(instance);
+        }
+
+        static PropertyInfo findPropertyRecursive(Type instanceType, Type returnType, string fieldName, object[] args)
+        {
+            PropertyInfo propertyInfo = instanceType.GetProperty(fieldName, FLAGS, null, returnType, getArgumentTypeArray(args), null);
+
+            if (Equals(propertyInfo, null))
+            {
+                // Recursively go down the hierarchy to find the property
+                if (instanceType.BaseType != null)
+                {
+                    propertyInfo = findPropertyRecursive(instanceType.BaseType, returnType, fieldName, args);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return propertyInfo;
+        }
+        static PropertyInfo findProperty(Type instanceType, Type returnType, string propertyName, object[] args)
+        {
+            PropertyInfo propertyInfo = findPropertyRecursive(instanceType, returnType, propertyName, args);
+            if (Equals(propertyInfo, null))
+                throw new MissingMemberException(instanceType.FullName, propertyName);
+
+            return propertyInfo;
         }
 
         /// <summary>
@@ -175,12 +233,22 @@ namespace ModLibrary
         /// <param name="value">The value the property should be set to.</param>
         public static void SetPrivateProperty(Type type, string propertyName, object instance, object value)
         {
-            PropertyInfo property = type.GetProperty(propertyName, FLAGS);
+            SetPrivateProperty(type, propertyName, instance, value, null);
+        }
 
-            if (Equals(property, null))
-                throw new MissingMemberException(type.FullName, propertyName);
+        /// <summary>
+        /// Sets the value of a private property
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> declaring the property</param>
+        /// <param name="propertyName">The name of the property</param>
+        /// <param name="instance">The instance to set the value on, can be <see langword="null"/></param>
+        /// <param name="value">The value to set the property to</param>
+        /// <param name="indices">The indices to use on the property, pass <see langword="null"/> if property has no indexer</param>
+        public static void SetPrivateProperty(Type type, string propertyName, object instance, object value, object[] indices)
+        {
+            PropertyInfo property = findProperty(type, value?.GetType(), propertyName, indices);
 
-            property.SetValue(instance, value, null);
+            property.SetValue(instance, value, indices);
         }
 
         /// <summary>
@@ -193,12 +261,23 @@ namespace ModLibrary
         /// <param name="value">The value to set the property to.</param>
         public static void SetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, PropertyType value)
         {
-            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, FLAGS);
+            SetPrivateProperty(propertyName, instance, value, null);
+        }
 
-            if (Equals(property, null))
-                throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
+        /// <summary>
+        /// Sets the value of a private property
+        /// </summary>
+        /// <typeparam name="InstanceType">The type declaring the property</typeparam>
+        /// <typeparam name="PropertyType">The return type of the property</typeparam>
+        /// <param name="propertyName">The name of the property</param>
+        /// <param name="instance">The instance to set the value on, can be <see langword="null"/></param>
+        /// <param name="value">The value to set the property to</param>
+        /// <param name="indices">The indices to use on the property, pass <see langword="null"/> if property has no indexer</param>
+        public static void SetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, PropertyType value, object[] indices)
+        {
+            PropertyInfo property = findProperty(typeof(InstanceType), typeof(PropertyType), propertyName, indices);
 
-            property.SetValue(instance, value, null);
+            property.SetValue(instance, value, indices);
         }
 
         /// <summary>
@@ -210,12 +289,22 @@ namespace ModLibrary
         /// <param name="value">The value to set the property to.</param>
         public static void SetPrivateProperty<PropertyType>(this object instance, string propertyName, PropertyType value)
         {
-            PropertyInfo property = instance.GetType().GetProperty(propertyName, FLAGS);
+            SetPrivateProperty(instance, propertyName, value, null);
+        }
 
-            if (Equals(property, null))
-                throw new MissingMemberException(instance.GetType().FullName, propertyName);
+        /// <summary>
+        /// Sets the value of a private property
+        /// </summary>
+        /// <typeparam name="PropertyType">The return type of the property</typeparam>
+        /// <param name="instance">The instance to set the value on></param>
+        /// <param name="propertyName">The name of the property</param>
+        /// <param name="value">The value to set the property to</param>
+        /// <param name="indices">The indices to use on the property, pass <see langword="null"/> if property has no indexer</param>
+        public static void SetPrivateProperty<PropertyType>(this object instance, string propertyName, PropertyType value, object[] indices)
+        {
+            PropertyInfo property = findProperty(instance.GetType(), typeof(PropertyType), propertyName, indices);
 
-            property.SetValue(instance, value, null);
+            property.SetValue(instance, value, indices);
         }
 
         /// <summary>
@@ -228,10 +317,7 @@ namespace ModLibrary
         /// <param name="index">Used, if the property has a index parementer as the index parameter</param>
         public static PropertyType GetPrivateProperty<InstanceType, PropertyType>(string propertyName, InstanceType instance, object[] index = null)
         {
-            PropertyInfo property = typeof(InstanceType).GetProperty(propertyName, FLAGS);
-
-            if (Equals(property, null))
-                throw new MissingMemberException(typeof(InstanceType).FullName, propertyName);
+            PropertyInfo property = findProperty(typeof(InstanceType), typeof(PropertyType), propertyName, index);
 
             return (PropertyType)property.GetValue(instance, index);
         }
@@ -245,12 +331,9 @@ namespace ModLibrary
         /// <param name="index">Used, if the property has a index parementer as the index parameter</param>
         public static PropertyType GetPrivateProperty<PropertyType>(this object instance, string propertyName, object[] index = null)
         {
-            PropertyInfo property = instance.GetType().GetProperty(propertyName, FLAGS);
+            PropertyInfo property = findProperty(instance.GetType(), typeof(PropertyType), propertyName, index);
 
-            if (Equals(property, null))
-                throw new MissingMemberException(instance.GetType().FullName, propertyName);
-
-            return (PropertyType)property.GetValue(instance, null);
+            return (PropertyType)property.GetValue(instance, index);
         }
     }
 }

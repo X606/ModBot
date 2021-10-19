@@ -533,7 +533,7 @@ namespace InternalModBot
 
             public static bool MultiplayerPlayerInfoState_GetOrPrepareSafeDisplayName_Prefix(MultiplayerPlayerInfoState __instance, Action<string> onSafeDisplayNameReceived, ref bool ____isSafeDisplayNameBeingPrepared)
             {
-                if (string.IsNullOrEmpty(Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)))
+                if (string.IsNullOrEmpty(__instance.GetPrivateProperty<string>("SafeDisplayName")))
                 {
                     Action<string> singleCallback = null;
                     singleCallback = delegate (string safeDisplayName)
@@ -552,19 +552,19 @@ namespace InternalModBot
                     ____isSafeDisplayNameBeingPrepared = true;
                     ProfanityChecker.FilterForProfanities(__instance.state.DisplayName, delegate (string preparedName)
                     {
-                        Accessor.SetPrivateProperty("SafeDisplayName", __instance, preparedName);
-                        Accessor.SetPrivateField("_isSafeDisplayNameBeingPrepared", __instance, false);
+                        __instance.SetPrivateProperty("SafeDisplayName", preparedName);
+                        __instance.SetPrivateField("_isSafeDisplayNameBeingPrepared", false);
 
                         EventInfo safeDisplayNamePreparedEvent = typeof(MultiplayerPlayerInfoState).GetEvent("OnSafeDisplayNamePrepared", BindingFlags.Public | BindingFlags.Instance);
                         if (safeDisplayNamePreparedEvent.RaiseMethod != null)
-                            safeDisplayNamePreparedEvent.RaiseMethod.Invoke(__instance, new object[] { Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance) });
+                            safeDisplayNamePreparedEvent.RaiseMethod.Invoke(__instance, new object[] { __instance.GetPrivateProperty<string>("SafeDisplayName") });
                     });
                 }
                 else
                 {
                     Action<string> onSafeDisplayNameReceived2 = onSafeDisplayNameReceived;
                     if (onSafeDisplayNameReceived2 != null)
-                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(__instance.state.PlayFabID, Accessor.GetPrivateProperty<MultiplayerPlayerInfoState, string>("SafeDisplayName", __instance)));
+                        onSafeDisplayNameReceived2(MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(__instance.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(__instance.state.PlayFabID, __instance.GetPrivateProperty<string>("SafeDisplayName")));
                 }
 
                 return false;
@@ -580,7 +580,7 @@ namespace InternalModBot
                     if (displayName != null && !character.HasNameTag())
                     {
                         displayName = MultiplayerPlayerNameManager.Instance.GetFullPrefixForPlayfabID(character.state.PlayFabID) + MultiplayerPlayerNameManager.Instance.GetNameForPlayfabID(character.state.PlayFabID, displayName);
-                        CharacterNameTagManager.Instance.StartCoroutine(Accessor.CallPrivateMethod<CharacterNameTagManager, IEnumerator>("addNameTagWithDelay", CharacterNameTagManager.Instance, new object[] { character, displayName }));
+                        CharacterNameTagManager.Instance.StartCoroutine(CharacterNameTagManager.Instance.CallPrivateMethod<IEnumerator>("addNameTagWithDelay", new object[] { character, displayName }));
                     }
                 });
 

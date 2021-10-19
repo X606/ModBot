@@ -78,9 +78,9 @@ namespace ModLibrary
 
         static void refreshPageContents()
         {
-            Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
+            GameUIRoot.Instance.UpgradeUI.CallPrivateMethod("PopulateIcons");
 
-            Accessor.CallPrivateMethod("tryLocalizeTextField", GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>()); // Re-localize "Select Upgrade" text field
+            GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>().CallPrivateMethod("tryLocalizeTextField"); // Re-localize "Select Upgrade" text field
             GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
 
 

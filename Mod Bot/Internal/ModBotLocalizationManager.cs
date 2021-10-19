@@ -133,7 +133,7 @@ namespace InternalModBot
                 return;
             }
 
-            Dictionary<string, string> localizationDictionary = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance.GetPrivateField<Dictionary<string, string>>("_translatedStringsDictionary");
 
             if (!localizationDictionary.ContainsKey(ID))
                 localizationDictionary.Add(ID, text);
@@ -180,7 +180,7 @@ namespace InternalModBot
 
             yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
 
-            Dictionary<string, string> localizationDictionary = Accessor.GetPrivateField<LocalizationManager, Dictionary<string, string>>("_translatedStringsDictionary", LocalizationManager.Instance);
+            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance.GetPrivateField<Dictionary<string, string>>("_translatedStringsDictionary");
             foreach (Tuple<string, string> idAndLocalizedString in _localizedStringsToAdd)
             {
                 if (localizationDictionary.ContainsKey(idAndLocalizedString.Item1))

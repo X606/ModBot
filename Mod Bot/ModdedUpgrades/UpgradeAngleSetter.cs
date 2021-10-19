@@ -131,7 +131,7 @@ namespace InternalModBot
 
             _changedIconAngles[upgrade] = newAngle;
 
-            Accessor.CallPrivateMethod("PopulateIcons", GameUIRoot.Instance.UpgradeUI);
+            GameUIRoot.Instance.UpgradeUI.CallPrivateMethod("PopulateIcons");
             RefreshIconEventTriggers();
         }
 
@@ -162,7 +162,7 @@ namespace InternalModBot
                 createSaveButton();
             }
 
-            List<UpgradeUIIcon> icons = Accessor.GetPrivateField<UpgradeUI, List<UpgradeUIIcon>>("_icons", GameUIRoot.Instance.UpgradeUI);
+            List<UpgradeUIIcon> icons = GameUIRoot.Instance.UpgradeUI.GetPrivateField<List<UpgradeUIIcon>>("_icons");
 
             foreach (UpgradeUIIcon icon in icons)
             {
