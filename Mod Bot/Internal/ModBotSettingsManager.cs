@@ -1,4 +1,5 @@
-﻿using ModBotWebsiteAPI;
+﻿using HarmonyLib;
+using ModBotWebsiteAPI;
 using ModLibrary;
 using System;
 using System.Collections;
@@ -153,16 +154,16 @@ namespace InternalModBot
 
 			buttonText.text = input.Key.ToString();
 		}
-		/// <summary>
-		/// Gets called from the end of the <see cref="SettingsMenu"/>.populateSettings()
-		/// </summary>
-		[InjectionPostfixTarget(typeof(SettingsMenu), "populateSettings")]
-		public static void OnPopulateSettings()
+
+		[HarmonyPatch(typeof(SettingsMenu))]
+		static class SettingsMenu_Patch
 		{
-			CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
+			[HarmonyPostfix]
+			[HarmonyPatch("populateSettings")]
+			static void populateSettings_Postfix()
+			{
+				CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
+			}
 		}
-
 	}
-
-
 }

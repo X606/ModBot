@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace InternalModBot
 {
@@ -70,23 +71,19 @@ namespace InternalModBot
 
         public void AutoInject()
         {
-            new Harmony(ModReference.HarmonyID).UnpatchAll(ModReference.HarmonyID); // unpatches all of the patches made by the mod first
-
             Harmony harmony = new Harmony(ModReference.HarmonyID);
-            KeyValuePair<InjectionTargetAttribute, MethodInfo>[] injections = InjectionTargetAttribute.GetInjectionTargetsInAssembly(ModReference.GetType().Assembly);
-            foreach (KeyValuePair<InjectionTargetAttribute, MethodInfo> injection in injections)
+            if (!harmony.GetPatchedMethods().Any())
             {
-                HarmonyMethod prefix = null;
-                if (injection.Key.InjectionType == InjectionType.Prefix)
-                    prefix = new HarmonyMethod(injection.Value);
+                Assembly modAssembly = ModReference.GetType().Assembly;
+                
+                harmony.PatchAll(modAssembly);
 
-                HarmonyMethod postfix = null;
-                if (injection.Key.InjectionType == InjectionType.Postfix)
-                    postfix = new HarmonyMethod(injection.Value);
-
-                harmony.Patch(injection.Key.SelectedMethod, prefix, postfix);
+                List<InjectionInfo> injectionInfos = InjectionTargetAttribute.GetInjectionTargetsInAssembly(modAssembly);
+                foreach (InjectionInfo injectionInfo in injectionInfos)
+                {
+                    injectionInfo.Patch(harmony);
+                }
             }
         }
-
     }
 }

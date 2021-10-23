@@ -10,6 +10,7 @@ namespace ModLibrary
     /// <summary>
     /// Defines methods for disabling and enabling certain inputs for a <see cref="FirstPersonMover"/>
     /// </summary>
+    [Obsolete("The CharacterInputRestrictor class is obsolete and will be removed in a future version, implement your own input restriction system instead")]
     public static class CharacterInputRestrictor
     {
         static Dictionary<FirstPersonMover, InputRestrictions> _characterInputRestrictions = new Dictionary<FirstPersonMover, InputRestrictions>();

@@ -66,6 +66,7 @@ namespace InternalModBot
 		{
 			for (int i = 0; i < errors.Count; i++)
 			{
+				// TODO: This is a very bad way of handling errors, completely deleting the mod file is *very* rarely going to be what you want to do, would be much better to give the option to disable the mod, or just continue.
 				new Generic2ButtonDialogue("Mod \"" + errors[i].ModName + "\" could not be loaded (" + errors[i].ErrorMessage + "). Do you want to remove the mod?",
 					"Yes",
 					delegate
@@ -390,7 +391,25 @@ namespace InternalModBot
 				_loadedMods.Add(loadedModInfo);
 			}
 
-			loadedMod.OnModLoaded();
+			try
+			{
+				loadedModInfo.AutoInject();
+			}
+            catch (Exception e)
+            {
+				error = new ModLoadError(modInfo, "Caught exception while applying patches, exception details: " + e.ToString());
+				return false;
+            }
+
+			try
+			{
+				loadedMod.OnModLoaded();
+			}
+			catch (Exception e)
+			{
+				error = new ModLoadError(modInfo, "Caught exception in OnModLoaded, exception details: " + e.ToString());
+				return false;
+			}
 
 			StartCoroutine(callOnModRefreshedNextFrame(loadedModInfo));
 
@@ -423,8 +442,6 @@ namespace InternalModBot
 		static IEnumerator callOnModRefreshedNextFrame(LoadedModInfo mod)
 		{
 			yield return 0;
-
-			mod.AutoInject();
 
 			try
 			{

@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using ModBotWebsiteAPI;
 using InternalModBot.Scripting;
+using HarmonyLib;
 
 namespace InternalModBot
 {
@@ -55,6 +56,7 @@ namespace InternalModBot
                 return;
             }
 
+#if DEBUG
             if (subCommands[0] == "unittest")
             {
                 if (subCommands.Length > 1)
@@ -70,7 +72,7 @@ namespace InternalModBot
                 ModBotUnitTestManager.RunAllUnitTests();
             }
 
-			if (subCommands[0] == "getplayfabids")
+            if (subCommands[0] == "getplayfabids")
 			{
 				debug.Log("spawned players playfabids: ");
 				List<FirstPersonMover> players = CharacterTracker.Instance.GetAllPlayers();
@@ -104,6 +106,7 @@ namespace InternalModBot
                 }, -1f);
                 
 			}
+#endif
         }
 
 		/// <summary>
@@ -181,6 +184,17 @@ namespace InternalModBot
         public static bool GetIsIgnoringCrashes()
         {
             return _isIgnoringCrashes;
+        }
+
+        [HarmonyPatch]
+        static class Patches
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
+            static bool ErrorManager_HandleLog_Prefix()
+            {
+                return !GetIsIgnoringCrashes();
+            }
         }
     }
 }

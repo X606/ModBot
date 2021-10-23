@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HarmonyLib;
 using ModLibrary;
 
 namespace InternalModBot
@@ -350,6 +351,28 @@ namespace InternalModBot
             return false;
         }
 
-    }
+        [HarmonyPatch]
+        static class Patches
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(UpgradeDescription), "GetAngleOffset")]
+            static float UpgradeDescription_GetAngleOffset_Postfix(float __result, UpgradeDescription __instance)
+            {
+                return GetAngleOfUpgrade(__instance.UpgradeType, __instance.Level);
+            }
 
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(UpgradeDescription), "IsUpgradeCurrentlyVisible")]
+            static bool UpgradeDescription_IsUpgradeCurrentlyVisible_Postfix(bool __result, UpgradeDescription __instance)
+            {
+                if (!IsUpgradeVisible(__instance.UpgradeType, __instance.Level))
+                    return false;
+
+                if (ForceUpgradeVisible(__instance.UpgradeType, __instance.Level))
+                    return true;
+
+                return __result;
+            }
+        }
+    }
 }

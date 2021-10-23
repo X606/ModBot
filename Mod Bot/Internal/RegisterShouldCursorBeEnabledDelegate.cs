@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,5 +47,21 @@ namespace InternalModBot
             return false;
         }
 
+        [HarmonyPatch]
+        static class Patches
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(GameUIRoot), "RefreshCursorEnabled")]
+            static bool GameUIRoot_RefreshCursorEnabled_Prefix()
+            {
+                if (ShouldMouseBeEnabled() || ModsManager.Instance == null || ModsManager.Instance.PassOnMod.ShouldCursorBeEnabled())
+                {
+                    InputManager.Instance.SetCursorEnabled(true);
+                    return false;
+                }
+
+                return true;
+            }
+        }
     }
 }

@@ -27,8 +27,6 @@ namespace InternalModBot
             if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
                 throw new DirectoryNotFoundException("Mods folder not found!");
 
-            ErrorChanger.ChangeError(); // Change error message so that crashes are sent to us and/or the developers of any mods installed instead of the actual game developers
-
             GameObject modBotManagers = new GameObject("ModBotManagers");
 
             modBotManagers.AddComponent<ModsManager>();

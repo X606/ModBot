@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
 using ModBotWebsiteAPI;
+using HarmonyLib;
 
 namespace InternalModBot
 {
@@ -82,25 +83,26 @@ namespace InternalModBot
 			
 		}
 
+		public string GetCompleteNameForPlayer(MultiplayerPlayerInfoState playerInfoState, string normalDisplayName)
+        {
+			return getFullPrefixForPlayfabID(playerInfoState.state.PlayFabID) + getNameForPlayfabID(playerInfoState.state.PlayFabID, normalDisplayName);
+		}
+
 		/// <summary>
 		/// Gets the full prefix for a player from their playfabID
 		/// </summary>
 		/// <param name="playfabID"></param>
 		/// <returns></returns>
-		public string GetFullPrefixForPlayfabID(string playfabID)
+		string getFullPrefixForPlayfabID(string playfabID)
 		{
-			bool isDictionaryNullOrEmpty = false;
-			if (playfabIDToCustomPrefixDictionary == null || playfabIDToCustomPrefixDictionary.Count == 0)
-				isDictionaryNullOrEmpty = true;
-
 			string prefix = "";
 			
-			if(!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.ContainsKey(playfabID))
-				prefix += playfabIDToCustomPrefixDictionary[playfabID] + " ";
+			if (playfabIDToCustomPrefixDictionary.TryGetValue(playfabID, out string customPrefix))
+				prefix += customPrefix + " ";
 
 			if (ModBotUserIdentifier.Instance != null && ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
 			{
-				if (!isDictionaryNullOrEmpty && playfabIDToCustomPrefixDictionary.TryGetValue(MOD_BOT_USER_KEY, out string modBotUserPrefix))
+				if (playfabIDToCustomPrefixDictionary.TryGetValue(MOD_BOT_USER_KEY, out string modBotUserPrefix))
 				{
 					prefix += modBotUserPrefix + " ";
 				}
@@ -119,19 +121,71 @@ namespace InternalModBot
 		/// <param name="playfabID"></param>
 		/// <param name="defaultName"></param>
 		/// <returns></returns>
-		public string GetNameForPlayfabID(string playfabID, string defaultName)
+		string getNameForPlayfabID(string playfabID, string defaultName)
 		{
-			if (playfabIDToOverrideNameDictionary != null && playfabIDToOverrideNameDictionary.Count != 0 && playfabIDToOverrideNameDictionary.TryGetValue(playfabID, out string overrideName))
-				return overrideName;
+            return playfabIDToOverrideNameDictionary.TryGetValue(playfabID, out string overrideName) ? overrideName : defaultName;
+        }
 
-			return defaultName;
-		}
-		internal static void OnNameTagRefreshed(EnemyNameTag nameTag, string ownerPlayfabID)
+        internal static void OnNameTagRefreshed(EnemyNameTag nameTag, string ownerPlayfabID)
 		{
 			MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(ownerPlayfabID, delegate (string displayName)
 			{
 				nameTag.NameText.text = displayName;
 			});
+		}
+
+		[HarmonyPatch]
+		static class Patches
+		{
+			[HarmonyPostfix]
+			[HarmonyPatch(typeof(CurrentlySpectatingUI), "Show")]
+			static void CurrentlySpectatingUI_Show_Postfix(CurrentlySpectatingUI __instance)
+			{
+				__instance.CurrentPlayerText.supportRichText = true;
+			}
+
+			[HarmonyPostfix]
+			[HarmonyPatch(typeof(EnemyNameTag), "Initialize")]
+			static void EnemyNameTag_Initialize_Postfix(EnemyNameTag __instance, Character character)
+			{
+				if (MultiplayerPlayerInfoManager.Instance != null && MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(character.state.PlayFabID) != null)
+				{
+					__instance.gameObject.AddComponent<NameTagRefreshListener>().Init(character, __instance);
+				}
+			}
+
+			[HarmonyPostfix]
+			[HarmonyPatch(typeof(MultiplayerPlayerInfoLabel), "Initialize")]
+			static void MultiplayerPlayerInfoLabel_Initialize_Postfix(MultiplayerPlayerInfoLabel __instance)
+			{
+				__instance.PlayerNameLabel.supportRichText = true; // Support custom colors and bold/italic text
+				__instance.PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(typeof(MultiplayerPlayerInfoState), "GetOrPrepareSafeDisplayName")]
+			static void MultiplayerPlayerInfoState_GetOrPrepareSafeDisplayName_Prefix(MultiplayerPlayerInfoState __instance, ref Action<string> onSafeDisplayNameReceived)
+			{
+				if (onSafeDisplayNameReceived != null)
+				{
+					// Create new callback delegate that invokes the original with the name given by MultiplayerPlayerNameManager
+					Action<string> callbackCopy = onSafeDisplayNameReceived;
+					onSafeDisplayNameReceived = delegate (string safeDisplayName)
+					{
+						string name;
+						if (MultiplayerPlayerNameManager.Instance != null)
+						{
+							name = MultiplayerPlayerNameManager.Instance.GetCompleteNameForPlayer(__instance, safeDisplayName);
+						}
+						else
+						{
+							name = safeDisplayName;
+						}
+
+						callbackCopy(name);
+					};
+				}
+			}
 		}
 	}
 }

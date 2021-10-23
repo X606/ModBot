@@ -1,4 +1,5 @@
-﻿using ModLibrary;
+﻿using HarmonyLib;
+using ModLibrary;
 using ModLibrary.Properties;
 using System;
 using System.Collections;
@@ -14,6 +15,8 @@ namespace InternalModBot
     /// </summary>
     internal static class ModBotLocalizationManager
     {
+        static Dictionary<string, string> _currentLocalizationDictionary = null;
+
         static Dictionary<string, string> _fallbackModdedUpgradeLocalization = new Dictionary<string, string>();
 
         static List<Tuple<string, string>> _localizedStringsToAdd = new List<Tuple<string, string>>();
@@ -36,11 +39,24 @@ namespace InternalModBot
         static Queue<string> _localizationIDsToLog;
         static bool _isLogQueueCoroutineRunning;
 
+        static string currentLanguageID
+        {
+            get
+            {
+                if (SettingsManager.Instance != null && SettingsManager.Instance.GetPrivateField<SettingsData>("_data") != null)
+                {
+                    return SettingsManager.Instance.GetCurrentLanguageID();
+                }
+                else
+                {
+                    return LANGUAGE_ID_ENGLISH; // Default to english if game is not fully initialized
+                }
+            }
+        }
+
         static string getLocalizationFileContentsForCurrentLanguage()
         {
-            string languageID = SettingsManager.Instance.GetCurrentLanguageID();
-
-            switch (languageID)
+            switch (currentLanguageID)
             {
                 case LANGUAGE_ID_ENGLISH:
                     return Resources.ModBot_English;
@@ -70,6 +86,33 @@ namespace InternalModBot
             }
         }
 
+        static Dictionary<string, string> getLocalizationDictionaryForCurrentLanguage()
+        {
+            if (_currentLocalizationDictionary == null)
+            {
+                _currentLocalizationDictionary = new Dictionary<string, string>();
+
+                string[] translations = getLocalizationFileContentsForCurrentLanguage().Split('\n');
+                foreach (string translationLine in translations)
+                {
+                    if (string.IsNullOrWhiteSpace(translationLine))
+                        continue;
+
+                    string[] splitLine = translationLine.Split(new char[] { ID_STRING_SEPARATOR }, 2, StringSplitOptions.RemoveEmptyEntries); // This will split the string by the first occurence of the ID_STRING_SEPARATOR character, just in case there are some in the translated string
+
+                    if (splitLine.Length != 2)
+                        continue;
+
+                    string id = splitLine[0];
+                    string translatedText = splitLine[1].Replace("\\n", "\n"); // Replace "\n" with an actual newline
+
+                    _currentLocalizationDictionary.Add(id, translatedText);
+                }
+            }
+
+            return _currentLocalizationDictionary;
+        }
+
         /// <summary>
         /// Gets the translated string via <see cref="LocalizationManager.GetTranslatedString(string, int)"/> and formats the returned <see langword="string"/> with the given arguments
         /// </summary>
@@ -81,6 +124,11 @@ namespace InternalModBot
             return string.Format(LocalizationManager.Instance.GetTranslatedString(ID), arguments);
         }
 
+        public static void OnLocalizationDictionaryUpdated()
+        {
+            _currentLocalizationDictionary = null;
+        }
+
         /// <summary>
         /// Adds all Mod-Bot localization IDs and translated text for the current language into the given dictionary
         /// </summary>
@@ -90,21 +138,10 @@ namespace InternalModBot
             if (languageDictionary == null)
                 throw new ArgumentNullException(nameof(languageDictionary));
 
-            string[] translations = getLocalizationFileContentsForCurrentLanguage().Split('\n');
-            foreach (string translationLine in translations)
+            Dictionary<string, string> modBotLocalizationDictionary = getLocalizationDictionaryForCurrentLanguage();
+            foreach (KeyValuePair<string, string> localizedPair in modBotLocalizationDictionary)
             {
-                if (string.IsNullOrWhiteSpace(translationLine))
-                    continue;
-
-                string[] splitLine = translationLine.Split(new char[] { ID_STRING_SEPARATOR }, 2, StringSplitOptions.RemoveEmptyEntries); // This will split the string by the first occurence of the ID_STRING_SEPARATOR character, just in case there are some in the translated string
-
-                if (splitLine.Length != 2)
-                    continue;
-
-                string id = splitLine[0];
-                string translatedText = splitLine[1].Replace("\\n", "\n"); // Replace "\n" with an actual newline
-
-                languageDictionary.Add(id, translatedText);
+                languageDictionary.Add(localizedPair.Key, localizedPair.Value);
             }
 
             foreach (KeyValuePair<string, string> localizationPair in _fallbackModdedUpgradeLocalization)
@@ -191,6 +228,43 @@ namespace InternalModBot
 
             _localizedStringsToAdd.Clear();
             _isAddStringsCoroutineRunning = false;
+        }
+
+        internal static string GetLocalizedModBotString(string localizationID)
+        {
+            if (LocalizationManager.Instance != null && LocalizationManager.Instance.IsInitialized())
+            {
+                return LocalizationManager.Instance.GetTranslatedString(localizationID);
+            }
+            else
+            {
+                Dictionary<string, string> modBotLocalizationDictionary = getLocalizationDictionaryForCurrentLanguage();
+                if (modBotLocalizationDictionary.TryGetValue(localizationID, out string localizedString))
+                {
+                    return localizedString;
+                }
+                else
+                {
+                    return "[nl: " + localizationID + "]";
+                }
+            }
+        }
+
+        [HarmonyPatch]
+        static class Patches
+        {
+            [HarmonyPostfix]
+            [HarmonyPatch(typeof(LocalizationManager), "populateDictionaryForCurrentLanguage")]
+            static void LocalizationManager_populateDictionaryForCurrentLanguage_Postfix(Dictionary<string, string> ____translatedStringsDictionary)
+            {
+                OnLocalizationDictionaryUpdated();
+                AddAllLocalizationStringsToDictionary(____translatedStringsDictionary);
+
+                if (ModsManager.Instance != null && ModsManager.Instance.PassOnMod != null)
+                {
+                    ModsManager.Instance.PassOnMod.OnLanguageChanged(currentLanguageID, ____translatedStringsDictionary);
+                }
+            }
         }
     }
 }

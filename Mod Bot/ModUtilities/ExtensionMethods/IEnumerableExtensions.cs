@@ -1,7 +1,9 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -543,5 +545,156 @@ namespace ModLibrary
             return randomizedList;
         }
 
+        /// <summary>
+        /// Searches for a sequence in the collection which has the exact order and values as the <paramref name="findSequence"/> parameter, and replaces every found sequence by all items in <paramref name="replaceSequence"/>
+        /// </summary>
+        /// <typeparam name="T">The type of the collection</typeparam>
+        /// <param name="collection">The collection to search</param>
+        /// <param name="findSequence">The sequence of items to search for</param>
+        /// <param name="replaceSequence">The sequence of items to be inserted in place of every found sequence</param>
+        /// <param name="equalityFunc">A custom comparer to determine if an item in the searched collection is equal to an item in <paramref name="findSequence"/>, if <see langword="null"/>, uses the default <see cref="EqualityComparer{T}"/> for type <typeparamref name="T"/></param>
+        /// <returns>A copy of the collection, with all sequences equal to <paramref name="findSequence"/> replaced by <paramref name="replaceSequence"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="collection"/>, <paramref name="findSequence"/>, or <paramref name="replaceSequence"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="findSequence"/> is empty</exception>
+        public static IEnumerable<T> ReplaceRange<T>(this IEnumerable<T> collection, IEnumerable<T> findSequence, IEnumerable<T> replaceSequence, Func<T, T, bool> equalityFunc = null)
+        {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
+
+            if (findSequence == null)
+                throw new ArgumentNullException(nameof(findSequence));
+
+            if (replaceSequence == null)
+                throw new ArgumentNullException(nameof(replaceSequence));
+
+            if (equalityFunc == null)
+                equalityFunc = EqualityComparer<T>.Default.Equals;
+
+            List<T> itemBuffer = new List<T>();
+
+            // For some incredibly dumb reason IEnumerator.Reset is almost never implemented, meaning it always throws a NotSupportedException, so convert it to an array first so indices can be used instead.
+            T[] findArray = findSequence.ToArray();
+            if (findArray.Length == 0)
+                throw new ArgumentException("Find sequence cannot be empty", nameof(findSequence));
+
+            int currentFindArrayIndex = -1;
+
+            foreach (T item in collection)
+            {
+                bool yieldCurrent = true;
+
+                if (++currentFindArrayIndex < findArray.Length)
+                {
+                    if (equalityFunc(findArray[currentFindArrayIndex], item))
+                    {
+                        itemBuffer.Add(item);
+                        yieldCurrent = false;
+                    }
+                    else
+                    {
+                        // If an item fails the equality check, append all of the buffered items and reset the find IEnumerator
+                        foreach (T bufferedItem in itemBuffer)
+                        {
+                            yield return bufferedItem;
+                        }
+
+                        itemBuffer.Clear();
+                        currentFindArrayIndex = -1;
+                    }
+                }
+                else // If find array reached the end, a sequence matching "find" has been found
+                {
+                    currentFindArrayIndex = -1;
+
+                    foreach (T replaceItem in replaceSequence)
+                    {
+                        yield return replaceItem;
+                    }
+
+                    itemBuffer.Clear();
+                }
+
+                if (yieldCurrent)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Searches for a sequence in the collection which has the exact order and values as the <paramref name="findSequence"/> parameter, and replaces every found sequence by all items in <paramref name="replaceSequence"/>
+        /// </summary>
+        /// <typeparam name="T">The type of the collection</typeparam>
+        /// <param name="collection">The collection to search</param>
+        /// <param name="findSequence">The sequence of items to search for</param>
+        /// <param name="replaceSequence">The sequence of items to be inserted in place of every found sequence</param>
+        /// <param name="equalityComparer">A custom <see cref="EqualityComparer{T}"/> to determine if an item in the searched collection is equal to an item in <paramref name="findSequence"/>, if <see langword="null"/>, uses the default <see cref="EqualityComparer{T}"/> for type <typeparamref name="T"/></param>
+        /// <returns>A copy of the collection, with all sequences equal to <paramref name="findSequence"/> replaced by <paramref name="replaceSequence"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="collection"/>, <paramref name="findSequence"/>, or <paramref name="replaceSequence"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="findSequence"/> is empty</exception>
+        public static IEnumerable<T> ReplaceRange<T>(this IEnumerable<T> collection, IEnumerable<T> findSequence, IEnumerable<T> replaceSequence, EqualityComparer<T> equalityComparer = null)
+        {
+            Func<T, T, bool> equalityFunc = null;
+            if (equalityComparer != null)
+                equalityFunc = equalityComparer.Equals;
+
+            return ReplaceRange(collection, findSequence, replaceSequence, equalityFunc);
+        }
+
+        /// <summary>
+        /// Searches for a sequence of instructions in the collection which has the exact order and values as the <paramref name="findInstructions"/> parameter, and replaces every found sequence by all items in <paramref name="replaceInstructions"/>
+        /// </summary>
+        /// <param name="instructions">The collection of instructions to search</param>
+        /// <param name="findInstructions">The sequence of instructions to search for</param>
+        /// <param name="replaceInstructions">The sequence of instructions to be inserted in place of every found sequence</param>
+        /// <param name="comparisonMode">The bitwise flags to specify which part of each <see cref="CodeInstruction"/> to consider when checking for equality, default is <see cref="CodeInstrucionComparisonMode.OpCode"/></param>
+        /// <returns>A copy of the collection, with all sequences equal to <paramref name="findInstructions"/> replaced by <paramref name="replaceInstructions"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="instructions"/>, <paramref name="findInstructions"/>, or <paramref name="replaceInstructions"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="findInstructions"/> is empty</exception>
+        public static IEnumerable<CodeInstruction> ReplaceInstructions(this IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> findInstructions, IEnumerable<CodeInstruction> replaceInstructions, CodeInstrucionComparisonMode comparisonMode = CodeInstrucionComparisonMode.OpCode)
+        {
+            return ReplaceRange(instructions, findInstructions, replaceInstructions, (a, b) =>
+            {
+                bool compareOpCode = (comparisonMode & CodeInstrucionComparisonMode.OpCode) != 0;
+                bool compareOperand = (comparisonMode & CodeInstrucionComparisonMode.Operand) != 0;
+
+                return (!compareOpCode || a.opcode == b.opcode) && (!compareOperand || a.operand == b.operand);
+            });
+        }
+
+        /// <summary>
+        /// Searches for a sequence of <see cref="CodeInstruction"/>s in the collection which has the exact order and matches the <see cref="OpCode"/> of the <paramref name="findOpCodes"/> parameter, and replaces every found sequence by all items in <paramref name="replaceInstructions"/>
+        /// </summary>
+        /// <param name="instructions">The collection of instructions to search</param>
+        /// <param name="findOpCodes">The sequence of <see cref="OpCode"/>s to search for</param>
+        /// <param name="replaceInstructions">The sequence of instructions to be inserted in place of every found sequence</param>
+        /// <returns>A copy of the collection, with all sequences matching <paramref name="findOpCodes"/> replaced by <paramref name="replaceInstructions"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="instructions"/>, <paramref name="findOpCodes"/>, or <paramref name="replaceInstructions"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="findOpCodes"/> is empty</exception>
+        public static IEnumerable<CodeInstruction> ReplaceInstructions(this IEnumerable<CodeInstruction> instructions, IEnumerable<OpCode> findOpCodes, IEnumerable<CodeInstruction> replaceInstructions)
+        {
+            if (findOpCodes == null)
+                throw new ArgumentNullException(nameof(findOpCodes));
+
+            return ReplaceInstructions(instructions, findOpCodes.Select((opcode) => new CodeInstruction(opcode)), replaceInstructions, CodeInstrucionComparisonMode.OpCode);
+        }
+
+        /// <summary>
+        /// Searches for a sequence of instructions in the collection which has the exact order and values as the <paramref name="findInstructions"/> parameter, and replaces every found sequence by all items in <paramref name="replaceInstructions"/>
+        /// </summary>
+        /// <param name="instructions">The collection of instructions to search</param>
+        /// <param name="findInstructions">The sequence of instructions to search for</param>
+        /// <param name="replaceInstructions">The sequence of instructions to be inserted in place of every found sequence</param>
+        /// <param name="equalityFunc">A custom comparer to determine if a <see cref="CodeInstruction"/> in the searched collection is equal to a <see cref="CodeInstruction"/> in <paramref name="findInstructions"/></param>
+        /// <returns>A copy of the collection, with all sequences equal to <paramref name="findInstructions"/> replaced by <paramref name="replaceInstructions"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="instructions"/>, <paramref name="findInstructions"/>, <paramref name="replaceInstructions"/>, or <paramref name="equalityFunc"/> is <see langword="null"/></exception>
+        /// <exception cref="ArgumentException"><paramref name="findInstructions"/> is empty</exception>
+        public static IEnumerable<CodeInstruction> ReplaceInstructions(this IEnumerable<CodeInstruction> instructions, IEnumerable<CodeInstruction> findInstructions, IEnumerable<CodeInstruction> replaceInstructions, Func<CodeInstruction, CodeInstruction, bool> equalityFunc)
+        {
+            if (equalityFunc == null)
+                throw new ArgumentNullException(nameof(equalityFunc));
+
+            return ReplaceRange(instructions, findInstructions, replaceInstructions, equalityFunc);
+        }
     }
 }

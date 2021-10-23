@@ -25,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Debug\ModLibrary.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,13 +45,24 @@
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
-    <Compile Include="InjectionTarget.cs" />
+    <Compile Include="Internal\Patches\Character_Patch.cs" />
+    <Compile Include="Internal\Patches\ErrorManager_Patch.cs" />
+    <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
+    <Compile Include="Internal\Patches\EscMenu_Patch.cs" />
+    <Compile Include="Internal\Patches\FirstPersonMover_Patch.cs" />
+    <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
+    <Compile Include="Internal\Patches\Resources_Patch.cs" />
+    <Compile Include="Internal\Patches\TwitchWhoIsLiveManager_Patch.cs" />
+    <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
+    <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
+    <Compile Include="Patching\Attributes\Prefix\InjectionPrefixTargetAttribute.cs" />
+    <Compile Include="Patching\InjectionInfo.cs" />
+    <Compile Include="Patching\Attributes\InjectionTargetAttribute.cs" />
     <Compile Include="Internal\InternalAssetBundleReferences.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="Internal\ConsoleInputManager.cs" />
     <Compile Include="Internal\DebugLineDrawing.cs" />
-    <Compile Include="Internal\ErrorChanger.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
     <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
@@ -75,7 +87,7 @@
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
     <Compile Include="Internal\ModBotUnitTestManager.cs" />
-    <Compile Include="Internal\MultiplayerNamePrefixManager.cs" />
+    <Compile Include="Internal\MultiplayerPlayerNameManager.cs" />
     <Compile Include="Internal\NameTagRefreshListener.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />

@@ -6,6 +6,7 @@ namespace ModLibrary
     /// Defines all bit field values for restricting <see cref="FirstPersonMover"/> input, to restrict a <see cref="FirstPersonMover"/>s input, see the <see cref="CharacterInputRestrictor"/> class
     /// </summary>
     [Flags]
+    [Obsolete("The CharacterInputRestrictor class is obsolete and will be removed in a future version, implement your own input restriction system instead")]
     public enum InputRestrictions
     {
         /// <summary>
