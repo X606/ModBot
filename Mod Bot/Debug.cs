@@ -29,7 +29,14 @@ namespace ModLibrary
             if (_log == null)
                 _log = "null";
 
-            ModBotUIRoot.Instance.ConsoleUI.Log(_log);
+            if (ModBotUIRoot.Instance != null && ModBotUIRoot.Instance.ConsoleUI != null)
+            {
+                ModBotUIRoot.Instance.ConsoleUI.Log(_log);
+            }
+            else
+            {
+                Console.WriteLine(_log);
+            }
         }
 
         /// <summary>
@@ -67,14 +74,14 @@ namespace ModLibrary
             if (_log == null)
                 _log = "null";
 
-            if (ModBotUIRoot.Instance == null)
-			{
-                Console.WriteLine(_log);
-                throw new System.Exception("Logger is null");
+            if (ModBotUIRoot.Instance != null && ModBotUIRoot.Instance.ConsoleUI != null)
+            {
+                ModBotUIRoot.Instance.ConsoleUI.Log(_log, _color);
             }
-
-
-            ModBotUIRoot.Instance.ConsoleUI.Log(_log, _color);
+            else
+            {
+                Console.WriteLine(_log);
+            }
         }
 
         /// <summary>
