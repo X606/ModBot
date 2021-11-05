@@ -14,7 +14,9 @@ namespace InternalModBot
         /// The animator of the console
         /// </summary>
         public Animator Animator;
-        GameObject _consoleTextElementPrefab;
+
+        PooledPrefab _consoleTextElementPrefabPool;
+        
         GameObject _content;
         GameObject _innerHolder;
         InputField _input;
@@ -44,7 +46,13 @@ namespace InternalModBot
             _input = input;
             _scroll = innerHolder.GetComponentInChildren<ScrollRect>();
 
-            _consoleTextElementPrefab = InternalAssetBundleReferences.ModBot.GetObject("ConsoleTextElement");
+            _consoleTextElementPrefabPool = new PooledPrefab
+            {
+                AddPoolReference = false,
+                MaxCount = MAX_LINES_COUNT,
+                UnparentOnDisable = true,
+                Prefab = InternalAssetBundleReferences.ModBot.GetObject("ConsoleTextElement").transform
+            };
 
             _input.onEndEdit.AddListener(OnEndEdit);
 
@@ -96,12 +104,23 @@ namespace InternalModBot
             Console.WriteLine(whatToLog);
         }
 
+        Text createTextElement()
+        {
+            Transform textElement = _consoleTextElementPrefabPool.InstantiateNewObject();
+            textElement.SetParent(_content.transform, false);
+
+            if (textElement.GetComponent<PooledObject>() == null)
+                textElement.gameObject.AddComponent<PooledObject>();
+
+            return textElement.GetComponent<Text>();
+        }
+
         void log(string whatToLog, string prefix = "", string postfix = "")
 		{
             if (!_isInitialized)
                 return;
 
-            Text spawnedText = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+            Text spawnedText = createTextElement();
             _lines.Enqueue(spawnedText);
 
             spawnedText.text = whatToLog;
@@ -172,15 +191,15 @@ namespace InternalModBot
                 }
                 else
                 {
-                    Text newLine = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+                    Text newLine = createTextElement();
                     newLine.text = lineText;
                     _lines.Enqueue(newLine);
                 }
             }
 
-            while(_lines.Count > MAX_LINES_COUNT)
-			{
-                Destroy(_lines.Dequeue().gameObject);
+            while (_lines.Count > MAX_LINES_COUNT)
+            {
+                _consoleTextElementPrefabPool.DestroyObject(_lines.Dequeue().gameObject);
             }
 
             DelegateScheduler.Instance.Schedule(delegate

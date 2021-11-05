@@ -22,54 +22,21 @@ namespace InternalModBot
         string _oldValue = string.Empty;
 
         /// <summary>
-        /// Places the page item in the page
+        /// Called when the input field is changed
         /// </summary>
-        /// <param name="holder"></param>
+        /// <param name="newValue"></param>
+        /// <param name="inputField"></param>
         /// <param name="owner"></param>
-        public override void CreatePageItem(GameObject holder, Mod owner)
+        protected override void onChanged(string newValue, InputField inputField, Mod owner)
         {
-            GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("InputField");
-            spawnedPrefab.transform.parent = holder.transform;
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
-            spawnedModdedObject.GetObject<Text>(0).text = DisplayName;
-            InputField inputField = spawnedModdedObject.GetObject<InputField>(1);
-            inputField.text = DefaultValue;
-
-            object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if (loadedValue != null && loadedValue is string stringValue)
+            if (!Verify(newValue))
             {
-                inputField.text = stringValue;
-                _oldValue = stringValue;
-
-                if (OnChange != null)
-                    OnChange(inputField.text);
-            }
-            else
-            {
-                _oldValue = DefaultValue;
+                inputField.text = _oldValue;
+                return;
             }
 
-            inputField.onEndEdit.AddListener(delegate (string value)
-            {
-                if (!Verify(value))
-                {
-                    inputField.text = _oldValue;
-                    return;
-                }
-
-                _oldValue = value;
-
-                OptionsSaver.SetSetting(owner, SaveID, value, true);
-
-                if(OnChange != null)
-                    OnChange(value);
-            });
-
-            applyCustomRect(spawnedPrefab);
-
-            if (OnCreate != null)
-                OnCreate(inputField);
+            _oldValue = newValue;
+            base.onChanged(newValue, inputField, owner);
         }
-
     }
 }

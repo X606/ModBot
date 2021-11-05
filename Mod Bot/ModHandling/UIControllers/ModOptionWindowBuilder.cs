@@ -15,6 +15,26 @@ namespace ModLibrary
     /// </summary>
     public partial class ModOptionsWindowBuilder
     {
+        static PooledPrefab _pageTabPool;
+        static PooledPrefab pageTabPool
+        {
+            get
+            {
+                if (_pageTabPool == null || _pageTabPool.Prefab == null)
+                {
+                    _pageTabPool = new PooledPrefab
+                    {
+                        AddPoolReference = false,
+                        MaxCount = -1,
+                        UnparentOnDisable = true,
+                        Prefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton").transform
+                    };
+                }
+
+                return _pageTabPool;
+            }
+        }
+
         readonly GameObject _parentWindow;
         readonly Mod _ownerMod;
         List<Page> _pages = new List<Page>();
@@ -49,15 +69,16 @@ namespace ModLibrary
             RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
             GameUIRoot.Instance.RefreshCursorEnabled();
 
-            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
-            GameObject buttonPrefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton");
+            pageTabPool.DestroyAllObjects();
 
-            foreach(Page page in _pages)
+            foreach (Page page in _pages)
             {
-                GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
-                spawnedButton.transform.parent = ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform;
+                Transform spawnedButton = pageTabPool.InstantiateNewObject();
+                spawnedButton.SetParent(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform, false);
                 ModdedObject moddedObject = spawnedButton.GetComponent<ModdedObject>();
                 moddedObject.GetObject<Text>(0).text = page.Name;
+
+                moddedObject.GetObject<Button>(1).onClick.RemoveAllListeners();
                 moddedObject.GetObject<Button>(1).onClick.AddListener(delegate { SetPage(page); });
             }
         }
@@ -163,7 +184,7 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the slider is changed</param>
             public void AddSlider(float min, float max, float defaultValue, string displayName, string saveID, Action<Slider> onCreate = null, Rect? customRect = null, Action<float> onChange = null)
             {
-                ModdedOptionSliderItem slider = new ModdedOptionSliderItem
+                ModdedOptionFloatSliderItem slider = new ModdedOptionFloatSliderItem
                 {
                     Min = min,
                     Max = max,
@@ -419,6 +440,11 @@ namespace ModLibrary
     public abstract class ModdedOptionPageItem
     {
         /// <summary>
+        /// The prefab pool for the UI element instantiated for this instance
+        /// </summary>
+        public abstract PooledPrefab ItemPool { get; }
+
+        /// <summary>
         /// The custom rect of the page, if null uses default values
         /// </summary>
         public ModOptionsWindowBuilder.Rect? CustomRect;
@@ -442,21 +468,28 @@ namespace ModLibrary
         /// Applies the <see cref="CustomRect"/> to the passed <see cref="GameObject"/>, if <see cref="CustomRect"/> is not <see langword="null"/>.
         /// </summary>
         /// <param name="spawnedObject"></param>
-        protected void applyCustomRect(GameObject spawnedObject)
+        protected void applyCustomRect(Transform spawnedObject)
         {
-            if(!CustomRect.HasValue)
-                return;
-
             LayoutElement element = spawnedObject.GetComponent<LayoutElement>();
-            if(element == null)
-                element = spawnedObject.AddComponent<LayoutElement>();
+
+            if (!CustomRect.HasValue)
+            {
+                if (element != null)
+                    element.ignoreLayout = false;
+
+                return;
+            }
+
+            if (element == null)
+                element = spawnedObject.gameObject.AddComponent<LayoutElement>();
 
             element.ignoreLayout = true;
 
             RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
             if (CustomRect.Value.Scale.HasValue)
                 rectTransform.sizeDelta = CustomRect.Value.Scale.Value;
-            if(CustomRect.Value.Position.HasValue)
+
+            if (CustomRect.Value.Position.HasValue)
                 rectTransform.anchoredPosition = CustomRect.Value.Position.Value;
         }
     }

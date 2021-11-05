@@ -32,6 +32,29 @@ namespace InternalModBot
         /// </summary>
         public Action<int> OnChange;
 
+        static PooledPrefab _dropdownPool;
+        /// <summary>
+        /// The prefab pool for the UI element instantiated for this instance
+        /// </summary>
+        public override PooledPrefab ItemPool
+        {
+            get
+            {
+                if (_dropdownPool == null || _dropdownPool.Prefab == null)
+                {
+                    _dropdownPool = new PooledPrefab
+                    {
+                        AddPoolReference = false,
+                        MaxCount = -1,
+                        UnparentOnDisable = true,
+                        Prefab = InternalAssetBundleReferences.ModBot.GetObject("DropDown").transform
+                    };
+                }
+
+                return _dropdownPool;
+            }
+        }
+
         /// <summary>
         /// Places the page item in the page
         /// </summary>
@@ -42,8 +65,8 @@ namespace InternalModBot
             if (Options.Length <= DefaultValue || DefaultValue < 0)
                 throw new ArgumentOutOfRangeException(nameof(DefaultValue) + " must be in the bounds of the passed options");
 
-            GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("DropDown");
-            spawnedPrefab.transform.parent = holder.transform;
+            Transform spawnedPrefab = ItemPool.InstantiateNewObject();
+            spawnedPrefab.SetParent(holder.transform, false);
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = DisplayName;
 

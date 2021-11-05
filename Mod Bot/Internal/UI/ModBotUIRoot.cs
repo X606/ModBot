@@ -36,7 +36,7 @@ namespace InternalModBot
 		/// <summary>
 		/// The generic 2 Button dialoge UI
 		/// </summary>
-		public Generic2ButtonDialogeUI Generic2ButtonDialogeUI;
+		public GenericMessageBoxUI GenericMessageBoxUI;
 		/// <summary>
 		/// The mod options window UI
 		/// </summary>
@@ -73,8 +73,8 @@ namespace InternalModBot
 			ModsWindow = gameObject.AddComponent<ModsWindow>();
 			ModsWindow.Init(moddedObject.GetObject<ModdedObject>(7));
 
-			Generic2ButtonDialogeUI = gameObject.AddComponent<Generic2ButtonDialogeUI>();
-			Generic2ButtonDialogeUI.Init(moddedObject.GetObject<ModdedObject>(8));
+			GenericMessageBoxUI = gameObject.AddComponent<GenericMessageBoxUI>();
+			GenericMessageBoxUI.Init(moddedObject.GetObject<ModdedObject>(8));
 
 			ModOptionsWindow = gameObject.AddComponent<ModOptionsWindow>();
 			ModOptionsWindow.Init(moddedObject.GetObject<ModdedObject>(9));

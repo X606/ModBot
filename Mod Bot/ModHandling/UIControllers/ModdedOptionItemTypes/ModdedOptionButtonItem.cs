@@ -23,6 +23,29 @@ namespace InternalModBot
         /// </summary>
         public Action<Button> OnCreate;
 
+        static PooledPrefab _buttonPool;
+        /// <summary>
+        /// The prefab pool for the UI element instantiated for this instance
+        /// </summary>
+        public override PooledPrefab ItemPool
+        {
+            get
+            {
+                if (_buttonPool == null || _buttonPool.Prefab == null)
+                {
+                    _buttonPool = new PooledPrefab
+                    {
+                        AddPoolReference = false,
+                        MaxCount = -1,
+                        UnparentOnDisable = true,
+                        Prefab = InternalAssetBundleReferences.ModBot.GetObject("Button").transform
+                    };
+                }
+
+                return _buttonPool;
+            }
+        }
+
         /// <summary>
         /// Places the page item in the page
         /// </summary>
@@ -30,17 +53,17 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("Button");
-            spawnedPrefab.transform.parent = holder.transform;
+            Transform buttonTransform = ItemPool.InstantiateNewObject();
+            buttonTransform.SetParent(holder.transform, false);
 
-            ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
+            ModdedObject spawnedModdedObject = buttonTransform.GetComponent<ModdedObject>();
             Button button = spawnedModdedObject.GetObject<Button>(0);
             button.onClick.AddListener(delegate { OnClick(); });
             spawnedModdedObject.GetObject<Text>(1).text = DisplayName;
 
-            applyCustomRect(spawnedPrefab);
+            applyCustomRect(buttonTransform);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(button);
         }
 

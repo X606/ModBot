@@ -53,6 +53,9 @@
     <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
     <Compile Include="Internal\Patches\Resources_Patch.cs" />
     <Compile Include="Internal\Patches\TwitchWhoIsLiveManager_Patch.cs" />
+    <Compile Include="Internal\UI\GenericButton.cs" />
+    <Compile Include="MessageBoxButton.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
     <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
     <Compile Include="Patching\Attributes\Prefix\InjectionPrefixTargetAttribute.cs" />
@@ -82,7 +85,7 @@
     <Compile Include="Internal\Scripting\Types\InstanceTypes\GameObjectRef.cs" />
     <Compile Include="Internal\Scripting\Types\InstanceTypes\Vector3Ref.cs" />
     <Compile Include="Internal\ThreadedDelegateScheduler.cs" />
-    <Compile Include="Internal\UI\Generic2ButtonDialogeUI.cs" />
+    <Compile Include="Internal\UI\GenericMessageBoxUI.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
@@ -120,7 +123,7 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionIntSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionKeyCodeItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionLabelItem.cs" />
-    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
+    <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionFloatSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
     <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
@@ -151,6 +154,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SimpleMessageBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

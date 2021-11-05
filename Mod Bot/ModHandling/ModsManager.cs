@@ -60,23 +60,32 @@ namespace InternalModBot
 			PassOnMod.GlobalUpdate();
 
 			ThreadedDelegateScheduler.Update();
+
+			if (Input.GetKeyDown(KeyCode.G))
+            {
+                SimpleMessageBox simpleMessageBox = new SimpleMessageBox("A very long message 78949y87ry pq78iy8e7bctn7ty5vp87a64087bwn4ny0ev578yne78ynavp;5yvp0a;0p5vq['p05oc8yor5vyuw\ni7t2iuertygvcb87q4cvpo7ogtn nqc6qx6bnv56vp47bvq4cnm8 m,tr89sv6yncsmn96 p87y5p87styv5pma7vta7p9ctya8mb98mnexm,89ta5,v987n59ca,p8t7bnrvm7pa897vtoae89,xts5jh6bn8osrtyfj87t[aq404=5-90y7vr9uyq[9i34=20i=q0x']0gf,90wsyv75n09()&#+$(V+$#V|@_C+EUC()#8908V30r89]-3083wvr83IUCR90]38V	  ],-094TUQ[MVT8Y");
+				simpleMessageBox.AddButton(new MessageBoxButton("Ok", Color.yellow));
+				simpleMessageBox.AddButton(new MessageBoxButton("What?", Color.white));
+				simpleMessageBox.AddButton(new MessageBoxButton("No", Color.red));
+				simpleMessageBox.AddButton(new MessageBoxButton("Yes", Color.green));
+
+				simpleMessageBox.QueueMessage();
+			}
 		}
 
-		static IEnumerator showModInvalidMessage(List<ModLoadError> errors)
+		static void showModLoadErrors(List<ModLoadError> errors)
 		{
-			for (int i = 0; i < errors.Count; i++)
+			foreach (ModLoadError modLoadError in errors)
 			{
-				// TODO: This is a very bad way of handling errors, completely deleting the mod file is *very* rarely going to be what you want to do, would be much better to give the option to disable the mod, or just continue.
-				new Generic2ButtonDialogue("Mod \"" + errors[i].ModName + "\" could not be loaded (" + errors[i].ErrorMessage + "). Do you want to remove the mod?",
-					"Yes",
-					delegate
-					{
-						Directory.Delete(errors[i].FolderPath, true);
-					},
-					"No", null);
-
-				yield return new WaitWhile(delegate { return Generic2ButtonDialogue.IsWindowOpen; });
+				showModLoadError(modLoadError);
 			}
+		}
+
+		static void showModLoadError(ModLoadError modLoadError)
+        {
+			SimpleMessageBox modLoadErrorMessage = new SimpleMessageBox("\"" + modLoadError.ModName + "\" could not be loaded: " + modLoadError.ErrorMessage);
+			modLoadErrorMessage.AddButton(new MessageBoxButton("Ok"));
+			modLoadErrorMessage.QueueMessage();
 		}
 
 		/// <summary>
@@ -89,7 +98,7 @@ namespace InternalModBot
 
 			List<ModLoadError> errors = new List<ModLoadError>();
 			if (!reloadAllMods(errors))
-				StartCoroutine(showModInvalidMessage(errors));
+				showModLoadErrors(errors);
 
 			stopwatch.Stop();
 			debug.Log("(re)loaded " + _loadedMods.Count + " mods in " + stopwatch.Elapsed.TotalSeconds + " seconds");
@@ -294,18 +303,10 @@ namespace InternalModBot
 			{
 				if (_firstLoadedVersionOfMod[modInfo.UniqueID] != modInfo.Version)
 				{
-					Generic2ButtonDialogue generic2ButtonDialogue = new Generic2ButtonDialogue("Some other version of the " + modInfo.DisplayName + " mod already been loaded, you will need to restart the game for the new version to work. Do you want to restart now?",
-						"No, not right now.", delegate
-						{
-
-						},
-						"Yes, restart now", delegate
-						{
-							Application.Quit();
-						});
-
-					generic2ButtonDialogue.SetColorOfFirstButton(Color.red);
-					generic2ButtonDialogue.SetColorOfSecondButton(Color.green);
+					SimpleMessageBox messageBox = new SimpleMessageBox("Some other version of the " + modInfo.DisplayName + " mod already been loaded, you will need to restart the game for the new version to work. Do you want to exit now?");
+					messageBox.AddButton(new MessageBoxButton("No", Color.red));
+					messageBox.AddButton(new MessageBoxButton("Yes", Color.green, delegate { Application.Quit(); }));
+					messageBox.QueueMessage();
 				}
 			}
 			else
@@ -320,10 +321,10 @@ namespace InternalModBot
 		
 		internal void LoadMod(ModInfo modInfo)
 		{
-			if(!loadMod(modInfo, out ModLoadError error))
+			if (!loadMod(modInfo, out ModLoadError error))
 			{
-				StartCoroutine(showModInvalidMessage(new List<ModLoadError>() { error }));
-			}
+				showModLoadError(error);
+            }
 		}
 
 		bool loadMod(ModInfo modInfo, out ModLoadError error)
@@ -398,6 +399,7 @@ namespace InternalModBot
             catch (Exception e)
             {
 				error = new ModLoadError(modInfo, "Caught exception while applying patches, exception details: " + e.ToString());
+                loadedModInfo.IsEnabled = false;
 				return false;
             }
 
@@ -408,6 +410,7 @@ namespace InternalModBot
 			catch (Exception e)
 			{
 				error = new ModLoadError(modInfo, "Caught exception in OnModLoaded, exception details: " + e.ToString());
+				loadedModInfo.IsEnabled = false;
 				return false;
 			}
 

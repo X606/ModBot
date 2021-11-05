@@ -177,15 +177,6 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Gets if we are currently ignoring crashes
-        /// </summary>
-        /// <returns></returns>
-        public static bool GetIsIgnoringCrashes()
-        {
-            return _isIgnoringCrashes;
-        }
-
         [HarmonyPatch]
         static class Patches
         {
@@ -193,7 +184,7 @@ namespace InternalModBot
             [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
             static bool ErrorManager_HandleLog_Prefix()
             {
-                return !GetIsIgnoringCrashes();
+                return !_isIgnoringCrashes;
             }
         }
     }

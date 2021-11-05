@@ -28,6 +28,29 @@ namespace InternalModBot
         /// </summary>
         public Action<KeyCode> OnChange;
 
+        static PooledPrefab _keyCodeInputPool;
+        /// <summary>
+        /// The prefab pool for the UI element instantiated for this instance
+        /// </summary>
+        public override PooledPrefab ItemPool
+        {
+            get
+            {
+                if (_keyCodeInputPool == null || _keyCodeInputPool.Prefab == null)
+                {
+                    _keyCodeInputPool = new PooledPrefab
+                    {
+                        AddPoolReference = false,
+                        MaxCount = -1,
+                        UnparentOnDisable = true,
+                        Prefab = InternalAssetBundleReferences.ModBot.GetObject("CustomKeyCodeInput").transform
+                    };
+                }
+
+                return _keyCodeInputPool;
+            }
+        }
+
         /// <summary>
         /// Places the page item in the page
         /// </summary>
@@ -35,8 +58,13 @@ namespace InternalModBot
         /// <param name="owner"></param>
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
-            KeyCodeInput keyCodeInput = InternalAssetBundleReferences.ModBot.InstantiateObject("CustomKeyCodeInput").AddComponent<KeyCodeInput>();
-            keyCodeInput.transform.parent = holder.transform;
+            Transform spawnedPrefab = ItemPool.InstantiateNewObject();
+            spawnedPrefab.SetParent(holder.transform, false);
+
+            KeyCodeInput keyCodeInput = spawnedPrefab.GetComponent<KeyCodeInput>();
+            if (keyCodeInput == null)
+                keyCodeInput = spawnedPrefab.gameObject.AddComponent<KeyCodeInput>();
+
             keyCodeInput.Init(DefaultValue, delegate (KeyCode keyCode)
             {
                 OptionsSaver.SetSetting(owner, SaveID, (int)keyCode, true);
@@ -51,7 +79,7 @@ namespace InternalModBot
 
             keyCodeInput.GetComponent<ModdedObject>().GetObject<Text>(2).text = DisplayName;
 
-            applyCustomRect(keyCodeInput.gameObject);
+            applyCustomRect(spawnedPrefab);
 
             if(OnCreate != null)
                 OnCreate(keyCodeInput);

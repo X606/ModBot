@@ -32,7 +32,7 @@ namespace InternalModBot
         {
             get
             {
-				return OwnerModInfo.IsModEnabled;
+                return OwnerModInfo.IsModEnabled;
             }
             internal set
             {
@@ -43,15 +43,14 @@ namespace InternalModBot
 
                 if (value) // If the mod is being enabled
                 {
-					if (ModReference == null)
-					{
-						ModsManager.Instance.LoadMod(OwnerModInfo);
-
-					} else
-					{
-						ModReference.OnModEnabled();
-					}
-
+                    if (ModReference == null)
+                    {
+                        ModsManager.Instance.LoadMod(OwnerModInfo);
+                    }
+                    else
+                    {
+                        ModReference.OnModEnabled();
+                    }
 
                     AutoInject();
                 }
@@ -60,12 +59,12 @@ namespace InternalModBot
                     CustomUpgradeManager.NextClicked();
                     UpgradePagesManager.RemoveModdedUpgradesFor(OwnerModInfo.UniqueID);
 
-                    new Harmony(ModReference.HarmonyID).UnpatchAll(ModReference.HarmonyID); // unpatches all of the patches made by the mod
+                    Unpatch();
 
                     ModReference.OnModDeactivated();
                 }
 
-				ModsManager.Instance.RefreshAllLoadedActiveMods();
+                ModsManager.Instance.RefreshAllLoadedActiveMods();
             }
         }
 
@@ -84,6 +83,12 @@ namespace InternalModBot
                     injectionInfo.Patch(harmony);
                 }
             }
+        }
+
+        public void Unpatch()
+        {
+            Harmony harmony = new Harmony(ModReference.HarmonyID);
+            harmony.UnpatchAll(ModReference.HarmonyID);
         }
     }
 }

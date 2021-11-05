@@ -70,12 +70,10 @@ namespace InternalModBot
 
         void onDownloadButtonClicked()
         {
-            new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_download_confirm_message", _nameDisplay.text),
-            LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_no"), null,
-            LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), delegate
-            {
-                StartCoroutine(downloadModFileAndLoadAsync());
-            });
+            SimpleMessageBox modDownloadMessage = new SimpleMessageBox(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_download_confirm_message", _nameDisplay.text));
+            modDownloadMessage.AddButton(new MessageBoxButton(LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_no")));
+            modDownloadMessage.AddButton(new MessageBoxButton(LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), () => StartCoroutine(downloadModFileAndLoadAsync())));
+            modDownloadMessage.DisplayMessageNow();
         }
 
         void onBrowseButtonClicked()
