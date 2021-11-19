@@ -55,7 +55,9 @@ namespace InternalModBot
         /// </summary>
         protected internal override void OnLevelEditorStarted()
         {
+#if MODDED_LEVEL_OBJECTS
             LevelEditorObjectAdder.OnLevelEditorStarted();
+#endif
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {

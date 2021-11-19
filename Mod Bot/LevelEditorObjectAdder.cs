@@ -8,6 +8,7 @@ using System;
 
 namespace ModLibrary
 {
+#if MODDED_LEVEL_OBJECTS
     /// <summary>
     /// Can be used to add your own custom things to the editor!
     /// </summary>
@@ -87,4 +88,5 @@ namespace ModLibrary
             */
         }
     }
+#endif
 }

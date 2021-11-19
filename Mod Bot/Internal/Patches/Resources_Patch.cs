@@ -18,15 +18,19 @@ namespace InternalModBot
         [HarmonyPostfix]
         static UnityEngine.Object Load_Postfix(UnityEngine.Object __result, string path)
         {
-            UnityEngine.Object moddedResource = LevelEditorObjectAdder.GetObjectData(path);
-            if (moddedResource != null)
-                return moddedResource;
+            UnityEngine.Object overrideResource;
+
+#if MODDED_LEVEL_OBJECTS
+            overrideResource = LevelEditorObjectAdder.GetObjectData(path);
+            if (overrideResource != null)
+                return overrideResource;
+#endif
 
             if (ModsManager.Instance != null)
             {
-                moddedResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
-                if (moddedResource != null)
-                    return moddedResource;
+                overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
+                if (overrideResource != null)
+                    return overrideResource;
             }
 
             return __result;
