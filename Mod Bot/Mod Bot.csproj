@@ -53,7 +53,15 @@
     <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
     <Compile Include="Internal\Patches\Resources_Patch.cs" />
     <Compile Include="Internal\Patches\TwitchWhoIsLiveManager_Patch.cs" />
+    <Compile Include="Internal\Reflection\FieldInfoKey.cs" />
+    <Compile Include="Internal\Reflection\MatchType.cs" />
+    <Compile Include="Internal\Reflection\MemberInfoKey.cs" />
+    <Compile Include="Internal\Reflection\MethodInfoKey.cs" />
+    <Compile Include="Internal\Reflection\ParameterMatchType.cs" />
+    <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
+    <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelEditorModdedMetadataManager.cs" />
     <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
     <Compile Include="Patching\Attributes\Prefix\InjectionPrefixTargetAttribute.cs" />
     <Compile Include="Patching\InjectionInfo.cs" />
@@ -299,9 +307,7 @@
   <ItemGroup>
     <None Include=".editorconfig" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Internal\UnitTests\Accessor\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
