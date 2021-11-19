@@ -59,7 +59,7 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="_event"></param>
-        internal static void OnEventRecieved<T>(T _event) where T : Event
+        internal static void OnEventReceived<T>(T _event) where T : Event
         {
             if (!_eventListeners.ContainsKey(typeof(T)))
                 return;
