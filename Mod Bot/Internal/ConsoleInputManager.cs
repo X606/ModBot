@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ModBotWebsiteAPI;
 using InternalModBot.Scripting;
 using HarmonyLib;
+using System.Reflection;
 
 namespace InternalModBot
 {
@@ -56,36 +57,55 @@ namespace InternalModBot
                 return;
             }
 
-#if DEBUG
-            if (subCommands[0] == "unittest")
+            if (subCommands[0] == "listpatches")
             {
-                if (subCommands.Length > 1)
+                IEnumerable<MethodBase> patchedMethods = Harmony.GetAllPatchedMethods();
+                foreach (MethodBase method in patchedMethods)
                 {
-                    bool foundUnitTest = ModBotUnitTestManager.TryRunUnitTest(subCommands[1]);
-                    if (!foundUnitTest)
+                    debug.Log( $"{method.FullDescription()}: ");
+                    Patches patchInfo = Harmony.GetPatchInfo(method);
+                    
+                    if (patchInfo.Prefixes.Count > 0)
                     {
-                        debug.Log("Unit test failed: Unit test \"" + subCommands[1] + "\" not found", Color.red);
-                        return;
+                        debug.Log("\tPrefixes: ");
+                        foreach (Patch prefix in patchInfo.Prefixes)
+                        {
+                            debug.Log($"\t\t{prefix.owner}: {prefix.PatchMethod.FullDescription()}");
+                        }
                     }
-                }
 
-                ModBotUnitTestManager.RunAllUnitTests();
+                    if (patchInfo.Postfixes.Count > 0)
+                    {
+                        debug.Log("\tPostfixes: ");
+                        foreach (Patch postfix in patchInfo.Postfixes)
+                        {
+                            debug.Log($"\t\t{postfix.owner}: {postfix.PatchMethod.FullDescription()}");
+                        }
+                    }
+
+                    if (patchInfo.Transpilers.Count > 0)
+                    {
+                        debug.Log("\tTranspilers: ");
+                        foreach (Patch transpiler in patchInfo.Transpilers)
+                        {
+                            debug.Log($"\t\t{transpiler.owner}: {transpiler.PatchMethod.FullDescription()}");
+                        }
+                    }
+
+                    if (patchInfo.Finalizers.Count > 0)
+                    {
+                        debug.Log("\tFinalizers: ");
+                        foreach (Patch finalizer in patchInfo.Finalizers)
+                        {
+                            debug.Log($"\t\t{finalizer.owner}: {finalizer.PatchMethod.FullDescription()}");
+                        }
+                    }
+
+                    debug.Log(""); // Blank line
+                }
             }
 
-            if (subCommands[0] == "getplayfabids")
-			{
-				debug.Log("spawned players playfabids: ");
-				List<FirstPersonMover> players = CharacterTracker.Instance.GetAllPlayers();
-				foreach(FirstPersonMover player in players)
-				{
-					string playfabID = player.state.PlayFabID;
-                    MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID, delegate (string displayName)
-                    {
-                        if (displayName != null)
-                            debug.Log(displayName + ": " + playfabID);
-                    });
-				}
-			}
+#if DEBUG
             if (subCommands[0] == "debug")
 			{
                 DelegateScheduler.Instance.Schedule(delegate
