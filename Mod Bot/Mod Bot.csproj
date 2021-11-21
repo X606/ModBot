@@ -94,7 +94,6 @@
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
-    <Compile Include="Internal\ModBotUnitTestManager.cs" />
     <Compile Include="Internal\MultiplayerPlayerNameManager.cs" />
     <Compile Include="Internal\NameTagRefreshListener.cs" />
     <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
