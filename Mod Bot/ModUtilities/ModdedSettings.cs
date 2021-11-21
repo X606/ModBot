@@ -463,7 +463,6 @@ namespace ModLibrary
         /// Returns if a setting with the given owner and ID is saved
         /// </summary>
         /// <param name="saveID">The ID of the setting</param>
-        [Obsolete("Passing a mod instance is no longer required")]
         public static bool HasSetting(string saveID)
         {
             Mod caller = InternalUtils.GetCallerModInstance();
