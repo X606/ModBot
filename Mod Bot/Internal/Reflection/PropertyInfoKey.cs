@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace InternalModBot
@@ -90,14 +91,20 @@ namespace InternalModBot
             return indexTypes && returnType;
         }
 
-        protected override MemberInfoKey Clone()
+        protected override MemberInfoKey clone()
         {
             return new PropertyInfoKey(ReflectedType, MemberName, ReturnType, IndexTypes);
         }
 
-        public override string ToString()
+        protected override IEnumerable<string> getStringValues()
         {
-            return $"{{ReflectedType: {ReflectedType.FullDescription()}, MemberName: {MemberName}, ReturnType: {ReturnType}, IndexTypes: ({IndexTypes.Join()})}}";
+            foreach (string item in base.getStringValues())
+            {
+                yield return item;
+            }
+
+            yield return nameof(ReturnType) + ": " + (ReturnType?.ToString() ?? "null");
+            yield return nameof(IndexTypes) + ": " + (IndexTypes != null ? ("[" + IndexTypes.Join() + "]") : "null");
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
+using ModLibrary;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -154,5 +156,50 @@ namespace InternalModBot
 				return null;
 			}
 		}
+
+		static Dictionary<DelegateInfoKey, Type> _cachedDelegateTypes = new Dictionary<DelegateInfoKey, Type>();
+
+		public static Type FindDelegateType(string name, Type declaringType, MatchType[] argumentTypes, MatchType returnType)
+        {
+            DelegateInfoKey delegateInfoKey = new DelegateInfoKey(declaringType, name, argumentTypes, returnType);
+			if (_cachedDelegateTypes.TryGetValue(delegateInfoKey, out Type cachedDelegateType))
+				return cachedDelegateType;
+
+			Type foundType = null;
+			ParameterMatchType matchedType = ParameterMatchType.None;
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+					if (typeof(MulticastDelegate).IsAssignableFrom(type))
+                    {
+						debug.Log(type.FullDescription());
+
+                        MethodInfo invokeMethod = type.GetMethodInfo("Invoke");
+
+                        ParameterMatchType parameterMatchType = Accessor.MatchParameterTypes(invokeMethod.GetParameters(), argumentTypes, true);
+                        ParameterMatchType returnMatchType = Accessor.MatchType(invokeMethod.ReturnType, returnType);
+
+						ParameterMatchType currentMatchType = (ParameterMatchType)Math.Min((int)parameterMatchType, (int)returnMatchType);
+
+						if (currentMatchType > matchedType)
+                        {
+							foundType = type;
+							matchedType = currentMatchType;
+                        }
+						else if (foundType != null)
+                        {
+							throw new AmbiguousMatchException($"Ambiguous match between {foundType.FullDescription()} and {type.FullDescription()}");
+                        }
+                    }
+                }
+            }
+
+			if (foundType != null)
+				_cachedDelegateTypes.Add(delegateInfoKey, foundType);
+
+			return foundType;
+        }
 	}
 }

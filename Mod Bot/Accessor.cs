@@ -18,10 +18,35 @@ namespace ModLibrary
         /// </summary>
         public const BindingFlags FLAGS = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
-        static ParameterMatchType parameterTypesMatch(ParameterInfo[] parameters, MatchType[] argumentTypes)
+        /// <summary>
+        /// The <see cref="BindingFlags"/> used by the GetMemberInfo methods
+        /// </summary>
+        public const BindingFlags FLAGS_GETMEMBERINFO = FLAGS | BindingFlags.Public;
+
+        internal static ParameterMatchType MatchType(Type type, MatchType argumentType)
+        {
+            // Null argument: any type goes, as long as it's nullable
+            if (argumentType == null)
+            {
+                // If the parameter type is a value type, and it's not a Nullable<T>, it cannot be null and thus doesn't match
+                if (type.IsValueType && Nullable.GetUnderlyingType(type) == null)
+                    return ParameterMatchType.NoMatch;
+            }
+            else if (!argumentType.IsAssignableTo(type))
+            {
+                return ParameterMatchType.NoMatch;
+            }
+
+            return ParameterMatchType.None;
+        }
+
+        internal static ParameterMatchType MatchParameterTypes(ParameterInfo[] parameters, MatchType[] argumentTypes, bool alwaysMatchIfNoArguments)
         {
             if (argumentTypes == null)
                 argumentTypes = new MatchType[0];
+
+            if (alwaysMatchIfNoArguments && argumentTypes.Length == 0)
+                return ParameterMatchType.FullMatch;
 
             // Too many arguments: Can't match. Less arguments can match however, since not all arguments need to be explicitly stated if one or more of the parameters have default values
             if (argumentTypes.Length > parameters.Length)
@@ -41,37 +66,29 @@ namespace ModLibrary
                     }
                 }
 
-                Type parameterType = parameters[i].ParameterType;
-
-                // Null argument: any type goes, as long as it's nullable
-                if (argumentTypes[i] == null)
-                {
-                    // If the parameter type is a value type, and it's not a Nullable<T>, it cannot be null and thus doesn't match
-                    if (parameterType.IsValueType && Nullable.GetUnderlyingType(parameterType) == null)
-                        return ParameterMatchType.NoMatch;
-                }
-                else if (!argumentTypes[i].IsAssignableTo(parameterType))
-                {
-                    return ParameterMatchType.NoMatch;
-                }
+                ParameterMatchType parameterMatch = MatchType(parameters[i]?.ParameterType, argumentTypes[i]);
+                if (parameterMatch != ParameterMatchType.None)
+                    return parameterMatch;
             }
 
             return ParameterMatchType.FullMatch;
         }
 
         #region Method
-        static MethodInfo findMethodRecursive(MethodInfoKey methodIdentifier)
+        static MethodInfo findMethodRecursive(MethodInfoKey methodIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments)
         {
             ParameterMatchType foundMatchType = ParameterMatchType.None;
             MethodInfo foundMethodInfo = null;
 
-            MethodInfo[] methodInfos = methodIdentifier.ReflectedType.GetMethods(FLAGS);
+            MethodInfo[] methodInfos = methodIdentifier.ReflectedType.GetMethods(flags);
+            debug.Log(methodIdentifier + " " + flags + " " + alwaysMatchIfNoArguments + " " + methodInfos.Length);
             foreach (MethodInfo method in methodInfos)
             {
+                debug.Log(method.FullDescription());
                 if (method.Name == methodIdentifier.MemberName)
                 {
                     ParameterInfo[] parameters = method.GetParameters();
-                    ParameterMatchType currentMatchType = parameterTypesMatch(parameters, methodIdentifier.ParameterTypes);
+                    ParameterMatchType currentMatchType = MatchParameterTypes(parameters, methodIdentifier.ParameterTypes, alwaysMatchIfNoArguments);
                     if (currentMatchType >= ParameterMatchType.PartialMatch)
                     {
                         if (foundMethodInfo is null || foundMatchType < currentMatchType)
@@ -90,7 +107,7 @@ namespace ModLibrary
             if (foundMethodInfo is null && methodIdentifier.CanStepDownInTypeHierarchy)
             {
                 // Recursively go down the type hierarchy to find the method
-                foundMethodInfo = findMethodRecursive(methodIdentifier.StepDownInTypeHierarchy() as MethodInfoKey);
+                foundMethodInfo = findMethodRecursive(methodIdentifier.StepDownInTypeHierarchy() as MethodInfoKey, flags, alwaysMatchIfNoArguments);
             }
 
             if (!(foundMethodInfo is null))
@@ -111,16 +128,76 @@ namespace ModLibrary
             return foundMethodInfo;
         }
 
-        static MethodInfo findMethod(MethodInfoKey methodIdentifier)
+        static MethodInfo findMethod(MethodInfoKey methodIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments = false)
         {
             if (_accessorCache.TryGetValue(methodIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is MethodInfo cachedMethodInfo)
                 return cachedMethodInfo;
 
-            MethodInfo methodInfo = findMethodRecursive(methodIdentifier);
+            MethodInfo methodInfo = findMethodRecursive(methodIdentifier, flags, alwaysMatchIfNoArguments);
             if (methodInfo is null)
                 throw new MissingMethodException(methodIdentifier.ReflectedType.FullName, methodIdentifier.MemberName);
 
             return methodInfo;
+        }
+
+        /// <summary>
+        /// Finds a <see cref="MethodInfo"/> which matches the arguments
+        /// </summary>
+        /// <param name="declaringType">The <see cref="Type"/> that declares the target method</param>
+        /// <param name="methodName">The name of the target method (case-sensitive)</param>
+        /// <param name="argumentTypes">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (Match any nullable type), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).</param>
+        /// <returns>The found <see cref="MethodInfo"/></returns>
+        public static MethodInfo GetMethodInfo(this Type declaringType, string methodName, Type[] argumentTypes)
+        {
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            if (string.IsNullOrWhiteSpace(methodName))
+                throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
+
+            return findMethod(new MethodInfoKey(declaringType, methodName, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="MethodInfo"/> which matches the arguments
+        /// </summary>
+        /// <param name="declaringType">The <see cref="Type"/> that declares the target method</param>
+        /// <param name="methodName">The name of the target method (case-sensitive)</param>
+        /// <returns>The found <see cref="MethodInfo"/></returns>
+        public static MethodInfo GetMethodInfo(this Type declaringType, string methodName)
+        {
+            debug.Log("please");
+
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            if (string.IsNullOrWhiteSpace(methodName))
+                throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
+
+            return findMethod(new MethodInfoKey(declaringType, methodName, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="MethodInfo"/> which matches the arguments
+        /// </summary>
+        /// <typeparam name="InstanceType">The type that declares the target method</typeparam>
+        /// <param name="methodName">The name of the target method (case-sensitive)</param>
+        /// <param name="argumentTypes">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (Match any nullable type), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).</param>
+        /// <returns>The found <see cref="MethodInfo"/></returns>
+        public static MethodInfo GetMethodInfo<InstanceType>(string methodName, Type[] argumentTypes)
+        {
+            return GetMethodInfo(typeof(InstanceType), methodName, argumentTypes);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="MethodInfo"/> which matches the arguments
+        /// </summary>
+        /// <typeparam name="InstanceType">The type that declares the target method</typeparam>
+        /// <param name="methodName">The name of the target method (case-sensitive)</param>
+        /// <returns>The found <see cref="MethodInfo"/></returns>
+        public static MethodInfo GetMethodInfo<InstanceType>(string methodName)
+        {
+            return GetMethodInfo(typeof(InstanceType), methodName);
         }
 
         /// <summary>
@@ -160,7 +237,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return (ReturnType)findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -204,7 +281,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return (ReturnType)findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -255,7 +332,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return (ReturnType)findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -328,7 +405,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -367,7 +444,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -413,7 +490,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides)).Invoke(instance, args);
+            findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
         }
 
         /// <summary>
@@ -451,14 +528,14 @@ namespace ModLibrary
         #endregion
 
         #region Field
-        static FieldInfo findFieldRecursive(FieldInfoKey fieldIdentifier)
+        static FieldInfo findFieldRecursive(FieldInfoKey fieldIdentifier, BindingFlags flags)
         {
-            FieldInfo fieldInfo = fieldIdentifier.ReflectedType.GetField(fieldIdentifier.MemberName, FLAGS);
+            FieldInfo fieldInfo = fieldIdentifier.ReflectedType.GetField(fieldIdentifier.MemberName, flags);
 
             if (fieldInfo is null && fieldIdentifier.CanStepDownInTypeHierarchy)
             {
                 // Recursively go down the type hierarchy to find the field
-                fieldInfo = findFieldRecursive(fieldIdentifier.StepDownInTypeHierarchy() as FieldInfoKey);
+                fieldInfo = findFieldRecursive(fieldIdentifier.StepDownInTypeHierarchy() as FieldInfoKey, flags);
             }
 
             if (!(fieldInfo is null))
@@ -478,16 +555,38 @@ namespace ModLibrary
 
             return fieldInfo;
         }
-        static FieldInfo findField(FieldInfoKey fieldIdentifier)
+        static FieldInfo findField(FieldInfoKey fieldIdentifier, BindingFlags flags)
         {
             if (_accessorCache.TryGetValue(fieldIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is FieldInfo cachedFieldInfo)
                 return cachedFieldInfo;
 
-            FieldInfo fieldInfo = findFieldRecursive(fieldIdentifier);
+            FieldInfo fieldInfo = findFieldRecursive(fieldIdentifier, flags);
             if (Equals(fieldInfo, null))
                 throw new MissingFieldException(fieldIdentifier.ReflectedType.FullName, fieldIdentifier.MemberName);
 
             return fieldInfo;
+        }
+
+        /// <summary>
+        /// Finds a <see cref="FieldInfo"/> which matches the arguments
+        /// </summary>
+        /// <param name="declaringType">The <see cref="Type"/> that declares the target field</param>
+        /// <param name="fieldName">The name of the target field (case-sensitive)</param>
+        /// <returns>The found <see cref="FieldInfo"/></returns>
+        public static FieldInfo GetFieldInfo(this Type declaringType, string fieldName)
+        {
+            return findField(new FieldInfoKey(declaringType, fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="FieldInfo"/> which matches the arguments
+        /// </summary>
+        /// <typeparam name="InstanceType">The type that declares the target field</typeparam>
+        /// <param name="fieldName">The name of the target field (case-sensitive)</param>
+        /// <returns>The found <see cref="FieldInfo"/></returns>
+        public static FieldInfo GetFieldInfo<InstanceType>(string fieldName)
+        {
+            return findField(new FieldInfoKey(typeof(InstanceType), fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO);
         }
 
         /// <summary>
@@ -512,7 +611,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findField(new FieldInfoKey(declaringType, fieldName)).SetValue(instance, value);
+            findField(new FieldInfoKey(declaringType, fieldName), FLAGS).SetValue(instance, value);
         }
 
         /// <summary>
@@ -544,7 +643,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            findField(new FieldInfoKey(typeof(InstanceType), fieldName)).SetValue(instance, value);
+            findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS).SetValue(instance, value);
         }
 
         /// <summary>
@@ -565,7 +664,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            findField(new FieldInfoKey(instance.GetType(), fieldName)).SetValue(instance, value);
+            findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS).SetValue(instance, value);
         }
 
         /// <summary>
@@ -583,7 +682,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            return (FieldType)findField(new FieldInfoKey(typeof(InstanceType), fieldName)).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS).GetValue(instance);
         }
 
         /// <summary>
@@ -604,7 +703,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            return (FieldType)findField(new FieldInfoKey(instance.GetType(), fieldName)).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS).GetValue(instance);
         }
 
         /// <summary>
@@ -630,7 +729,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return (FieldType)findField(new FieldInfoKey(declaringType, fieldName)).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(declaringType, fieldName), FLAGS).GetValue(instance);
         }
 
         /// <summary>
@@ -650,12 +749,12 @@ namespace ModLibrary
         #endregion
 
         #region Property
-        static PropertyInfo findPropertyRecursive(PropertyInfoKey propertyIdentifier)
+        static PropertyInfo findPropertyRecursive(PropertyInfoKey propertyIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments)
         {
             ParameterMatchType foundMatchType = ParameterMatchType.None;
             PropertyInfo foundPropertyInfo = null;
 
-            PropertyInfo[] propertyInfos = propertyIdentifier.ReflectedType.GetProperties(FLAGS);
+            PropertyInfo[] propertyInfos = propertyIdentifier.ReflectedType.GetProperties(flags);
             foreach (PropertyInfo property in propertyInfos)
             {
                 if (property.Name == propertyIdentifier.MemberName)
@@ -664,7 +763,7 @@ namespace ModLibrary
                     {
                         ParameterInfo[] parameters = property.GetIndexParameters();
 
-                        ParameterMatchType currentMatchType = parameterTypesMatch(parameters, propertyIdentifier.IndexTypes);
+                        ParameterMatchType currentMatchType = MatchParameterTypes(parameters, propertyIdentifier.IndexTypes, alwaysMatchIfNoArguments);
                         if (currentMatchType >= ParameterMatchType.PartialMatch)
                         {
                             if (foundPropertyInfo is null || foundMatchType < currentMatchType)
@@ -684,7 +783,7 @@ namespace ModLibrary
             if (foundPropertyInfo is null && propertyIdentifier.CanStepDownInTypeHierarchy)
             {
                 // Recursively go down the hierarchy to find the property
-                foundPropertyInfo = findPropertyRecursive(propertyIdentifier.StepDownInTypeHierarchy() as PropertyInfoKey);
+                foundPropertyInfo = findPropertyRecursive(propertyIdentifier.StepDownInTypeHierarchy() as PropertyInfoKey, flags, alwaysMatchIfNoArguments);
             }
 
             if (!(foundPropertyInfo is null))
@@ -704,16 +803,62 @@ namespace ModLibrary
 
             return foundPropertyInfo;
         }
-        static PropertyInfo findProperty(PropertyInfoKey propertyIdentifier)
+        static PropertyInfo findProperty(PropertyInfoKey propertyIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments = false)
         {
             if (_accessorCache.TryGetValue(propertyIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is PropertyInfo cachedPropertyInfo)
                 return cachedPropertyInfo;
 
-            PropertyInfo propertyInfo = findPropertyRecursive(propertyIdentifier);
+            PropertyInfo propertyInfo = findPropertyRecursive(propertyIdentifier, flags, alwaysMatchIfNoArguments);
             if (Equals(propertyInfo, null))
                 throw new MissingMemberException(propertyIdentifier.ReflectedType.FullName, propertyIdentifier.MemberName);
 
             return propertyInfo;
+        }
+
+        /// <summary>
+        /// Finds a <see cref="PropertyInfo"/> which matches the arguments
+        /// </summary>
+        /// <param name="declaringType">The <see cref="Type"/> that declares the target property</param>
+        /// <param name="propertyName">The name of the target property (case-sensitive)</param>
+        /// <param name="argumentTypes">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (Match any nullable type), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).</param>
+        /// <returns>The found <see cref="PropertyInfo"/></returns>
+        public static PropertyInfo GetPropertyInfo(this Type declaringType, string propertyName, Type[] argumentTypes)
+        {
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="MethodInfo"/> which matches the arguments
+        /// </summary>
+        /// <param name="declaringType">The <see cref="Type"/> that declares the target property</param>
+        /// <param name="propertyName">The name of the target property (case-sensitive)</param>
+        /// <returns>The found <see cref="MethodInfo"/></returns>
+        public static PropertyInfo GetPropertyInfo(this Type declaringType, string propertyName)
+        {
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="PropertyInfo"/> which matches the arguments
+        /// </summary>
+        /// <typeparam name="InstanceType">The type that declares the target property</typeparam>
+        /// <param name="propertyName">The name of the target property (case-sensitive)</param>
+        /// <param name="argumentTypes">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (Match any nullable type), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).</param>
+        /// <returns>The found <see cref="PropertyInfo"/></returns>
+        public static PropertyInfo GetPropertyInfo<InstanceType>(string propertyName, Type[] argumentTypes)
+        {
+            return GetPropertyInfo(typeof(InstanceType), propertyName, argumentTypes);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="PropertyInfo"/> which matches the arguments
+        /// </summary>
+        /// <typeparam name="InstanceType">The type that declares the target property</typeparam>
+        /// <param name="propertyName">The name of the target property (case-sensitive)</param>
+        /// <returns>The found <see cref="PropertyInfo"/></returns>
+        public static PropertyInfo GetPropertyInfo<InstanceType>(string propertyName)
+        {
+            return GetPropertyInfo(typeof(InstanceType), propertyName);
         }
 
         /// <summary>
@@ -743,7 +888,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findProperty(new PropertyInfoKey(declaringType, propertyName, value?.GetType(), indices, parameterTypeOverrides)).SetValue(instance, value);
+            findProperty(new PropertyInfoKey(declaringType, propertyName, value?.GetType(), indices, parameterTypeOverrides), FLAGS).SetValue(instance, value);
         }
 
         /// <summary>
@@ -939,7 +1084,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return findProperty(new PropertyInfoKey(declaringType, propertyName, returnType, indices, parameterTypeOverrides)).GetValue(instance, indices);
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, returnType, indices, parameterTypeOverrides), FLAGS).GetValue(instance, indices);
         }
 
         /// <summary>
@@ -1100,5 +1245,334 @@ namespace ModLibrary
             return (PropertyType)GetPrivateProperty(declaringType, propertyName, null, typeof(PropertyType), indices, parameterTypeOverrides);
         }
         #endregion
+
+        #region Constructor
+        static ConstructorInfo findConstructorRecursive(ConstructorInfoKey constructorIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments)
+        {
+            ParameterMatchType foundMatchType = ParameterMatchType.None;
+            ConstructorInfo foundConstructorInfo = null;
+
+            ConstructorInfo[] constructorInfos = constructorIdentifier.ReflectedType.GetConstructors(flags);
+            foreach (ConstructorInfo constructor in constructorInfos)
+            {
+                // IsStatic = is type initializer
+                if (constructorIdentifier.IsTypeInitializer == constructor.IsStatic)
+                {
+                    ParameterInfo[] parameters = constructor.GetParameters();
+                    ParameterMatchType currentMatchType = MatchParameterTypes(parameters, constructorIdentifier.ParameterTypes, alwaysMatchIfNoArguments);
+                    if (currentMatchType >= ParameterMatchType.PartialMatch)
+                    {
+                        if (foundConstructorInfo is null || foundMatchType < currentMatchType)
+                        {
+                            foundConstructorInfo = constructor;
+                            foundMatchType = currentMatchType;
+                        }
+                        else if (foundMatchType == currentMatchType)
+                        {
+                            throw new AmbiguousMatchException($"Ambiguous match between {constructor.GetFullDescription()} and {foundConstructorInfo.GetFullDescription()}");
+                        }
+                    }
+                }
+            }
+
+            if (foundConstructorInfo is null && constructorIdentifier.CanStepDownInTypeHierarchy)
+            {
+                // Recursively go down the type hierarchy to find the constructor
+                foundConstructorInfo = findConstructorRecursive(constructorIdentifier.StepDownInTypeHierarchy() as ConstructorInfoKey, flags, alwaysMatchIfNoArguments);
+            }
+
+            if (!(foundConstructorInfo is null))
+            {
+                if (_accessorCache.TryGetValue(constructorIdentifier, out MemberInfo cachedMemberInfo))
+                {
+                    if (cachedMemberInfo != foundConstructorInfo)
+                    {
+                        throw new Exception($"ConstructorInfoKey {constructorIdentifier} already present in dictionary, but results don't match! Cached: {cachedMemberInfo.GetFullDescription()}, Found: {foundConstructorInfo.GetFullDescription()}");
+                    }
+                }
+                else
+                {
+                    _accessorCache.Add(constructorIdentifier, foundConstructorInfo);
+                }
+            }
+
+            return foundConstructorInfo;
+        }
+
+        static ConstructorInfo findConstructor(ConstructorInfoKey constructorIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments)
+        {
+            if (_accessorCache.TryGetValue(constructorIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is ConstructorInfo cachedConstructorInfo)
+                return cachedConstructorInfo;
+
+            ConstructorInfo constructorInfo = findConstructorRecursive(constructorIdentifier, flags, alwaysMatchIfNoArguments);
+            if (constructorInfo is null)
+                throw new MissingMethodException(constructorIdentifier.ReflectedType.FullName, constructorIdentifier.MemberName);
+            
+            return constructorInfo;
+        }
+
+        /// <summary>
+        /// Gets the static constructor declared in the given type.
+        /// </summary>
+        /// <param name="declaringType">The type that declares the target static constructor</param>
+        /// <returns>The <see cref="ConstructorInfo"/> representing the <paramref name="declaringType"/>'s static constructor</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a static constructor</exception>
+        public static ConstructorInfo GetStaticConstructorInfo(this Type declaringType)
+        {
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            return findConstructor(new ConstructorInfoKey(declaringType, true, null, null) { IsGetMemberInfoKey = true }, FLAGS, true); // static constructors cannot be public, so there is no reason to use FLAGS_GETMEMBERINFO
+        }
+
+        /// <summary>
+        /// Gets the static constructor declared in the given type.
+        /// </summary>
+        /// <typeparam name="T">The type that declares the target static constructor</typeparam>
+        /// <returns>The <see cref="ConstructorInfo"/> representing the <typeparamref name="T"/>'s static constructor</returns>
+        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a static constructor</exception>
+        public static ConstructorInfo GetStaticConstructorInfo<T>()
+        {
+            return GetStaticConstructorInfo(typeof(T));
+        }
+
+        /// <summary>
+        /// Returns the single <see cref="ConstructorInfo"/> defined in <paramref name="declaringType"/>
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target constructor</param>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="AmbiguousMatchException"><paramref name="declaringType"/> defines more than one constructor</exception>
+        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a constructor</exception>
+        public static ConstructorInfo GetConstructorInfo(this Type declaringType)
+        {
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            return findConstructor(new ConstructorInfoKey(declaringType, false, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+        }
+
+        /// <summary>
+        /// Returns the single <see cref="ConstructorInfo"/> defined in <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">The type that defines the target constructor</typeparam>
+        /// <exception cref="AmbiguousMatchException"><typeparamref name="T"/> defines more than one constructor</exception>
+        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a constructor</exception>
+        public static ConstructorInfo GetConstructorInfo<T>()
+        {
+            return GetConstructorInfo(typeof(T));
+        }
+
+        /// <summary>
+        /// Finds a <see cref="ConstructorInfo"/> defined in <paramref name="declaringType"/> with matching argument types <paramref name="argumentTypes"/>
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target constructor</param>
+        /// <param name="argumentTypes">The types of all the parameters in the target constructor</param>
+        /// <returns>The found <see cref="ConstructorInfo"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a constructor that matches the parameter types</exception>
+        public static ConstructorInfo GetConstructorInfo(this Type declaringType, Type[] argumentTypes)
+        {
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            return findConstructor(new ConstructorInfoKey(declaringType, false, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+        }
+
+        /// <summary>
+        /// Finds a <see cref="ConstructorInfo"/> defined in <typeparamref name="T"/> with matching argument types <paramref name="argumentTypes"/>
+        /// </summary>
+        /// <typeparam name="T">The type that defines the target constructor</typeparam>
+        /// <param name="argumentTypes">The types of all the parameters in the target constructor</param>
+        /// <returns>The found <see cref="ConstructorInfo"/></returns>
+        /// <exception cref="AmbiguousMatchException"></exception>
+        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a constructor that matches the parameter types</exception>
+        public static ConstructorInfo GetConstructorInfo<T>(Type[] argumentTypes)
+        {
+            return GetConstructorInfo(typeof(T), argumentTypes);
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <paramref name="declaringType"/> that takes either no parameters or all parameters are optional
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target constructor</param>
+        /// <returns>The created instance of <paramref name="declaringType"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="AmbiguousMatchException"><paramref name="declaringType"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><paramref name="declaringType"/> does not define a constructor that matches the parameters</exception>
+        public static object InvokePrivateConstructor(this Type declaringType)
+        {
+            return InvokePrivateConstructor(declaringType, null);
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <typeparamref name="T"/> that takes either no parameters or all parameters are optional
+        /// </summary>
+        /// <typeparam name="T">The type that defines the target constructor</typeparam>
+        /// <returns>The created instance of <typeparamref name="T"/></returns>
+        /// <exception cref="AmbiguousMatchException"><typeparamref name="T"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><typeparamref name="T"/> does not define a constructor that matches the parameters</exception>
+        public static T InvokePrivateConstructor<T>()
+        {
+            return (T)InvokePrivateConstructor(typeof(T));
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <paramref name="declaringType"/> that takes parameters matching the types and order of <paramref name="arguments"/>
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target constructor</param>
+        /// <param name="arguments">The arguments to pass to the constructor</param>
+        /// <returns>The created instance of <paramref name="declaringType"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="AmbiguousMatchException"><paramref name="declaringType"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><paramref name="declaringType"/> does not define a constructor that matches the parameters</exception>
+        public static object InvokePrivateConstructor(this Type declaringType, params object[] arguments)
+        {
+            return InvokePrivateConstructor(declaringType, arguments, null);
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <typeparamref name="T"/> that takes parameters matching the types and order of <paramref name="arguments"/>
+        /// </summary>
+        /// <typeparam name="T">The type that defines the target constructor</typeparam>
+        /// <param name="arguments">The arguments to pass to the constructor</param>
+        /// <returns>The created instance of <typeparamref name="T"/></returns>
+        /// <exception cref="AmbiguousMatchException"><typeparamref name="T"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><typeparamref name="T"/> does not define a constructor that matches the parameters</exception>
+        public static T InvokePrivateConstructor<T>(params object[] arguments)
+        {
+            return (T)InvokePrivateConstructor(typeof(T), arguments);
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <paramref name="declaringType"/> that takes parameters matching the types and order of <paramref name="arguments"/> with optional type overrides defined with <paramref name="parameterTypeOverrides"/>
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target constructor</param>
+        /// <param name="arguments">The arguments to pass to the constructor</param>
+        /// <param name="parameterTypeOverrides">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (determine from context), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).
+        /// <br/>
+        /// If <see langword="null"/>, all parameter types are decided by the items in the <paramref name="arguments"/> array</param>
+        /// <returns>The created instance of <paramref name="declaringType"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
+        /// <exception cref="AmbiguousMatchException"><paramref name="declaringType"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><paramref name="declaringType"/> does not define a constructor that matches the parameters</exception>
+        public static object InvokePrivateConstructor(this Type declaringType, object[] arguments, Type[] parameterTypeOverrides)
+        {
+            if (declaringType is null)
+                throw new ArgumentNullException(nameof(declaringType));
+
+            return findConstructor(new ConstructorInfoKey(declaringType, false, arguments, parameterTypeOverrides), FLAGS, false).Invoke(arguments);
+        }
+
+        /// <summary>
+        /// Invokes the non-public constructor defined in <typeparamref name="T"/> that takes parameters matching the types and order of <paramref name="arguments"/> with optional type overrides defined with <paramref name="parameterTypeOverrides"/>
+        /// </summary>
+        /// <typeparam name="T">The type that defines the target constructor</typeparam>
+        /// <param name="arguments">The arguments to pass to the constructor</param>
+        /// <param name="parameterTypeOverrides">If not <see langword="null"/>, explicitly defines the type of specific arguments, individual items can be <see langword="null"/> (determine from context), or any <see cref="Type"/> (the argument at the same position as in this array will require a parameter that exactly matches that type).
+        /// <br/>
+        /// If <see langword="null"/>, all parameter types are decided by the items in the <paramref name="arguments"/> array</param>
+        /// <returns>The created instance of <typeparamref name="T"/></returns>
+        /// <exception cref="AmbiguousMatchException"><typeparamref name="T"/> defines more than one constructor that matches the parameters</exception>
+        /// <exception cref="MissingMethodException"><typeparamref name="T"/> does not define a constructor that matches the parameters</exception>
+        public static T InvokePrivateConstructor<T>(object[] arguments, Type[] parameterTypeOverrides)
+        {
+            return (T)InvokePrivateConstructor(typeof(T), arguments, parameterTypeOverrides);
+        }
+        #endregion
+
+        #region Type
+        static Type findNestedType(NestedTypeInfoKey typeIdentifier, BindingFlags flags)
+        {
+            if (_accessorCache.TryGetValue(typeIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is Type cachedType)
+                return cachedType;
+
+            Type nestedType = typeIdentifier.ReflectedType.GetNestedType(typeIdentifier.MemberName, flags);
+            if (nestedType is null)
+                throw new MissingMemberException(typeIdentifier.ReflectedType.FullName, typeIdentifier.MemberName);
+            
+            return nestedType;
+        }
+
+        /// <summary>
+        /// Finds a nested type defined in <paramref name="declaringType"/> with name <paramref name="nestedTypeName"/>
+        /// </summary>
+        /// <param name="declaringType">The type that defines the target nested type</param>
+        /// <param name="nestedTypeName">The name of the nested type</param>
+        /// <returns>The nested type</returns>
+        /// <exception cref="MissingMemberException"><paramref name="declaringType"/> does not define a nested type with name <paramref name="nestedTypeName"/></exception>
+        public static Type GetDeclaredNestedType(this Type declaringType, string nestedTypeName)
+        {
+            return findNestedType(new NestedTypeInfoKey(declaringType, nestedTypeName), FLAGS_GETMEMBERINFO);
+        }
+        #endregion
+
+        /*
+        #region Event
+        static EventInfo findEventRecursive(EventInfoKey eventIdentifier, BindingFlags flags)
+        {
+            ParameterMatchType foundMatchType = ParameterMatchType.None;
+            EventInfo foundEventInfo = null;
+
+            EventInfo[] eventInfos = eventIdentifier.ReflectedType.GetEvents(flags);
+            foreach (EventInfo evnt in eventInfos)
+            {
+                if (evnt.Name == eventIdentifier.MemberName)
+                {
+                    ParameterMatchType currentMatchType = MatchType(evnt.EventHandlerType, eventIdentifier.DelegateType);
+                    if (currentMatchType >= ParameterMatchType.PartialMatch)
+                    {
+                        if (foundEventInfo is null || foundMatchType < currentMatchType)
+                        {
+                            foundEventInfo = evnt;
+                            foundMatchType = currentMatchType;
+                        }
+                        else if (foundMatchType == currentMatchType)
+                        {
+                            throw new AmbiguousMatchException($"Ambiguous match between {evnt.GetFullDescription()} and {foundEventInfo.GetFullDescription()}");
+                        }
+                    }
+                }
+            }
+
+            if (foundEventInfo is null && eventIdentifier.CanStepDownInTypeHierarchy)
+            {
+                // Recursively go down the type hierarchy to find the method
+                foundEventInfo = findEventRecursive(eventIdentifier.StepDownInTypeHierarchy() as EventInfoKey, flags);
+            }
+
+            if (!(foundEventInfo is null))
+            {
+                if (_accessorCache.TryGetValue(eventIdentifier, out MemberInfo cachedMemberInfo))
+                {
+                    if (cachedMemberInfo != foundEventInfo)
+                    {
+                        throw new Exception($"EventInfoKey {eventIdentifier} already present in dictionary, but results don't match! Cached: {cachedMemberInfo.GetFullDescription()}, Found: {foundEventInfo.GetFullDescription()}");
+                    }
+                }
+                else
+                {
+                    _accessorCache.Add(eventIdentifier, foundEventInfo);
+                }
+            }
+
+            return foundEventInfo;
+        }
+
+        static EventInfo findEvent(EventInfoKey eventIdentifier, BindingFlags flags)
+        {
+            if (_accessorCache.TryGetValue(eventIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is EventInfo cachedEventInfo)
+                return cachedEventInfo;
+
+            EventInfo eventInfo = findEventRecursive(eventIdentifier, flags);
+            if (eventInfo is null)
+                throw new MissingMemberException(eventIdentifier.ReflectedType.FullName, eventIdentifier.MemberName);
+
+            return eventInfo;
+        }
+        #endregion
+        */
     }
+
 }

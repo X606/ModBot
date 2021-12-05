@@ -31,11 +31,13 @@ namespace InternalModBot
             }
         }
 
+        public bool IsGetMemberInfoKey { get; set; } = false;
+
         public bool CanStepDownInTypeHierarchy => ReflectedType.BaseType != null;
 
         public MemberInfoKey StepDownInTypeHierarchy()
         {
-            MemberInfoKey copy = Clone();
+            MemberInfoKey copy = clone();
             copy.ReflectedType = ReflectedType.BaseType;
             return copy;
         }
@@ -59,17 +61,25 @@ namespace InternalModBot
 
         public override int GetHashCode()
         {
-            int hashCode = -1874024137;
-            hashCode ^= (hashCode * -1521134295) + ReflectedType.GetHashCode();
+            int hashCode = GetType().GetHashCode();
+            hashCode ^= (hashCode * -1521134295) + (ReflectedType?.GetHashCode() ?? 0);
             hashCode ^= (hashCode * -1521134295) + MemberName.GetHashCode();
+            hashCode ^= (hashCode * -1521134295) + IsGetMemberInfoKey.GetHashCode();
             return hashCode;
         }
 
-        protected abstract MemberInfoKey Clone();
+        protected abstract MemberInfoKey clone();
+
+        protected virtual IEnumerable<string> getStringValues()
+        {
+            yield return nameof(ReflectedType) + ": " + (ReflectedType?.FullDescription() ?? "null");
+            yield return nameof(MemberName) + ": " + MemberName;
+            yield return nameof(IsGetMemberInfoKey) + ": " + IsGetMemberInfoKey;
+        }
 
         public override string ToString()
         {
-            return $"{{ReflectedType: {ReflectedType.FullDescription()}, MemberName: {MemberName}}}";
+            return GetType().FullDescription() + ": {" + getStringValues().Join() + "}";
         }
     }
 }

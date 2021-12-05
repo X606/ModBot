@@ -8,7 +8,7 @@ namespace InternalModBot
         {
         }
 
-        protected override MemberInfoKey Clone()
+        protected override MemberInfoKey clone()
         {
             return new FieldInfoKey(ReflectedType, MemberName);
         }

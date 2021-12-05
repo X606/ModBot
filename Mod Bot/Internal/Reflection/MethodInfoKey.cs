@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace InternalModBot
@@ -60,14 +61,19 @@ namespace InternalModBot
             return ParameterTypes.SequenceEqual(other.ParameterTypes, MatchType.Comparer);
         }
 
-        protected override MemberInfoKey Clone()
+        protected override MemberInfoKey clone()
         {
             return new MethodInfoKey(ReflectedType, MemberName, ParameterTypes);
         }
 
-        public override string ToString()
+        protected override IEnumerable<string> getStringValues()
         {
-            return $"{{ReflectedType: {ReflectedType.FullDescription()}, MemberName: {MemberName}, ParameterTypes: ({ParameterTypes.Join()})}}";
+            foreach (string item in base.getStringValues())
+            {
+                yield return item;
+            }
+
+            yield return nameof(ParameterTypes) + ": (" + (ParameterTypes?.Join() ?? "null") + ")";
         }
     }
 }

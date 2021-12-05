@@ -48,12 +48,12 @@ namespace InternalModBot
             return Type == otherType || (AllowInheritance && Type.IsAssignableFrom(otherType));
         }
 
-        public static MatchType[] FromTypeArray(Type[] types)
+        public static MatchType[] FromTypeArray(Type[] types, bool allowInheritance = true)
         {
             MatchType[] result = new MatchType[types.Length];
             for (int i = 0; i < types.Length; i++)
             {
-                result[i] = new MatchType(types[i], true);
+                result[i] = types[i] != null ? new MatchType(types[i], allowInheritance) : null;
             }
 
             return result;
@@ -77,7 +77,7 @@ namespace InternalModBot
 
         public override string ToString()
         {
-            return Type.FullDescription() + ": " + AllowInheritance;
+            return Type.FullDescription() + " [" + nameof(AllowInheritance) + ": " + AllowInheritance + "]";
         }
     }
 }

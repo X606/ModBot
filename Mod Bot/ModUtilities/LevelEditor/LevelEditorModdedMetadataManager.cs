@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,82 @@ namespace ModLibrary
         public static bool IsCurrentlyEditingLevel()
         {
             return GameModeManager.IsInLevelEditor() && LevelEditorDataManager.Instance != null && LevelEditorDataManager.Instance.GetCurrentLevelData() != null;
+        }
+
+        static LevelEditorLevelData getCurrentLevelData()
+        {
+            if (IsCurrentlyEditingLevel())
+            {
+                return LevelEditorDataManager.Instance.GetCurrentLevelData();
+            }
+            else
+            {
+                LevelDescription currentLevel = LevelManager.Instance.GetCurrentLevelDescription();
+                if (currentLevel != null)
+                    return currentLevel.GetLevelEditorLevelData();
+            }
+
+            return null;
+        }
+
+        public static Dictionary<string, string> GetMetadata()
+        {
+            return GetMetadata(getCurrentLevelData());
+        }
+
+        public static Dictionary<string, string> GetMetadata(LevelEditorLevelData level)
+        {
+            Mod metadataOwner = InternalUtils.GetCallerModInstance();
+            if (metadataOwner == null)
+            {
+                debug.Log("[LevelEditorModdedMetadataManager.GetMetadata] Unable to find caller mod instance, stack trace: " + new StackTrace().ToString());
+                return null;
+            }
+
+            return getMetadata(metadataOwner, level);
+        }
+
+        public static Dictionary<string, string> GetMetadata(LevelDescription level)
+        {
+            return GetMetadata(level.GetLevelEditorLevelData());
+        }
+
+        public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner)
+        {
+            return GetMetadata(owner, getCurrentLevelData());
+        }
+
+        public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner, LevelDescription levelDescription)
+        {
+            return GetMetadata(owner, levelDescription.GetLevelEditorLevelData());
+        }
+
+        public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner, LevelEditorLevelData levelData)
+        {
+            if (owner is null)
+                throw new ArgumentNullException(nameof(owner));
+
+            return new ReadOnlyDictionary<string, string>(getMetadata(owner, levelData));
+        }
+
+        static Dictionary<string, string> getMetadata(Mod owner, LevelEditorLevelData levelData)
+        {
+            if (levelData != null && levelData.ModdedMetadata != null && levelData.ModdedMetadata.TryGetValue(owner.ModInfo.UniqueID, out string serializedDictionary) && !string.IsNullOrEmpty(serializedDictionary))
+            {
+                Dictionary<string, string> metadataForMod;
+                try
+                {
+                    metadataForMod = JsonConvert.DeserializeObject<Dictionary<string, string>>(serializedDictionary);
+                }
+                catch (JsonException jsonError)
+                {
+                    throw new Exception($"JsonConvert.DeserializeObject failed with argument \"{serializedDictionary}\", {nameof(levelData)}: {levelData.Title} [{levelData.GeneratedUniqueID}], {nameof(owner)}: {owner.ModInfo.MainDLLFileName}", jsonError);
+                }
+
+                return metadataForMod;
+            }
+
+            return null;
         }
 
         /// <summary>

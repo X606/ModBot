@@ -49,7 +49,10 @@ namespace ModLibrary
 
         public static LevelEditorLevelData GetLevelEditorLevelData(this LevelDescription levelDescription)
         {
-			LevelEditorLevelData levelEditorLevelData = null;
+            if (levelDescription is null)
+                throw new ArgumentNullException(nameof(levelDescription));
+
+            LevelEditorLevelData levelEditorLevelData = null;
 			if (levelDescription.LevelTags.Contains(LevelTags.LevelEditor))
 			{
 				string prefabPath = "Data/LevelEditorLevels/" + levelDescription.PrefabName;
