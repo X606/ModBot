@@ -81,10 +81,8 @@ namespace ModLibrary
             MethodInfo foundMethodInfo = null;
 
             MethodInfo[] methodInfos = methodIdentifier.ReflectedType.GetMethods(flags);
-            debug.Log(methodIdentifier + " " + flags + " " + alwaysMatchIfNoArguments + " " + methodInfos.Length);
             foreach (MethodInfo method in methodInfos)
             {
-                debug.Log(method.FullDescription());
                 if (method.Name == methodIdentifier.MemberName)
                 {
                     ParameterInfo[] parameters = method.GetParameters();
@@ -128,13 +126,13 @@ namespace ModLibrary
             return foundMethodInfo;
         }
 
-        static MethodInfo findMethod(MethodInfoKey methodIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments = false)
+        static MethodInfo findMethod(MethodInfoKey methodIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments, bool throwIfMissing)
         {
             if (_accessorCache.TryGetValue(methodIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is MethodInfo cachedMethodInfo)
                 return cachedMethodInfo;
 
             MethodInfo methodInfo = findMethodRecursive(methodIdentifier, flags, alwaysMatchIfNoArguments);
-            if (methodInfo is null)
+            if (throwIfMissing && methodInfo is null)
                 throw new MissingMethodException(methodIdentifier.ReflectedType.FullName, methodIdentifier.MemberName);
 
             return methodInfo;
@@ -155,7 +153,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return findMethod(new MethodInfoKey(declaringType, methodName, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+            return findMethod(new MethodInfoKey(declaringType, methodName, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false, false);
         }
 
         /// <summary>
@@ -166,15 +164,13 @@ namespace ModLibrary
         /// <returns>The found <see cref="MethodInfo"/></returns>
         public static MethodInfo GetMethodInfo(this Type declaringType, string methodName)
         {
-            debug.Log("please");
-
             if (declaringType is null)
                 throw new ArgumentNullException(nameof(declaringType));
 
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return findMethod(new MethodInfoKey(declaringType, methodName, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+            return findMethod(new MethodInfoKey(declaringType, methodName, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true, false);
         }
 
         /// <summary>
@@ -237,7 +233,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return (ReturnType)findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -281,7 +277,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            return (ReturnType)findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -332,7 +328,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return (ReturnType)findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            return (ReturnType)findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -405,7 +401,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            findMethod(new MethodInfoKey(typeof(InstanceType), methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -444,7 +440,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(methodName))
                 throw new ArgumentException($"'{nameof(methodName)}' cannot be null or whitespace.", nameof(methodName));
 
-            findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            findMethod(new MethodInfoKey(instance.GetType(), methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -490,7 +486,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS).Invoke(instance, args);
+            findMethod(new MethodInfoKey(declaringType, methodName, args, parameterTypeOverrides), FLAGS, false, true).Invoke(instance, args);
         }
 
         /// <summary>
@@ -555,13 +551,13 @@ namespace ModLibrary
 
             return fieldInfo;
         }
-        static FieldInfo findField(FieldInfoKey fieldIdentifier, BindingFlags flags)
+        static FieldInfo findField(FieldInfoKey fieldIdentifier, BindingFlags flags, bool throwIfMissing)
         {
             if (_accessorCache.TryGetValue(fieldIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is FieldInfo cachedFieldInfo)
                 return cachedFieldInfo;
 
             FieldInfo fieldInfo = findFieldRecursive(fieldIdentifier, flags);
-            if (Equals(fieldInfo, null))
+            if (throwIfMissing && fieldInfo is null)
                 throw new MissingFieldException(fieldIdentifier.ReflectedType.FullName, fieldIdentifier.MemberName);
 
             return fieldInfo;
@@ -575,7 +571,7 @@ namespace ModLibrary
         /// <returns>The found <see cref="FieldInfo"/></returns>
         public static FieldInfo GetFieldInfo(this Type declaringType, string fieldName)
         {
-            return findField(new FieldInfoKey(declaringType, fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO);
+            return findField(new FieldInfoKey(declaringType, fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
         }
 
         /// <summary>
@@ -586,7 +582,7 @@ namespace ModLibrary
         /// <returns>The found <see cref="FieldInfo"/></returns>
         public static FieldInfo GetFieldInfo<InstanceType>(string fieldName)
         {
-            return findField(new FieldInfoKey(typeof(InstanceType), fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO);
+            return findField(new FieldInfoKey(typeof(InstanceType), fieldName) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
         }
 
         /// <summary>
@@ -611,7 +607,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findField(new FieldInfoKey(declaringType, fieldName), FLAGS).SetValue(instance, value);
+            findField(new FieldInfoKey(declaringType, fieldName), FLAGS, true).SetValue(instance, value);
         }
 
         /// <summary>
@@ -643,7 +639,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS).SetValue(instance, value);
+            findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS, true).SetValue(instance, value);
         }
 
         /// <summary>
@@ -664,7 +660,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS).SetValue(instance, value);
+            findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS, true).SetValue(instance, value);
         }
 
         /// <summary>
@@ -682,7 +678,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            return (FieldType)findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(typeof(InstanceType), fieldName), FLAGS, true).GetValue(instance);
         }
 
         /// <summary>
@@ -703,7 +699,7 @@ namespace ModLibrary
             if (string.IsNullOrWhiteSpace(fieldName))
                 throw new ArgumentException($"'{nameof(fieldName)}' cannot be null or whitespace.", nameof(fieldName));
 
-            return (FieldType)findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(instance.GetType(), fieldName), FLAGS, true).GetValue(instance);
         }
 
         /// <summary>
@@ -729,7 +725,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return (FieldType)findField(new FieldInfoKey(declaringType, fieldName), FLAGS).GetValue(instance);
+            return (FieldType)findField(new FieldInfoKey(declaringType, fieldName), FLAGS, true).GetValue(instance);
         }
 
         /// <summary>
@@ -803,13 +799,13 @@ namespace ModLibrary
 
             return foundPropertyInfo;
         }
-        static PropertyInfo findProperty(PropertyInfoKey propertyIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments = false)
+        static PropertyInfo findProperty(PropertyInfoKey propertyIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments, bool throwIfMissing)
         {
             if (_accessorCache.TryGetValue(propertyIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is PropertyInfo cachedPropertyInfo)
                 return cachedPropertyInfo;
 
             PropertyInfo propertyInfo = findPropertyRecursive(propertyIdentifier, flags, alwaysMatchIfNoArguments);
-            if (Equals(propertyInfo, null))
+            if (throwIfMissing && propertyInfo is null)
                 throw new MissingMemberException(propertyIdentifier.ReflectedType.FullName, propertyIdentifier.MemberName);
 
             return propertyInfo;
@@ -824,7 +820,7 @@ namespace ModLibrary
         /// <returns>The found <see cref="PropertyInfo"/></returns>
         public static PropertyInfo GetPropertyInfo(this Type declaringType, string propertyName, Type[] argumentTypes)
         {
-            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false, false);
         }
 
         /// <summary>
@@ -835,7 +831,7 @@ namespace ModLibrary
         /// <returns>The found <see cref="MethodInfo"/></returns>
         public static PropertyInfo GetPropertyInfo(this Type declaringType, string propertyName)
         {
-            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, null, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true, false);
         }
 
         /// <summary>
@@ -888,7 +884,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            findProperty(new PropertyInfoKey(declaringType, propertyName, value?.GetType(), indices, parameterTypeOverrides), FLAGS).SetValue(instance, value);
+            findProperty(new PropertyInfoKey(declaringType, propertyName, value?.GetType(), indices, parameterTypeOverrides), FLAGS, false, true).SetValue(instance, value);
         }
 
         /// <summary>
@@ -1084,7 +1080,7 @@ namespace ModLibrary
             if (instance != null && !declaringType.IsAssignableFrom(instance.GetType()))
                 throw new ArgumentException($"'{nameof(instance)}' ({instance.GetType().FullDescription()}) must be implicitly assignable to '{nameof(declaringType)}' ({declaringType.FullDescription()})");
 
-            return findProperty(new PropertyInfoKey(declaringType, propertyName, returnType, indices, parameterTypeOverrides), FLAGS).GetValue(instance, indices);
+            return findProperty(new PropertyInfoKey(declaringType, propertyName, returnType, indices, parameterTypeOverrides), FLAGS, false, true).GetValue(instance, indices);
         }
 
         /// <summary>
@@ -1299,13 +1295,13 @@ namespace ModLibrary
             return foundConstructorInfo;
         }
 
-        static ConstructorInfo findConstructor(ConstructorInfoKey constructorIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments)
+        static ConstructorInfo findConstructor(ConstructorInfoKey constructorIdentifier, BindingFlags flags, bool alwaysMatchIfNoArguments, bool throwIfMissing)
         {
             if (_accessorCache.TryGetValue(constructorIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is ConstructorInfo cachedConstructorInfo)
                 return cachedConstructorInfo;
 
             ConstructorInfo constructorInfo = findConstructorRecursive(constructorIdentifier, flags, alwaysMatchIfNoArguments);
-            if (constructorInfo is null)
+            if (throwIfMissing && constructorInfo is null)
                 throw new MissingMethodException(constructorIdentifier.ReflectedType.FullName, constructorIdentifier.MemberName);
             
             return constructorInfo;
@@ -1317,13 +1313,12 @@ namespace ModLibrary
         /// <param name="declaringType">The type that declares the target static constructor</param>
         /// <returns>The <see cref="ConstructorInfo"/> representing the <paramref name="declaringType"/>'s static constructor</returns>
         /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
-        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a static constructor</exception>
         public static ConstructorInfo GetStaticConstructorInfo(this Type declaringType)
         {
             if (declaringType is null)
                 throw new ArgumentNullException(nameof(declaringType));
 
-            return findConstructor(new ConstructorInfoKey(declaringType, true, null, null) { IsGetMemberInfoKey = true }, FLAGS, true); // static constructors cannot be public, so there is no reason to use FLAGS_GETMEMBERINFO
+            return findConstructor(new ConstructorInfoKey(declaringType, true, null, null) { IsGetMemberInfoKey = true }, FLAGS, true, false); // static constructors cannot be public, so there is no reason to use FLAGS_GETMEMBERINFO
         }
 
         /// <summary>
@@ -1331,7 +1326,6 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T">The type that declares the target static constructor</typeparam>
         /// <returns>The <see cref="ConstructorInfo"/> representing the <typeparamref name="T"/>'s static constructor</returns>
-        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a static constructor</exception>
         public static ConstructorInfo GetStaticConstructorInfo<T>()
         {
             return GetStaticConstructorInfo(typeof(T));
@@ -1343,13 +1337,12 @@ namespace ModLibrary
         /// <param name="declaringType">The type that defines the target constructor</param>
         /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
         /// <exception cref="AmbiguousMatchException"><paramref name="declaringType"/> defines more than one constructor</exception>
-        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a constructor</exception>
         public static ConstructorInfo GetConstructorInfo(this Type declaringType)
         {
             if (declaringType is null)
                 throw new ArgumentNullException(nameof(declaringType));
 
-            return findConstructor(new ConstructorInfoKey(declaringType, false, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true);
+            return findConstructor(new ConstructorInfoKey(declaringType, false, null, null) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, true, false);
         }
 
         /// <summary>
@@ -1357,7 +1350,6 @@ namespace ModLibrary
         /// </summary>
         /// <typeparam name="T">The type that defines the target constructor</typeparam>
         /// <exception cref="AmbiguousMatchException"><typeparamref name="T"/> defines more than one constructor</exception>
-        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a constructor</exception>
         public static ConstructorInfo GetConstructorInfo<T>()
         {
             return GetConstructorInfo(typeof(T));
@@ -1371,13 +1363,12 @@ namespace ModLibrary
         /// <returns>The found <see cref="ConstructorInfo"/></returns>
         /// <exception cref="ArgumentNullException"><paramref name="declaringType"/> is <see langword="null"/></exception>
         /// <exception cref="AmbiguousMatchException"></exception>
-        /// <exception cref="MissingMethodException">The <paramref name="declaringType"/> does not contain a constructor that matches the parameter types</exception>
         public static ConstructorInfo GetConstructorInfo(this Type declaringType, Type[] argumentTypes)
         {
             if (declaringType is null)
                 throw new ArgumentNullException(nameof(declaringType));
 
-            return findConstructor(new ConstructorInfoKey(declaringType, false, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false);
+            return findConstructor(new ConstructorInfoKey(declaringType, false, null, argumentTypes) { IsGetMemberInfoKey = true }, FLAGS_GETMEMBERINFO, false, false);
         }
 
         /// <summary>
@@ -1387,7 +1378,6 @@ namespace ModLibrary
         /// <param name="argumentTypes">The types of all the parameters in the target constructor</param>
         /// <returns>The found <see cref="ConstructorInfo"/></returns>
         /// <exception cref="AmbiguousMatchException"></exception>
-        /// <exception cref="MissingMethodException">The <typeparamref name="T"/> does not contain a constructor that matches the parameter types</exception>
         public static ConstructorInfo GetConstructorInfo<T>(Type[] argumentTypes)
         {
             return GetConstructorInfo(typeof(T), argumentTypes);
@@ -1462,7 +1452,7 @@ namespace ModLibrary
             if (declaringType is null)
                 throw new ArgumentNullException(nameof(declaringType));
 
-            return findConstructor(new ConstructorInfoKey(declaringType, false, arguments, parameterTypeOverrides), FLAGS, false).Invoke(arguments);
+            return findConstructor(new ConstructorInfoKey(declaringType, false, arguments, parameterTypeOverrides), FLAGS, false, true).Invoke(arguments);
         }
 
         /// <summary>
@@ -1483,13 +1473,13 @@ namespace ModLibrary
         #endregion
 
         #region Type
-        static Type findNestedType(NestedTypeInfoKey typeIdentifier, BindingFlags flags)
+        static Type findNestedType(NestedTypeInfoKey typeIdentifier, BindingFlags flags, bool throwIfMissing)
         {
             if (_accessorCache.TryGetValue(typeIdentifier, out MemberInfo cachedMemberInfo) && cachedMemberInfo is Type cachedType)
                 return cachedType;
 
             Type nestedType = typeIdentifier.ReflectedType.GetNestedType(typeIdentifier.MemberName, flags);
-            if (nestedType is null)
+            if (throwIfMissing && nestedType is null)
                 throw new MissingMemberException(typeIdentifier.ReflectedType.FullName, typeIdentifier.MemberName);
             
             return nestedType;
@@ -1501,10 +1491,9 @@ namespace ModLibrary
         /// <param name="declaringType">The type that defines the target nested type</param>
         /// <param name="nestedTypeName">The name of the nested type</param>
         /// <returns>The nested type</returns>
-        /// <exception cref="MissingMemberException"><paramref name="declaringType"/> does not define a nested type with name <paramref name="nestedTypeName"/></exception>
         public static Type GetDeclaredNestedType(this Type declaringType, string nestedTypeName)
         {
-            return findNestedType(new NestedTypeInfoKey(declaringType, nestedTypeName), FLAGS_GETMEMBERINFO);
+            return findNestedType(new NestedTypeInfoKey(declaringType, nestedTypeName), FLAGS_GETMEMBERINFO, false);
         }
         #endregion
 
