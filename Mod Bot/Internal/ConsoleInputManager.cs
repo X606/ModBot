@@ -6,6 +6,7 @@ using ModBotWebsiteAPI;
 using InternalModBot.Scripting;
 using HarmonyLib;
 using System.Reflection;
+using System.Linq;
 
 namespace InternalModBot
 {
@@ -59,13 +60,20 @@ namespace InternalModBot
 
             if (subCommands[0] == "listpatches")
             {
-                IEnumerable<MethodBase> patchedMethods = Harmony.GetAllPatchedMethods();
-                foreach (MethodBase method in patchedMethods)
+                foreach (MethodBase method in Harmony.GetAllPatchedMethods())
                 {
-                    debug.Log( $"{method.FullDescription()}: ");
                     Patches patchInfo = Harmony.GetPatchInfo(method);
-                    
-                    if (patchInfo.Prefixes.Count > 0)
+
+                    bool hasPrefix = patchInfo.Prefixes.Any();
+                    bool hasPostfix = patchInfo.Postfixes.Any();
+                    bool hasTranspiler = patchInfo.Transpilers.Any();
+                    bool hasFinalizer = patchInfo.Finalizers.Any();
+
+                    if (!hasPrefix && !hasPostfix && !hasTranspiler && !hasFinalizer)
+                        continue;
+
+                    debug.Log( $"{method.FullDescription()}: ");
+                    if (hasPrefix)
                     {
                         debug.Log("\tPrefixes: ");
                         foreach (Patch prefix in patchInfo.Prefixes)
@@ -74,7 +82,7 @@ namespace InternalModBot
                         }
                     }
 
-                    if (patchInfo.Postfixes.Count > 0)
+                    if (hasPostfix)
                     {
                         debug.Log("\tPostfixes: ");
                         foreach (Patch postfix in patchInfo.Postfixes)
@@ -83,7 +91,7 @@ namespace InternalModBot
                         }
                     }
 
-                    if (patchInfo.Transpilers.Count > 0)
+                    if (hasTranspiler)
                     {
                         debug.Log("\tTranspilers: ");
                         foreach (Patch transpiler in patchInfo.Transpilers)
@@ -92,7 +100,7 @@ namespace InternalModBot
                         }
                     }
 
-                    if (patchInfo.Finalizers.Count > 0)
+                    if (hasFinalizer)
                     {
                         debug.Log("\tFinalizers: ");
                         foreach (Patch finalizer in patchInfo.Finalizers)
