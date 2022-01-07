@@ -40,11 +40,20 @@ namespace ModLibrary
             return null;
         }
 
+        /// <summary>
+        /// Gets the modded metadata in the current level owned by the caller mod instance
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, string> GetMetadata()
         {
             return GetMetadata(getCurrentLevelData());
         }
 
+        /// <summary>
+        /// Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
+        /// </summary>
+        /// <param name="level">The level to search for metadata</param>
+        /// <returns></returns>
         public static Dictionary<string, string> GetMetadata(LevelEditorLevelData level)
         {
             Mod metadataOwner = InternalUtils.GetCallerModInstance();
@@ -57,21 +66,46 @@ namespace ModLibrary
             return getMetadata(metadataOwner, level);
         }
 
+        /// <summary>
+        /// Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
+        /// </summary>
+        /// <param name="level">The level to search for metadata</param>
+        /// <returns></returns>
         public static Dictionary<string, string> GetMetadata(LevelDescription level)
         {
             return GetMetadata(level.GetLevelEditorLevelData());
         }
 
+        /// <summary>
+        /// Gets the modded metadata in the current level owned by <paramref name="owner"/>
+        /// </summary>
+        /// <param name="owner">The <see cref="Mod"/> that owns the metadata</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
         public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner)
         {
             return GetMetadata(owner, getCurrentLevelData());
         }
 
+        /// <summary>
+        /// Gets the modded metadata in <paramref name="levelDescription"/> owned by <paramref name="owner"/>
+        /// </summary>
+        /// <param name="owner">The <see cref="Mod"/> that owns the metadata</param>
+        /// <param name="levelDescription">The level to search for metadata</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
         public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner, LevelDescription levelDescription)
         {
             return GetMetadata(owner, levelDescription.GetLevelEditorLevelData());
         }
 
+        /// <summary>
+        /// Gets the modded metadata in <paramref name="levelData"/> owned by <paramref name="owner"/>
+        /// </summary>
+        /// <param name="owner">The <see cref="Mod"/> that owns the metadata</param>
+        /// <param name="levelData">The level to search for metadata</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
         public static ReadOnlyDictionary<string, string> GetMetadata(Mod owner, LevelEditorLevelData levelData)
         {
             if (owner is null)

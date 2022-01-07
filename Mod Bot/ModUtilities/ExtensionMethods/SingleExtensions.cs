@@ -47,6 +47,12 @@ namespace ModLibrary
             return mod.ModInfo.IsModEnabled;
         }
 
+        /// <summary>
+        /// Loads and returns the <see cref="LevelEditorLevelData"/> associated with the <see cref="LevelDescription"/>
+        /// </summary>
+        /// <param name="levelDescription">The <see cref="LevelDescription"/> to get the <see cref="LevelEditorLevelData"/> of</param>
+        /// <returns>The loaded <see cref="LevelEditorLevelData"/>, or <see langword="null"/> if it could not be found or loaded</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="levelDescription"/> is <see langword="null"/></exception>
         public static LevelEditorLevelData GetLevelEditorLevelData(this LevelDescription levelDescription)
         {
             if (levelDescription is null)
