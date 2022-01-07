@@ -114,31 +114,49 @@ namespace InternalModBot
 		}
 		void onSignInButtonClicked()
 		{
-			string playfabId = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
-
 			_signInButton.gameObject.SetActive(false);
 			_signUpButton.gameObject.SetActive(false);
 			_xButton.gameObject.SetActive(false);
-			API.SignInFromGame(_usernameField.text, _passwordField.text, playfabId, delegate(JsonObject json)
+			signInFromGame();
+		}
+
+		void signInFromGame()
+        {
+			API.SignInFromGame(_usernameField.text, _passwordField.text, MultiplayerLoginManager.Instance.GetLocalPlayFabID(), onSignInInfoReceived);
+		}
+
+		void onSignInInfoReceived(JsonObject json)
+        {
+			string error;
+			try
 			{
-				string error = Convert.ToString(json["Error"]);
-				if (error != "" && error != "null")
-				{
-					_errorText.text = error;
-					_signInButton.gameObject.SetActive(true);
-					_signUpButton.gameObject.SetActive(true);
-					_xButton.gameObject.SetActive(true);
-					return;
-				}
+				error = Convert.ToString(json["Error"]);
+			}
+			catch (NullReferenceException)
+            {
+				_errorText.text = "Could not connect to server";
+				_signInButton.gameObject.SetActive(true);
+				_signUpButton.gameObject.SetActive(true);
+				_xButton.gameObject.SetActive(true);
+				return;
+            }
 
-				_errorText.text = "";
-				string sessionID = Convert.ToString(json["sessionID"]).Trim('\"');
-				SetSession(sessionID);
+			if (error != "" && error != "null")
+			{
+				_errorText.text = error;
+				_signInButton.gameObject.SetActive(true);
+				_signUpButton.gameObject.SetActive(true);
+				_xButton.gameObject.SetActive(true);
+				return;
+			}
 
-				onCloseButton();
+			_errorText.text = "";
+			string sessionID = Convert.ToString(json["sessionID"]).Trim('\"');
+			SetSession(sessionID);
 
-				onSignedIn();
-			});
+			onCloseButton();
+
+			onSignedIn();
 		}
 
 		void onCloseButton()
@@ -152,15 +170,22 @@ namespace InternalModBot
 			{
 				API.GetUser(userId, delegate (JsonObject json)
 				{
-					string username = Convert.ToString(json["username"]).Trim('\"');
+					string username;
+					try
+					{
+						username = Convert.ToString(json["username"]).Trim('\"');
+						username = "<color=" + Convert.ToString(json["color"]) + ">" + username + "</color>";
+					}
+					catch (NullReferenceException)
+                    {
+						DelegateScheduler.Instance.Schedule(onSignedIn, 2f);
+						return;
+                    }
 
-					username = "<color=" + Convert.ToString(json["color"]) +">" + username + "</color>";
 					debug.Log("logged in as " + username.Trim('\"'));
 					VersionLabelManager.Instance.SetLine(2, "Signed in as: " + username);
-				});
-
+                });
 			});
 		}
-
 	}
 }

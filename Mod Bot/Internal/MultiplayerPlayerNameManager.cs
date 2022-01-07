@@ -27,48 +27,60 @@ namespace InternalModBot
 
 		void Start()
 		{
-			GlobalEventManager.Instance.AddEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttachced);
+			GlobalEventManager.Instance.AddEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttached);
 		}
 		void OnDestroy()
 		{
-			GlobalEventManager.Instance.RemoveEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttachced);
+			GlobalEventManager.Instance.RemoveEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttached);
 		}
 
-		void onPlayerInfoStateAttachced(IPlayerInfoState playerInfoState)
+		void onPlayerInfoStateAttached(IPlayerInfoState playerInfoState)
 		{
 			DelegateScheduler.Instance.Schedule(delegate
 			{
+				if (playerInfoState == null || playerInfoState.IsDisconnected)
+					return;
+
 				string playfabID = playerInfoState.PlayFabID;
 
 				if (string.IsNullOrWhiteSpace(playfabID))
 					return;
 
-				API.GetPlayerPrefix(playfabID, delegate (JsonObject json)
-				{
-					string nameOverride = Convert.ToString(json["nameOverride"]);
-					string prefix = Convert.ToString(json["prefix"]);
-
-					bool useOverrideName = !string.IsNullOrEmpty(nameOverride);
-					bool usePrefix = !string.IsNullOrEmpty(prefix);
-
-					if (useOverrideName)
-					{
-						playfabIDToOverrideNameDictionary[playfabID] = nameOverride;
-					}
-					if (usePrefix)
-					{
-						playfabIDToCustomPrefixDictionary[playfabID] = prefix;
-					}
-
-					if (useOverrideName || usePrefix)
-					{
-						TriggerRefreshNameTagsEvent();
-					}
-
-				});
+				API.GetPlayerPrefix(playfabID, json => onPlayerNameDataReceived(json, playfabID));
 			}, 0.2f);
-			
+		}
 
+		void onPlayerNameDataReceived(JsonObject json, string playfabID)
+        {
+			string nameOverride;
+			string prefix;
+			try
+			{
+				nameOverride = Convert.ToString(json["nameOverride"]);
+				prefix = Convert.ToString(json["prefix"]);
+			}
+			catch (NullReferenceException)
+			{
+				DelegateScheduler.Instance.Schedule(() => API.GetPlayerPrefix(playfabID, j => onPlayerNameDataReceived(j, playfabID)), 2f);
+				return;
+			}
+
+			bool useOverrideName = !string.IsNullOrEmpty(nameOverride);
+			bool usePrefix = !string.IsNullOrEmpty(prefix);
+
+			if (useOverrideName)
+			{
+				playfabIDToOverrideNameDictionary[playfabID] = nameOverride;
+			}
+			if (usePrefix)
+			{
+				playfabIDToCustomPrefixDictionary[playfabID] = prefix;
+			}
+
+			if (useOverrideName || usePrefix)
+			{
+				TriggerRefreshNameTagsEvent();
+			}
 		}
 
 		/// <summary>
