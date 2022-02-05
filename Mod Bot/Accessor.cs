@@ -29,8 +29,14 @@ namespace ModLibrary
             if (argumentType == null)
             {
                 // If the parameter type is a value type, and it's not a Nullable<T>, it cannot be null and thus doesn't match
-                if (type.IsValueType && Nullable.GetUnderlyingType(type) == null)
+                if (type.IsClass || (type.IsValueType && Nullable.GetUnderlyingType(type) != null))
+                {
+                    return ParameterMatchType.PartialMatch;
+                }
+                else
+                {
                     return ParameterMatchType.NoMatch;
+                }
             }
             else if (!argumentType.IsAssignableTo(type))
             {

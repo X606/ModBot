@@ -8,7 +8,10 @@ namespace InternalModBot
     {
         class MatchTypeComparer : IEqualityComparer<MatchType>
         {
-            bool IEqualityComparer<MatchType>.Equals(MatchType x, MatchType y) => x.Equals(y);
+            bool IEqualityComparer<MatchType>.Equals(MatchType x, MatchType y)
+            {
+                return (x is null && y is null) || x.Equals(y);
+            }
 
             int IEqualityComparer<MatchType>.GetHashCode(MatchType obj) => obj.GetHashCode();
         }
