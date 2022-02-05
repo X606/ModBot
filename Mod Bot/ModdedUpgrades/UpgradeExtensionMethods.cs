@@ -25,12 +25,12 @@ namespace ModLibrary
 
             if (upgrade is AbilityUpgrade)
             {
-                Dictionary<UpgradeType, bool> _abilityUpgradeTypes = UpgradeManager.Instance.GetPrivateField<Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes");
-                _abilityUpgradeTypes[upgrade.UpgradeType] = true;
+                Dictionary<UpgradeType, bool> abilityUpgradeTypes = UpgradeManager.Instance.GetPrivateField<Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes");
+                if (abilityUpgradeTypes != null) // If the dictionary is null, it is yet to be initialized, but that's fine, because UpgradeManager.Initialize() will automatically add all upgrades of type AbilityUpgrade anyway :>
+                {
+                    abilityUpgradeTypes[upgrade.UpgradeType] = true;
+                }
             }
-
-            if (upgrade.Requirement != null)
-                recursivelyAddRequirments(upgrade, mod);
 
             string nameID = upgrade.UpgradeName.ToLower().Trim();
             ModBotLocalizationManager.TryAddModdedUpgradeLocalizationStringToDictionary(nameID, upgrade.UpgradeName);
@@ -85,7 +85,7 @@ namespace ModLibrary
         public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
             // New mod loading system
-            UpgradePagesManager.SetAngleOfModdedUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
+            UpgradePagesManager.OverrideAngleOfUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
         }
 
         /// <summary>
@@ -96,20 +96,6 @@ namespace ModLibrary
         public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
         {
             UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
-        }
-
-        static void recursivelyAddRequirments(UpgradeDescription upgrade, Mod mod)
-        {
-            if (upgrade == null)
-                return;
-
-            // New mod loading system
-            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
-
-            if (upgrade.Requirement2 != null)
-                recursivelyAddRequirments(upgrade.Requirement2, mod);
-
-            recursivelyAddRequirments(upgrade.Requirement, mod);
         }
 
         /// <summary>

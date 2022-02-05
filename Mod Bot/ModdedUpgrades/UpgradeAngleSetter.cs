@@ -107,7 +107,7 @@ namespace InternalModBot
         static float getAngleForIconAtCurrentPage(UpgradeUIIcon icon)
         {
             UpgradeDescription upgradeDescription = icon.GetDescription();
-            return UpgradePagesManager.GetAngleOfUpgrade(upgradeDescription.UpgradeType, upgradeDescription.Level);
+            return UpgradePagesManager.GetUpgradeAngle(upgradeDescription.UpgradeType, upgradeDescription.Level);
         }
 
         static void setAngleOfUpgrade(UpgradeUIIcon icon, float newAngle)
@@ -116,7 +116,15 @@ namespace InternalModBot
             if (upgradeDescription == null)
                 return;
 
-            upgradeDescription.SetAngleOffset(newAngle, ModsManager.Instance.GetLoadedModWithID(UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage)).ModReference);
+            string modID = UpgradePagesManager.GetModIDForCurrentPage();
+            if (modID == null)
+                return;
+
+            LoadedModInfo modInfo = ModsManager.Instance.GetLoadedModWithID(modID);
+            if (modInfo == null)
+                return;
+
+            upgradeDescription.SetAngleOffset(newAngle, modInfo.ModReference);
         }
 
         void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)
@@ -137,7 +145,7 @@ namespace InternalModBot
 
         bool canCurrentlyEditIconAngles()
         {
-            return DebugModeEnabled && UpgradePagesManager.CurrentPage != 0 && GameModeManager.IsSinglePlayer();
+            return DebugModeEnabled && UpgradePagesManager.IsCurrentlyShowingModdedUpgrades;
         }
 
         internal void UpdateSaveButtonState()

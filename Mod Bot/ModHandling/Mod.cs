@@ -17,13 +17,21 @@ namespace ModLibrary
 		/// </summary>
         public ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
         
-
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
         protected internal string HarmonyID => "com.Mod-Bot.Mod." + ModInfo.UniqueID;
 
         internal Assembly SourceAssembly;
+
+        /// <summary>
+        /// Returns if this mod instance has an upgrade page defined, check if this is false before adding upgrades to avoid duplicates
+        /// </summary>
+        /// <returns></returns>
+        protected bool hasRegisteredUpgradePage()
+        {
+            return UpgradePagesManager.HasPageForMod(ModInfo.UniqueID);
+        }
 
         /// <summary>
         /// Called in <see cref="Character.Start"/> if the <see cref="Character"/> is of type <see cref="FirstPersonMover"/>

@@ -83,16 +83,20 @@ namespace ModLibrary
             GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>().CallPrivateMethod("tryLocalizeTextField"); // Re-localize "Select Upgrade" text field
             GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
 
-
-            
-            string modID = UpgradePagesManager.TryGetModIDForPage(UpgradePagesManager.CurrentPage);
-			LoadedModInfo modInfo = ModsManager.Instance.GetLoadedModWithID(modID);
-            if (modInfo != null)
+            if (UpgradePagesManager.IsCurrentlyShowingModdedUpgrades)
             {
-                GameUIRoot.Instance.UpgradeUI.TitleText.text += "\n[" + modInfo.OwnerModInfo.DisplayName + "]";
-                GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
+                string modID = UpgradePagesManager.GetModIDForCurrentPage();
+                if (modID != null)
+                {
+                    LoadedModInfo modInfo = ModsManager.Instance.GetLoadedModWithID(modID);
+                    if (modInfo != null)
+                    {
+                        GameUIRoot.Instance.UpgradeUI.TitleText.text += "\n[" + modInfo.OwnerModInfo.DisplayName + "]";
+                        GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
 
-                UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
+                        UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
+                    }
+                }
             }
         }
     }
