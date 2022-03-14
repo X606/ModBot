@@ -162,6 +162,7 @@ namespace InternalModBot
 			{
 				if (MultiplayerPlayerInfoManager.Instance != null && MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(character.state.PlayFabID) != null)
 				{
+					__instance.NameText.supportRichText = true;
 					__instance.gameObject.AddComponent<NameTagRefreshListener>().Init(character, __instance);
 				}
 			}
@@ -198,6 +199,13 @@ namespace InternalModBot
 					};
 				}
 			}
+
+			[HarmonyPrefix]
+			[HarmonyPatch(typeof(BlockListMultiplayerEntryUI), nameof(BlockListMultiplayerEntryUI.Initialize))]
+			static void BlockListMultiplayerEntryUI_Initialize_Prefix(BlockListMultiplayerEntryUI __instance)
+            {
+				__instance.DisplayNameText.supportRichText = true;
+            }
 		}
 	}
 }
