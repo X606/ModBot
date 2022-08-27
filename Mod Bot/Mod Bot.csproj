@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,6 +15,8 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +42,9 @@
     <DocumentationFile>bin\Release\ModLibrary.xml</DocumentationFile>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
+  <ItemGroup>
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetBundleInfo.cs" />
@@ -322,4 +328,12 @@ set "modlibraryxml=$(TargetName).xml"
 copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
 copy /Y "$(TargetDir)%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets'))" />
+  </Target>
+  <Import Project="..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets')" />
 </Project>

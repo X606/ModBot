@@ -12,14 +12,14 @@ namespace InternalModBot
         [HarmonyPatch("Show")]
         static bool Show_Prefix()
         {
-            return !GameUIRoot.Instance.GetPrivateField<bool>("_isEscMenuDisabled");
+            return !GameUIRoot.Instance._isEscMenuDisabled;
         }
 
         [HarmonyPrefix]
         [HarmonyPatch("Hide")]
         static bool Hide_Prefix()
         {
-            return !GameUIRoot.Instance.GetPrivateField<bool>("_isEscMenuDisabled");
+            return !GameUIRoot.Instance._isEscMenuDisabled;
         }
     }
 }

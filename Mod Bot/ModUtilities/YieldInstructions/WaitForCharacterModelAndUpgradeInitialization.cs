@@ -24,7 +24,7 @@ namespace ModLibrary.YieldInstructions
         /// <summary>
         /// Returns if the <see cref="Coroutine"/> should keep waiting
         /// </summary>
-        public override bool keepWaiting => _firstPersonMover.GetPrivateField<bool>("_hasInitializedCharacter");
+        public override bool keepWaiting => !_firstPersonMover._hasInitializedCharacter;
 
         readonly FirstPersonMover _firstPersonMover;
     }

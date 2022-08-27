@@ -234,7 +234,7 @@ namespace InternalModBot
                 modItem.GetComponent<Image>().color = DisabledModColor;
                 LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
                 localizedTextField.LocalizationID = "mods_menu_enable_mod";
-                localizedTextField.CallPrivateMethod("tryLocalizeTextField");
+                localizedTextField.tryLocalizeTextField();
 
                 enableOrDisableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
             }

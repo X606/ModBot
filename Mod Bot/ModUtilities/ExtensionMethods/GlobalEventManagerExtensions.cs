@@ -19,7 +19,7 @@ namespace ModLibrary
         /// <param name="callback">The <see cref="Action"/> to invoke when the event is dispatched</param>
         public static void TryAddEventListenerOnce(this GlobalEventManager globalEventManager, string eventName, Action callback)
         {
-            List<object> onceCallbackList = globalEventManager.CallPrivateMethod<List<object>>("getOnceCallbackList", new object[] { eventName });
+            List<object> onceCallbackList = globalEventManager.getOnceCallbackList(eventName);
 
             if (!onceCallbackList.Contains(callback))
                 onceCallbackList.Add(callback);
@@ -34,7 +34,7 @@ namespace ModLibrary
         /// <param name="callback">The <see cref="Action{T}"/> to invoke when the event is dispatched</param>
         public static void TryAddEventListenerOnce<T>(this GlobalEventManager globalEventManager, string eventName, Action<T> callback)
         {
-            List<object> onceCallbackList = globalEventManager.CallPrivateMethod<List<object>>("getOnceCallbackList", new object[] { eventName });
+            List<object> onceCallbackList = globalEventManager.getOnceCallbackList(eventName);
 
             if (!onceCallbackList.Contains(callback))
                 onceCallbackList.Add(callback);
@@ -49,7 +49,7 @@ namespace ModLibrary
         /// <param name="callback">The <see cref="Action{T}"/> to invoke when the event is dispatched</param>
         public static void TryAddEventListener<T>(this GlobalEventManager globalEventManager, string eventName, Action<T> callback)
         {
-            List<object> callbackList = globalEventManager.CallPrivateMethod<List<object>>("getCallbackList", new object[] { eventName });
+            List<object> callbackList = globalEventManager.getCallbackList(eventName);
 
             if (!callbackList.Contains(callback))
                 callbackList.Add(callback);
@@ -63,7 +63,7 @@ namespace ModLibrary
         /// <param name="callback">The <see cref="Action"/> to invoke when the event is dispatched</param>
         public static void TryAddEventListener(this GlobalEventManager globalEventManager, string eventName, Action callback)
         {
-            List<object> callbackList = globalEventManager.CallPrivateMethod<List<object>>("getCallbackList", new object[] { eventName });
+            List<object> callbackList = globalEventManager.getCallbackList(eventName);
 
             if (!callbackList.Contains(callback))
                 callbackList.Add(callback);

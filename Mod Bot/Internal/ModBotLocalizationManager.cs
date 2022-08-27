@@ -43,7 +43,7 @@ namespace InternalModBot
         {
             get
             {
-                if (SettingsManager.Instance != null && SettingsManager.Instance.GetPrivateField<SettingsData>("_data") != null)
+                if (SettingsManager.Instance != null && SettingsManager.Instance._data != null)
                 {
                     return SettingsManager.Instance.GetCurrentLanguageID();
                 }
@@ -170,8 +170,7 @@ namespace InternalModBot
                 return;
             }
 
-            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance.GetPrivateField<Dictionary<string, string>>("_translatedStringsDictionary");
-
+            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance._translatedStringsDictionary;
             if (!localizationDictionary.ContainsKey(ID))
                 localizationDictionary.Add(ID, text);
         }
@@ -217,7 +216,7 @@ namespace InternalModBot
 
             yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
 
-            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance.GetPrivateField<Dictionary<string, string>>("_translatedStringsDictionary");
+            Dictionary<string, string> localizationDictionary = LocalizationManager.Instance._translatedStringsDictionary;
             foreach (Tuple<string, string> idAndLocalizedString in _localizedStringsToAdd)
             {
                 if (localizationDictionary.ContainsKey(idAndLocalizedString.Item1))

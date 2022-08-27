@@ -25,7 +25,7 @@ namespace ModLibrary
 
             if (upgrade is AbilityUpgrade)
             {
-                Dictionary<UpgradeType, bool> abilityUpgradeTypes = UpgradeManager.Instance.GetPrivateField<Dictionary<UpgradeType, bool>>("_abilityUpgradeTypes");
+                Dictionary<UpgradeType, bool> abilityUpgradeTypes = UpgradeManager.Instance._abilityUpgradeTypes;
                 if (abilityUpgradeTypes != null) // If the dictionary is null, it is yet to be initialized, but that's fine, because UpgradeManager.Initialize() will automatically add all upgrades of type AbilityUpgrade anyway :>
                 {
                     abilityUpgradeTypes[upgrade.UpgradeType] = true;
