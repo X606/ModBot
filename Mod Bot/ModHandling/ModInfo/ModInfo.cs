@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using InternalModBot;
+using UnityEngine.UI;
+using System.IO;
 
 namespace ModLibrary
 {
@@ -136,6 +138,35 @@ namespace ModLibrary
 		/// </summary>
 		public bool HasImage => !string.IsNullOrWhiteSpace(ImageFileName);
 
+		Texture2D _cachedImage;
+
+		/// <summary>
+		/// The image to be displayed in the mods menu
+		/// </summary>
+		public Texture2D CachedImage
+		{
+			get
+			{
+				if (!_cachedImage || _cachedImage == null)
+				{
+					if (!string.IsNullOrEmpty(ImageFileName))
+					{
+						string imageFilePath = FolderPath + ImageFileName;
+						if (File.Exists(imageFilePath))
+						{
+							byte[] imgData = File.ReadAllBytes(imageFilePath);
+
+                            _cachedImage = new Texture2D(1, 1);
+							_cachedImage.name = $"{UniqueID}-icon";
+                            _cachedImage.LoadImage(imgData);
+						}
+					}
+				}
+
+                return _cachedImage;
+            }
+		}
+
 		/// <summary>
 		/// NOTE: setting this value only sets the playerPrefs, use <see cref="LoadedModInfo.IsEnabled"/> to work with loaded mods
 		/// </summary>
@@ -149,7 +180,6 @@ namespace ModLibrary
 			{
 				PlayerPrefs.SetInt(UniqueID, value ? 1 : 0);
 			}
-
 		}
 	}
 }

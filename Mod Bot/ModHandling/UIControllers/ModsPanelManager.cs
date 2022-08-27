@@ -155,36 +155,36 @@ namespace InternalModBot
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
             {
-            yield return webRequest.SendWebRequest(); // wait for the web request to send
+                yield return webRequest.SendWebRequest(); // wait for the web request to send
 
                 if (webRequest.isNetworkError || webRequest.isHttpError)
-                yield break;
+                    yield break;
 
-            TransformUtils.DestroyAllChildren(content.transform);
+                TransformUtils.DestroyAllChildren(content.transform);
 
-            ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+                ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
 
-            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
-            foreach (ModInfo modInfo in modsHolder.Mods)
-            {
-                ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
+                GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
+                foreach (ModInfo modInfo in modsHolder.Mods)
+                {
+                    ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
+                }
             }
-        }
         }
 
         static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID))
             {
-            yield return webRequest.SendWebRequest(); // wait for the web request to send
+                yield return webRequest.SendWebRequest(); // wait for the web request to send
 
-            if (webRequest.isNetworkError || webRequest.isHttpError)
-                yield break;
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                    yield break;
 
-            Dictionary<string, JToken> specialModData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text);
+                Dictionary<string, JToken> specialModData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text);
 
-            if (!specialModData["Verified"].ToObject<bool>()) // do not want unchecked mods to come up in-game.
-                yield break;
+                if (!specialModData["Verified"].ToObject<bool>()) // do not want unchecked mods to come up in-game.
+                    yield break;
             }
 
             GameObject holder = Instantiate(modDownloadInfoPrefab);
@@ -216,7 +216,6 @@ namespace InternalModBot
             modItem.transform.SetParent(parent.transform, false);
 
             string modName = mod.OwnerModInfo.DisplayName;
-			string imageFilePath = mod.OwnerModInfo.FolderPath + mod.OwnerModInfo.ImageFileName;
 
             _modItems.Add(modItem);
 			
@@ -226,15 +225,7 @@ namespace InternalModBot
 			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
             modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.OwnerModInfo.UniqueID);
 
-			if(File.Exists(imageFilePath) && !string.IsNullOrWhiteSpace(mod.OwnerModInfo.ImageFileName))
-			{
-				byte[] imgData = File.ReadAllBytes(imageFilePath);
-
-				Texture2D texture = new Texture2D(1, 1);
-				texture.LoadImage(imgData);
-
-				modItemModdedObject.GetObject<RawImage>(2).texture = texture;
-			}
+            modItemModdedObject.GetObject<RawImage>(2).texture = mod.OwnerModInfo.HasImage ? mod.OwnerModInfo.CachedImage : null;
 
 			Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
             
