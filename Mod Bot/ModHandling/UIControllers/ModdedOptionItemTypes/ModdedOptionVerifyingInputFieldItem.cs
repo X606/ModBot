@@ -29,7 +29,7 @@ namespace InternalModBot
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("InputField");
-            spawnedPrefab.transform.parent = holder.transform;
+            spawnedPrefab.transform.SetParent(holder.transform, false);
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             spawnedModdedObject.GetObject<Text>(0).text = DisplayName;
             InputField inputField = spawnedModdedObject.GetObject<InputField>(1);

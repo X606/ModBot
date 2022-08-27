@@ -188,7 +188,7 @@ namespace InternalModBot
             }
 
             GameObject holder = Instantiate(modDownloadInfoPrefab);
-            holder.transform.parent = content.transform;
+            holder.transform.SetParent(content.transform, false);
             holder.AddComponent<ModDownloadInfoItem>().Init(modInfo);
         }
 
@@ -213,7 +213,7 @@ namespace InternalModBot
 			bool isModActive = mod.IsEnabled;
 
             GameObject modItem = InternalAssetBundleReferences.ModBot.InstantiateObject("ModItemPrefab");
-            modItem.transform.parent = parent.transform;
+            modItem.transform.SetParent(parent.transform, false);
 
             string modName = mod.OwnerModInfo.DisplayName;
 			string imageFilePath = mod.OwnerModInfo.FolderPath + mod.OwnerModInfo.ImageFileName;

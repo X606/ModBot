@@ -36,7 +36,7 @@ namespace InternalModBot
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
             KeyCodeInput keyCodeInput = InternalAssetBundleReferences.ModBot.InstantiateObject("CustomKeyCodeInput").AddComponent<KeyCodeInput>();
-            keyCodeInput.transform.parent = holder.transform;
+            keyCodeInput.transform.SetParent(holder.transform, false);
             keyCodeInput.Init(DefaultValue, delegate (KeyCode keyCode)
             {
                 OptionsSaver.SetSetting(owner, SaveID, (int)keyCode, true);

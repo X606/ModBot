@@ -27,7 +27,7 @@ namespace InternalModBot
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("Label");
-            spawnedPrefab.transform.parent = holder.transform;
+            spawnedPrefab.transform.SetParent(holder.transform, false);
 
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             Text text = spawnedModdedObject.GetObject<Text>(0);

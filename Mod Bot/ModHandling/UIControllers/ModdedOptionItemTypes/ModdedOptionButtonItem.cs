@@ -31,7 +31,7 @@ namespace InternalModBot
         public override void CreatePageItem(GameObject holder, Mod owner)
         {
             GameObject spawnedPrefab = InternalAssetBundleReferences.ModBot.InstantiateObject("Button");
-            spawnedPrefab.transform.parent = holder.transform;
+            spawnedPrefab.transform.SetParent(holder.transform, false);
 
             ModdedObject spawnedModdedObject = spawnedPrefab.GetComponent<ModdedObject>();
             Button button = spawnedModdedObject.GetObject<Button>(0);

@@ -55,7 +55,7 @@ namespace ModLibrary
             foreach(Page page in _pages)
             {
                 GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
-                spawnedButton.transform.parent = ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform;
+                spawnedButton.transform.SetParent(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform, false);
                 ModdedObject moddedObject = spawnedButton.GetComponent<ModdedObject>();
                 moddedObject.GetObject<Text>(0).text = page.Name;
                 moddedObject.GetObject<Button>(1).onClick.AddListener(delegate { SetPage(page); });
