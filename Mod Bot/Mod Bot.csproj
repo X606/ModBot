@@ -59,7 +59,6 @@
     <Compile Include="Internal\Patches\LevelManager_SpawnCurrentLevel_ReversePatch.cs" />
     <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
     <Compile Include="Internal\Patches\Resources_Patch.cs" />
-    <Compile Include="Internal\Patches\TwitchWhoIsLiveManager_Patch.cs" />
     <Compile Include="Internal\Reflection\ConstructorInfoKey.cs" />
     <Compile Include="Internal\Reflection\DelegateInfoKey.cs" />
     <Compile Include="Internal\Reflection\EventInfoKey.cs" />
