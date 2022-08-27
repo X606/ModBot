@@ -57,15 +57,16 @@ namespace InternalModBot
 
         IEnumerator downloadImageAsync(string url)
         {
-            UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
+            using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return webRequest.SendWebRequest();
+                if (webRequest.isHttpError || webRequest.isNetworkError)
+                    yield break;
 
-            yield return webRequest.SendWebRequest();
-            if(webRequest.isHttpError || webRequest.isNetworkError)
-                yield break;
+                Texture2D texture = (webRequest.downloadHandler as DownloadHandlerTexture).texture;
 
-            Texture2D texture = (webRequest.downloadHandler as DownloadHandlerTexture).texture;
-
-            _modImage.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width/2, texture.height/2));
+                _modImage.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width / 2f, texture.height / 2f));
+            }
         }
 
         void onDownloadButtonClicked()
@@ -99,22 +100,23 @@ namespace InternalModBot
             if (Directory.Exists(targetDirectory))
                 yield break;
 
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + _underlyingModInfo.UniqueID);
+            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + _underlyingModInfo.UniqueID))
+            {
+                yield return webRequest.SendWebRequest();
 
-            yield return webRequest.SendWebRequest();
+                byte[] data = webRequest.downloadHandler.data;
 
-            byte[] data = webRequest.downloadHandler.data;
+                string tempFile = Path.GetTempFileName();
+                File.WriteAllBytes(tempFile, data);
 
-            string tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, data);
+                Directory.CreateDirectory(targetDirectory);
+                FastZip fastZip = new FastZip();
+                fastZip.ExtractZip(tempFile, targetDirectory, null);
 
-            Directory.CreateDirectory(targetDirectory);
-            FastZip fastZip = new FastZip();
-            fastZip.ExtractZip(tempFile, targetDirectory, null);
-            
-            ModsManager.Instance.ReloadMods();
+                ModsManager.Instance.ReloadMods();
 
-            File.Delete(tempFile);
+                File.Delete(tempFile);
+            }
         }
     }
 

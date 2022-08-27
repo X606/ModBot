@@ -57,27 +57,29 @@ namespace InternalModBot
 
         static IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
         {
-            UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url);
-
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.isNetworkError || webRequest.isHttpError)
+            using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
             {
-                debug.Log(webRequest.error, Color.red);
-                upgrade.Icon = null;
-                yield break;
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    debug.Log(webRequest.error, Color.red);
+                    upgrade.Icon = null;
+                    yield break;
+                }
+
+                Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
+
+                upgrade.Icon = getSpriteFromTexture(texture);
+
+                string fileName = getFileNameForUpgrade(upgrade);
+                byte[] fileData = texture.EncodeToPNG();
+
+                using (FileStream fileStream = File.Create(upgradeIconsFolderPath + fileName))
+                {
+                    fileStream.Write(fileData, 0, fileData.Length);
+                }
             }
-
-            Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
-
-            upgrade.Icon = getSpriteFromTexture(texture);
-
-            string fileName = getFileNameForUpgrade(upgrade);
-            byte[] fileData = texture.EncodeToPNG();
-
-            FileStream fileStream = File.Create(upgradeIconsFolderPath + fileName);
-            fileStream.Write(fileData, 0, fileData.Length);
-            fileStream.Close();
         }
 
         static Sprite getSpriteFromTexture(Texture2D texture)

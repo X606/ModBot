@@ -104,35 +104,37 @@ namespace InternalModBot
             if (displayName == null)
                 displayName = "";
 
-            UnityWebRequest unityWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId);
-            unityWebRequest.timeout = 5;
-            yield return unityWebRequest.SendWebRequest();
-
-            if (!string.IsNullOrWhiteSpace(unityWebRequest.error))
+            using (UnityWebRequest unityWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId))
             {
-                debug.Log("Error while trying to fetch mod data.", Color.red);
-                yield break;
-            }
+                unityWebRequest.timeout = 5;
+                yield return unityWebRequest.SendWebRequest();
 
-            try
-            {
-                string response = unityWebRequest.downloadHandler.text;
-
-                if (response == "null")
+                if (!string.IsNullOrWhiteSpace(unityWebRequest.error))
+                {
+                    debug.Log("Error while trying to fetch mod data.", Color.red);
                     yield break;
+                }
 
-                Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
+                try
+                {
+                    string response = unityWebRequest.downloadHandler.text;
+
+                    if (response == "null")
+                        yield break;
+
+                    Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
 
 
-                ModSuggestion suggestedMod = new ModSuggestion((string)responseDict["DisplayName"], (string)responseDict["Author"], displayName, modId);
-                _modSuggestionQueue.Enqueue(suggestedMod);
+                    ModSuggestion suggestedMod = new ModSuggestion((string)responseDict["DisplayName"], (string)responseDict["Author"], displayName, modId);
+                    _modSuggestionQueue.Enqueue(suggestedMod);
 
-                ShowNextInSuggestedModsQueue();
-            }
-            catch
-            {
-                debug.Log("Something went wrong when trying to load the suggested mod", Color.red);
-                yield break;
+                    ShowNextInSuggestedModsQueue();
+                }
+                catch
+                {
+                    debug.Log("Something went wrong when trying to load the suggested mod", Color.red);
+                    yield break;
+                }
             }
         }
 
@@ -176,38 +178,40 @@ namespace InternalModBot
                 if (gameMode == GameMode.Twitch)
                     TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
 
-                UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + mod.ModID);
-
-                yield return webRequest.SendWebRequest();
-
-                byte[] data = webRequest.downloadHandler.data;
-
-                string tempFile= Path.GetTempFileName();
-                File.WriteAllBytes(tempFile, data);
-
-                string folderName = mod.ModName;
-                foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
+                using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + mod.ModID))
                 {
-                    folderName = folderName.Replace(invalidCharacter, '_');
+                    yield return webRequest.SendWebRequest();
+
+                    byte[] data = webRequest.downloadHandler.data;
+
+                    string tempFile = Path.GetTempFileName();
+                    File.WriteAllBytes(tempFile, data);
+
+                    string folderName = mod.ModName;
+                    foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
+                    {
+                        folderName = folderName.Replace(invalidCharacter, '_');
+                    }
+
+                    string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
+                    if (Directory.Exists(targetDirectory))
+                    {
+                        if (gameMode == GameMode.Twitch)
+                            TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
+
+                        yield return 0;
+                        ShowNextInSuggestedModsQueue();
+                        yield break;
+                    }
+
+                    Directory.CreateDirectory(targetDirectory);
+                    FastZip fastZip = new FastZip();
+                    fastZip.ExtractZip(tempFile, targetDirectory, null);
+
+                    ModsManager.Instance.ReloadMods();
+
+                    File.Delete(tempFile);
                 }
-
-                string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
-                if (Directory.Exists(targetDirectory))
-                {
-                    if (gameMode == GameMode.Twitch)
-                        TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
-                    
-                    yield return 0;
-                    ShowNextInSuggestedModsQueue();
-                    yield break;
-                }
-                Directory.CreateDirectory(targetDirectory);
-                FastZip fastZip = new FastZip();
-                fastZip.ExtractZip(tempFile, targetDirectory, null);
-
-                ModsManager.Instance.ReloadMods();
-
-                File.Delete(tempFile);
             }
             if (clickedKey == KeyCode.PageDown)
             {
@@ -287,47 +291,51 @@ namespace InternalModBot
                 yield break;
             }
 
-            UnityWebRequest unityDataWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId);
-            UnityWebRequest unityVerifiedWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=isModVerified&modId=" + modId);
-            unityDataWebRequest.timeout = 5;
-            unityVerifiedWebRequest.timeout = 5;
-            yield return unityDataWebRequest.SendWebRequest();
-            yield return unityVerifiedWebRequest.SendWebRequest();
-
-            if (!string.IsNullOrWhiteSpace(unityDataWebRequest.error) || !string.IsNullOrWhiteSpace(unityVerifiedWebRequest.error))
+            using (UnityWebRequest unityDataWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getModData&id=" + modId))
             {
-                TwitchManager.Instance.EnqueueChatMessage("Error while trying to fetch mod data. MrDestructoid");
-                yield break;
-            }
-
-            try
-            {
-                if (unityVerifiedWebRequest.downloadHandler.text == "false")
+                using (UnityWebRequest unityVerifiedWebRequest = UnityWebRequest.Get("https://modbot.org/api?operation=isModVerified&modId=" + modId))
                 {
-                    TwitchManager.Instance.EnqueueChatMessage("That mod isn't verified SoonerLater");
-                    yield break;
+                    unityDataWebRequest.timeout = 5;
+                    unityVerifiedWebRequest.timeout = 5;
+                    yield return unityDataWebRequest.SendWebRequest();
+                    yield return unityVerifiedWebRequest.SendWebRequest();
+
+                    if (!string.IsNullOrWhiteSpace(unityDataWebRequest.error) || !string.IsNullOrWhiteSpace(unityVerifiedWebRequest.error))
+                    {
+                        TwitchManager.Instance.EnqueueChatMessage("Error while trying to fetch mod data. MrDestructoid");
+                        yield break;
+                    }
+
+                    try
+                    {
+                        if (unityVerifiedWebRequest.downloadHandler.text == "false")
+                        {
+                            TwitchManager.Instance.EnqueueChatMessage("That mod isn't verified SoonerLater");
+                            yield break;
+                        }
+
+                        string response = unityDataWebRequest.downloadHandler.text;
+
+                        if (response == "null")
+                        {
+                            TwitchManager.Instance.EnqueueChatMessage("No mod with the provided Id could be found NotLikeThis");
+                            yield break;
+                        }
+
+                        Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
+
+
+                        ModSuggestion suggestedMod = new ModSuggestion((string)responseDict["DisplayName"], (string)responseDict["Author"], suggester, modId);
+                        _modSuggestionQueue.Enqueue(suggestedMod);
+
+                        TwitchManager.Instance.EnqueueChatMessage("Suggested the \"" + responseDict["DisplayName"] + "\" mod! BloodTrail");
+                    }
+                    catch
+                    {
+                        TwitchManager.Instance.EnqueueChatMessage("Something went wrong NotLikeThis");
+                        yield break;
+                    }
                 }
-
-                string response = unityDataWebRequest.downloadHandler.text;
-
-                if (response == "null")
-                {
-                    TwitchManager.Instance.EnqueueChatMessage("No mod with the provided Id could be found NotLikeThis");
-                    yield break;
-                }
-
-                Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response);
-
-
-                ModSuggestion suggestedMod = new ModSuggestion((string)responseDict["DisplayName"], (string)responseDict["Author"], suggester, modId);
-                _modSuggestionQueue.Enqueue(suggestedMod);
-
-                TwitchManager.Instance.EnqueueChatMessage("Suggested the \"" + responseDict["DisplayName"] + "\" mod! BloodTrail");
-            }
-            catch
-            {
-                TwitchManager.Instance.EnqueueChatMessage("Something went wrong NotLikeThis");
-                yield break;
             }
         }
 

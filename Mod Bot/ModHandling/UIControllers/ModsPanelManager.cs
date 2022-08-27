@@ -153,11 +153,11 @@ namespace InternalModBot
 
         static IEnumerator downloadModData(GameObject content)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos");
-
+            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
+            {
             yield return webRequest.SendWebRequest(); // wait for the web request to send
 
-            if(webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.isNetworkError || webRequest.isHttpError)
                 yield break;
 
             TransformUtils.DestroyAllChildren(content.transform);
@@ -169,13 +169,13 @@ namespace InternalModBot
             {
                 ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
             }
-
+        }
         }
 
         static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID);
-
+            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID))
+            {
             yield return webRequest.SendWebRequest(); // wait for the web request to send
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
@@ -185,6 +185,7 @@ namespace InternalModBot
 
             if (!specialModData["Verified"].ToObject<bool>()) // do not want unchecked mods to come up in-game.
                 yield break;
+            }
 
             GameObject holder = Instantiate(modDownloadInfoPrefab);
             holder.transform.parent = content.transform;
