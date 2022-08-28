@@ -49,23 +49,24 @@ namespace InternalModBot
                 GameObject.Destroy(upgrade.Icon);
             }
 
+            string textureName = fileName + CUSTOM_ICON_POSTFIX;
             if (File.Exists(upgradeIconsFolderPath + fileName))
             {
                 byte[] imageData = File.ReadAllBytes(upgradeIconsFolderPath + fileName);
 
                 Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
-                texture.name = fileName + CUSTOM_ICON_POSTFIX;
+                texture.name = textureName;
                 texture.LoadImage(imageData);
 
                 upgrade.Icon = getSpriteFromTexture(texture);
             }
             else
             {
-                StartCoroutine(downloadImageAndSetIconOnUpgrade(upgrade, url));
+                StartCoroutine(downloadImageAndSetIconOnUpgrade(upgrade, url, textureName));
             }
         }
 
-        static IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url)
+        static IEnumerator downloadImageAndSetIconOnUpgrade(UpgradeDescription upgrade, string url, string textureName)
         {
             using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
             {
@@ -79,16 +80,11 @@ namespace InternalModBot
                 }
 
                 Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
+                texture.name = textureName;
 
                 upgrade.Icon = getSpriteFromTexture(texture);
 
-                string fileName = getFileNameForUpgrade(upgrade);
-                byte[] fileData = texture.EncodeToPNG();
-
-                using (FileStream fileStream = File.Create(upgradeIconsFolderPath + fileName))
-                {
-                    fileStream.Write(fileData, 0, fileData.Length);
-                }
+                File.WriteAllBytes(upgradeIconsFolderPath + getFileNameForUpgrade(upgrade), texture.EncodeToPNG());
             }
         }
 
