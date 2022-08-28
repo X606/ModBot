@@ -268,7 +268,7 @@ namespace InternalModBot
 
         void Update()
         {
-            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy)
+            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy && ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {

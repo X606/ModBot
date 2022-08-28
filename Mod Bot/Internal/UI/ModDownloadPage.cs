@@ -23,6 +23,8 @@ namespace InternalModBot
 		/// </summary>
 		public GameObject WindowObject;
 
+		public ProgressBar ProgressBar;
+
 		/// <summary>
 		/// Sets up the mod download page from a moddedobject
 		/// </summary>
@@ -32,7 +34,11 @@ namespace InternalModBot
 			Content = moddedObject.GetObject<GameObject>(0);
 			XButton = moddedObject.GetObject<Button>(1);
 
-			WindowObject = moddedObject.gameObject;
+			GameObject loadingScreen = moddedObject.GetObject<GameObject>(2);
+			ProgressBar = loadingScreen.AddComponent<ProgressBar>();
+			ProgressBar.Initialize(loadingScreen.GetComponent<ModdedObject>().GetObject<Image>(0));
+
+            WindowObject = moddedObject.gameObject;
 		}
 	}
 
