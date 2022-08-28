@@ -38,13 +38,23 @@ namespace InternalModBot
         /// <param name="url"></param>
         public void SetIconOnUpgrade(UpgradeDescription upgrade, string url)
         {
+            const string CUSTOM_ICON_POSTFIX = "-ModdedIcon";
+
             string fileName = getFileNameForUpgrade(upgrade);
+
+            // If there already is an icon with a modded icon texture, destroy both
+            if (upgrade.Icon != null && upgrade.Icon.texture != null && upgrade.Icon.texture.name.EndsWith(CUSTOM_ICON_POSTFIX))
+            {
+                GameObject.Destroy(upgrade.Icon.texture);
+                GameObject.Destroy(upgrade.Icon);
+            }
 
             if (File.Exists(upgradeIconsFolderPath + fileName))
             {
                 byte[] imageData = File.ReadAllBytes(upgradeIconsFolderPath + fileName);
 
                 Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
+                texture.name = fileName + CUSTOM_ICON_POSTFIX;
                 texture.LoadImage(imageData);
 
                 upgrade.Icon = getSpriteFromTexture(texture);
