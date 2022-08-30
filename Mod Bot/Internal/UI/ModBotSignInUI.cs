@@ -59,8 +59,6 @@ namespace InternalModBot
 						File.Delete(_sessionIdFilePath);
 
 						VersionLabelManager.Instance.SetLine(2, "Not signed in");
-
-						OpenSignInForm();
 						return;
 					}
 
@@ -70,8 +68,6 @@ namespace InternalModBot
 			} else
 			{
 				VersionLabelManager.Instance.SetLine(2, "Not signed in");
-
-				OpenSignInForm();
 			}
 
 			_signUpButton.onClick.AddListener(new UnityAction(onSignUpButtonClicked));
