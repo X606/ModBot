@@ -116,6 +116,16 @@ namespace InternalModBot
 
                 while (!request.isDone)
                 {
+                    if (webRequest.isHttpError || webRequest.isNetworkError)
+                    {
+                        debug.Log($"Network error while downloading mod {_underlyingModInfo.DisplayName} ({_underlyingModInfo.UniqueID}): {webRequest.error}");
+
+                        ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Hide();
+
+                        onComplete?.Invoke();
+                        yield break;
+                    }
+
                     ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Progress = request.progress;
                     yield return 0;
                 }
