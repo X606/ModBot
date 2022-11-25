@@ -25,9 +25,15 @@ namespace InternalModBot
         Text _desciptionDisplay;
         Text _creatorText;
         Button _downloadButton;
-        Button _loadButton;
+        Button _siteButton;
+
+        Slider _loadProgressSlider;
+        RectTransform _downloadUI;
+        Button _cancelDownloadButton;
 
         ModInfo _underlyingModInfo;
+
+        float _timeToNextRefresh;
 
         /// <summary>
         /// Initilizes the <see cref="ModDownloadInfoItem"/>
@@ -35,16 +41,22 @@ namespace InternalModBot
         /// <param name="holder"></param>
         public void Init(ModInfo holder)
         {
+            _underlyingModInfo = holder;
+
             ModdedObject moddedObject = GetComponent<ModdedObject>();
             _modImage = moddedObject.GetObject<Image>(0);
             _nameDisplay = moddedObject.GetObject<Text>(1);
             _desciptionDisplay = moddedObject.GetObject<Text>(2);
             _creatorText = moddedObject.GetObject<Text>(3);
             _downloadButton = moddedObject.GetObject<Button>(4);
-            _loadButton = moddedObject.GetObject<Button>(5);
+            _siteButton = moddedObject.GetObject_Alt<Button>(8);
+            _siteButton.onClick.AddListener(onBrowseButtonClicked);
+
+            _loadProgressSlider = moddedObject.GetObject_Alt<Slider>(6);
+            _downloadUI = moddedObject.GetObject_Alt<RectTransform>(5);
+            _cancelDownloadButton = moddedObject.GetObject_Alt<Button>(7);
 
             _downloadButton.onClick.AddListener(onDownloadButtonClicked);
-            _loadButton.onClick.AddListener(onBrowseButtonClicked);
 
             _nameDisplay.text = holder.DisplayName.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
             _desciptionDisplay.text = holder.Description.Replace("&lt;", "<").Replace("&#39;", "'"); // makes sure we show "<" like "<" and not "&lt;"
@@ -52,7 +64,7 @@ namespace InternalModBot
 
             StartCoroutine(downloadImageAsync("https://modbot.org/api?operation=getModImage&size=108x90&id=" + holder.UniqueID));
 
-            _underlyingModInfo = holder;
+            refreshDownload();
         }
 
         IEnumerator downloadImageAsync(string url)
@@ -76,8 +88,18 @@ namespace InternalModBot
             LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), delegate
             {
                 ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable = false;
-                StartCoroutine(downloadModFileAndLoadAsync(() => ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable = true));
+                ModDownloadManager.DownloadMod(_underlyingModInfo, delegate
+                {
+                    ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable = true;
+                    ModsPanelManager.Instance.ReloadModItems();
+                });
+                refreshDownload();
             });
+        }
+
+        void onCancelDownloadButtonClicked()
+        {
+            ModDownloadManager.EndDownload(ModDownloadManager.ModDownloadCancelReason.Manual);
         }
 
         void onBrowseButtonClicked()
@@ -85,79 +107,32 @@ namespace InternalModBot
             Process.Start("https://modbot.org/modPreview.html?modID=" + _underlyingModInfo.UniqueID);
         }
 
-        IEnumerator downloadModFileAndLoadAsync(Action onComplete)
+        void refreshDownload()
         {
-            // If mod is already loaded, just cancel the download instead of throwing an exception
-            if (ModsManager.Instance.GetLoadedModWithID(_underlyingModInfo.UniqueID) != null)
+            if(_underlyingModInfo == null)
             {
-                onComplete?.Invoke();
-                yield break;
+                return;
             }
 
-            string folderName = _underlyingModInfo.DisplayName;
-            foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
+            ModDownloadManager.ModDownloadInfo newInfo = ModDownloadManager.GetDownloadingModInfo();
+
+            _downloadUI.gameObject.SetActive(!newInfo.IsNull && newInfo.ModInformation == _underlyingModInfo && !newInfo.IsDone);
+
+            if(_downloadUI.gameObject.activeSelf)
             {
-                folderName = folderName.Replace(invalidCharacter, '_');
+                float percent = newInfo.DownloadProgress;
+                _loadProgressSlider.value = percent;
             }
+        }
 
-            string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
-            if (Directory.Exists(targetDirectory))
+        void FixedUpdate()
+        {
+            float time = Time.unscaledTime;
+            if (time >= _timeToNextRefresh)
             {
-                onComplete?.Invoke();
-                yield break;
+                _timeToNextRefresh = time + 0.1f;
+                refreshDownload();
             }
-
-            byte[] bytes;
-            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + _underlyingModInfo.UniqueID))
-            {
-                UnityWebRequestAsyncOperation request = webRequest.SendWebRequest();
-
-                ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Show();
-
-                while (!request.isDone)
-                {
-                    if (webRequest.isHttpError || webRequest.isNetworkError)
-                    {
-                        debug.Log($"Network error while downloading mod {_underlyingModInfo.DisplayName} ({_underlyingModInfo.UniqueID}): {webRequest.error}");
-
-                        ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Hide();
-
-                        onComplete?.Invoke();
-                        yield break;
-                    }
-
-                    ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Progress = request.progress;
-                    yield return 0;
-                }
-
-                ModBotUIRoot.Instance.ModDownloadPage.ProgressBar.Hide();
-
-                bytes = webRequest.downloadHandler.data;
-            }
-
-            string tempFilePath = Path.GetTempFileName();
-
-            yield return new WaitForTask(Task.Run(async () =>
-            {
-                using (FileStream tempFile = new FileStream(tempFilePath, FileMode.Create))
-                {
-                    tempFile.Seek(0, SeekOrigin.Begin);
-                    await tempFile.WriteAsync(bytes, 0, bytes.Length);
-                }
-            }));
-
-            Directory.CreateDirectory(targetDirectory);
-            FastZip fastZip = new FastZip();
-            fastZip.ExtractZip(tempFilePath, targetDirectory, null);
-
-            ModsManager.Instance.ReloadMods();
-
-            if (File.Exists(tempFilePath))
-            {
-                File.Delete(tempFilePath);
-            }
-
-            onComplete?.Invoke();
         }
     }
 

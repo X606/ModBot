@@ -20,13 +20,6 @@ namespace InternalModBot
         /// <returns></returns>
         public static UnityEngine.Object FromResourcesLoad(string path)
         {
-#if MODDED_LEVEL_OBJECTS
-            UnityEngine.Object levelEditorObject = LevelEditorObjectAdder.GetObjectData(path);
-
-            if (levelEditorObject != null)
-                return levelEditorObject;
-#endif
-
             if (ModsManager.Instance == null)
                 return null;
 

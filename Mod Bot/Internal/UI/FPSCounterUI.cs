@@ -10,11 +10,19 @@ namespace InternalModBot
 	internal class FPSCounterUI : MonoBehaviour
 	{
 		Text _fpsCounter;
+		float _timeToRefresh;
 
 		void Update()
 		{
 			if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.ToggleFPSLabel)))
 				_fpsCounter.gameObject.SetActive(!_fpsCounter.gameObject.activeSelf);
+
+			float time = Time.unscaledTime;
+			if(time < _timeToRefresh)
+            {
+				return;
+            }
+			_timeToRefresh = time + 0.5f;
 
 			float FPS = 1f / Time.unscaledDeltaTime;
 			int FPSInt = Convert.ToInt32(FPS);
