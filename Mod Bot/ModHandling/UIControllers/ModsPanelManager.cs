@@ -22,6 +22,8 @@ namespace InternalModBot
         /// </summary>
         public readonly Color DisabledModColor = new Color32(123, 14, 14, 255);
 
+        private Action _actionOnModsPanelClose = null;
+
         void Start()
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
@@ -120,6 +122,16 @@ namespace InternalModBot
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
         }
 
+        /// <summary>
+        /// Opens mods panel. I actually made it for CDO mod
+        /// </summary>
+        /// <param name="onWindowClose"></param>
+        public void OpenModsWindows(Action onWindowClose = null)
+        {
+            _actionOnModsPanelClose = onWindowClose;
+            openModsMenu();
+        }
+
         void openModsMenu()
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
@@ -132,6 +144,13 @@ namespace InternalModBot
         {
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
+
+            if(_actionOnModsPanelClose != null)
+            {
+                _actionOnModsPanelClose();
+            }
+
+            _actionOnModsPanelClose = null;
         }
 
         void onGetMoreModsClicked()

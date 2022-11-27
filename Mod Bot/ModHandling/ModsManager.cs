@@ -15,6 +15,7 @@ using HarmonyLib;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using ICSharpCode.SharpZipLib.Zip;
+using Pathfinding;
 
 namespace InternalModBot
 {
@@ -118,13 +119,13 @@ namespace InternalModBot
 			string[] zipFiles = Directory.GetFiles(ModFolderPath, "*.zip");
             foreach (string zipFilePath in zipFiles)
             {
-				string newDirectory = ModFolderPath + Path.GetFileNameWithoutExtension(zipFilePath);
+				string newDirectory = ModFolderPath + System.IO.Path.GetFileNameWithoutExtension(zipFilePath);
 				Directory.CreateDirectory(newDirectory);
 				FastZip fastZip = new FastZip();
 				fastZip.ExtractZip(zipFilePath, newDirectory, null);
 				File.Delete(zipFilePath);
 
-				debug.Log("Unpacked " + Path.GetFileName(zipFilePath) + "...");
+				debug.Log("Unpacked " + System.IO.Path.GetFileName(zipFilePath) + "...");
             }
 
 			string[] folders = Directory.GetDirectories(ModFolderPath);
@@ -401,7 +402,7 @@ namespace InternalModBot
 				return false;
             }
 
-			try
+            try
 			{
 				loadedMod.OnModLoaded();
 			}
@@ -550,5 +551,5 @@ namespace InternalModBot
 
 			return null;
         }
-	}
+    }
 }

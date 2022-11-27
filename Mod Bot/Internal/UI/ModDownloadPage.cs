@@ -34,9 +34,12 @@ namespace InternalModBot
 			Content = moddedObject.GetObject<GameObject>(0);
 			XButton = moddedObject.GetObject<Button>(1);
 
+			//NullReferenceException crash. Probably due to missing progressbar
+			/*
 			GameObject loadingScreen = moddedObject.GetObject<GameObject>(2);
 			ProgressBar = loadingScreen.AddComponent<ProgressBar>();
 			ProgressBar.Initialize(loadingScreen.GetComponent<ModdedObject>().GetObject<Image>(0));
+			*/
 
             WindowObject = moddedObject.gameObject;
 		}

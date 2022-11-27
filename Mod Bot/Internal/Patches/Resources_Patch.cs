@@ -20,17 +20,13 @@ namespace InternalModBot
         {
             UnityEngine.Object overrideResource;
 
-#if MODDED_LEVEL_OBJECTS
-            overrideResource = LevelEditorObjectAdder.GetObjectData(path);
-            if (overrideResource != null)
-                return overrideResource;
-#endif
-
             if (ModsManager.Instance != null)
             {
                 overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
                 if (overrideResource != null)
+                {
                     return overrideResource;
+                }
             }
 
             return __result;

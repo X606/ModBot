@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Debug\ModLibrary.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,6 +74,7 @@
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
     <Compile Include="Internal\ProgressBar.cs" />
+    <Compile Include="ModHandling\ModDownloading\ModDownloadManager.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorModdedMetadataManager.cs" />
     <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
