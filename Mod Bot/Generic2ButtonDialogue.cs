@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using InternalModBot;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
-using InternalModBot;
 
 #pragma warning disable IDE1005
 
@@ -21,8 +16,8 @@ namespace ModLibrary
         {
         }
 
-        Action _onButton1ClickedCallback;
-        Action _onButton2ClickedCallback;
+        private readonly Action _onButton1ClickedCallback;
+        private readonly Action _onButton2ClickedCallback;
 
         /// <summary>
         /// If this is <see langword="true"/> there is currently a <see cref="Generic2ButtonDialogue"/> open
@@ -37,7 +32,7 @@ namespace ModLibrary
         /// <param name="onPressButton1">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         /// <param name="button2Text">The text on the second button</param>
         /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
-        public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2) 
+        public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2, Vector2? size = null)
         {
             ModBotUIRoot.Instance.Generic2ButtonDialogeUI.UIRoot.SetActive(true);
 
@@ -47,6 +42,12 @@ namespace ModLibrary
             ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Text.text = message;
             ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.onClick.AddListener(onButton1Clicked);
             ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.onClick.AddListener(onButton2Clicked);
+
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.TransformToResize.sizeDelta = Generic2ButtonDialogeUI.DefaultSizeDelta;
+            if (size != null)
+            {
+                ModBotUIRoot.Instance.Generic2ButtonDialogeUI.TransformToResize.sizeDelta = size.Value;
+            }
 
             _onButton1ClickedCallback = onPressButton1;
             _onButton2ClickedCallback = onPressButton2;
@@ -82,7 +83,7 @@ namespace ModLibrary
             IsWindowOpen = false;
         }
 
-        void onButton1Clicked()
+        private void onButton1Clicked()
         {
             if (_onButton1ClickedCallback != null)
             {
@@ -92,7 +93,7 @@ namespace ModLibrary
             Close();
         }
 
-        void onButton2Clicked()
+        private void onButton2Clicked()
         {
             if (_onButton2ClickedCallback != null)
             {

@@ -75,6 +75,7 @@
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
     <Compile Include="Internal\ProgressBar.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadManager.cs" />
+    <Compile Include="ModHandling\ModInfo\ModDeletionInfo.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorModdedMetadataManager.cs" />
     <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />

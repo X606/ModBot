@@ -1,10 +1,9 @@
 ﻿using HarmonyLib;
 using ModLibrary;
-using System;
-using UnityEngine;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -32,7 +31,7 @@ namespace InternalModBot
         {
             get
             {
-				return OwnerModInfo.IsModEnabled;
+                return OwnerModInfo.IsModEnabled;
             }
             internal set
             {
@@ -43,14 +42,15 @@ namespace InternalModBot
 
                 if (value) // If the mod is being enabled
                 {
-					if (ModReference == null)
-					{
-						ModsManager.Instance.LoadMod(OwnerModInfo);
+                    if (ModReference == null)
+                    {
+                        ModsManager.Instance.LoadMod(OwnerModInfo);
 
-					} else
-					{
-						ModReference.OnModEnabled();
-					}
+                    }
+                    else
+                    {
+                        ModReference.OnModEnabled();
+                    }
 
 
                     AutoInject();
@@ -64,7 +64,7 @@ namespace InternalModBot
                     ModReference.OnModDeactivated();
                 }
 
-				ModsManager.Instance.RefreshAllLoadedActiveMods();
+                ModsManager.Instance.RefreshAllLoadedActiveMods();
             }
         }
 
@@ -74,7 +74,7 @@ namespace InternalModBot
             if (!harmony.GetPatchedMethods().Any())
             {
                 Assembly modAssembly = ModReference.GetType().Assembly;
-                
+
                 harmony.PatchAll(modAssembly);
 
                 List<InjectionInfo> injectionInfos = InjectionTargetAttribute.GetInjectionTargetsInAssembly(modAssembly);

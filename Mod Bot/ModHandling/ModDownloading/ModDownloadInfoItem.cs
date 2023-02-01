@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
-using UnityEngine;
+﻿using ModLibrary;
 using Newtonsoft.Json;
-using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.Networking;
-using System.IO;
 using System.Diagnostics;
-using ICSharpCode.SharpZipLib.Zip;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace InternalModBot
 {
@@ -20,20 +13,17 @@ namespace InternalModBot
     /// </summary>
     public class ModDownloadInfoItem : MonoBehaviour
     {
-        Image _modImage;
-        Text _nameDisplay;
-        Text _desciptionDisplay;
-        Text _creatorText;
-        Button _downloadButton;
-        Button _siteButton;
-
-        Slider _loadProgressSlider;
-        RectTransform _downloadUI;
-        Button _cancelDownloadButton;
-
-        ModInfo _underlyingModInfo;
-
-        float _timeToNextRefresh;
+        private Image _modImage;
+        private Text _nameDisplay;
+        private Text _desciptionDisplay;
+        private Text _creatorText;
+        private Button _downloadButton;
+        private Button _siteButton;
+        private Slider _loadProgressSlider;
+        private RectTransform _downloadUI;
+        private Button _cancelDownloadButton;
+        private ModInfo _underlyingModInfo;
+        private float _timeToNextRefresh;
 
         /// <summary>
         /// Initilizes the <see cref="ModDownloadInfoItem"/>
@@ -67,7 +57,7 @@ namespace InternalModBot
             refreshDownload();
         }
 
-        IEnumerator downloadImageAsync(string url)
+        private IEnumerator downloadImageAsync(string url)
         {
             using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
             {
@@ -81,14 +71,14 @@ namespace InternalModBot
             }
         }
 
-        void onDownloadButtonClicked()
+        private void onDownloadButtonClicked()
         {
             new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mod_download_confirm_message", _nameDisplay.text),
             LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_no"), null,
             LocalizationManager.Instance.GetTranslatedString("mod_download_confirm_yes"), delegate
             {
                 ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable = false;
-                ModDownloadManager.DownloadMod(_underlyingModInfo, delegate
+                ModsDownloadManager.DownloadMod(_underlyingModInfo, delegate
                 {
                     ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable = true;
                     ModsPanelManager.Instance.ReloadModItems();
@@ -97,35 +87,35 @@ namespace InternalModBot
             });
         }
 
-        void onCancelDownloadButtonClicked()
+        private void onCancelDownloadButtonClicked()
         {
-            ModDownloadManager.EndDownload(ModDownloadManager.ModDownloadCancelReason.Manual);
+            ModsDownloadManager.EndDownload(ModsDownloadManager.ModDownloadCancelReason.Manual);
         }
 
-        void onBrowseButtonClicked()
+        private void onBrowseButtonClicked()
         {
             Process.Start("https://modbot.org/modPreview.html?modID=" + _underlyingModInfo.UniqueID);
         }
 
-        void refreshDownload()
+        private void refreshDownload()
         {
-            if(_underlyingModInfo == null)
+            if (_underlyingModInfo == null)
             {
                 return;
             }
 
-            ModDownloadManager.ModDownloadInfo newInfo = ModDownloadManager.GetDownloadingModInfo();
+            ModsDownloadManager.ModDownloadInfo newInfo = ModsDownloadManager.GetDownloadingModInfo();
 
-            _downloadUI.gameObject.SetActive(!newInfo.IsNull && newInfo.ModInformation == _underlyingModInfo && !newInfo.IsDone);
+            _downloadUI.gameObject.SetActive(newInfo != null && newInfo.ModInformation == _underlyingModInfo && !newInfo.IsDone);
 
-            if(_downloadUI.gameObject.activeSelf)
+            if (_downloadUI.gameObject.activeSelf)
             {
                 float percent = newInfo.DownloadProgress;
                 _loadProgressSlider.value = percent;
             }
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             float time = Time.unscaledTime;
             if (time >= _timeToNextRefresh)
