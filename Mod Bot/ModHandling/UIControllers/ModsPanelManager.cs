@@ -140,6 +140,7 @@ namespace InternalModBot
             GameUIRoot.Instance.SetEscMenuDisabled(true);
 
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(true);
+            ModBotUIRoot.Instance.ModsWindow.CreateModButton.gameObject.SetActive(ModCreationWindow.CanBeShown);
             ReloadModItems();
         }
 
@@ -301,7 +302,7 @@ namespace InternalModBot
             {
                 return;
             }
-            new Generic2ButtonDialogue("Confirm deletion: " + mod.OwnerModInfo.DisplayName + "?", "Yes, delete", confirmDeletingMod, "Nevermind", null, new Vector2(450, 150));
+            new Generic2ButtonDialogue("Confirm mod deletion? - " + mod.OwnerModInfo.DisplayName, "Yes, delete", confirmDeletingMod, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
         }
 
         private static void confirmDeletingMod()

@@ -32,6 +32,7 @@ namespace ModLibrary
         /// <param name="onPressButton1">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
         /// <param name="button2Text">The text on the second button</param>
         /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
+        /// <param name="size">The size of window</param>
         public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2, Vector2? size = null)
         {
             ModBotUIRoot.Instance.Generic2ButtonDialogeUI.UIRoot.SetActive(true);

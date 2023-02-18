@@ -70,6 +70,8 @@
     <Compile Include="Internal\Reflection\ParameterMatchType.cs" />
     <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
     <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
+    <Compile Include="Internal\UI\ModCreationWindow.cs" />
+    <Compile Include="Internal\UI\ModTagButton.cs" />
     <Compile Include="Internal\WaitForTask.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />

@@ -10,6 +10,7 @@ namespace InternalModBot
     internal class Generic2ButtonDialogeUI : MonoBehaviour
     {
         public static readonly Vector2 DefaultSizeDelta = new Vector2(575, 375);
+        public static readonly Vector2 ModDeletionSizeDelta = new Vector2(450, 150);
 
         /// <summary>
         /// The text element in the UI

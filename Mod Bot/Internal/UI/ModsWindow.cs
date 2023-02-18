@@ -26,6 +26,10 @@ namespace InternalModBot
         /// </summary>
         public Button OpenModsFolderButton;
         /// <summary>
+        /// The create mod button
+        /// </summary>
+        public Button CreateModButton;
+        /// <summary>
         /// The base window object
         /// </summary>
         public GameObject WindowObject;
@@ -40,6 +44,7 @@ namespace InternalModBot
             CloseButton = moddedObject.GetObject<Button>(1);
             GetMoreModsButton = moddedObject.GetObject<Button>(2);
             OpenModsFolderButton = moddedObject.GetObject<Button>(3);
+            CreateModButton = moddedObject.GetObject_Alt<Button>(4);
             WindowObject = moddedObject.gameObject;
         }
     }
