@@ -170,13 +170,13 @@ namespace InternalModBot
             //ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadModData(ModBotUIRoot.Instance.ModDownloadPage));
             ModBotUIRoot.Instance.ModDownloadPage.ErrorWindow.gameObject.SetActive(false);
             ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(true);
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModDownloadPage.Content.transform);
             ModsDownloadManager.DownloadModsData(onModInfosLoadingEnd, onModInfosLoadingError);
         }
 
         private static void onModInfosLoadingEnd(ModsHolder? loadedData)
         {
             ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(false);
-            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModDownloadPage.Content.transform);
             if (loadedData == null)
             {
                 return;
