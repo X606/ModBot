@@ -11,6 +11,7 @@ namespace InternalModBot
     {
         public static readonly Vector2 DefaultSizeDelta = new Vector2(575, 375);
         public static readonly Vector2 ModDeletionSizeDelta = new Vector2(450, 150);
+        public static readonly Vector2 ModErrorSizeDelta = new Vector2(625, 400);
 
         /// <summary>
         /// The text element in the UI

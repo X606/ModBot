@@ -24,6 +24,7 @@ namespace ModLibrary
         /// </summary>
         public static bool IsWindowOpen { get; private set; }
 
+        // Todo: make it possible to spawn not only 2 buttons
         /// <summary>
         /// Creates a dialoge where the user can select one of 2 options
         /// </summary>
@@ -103,6 +104,5 @@ namespace ModLibrary
 
             Close();
         }
-
     }
 }

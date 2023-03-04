@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3101532414
+CRC: 2505029511
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 957149e0093acca3b1f9e7644322a270
+    Hash: ef2bb8e38fdb13ba28bafaa0bb6949a2
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 932ec27933bb4b4004a08c5d9009a0bf
+    Hash: ff13bf8eae2a0b9b2df808182227829e
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -90,6 +90,8 @@ ClassTypes:
 - Class: 223
   Script: {instanceID: 0}
 - Class: 224
+  Script: {instanceID: 0}
+- Class: 225
   Script: {instanceID: 0}
 Assets:
 - Assets/Prefabs/ModOptions/DropDown.prefab

@@ -122,6 +122,8 @@ namespace InternalModBot
             tabButton.ContentToShow = settingsPage.transform;
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
 
+            ModBotUIRoot.Instance.gameObject.AddComponent<ModBotHUDRootNew>().Init();
+
             _theModUserGoingToDelete = null;
         }
 
@@ -159,6 +161,8 @@ namespace InternalModBot
 
         private void onGetMoreModsClicked()
         {
+            ModBotHUDRootNew.DownloadWindow.Show();
+            return;
             ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(true);
 
             ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick = new Button.ButtonClickedEvent();
