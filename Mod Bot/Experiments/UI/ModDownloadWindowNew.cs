@@ -137,7 +137,7 @@ namespace InternalModBot
 
         public void OpenInformationWindow(ModInfo info, Dictionary<string, JToken> specialData, Texture previewImage)
         {
-            m_InformationWindow.gameObject.SetActive(info == null || specialData == null);
+            m_InformationWindow.gameObject.SetActive(info != null && specialData != null);
             if(info == null || specialData == null)
             {
                 return;
