@@ -257,7 +257,7 @@ namespace InternalModBot
 
         public void ShowDetails()
         {
-            ModBotHUDRootNew.DownloadWindow.OpenInformationWindow(m_ModInfo, m_Thumbnail.texture);
+            ModBotHUDRootNew.DownloadWindow.OpenInformationWindow(m_ModInfo, m_SpecialData, m_Thumbnail.texture);
             SetControlsBGVisible(false);
         }
 

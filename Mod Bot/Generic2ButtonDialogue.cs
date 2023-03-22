@@ -24,7 +24,7 @@ namespace ModLibrary
         /// </summary>
         public static bool IsWindowOpen { get; private set; }
 
-        // Todo: make it possible to spawn not only 2 buttons
+        // Todo: make it possible to spawn not only with 2 buttons
         /// <summary>
         /// Creates a dialoge where the user can select one of 2 options
         /// </summary>
@@ -50,6 +50,33 @@ namespace ModLibrary
             {
                 ModBotUIRoot.Instance.Generic2ButtonDialogeUI.TransformToResize.sizeDelta = size.Value;
             }
+
+            _onButton1ClickedCallback = onPressButton1;
+            _onButton2ClickedCallback = onPressButton2;
+
+            IsWindowOpen = true;
+        }
+
+        /// <summary>
+        /// Creates a dialoge where the user can select one of 2 options
+        /// </summary>
+        /// <param name="message">The text that will be displayed on screen</param>
+        /// <param name="button1Text">The text on the first button</param>
+        /// <param name="onPressButton1">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
+        /// <param name="button2Text">The text on the second button</param>
+        /// <param name="onPressButton2">When the first button is pressed, this will be called, then the window will be closed, if <see langword="null"/>, it will just close the window</param>
+        public Generic2ButtonDialogue(string message, string button1Text, Action onPressButton1, string button2Text, Action onPressButton2)
+        {
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.UIRoot.SetActive(true);
+
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.GetComponentInChildren<Text>().text = button1Text;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.GetComponentInChildren<Text>().text = button2Text;
+
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Text.text = message;
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button1.onClick.AddListener(onButton1Clicked);
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.Button2.onClick.AddListener(onButton2Clicked);
+
+            ModBotUIRoot.Instance.Generic2ButtonDialogeUI.TransformToResize.sizeDelta = Generic2ButtonDialogeUI.DefaultSizeDelta;
 
             _onButton1ClickedCallback = onPressButton1;
             _onButton2ClickedCallback = onPressButton2;

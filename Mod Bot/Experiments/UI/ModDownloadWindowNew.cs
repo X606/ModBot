@@ -1,4 +1,5 @@
 ﻿using ModLibrary;
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -126,7 +127,7 @@ namespace InternalModBot
         {
             Hide();
             ModBotHUDRootNew.LoadingBar.SetActive(false);
-            ModErrorManager.ShowModBotSiteError(error);
+            if(ModBotUIRoot.Instance.ModsWindow.WindowObject.activeSelf) ModErrorManager.ShowModBotSiteError(error);
         }
 
         public void OpenWebsite()
@@ -134,10 +135,10 @@ namespace InternalModBot
             Application.OpenURL("https://modbot.org/modBrowsing.html");
         }
 
-        public void OpenInformationWindow(ModInfo info, Texture previewImage)
+        public void OpenInformationWindow(ModInfo info, Dictionary<string, JToken> specialData, Texture previewImage)
         {
-            m_InformationWindow.gameObject.SetActive(info != null);
-            if(info == null)
+            m_InformationWindow.gameObject.SetActive(info == null || specialData == null);
+            if(info == null || specialData == null)
             {
                 return;
             }
@@ -145,12 +146,12 @@ namespace InternalModBot
             m_ModName.text = info.DisplayName;
             m_ModDescription.text = info.Description;
             m_ModPreview.texture = previewImage;
-            m_ModVersion.text = "Version " + info.Version;
+            m_ModVersion.text = "version " + info.Version + ", " + specialData["Downloads"].ToObject<string>() + " downloads";
         }
 
         private void closeInformationWindow()
         {
-            OpenInformationWindow(null, null);
+            OpenInformationWindow(null, null, null);
         }
     }
 }
