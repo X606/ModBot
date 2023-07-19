@@ -50,6 +50,13 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Experiments\ModsErrorManager\ModErrorType.cs" />
+    <Compile Include="Experiments\ModsErrorManager\ModErrorManager.cs" />
+    <Compile Include="Experiments\UI\GenericLoadingBar.cs" />
+    <Compile Include="Experiments\UI\ModBotHUDRoot.cs" />
+    <Compile Include="Experiments\UI\ModDownloadWindowNew.cs" />
+    <Compile Include="Experiments\UI\ModInfoUIVizualizator.cs" />
+    <Compile Include="Experiments\WebisteInteraction\ModBotWebsiteInteraction.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
     <Compile Include="Internal\Patches\Character_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorManager_Patch.cs" />
@@ -70,11 +77,14 @@
     <Compile Include="Internal\Reflection\ParameterMatchType.cs" />
     <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
     <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
+    <Compile Include="Internal\UI\ModCreationWindow.cs" />
+    <Compile Include="Internal\UI\ModTagButton.cs" />
     <Compile Include="Internal\WaitForTask.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
     <Compile Include="Internal\ProgressBar.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadManager.cs" />
+    <Compile Include="ModHandling\ModInfo\ModDeletionInfo.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorModdedMetadataManager.cs" />
     <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
@@ -261,6 +271,10 @@
     <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UsedDlls\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

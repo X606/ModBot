@@ -46,6 +46,10 @@ namespace InternalModBot
 		/// </summary>
 		public ModDownloadPage ModDownloadPage;
 		/// <summary>
+		/// The mod creation UI
+		/// </summary>
+		public ModCreationWindow ModCreationWindow;
+		/// <summary>
 		/// The root canvas
 		/// </summary>
 		public Canvas Root;
@@ -81,7 +85,10 @@ namespace InternalModBot
 
 			ModDownloadPage = gameObject.AddComponent<ModDownloadPage>();
 			ModDownloadPage.Init(moddedObject.GetObject<ModdedObject>(10));
-		}
+
+			ModCreationWindow = gameObject.AddComponent<ModCreationWindow>();
+			ModCreationWindow.Init(moddedObject.GetObject_Alt<ModdedObject>(11));
+        }
 	}
 
 }

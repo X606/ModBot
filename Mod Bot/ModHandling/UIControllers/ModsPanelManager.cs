@@ -1,14 +1,13 @@
 ﻿using ModLibrary;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.IO;
-using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 
 namespace InternalModBot
 {
@@ -24,7 +23,9 @@ namespace InternalModBot
 
         private Action _actionOnModsPanelClose = null;
 
-        void Start()
+        private static ModInfo _theModUserGoingToDelete;
+
+        private void Start()
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
 
@@ -93,24 +94,24 @@ namespace InternalModBot
 
                 float buttonSize = button.sizeDelta.x;
 
-                float newSize = buttonSize * (((float)buttonCount) / (((float)buttonCount) + 1f));
+                float newSize = buttonSize * (buttonCount / (buttonCount + 1f));
 
                 LayoutElement layoutElement = button.GetComponent<LayoutElement>();
                 layoutElement.preferredWidth = newSize;
 
                 button.sizeDelta = new Vector2(newSize, button.sizeDelta.y);
-                button.anchoredPosition -= new Vector2((newSize * 0.2f * (i + 0)), 0);
+                button.anchoredPosition -= new Vector2(newSize * 0.2f * (i + 0), 0);
             }
-            
+
             GameObject buttonContainerPrefab = settingsButtonHolder.GetChild(0).gameObject;
             RectTransform spawnedButtonContainer = Instantiate(buttonContainerPrefab, settingsButtonHolder).GetComponent<RectTransform>();
             spawnedButtonContainer.GetComponentInChildren<Text>().text = "Mod-Bot";
 
             SettingsMenuTabButton[] buttons = new SettingsMenuTabButton[GameUIRoot.Instance.SettingsMenu.TabButtons.Length + 1];
-			for (int i = 0; i < GameUIRoot.Instance.SettingsMenu.TabButtons.Length; i++)
-			{
+            for (int i = 0; i < GameUIRoot.Instance.SettingsMenu.TabButtons.Length; i++)
+            {
                 buttons[i] = GameUIRoot.Instance.SettingsMenu.TabButtons[i];
-			}
+            }
             SettingsMenuTabButton tabButton = spawnedButtonContainer.GetComponentInChildren<SettingsMenuTabButton>();
             buttons[buttons.Length - 1] = tabButton;
             GameUIRoot.Instance.SettingsMenu.TabButtons = buttons;
@@ -120,6 +121,10 @@ namespace InternalModBot
             GameObject settingsPage = Instantiate(InternalAssetBundleReferences.ModBot.GetObject("ModBotSettings"), tabButton.ContentToShow.parent);
             tabButton.ContentToShow = settingsPage.transform;
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
+
+            ModBotUIRoot.Instance.gameObject.AddComponent<ModBotHUDRootNew>().Init();
+
+            _theModUserGoingToDelete = null;
         }
 
         /// <summary>
@@ -132,20 +137,21 @@ namespace InternalModBot
             openModsMenu();
         }
 
-        void openModsMenu()
+        private void openModsMenu()
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
 
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(true);
+            ModBotUIRoot.Instance.ModsWindow.CreateModButton.gameObject.SetActive(ModCreationWindow.CanBeShown);
             ReloadModItems();
         }
 
-        void closeModsMenu()
+        private void closeModsMenu()
         {
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
 
-            if(_actionOnModsPanelClose != null)
+            if (_actionOnModsPanelClose != null)
             {
                 _actionOnModsPanelClose();
             }
@@ -153,8 +159,10 @@ namespace InternalModBot
             _actionOnModsPanelClose = null;
         }
 
-        void onGetMoreModsClicked()
+        private void onGetMoreModsClicked()
         {
+            ModBotHUDRootNew.DownloadWindow.Show();
+            return;
             ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(true);
 
             ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick = new Button.ButtonClickedEvent();
@@ -163,35 +171,39 @@ namespace InternalModBot
                 ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(false);
             });
 
-            ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadModData(ModBotUIRoot.Instance.ModDownloadPage.Content));
+            //ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadModData(ModBotUIRoot.Instance.ModDownloadPage));
+            ModBotUIRoot.Instance.ModDownloadPage.ErrorWindow.gameObject.SetActive(false);
+            ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(true);
+            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModDownloadPage.Content.transform);
+            ModsDownloadManager.DownloadModsData(onModInfosLoadingEnd, onModInfosLoadingError);
         }
-        void onModsFolderClicked()
-		{
-            Process.Start(ModsManager.Instance.ModFolderPath);
-		}
 
-        static IEnumerator downloadModData(GameObject content)
+        private static void onModInfosLoadingEnd(ModsHolder? loadedData)
         {
-            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
+            ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(false);
+            if (loadedData == null)
             {
-                yield return webRequest.SendWebRequest(); // wait for the web request to send
-
-                if (webRequest.isNetworkError || webRequest.isHttpError)
-                    yield break;
-
-                TransformUtils.DestroyAllChildren(content.transform);
-
-                ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
-
-                GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
-                foreach (ModInfo modInfo in modsHolder.Mods)
-                {
-                    ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(content, modInfo, modDownloadInfoPrefab));
-                }
+                return;
+            }
+            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
+            foreach (ModInfo modInfo in loadedData.Value.Mods)
+            {
+                ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(ModBotUIRoot.Instance.ModDownloadPage.Content.gameObject, modInfo, modDownloadInfoPrefab));
             }
         }
 
-        static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
+        private static void onModInfosLoadingError(string error)
+        {
+            ModBotUIRoot.Instance.ModDownloadPage.ErrorText.text = error;
+            ModBotUIRoot.Instance.ModDownloadPage.ErrorWindow.SetActive(true);
+        }
+
+        private void onModsFolderClicked()
+        {
+            Process.Start(ModsManager.Instance.ModFolderPath);
+        }
+
+        private static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID))
             {
@@ -211,25 +223,24 @@ namespace InternalModBot
             holder.AddComponent<ModDownloadInfoItem>().Init(modInfo);
         }
 
-        void openModsOptionsWindowForMod(LoadedModInfo mod)
+        private void openModsOptionsWindowForMod(LoadedModInfo mod)
         {
             ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(ModBotUIRoot.Instance.ModsWindow.WindowObject, mod.ModReference);
             mod.ModReference.CreateSettingsWindow(builder);
         }
 
-        void toggleIsModDisabled(LoadedModInfo mod)
+        private void toggleIsModDisabled(LoadedModInfo mod)
         {
             if (mod == null)
                 return;
-			mod.IsEnabled = !mod.IsEnabled;
+            mod.IsEnabled = !mod.IsEnabled;
 
             ReloadModItems();
         }
 
-       
-        void addModToList(LoadedModInfo mod, GameObject parent)
+        private void addModToList(LoadedModInfo mod, GameObject parent)
         {
-			bool isModActive = mod.IsEnabled;
+            bool isModActive = mod.IsEnabled;
 
             GameObject modItem = InternalAssetBundleReferences.ModBot.InstantiateObject("ModItemPrefab");
             modItem.transform.SetParent(parent.transform, false);
@@ -237,39 +248,48 @@ namespace InternalModBot
             string modName = mod.OwnerModInfo.DisplayName;
 
             _modItems.Add(modItem);
-			
-			ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
+
+            ModdedObject modItemModdedObject = modItem.GetComponent<ModdedObject>();
 
             modItemModdedObject.GetObject<Text>(0).text = modName; // Set title
-			modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
+            modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
             modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.OwnerModInfo.UniqueID);
 
             modItemModdedObject.GetObject<RawImage>(2).texture = mod.OwnerModInfo.HasImage ? mod.OwnerModInfo.CachedImage : null;
 
-			Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
-            
+            Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
+
             if (!isModActive)
             {
                 modItem.GetComponent<Image>().color = DisabledModColor;
                 LocalizedTextField localizedTextField = enableOrDisableButton.transform.GetChild(0).GetComponent<LocalizedTextField>();
                 localizedTextField.LocalizationID = "mods_menu_enable_mod";
                 localizedTextField.tryLocalizeTextField();
+                localizedTextField.gameObject.SetActive(!mod.OwnerModInfo.ModIsAboutToDelete());
 
                 enableOrDisableButton.colors = new ColorBlock() { normalColor = Color.green * 1.2f, highlightedColor = Color.green, pressedColor = Color.green * 0.8f, colorMultiplier = 1 };
             }
+            enableOrDisableButton.interactable = !mod.OwnerModInfo.ModIsAboutToDelete();
 
-			Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
-            BroadcastButton.onClick.AddListener( delegate { onBroadcastButtonClicked(mod.ModReference); } );
+            Button BroadcastButton = modItemModdedObject.GetObject<Button>(6);
+            BroadcastButton.onClick.AddListener(delegate { onBroadcastButtonClicked(mod.ModReference); });
             BroadcastButton.gameObject.SetActive(GameModeManager.IsMultiplayer());
 
-			modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(mod); }); // Add disable button callback
+            Button deleteModButton = modItemModdedObject.GetObject_Alt<Button>(7);
+            deleteModButton.onClick.AddListener(delegate { deleteMod(mod); });
+            deleteModButton.interactable = !mod.OwnerModInfo.ModIsAboutToDelete();
+
+            modItemModdedObject.GetObject_Alt<Transform>(8).gameObject.SetActive(mod.OwnerModInfo.ModIsAboutToDelete());
+
+            modItemModdedObject.GetObject<Button>(3).onClick.AddListener(delegate { toggleIsModDisabled(mod); }); // Add disable button callback
             //modItemModdedObject.GetObject<Button>(4).GetComponentInChildren<Text>().gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mods_menu_mod_options";
             Button modsOptionButton = modItemModdedObject.GetObject<Button>(4);
             modsOptionButton.onClick.AddListener(delegate { openModsOptionsWindowForMod(mod); }); // Add Mod Options button callback
             modsOptionButton.interactable = mod.ModReference != null && mod.ModReference.ImplementsSettingsWindow() && isModActive;
 
-		}
-        static void onBroadcastButtonClicked(Mod mod)
+        }
+
+        private static void onBroadcastButtonClicked(Mod mod)
         {
             new Generic2ButtonDialogue(ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_broadcast_confirm_message", mod.ModInfo.DisplayName),
             LocalizationManager.Instance.GetTranslatedString("mods_menu_broadcast_confirm_no"), null,
@@ -278,14 +298,30 @@ namespace InternalModBot
                 ModSharingManager.SendModToAllModBotClients(mod.ModInfo.UniqueID);
             });
         }
-        void deleteMod(Mod mod)
-		{
-            //TODO: implemet this (possibly move mods to a temp path?)
-            debug.Log("TODO: implemet this (possibly move mods to a temp path?)");
-		}
 
+        private static void deleteMod(LoadedModInfo mod)
+        {
+            _theModUserGoingToDelete = mod.OwnerModInfo;
+            if (_theModUserGoingToDelete == null)
+            {
+                return;
+            }
+            new Generic2ButtonDialogue("Confirm mod deletion? - " + mod.OwnerModInfo.DisplayName, "Yes, delete", confirmDeletingMod, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
+        }
 
-        void Update()
+        private static void confirmDeletingMod()
+        {
+            if (_theModUserGoingToDelete == null)
+            {
+                return;
+            }
+
+            _theModUserGoingToDelete.MarkModAboutToDelete();
+            _theModUserGoingToDelete.IsModEnabled = false;
+            ModsPanelManager.Instance.ReloadModItems();
+        }
+
+        private void Update()
         {
             if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy && ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable)
             {
@@ -293,6 +329,11 @@ namespace InternalModBot
                 {
                     closeModsMenu();
                 }
+            }
+            if (ModsDownloadManager.IsLoadingModInfos())
+            {
+                UnityWebRequest r = ModsDownloadManager.GetModInfosWebRequest();
+                ModBotUIRoot.Instance.ModDownloadPage.ProgressBarSlider.value = r.downloadProgress;
             }
         }
 
@@ -317,14 +358,13 @@ namespace InternalModBot
             size.sizeDelta = new Vector2(size.sizeDelta.x, MOD_ITEM_HEIGHT * mods.Count);
 
             // Add all mods back to list
-            for (int i = 0; i < mods.Count; i++)
+            foreach (LoadedModInfo info in mods)
             {
-                addModToList(mods[i], ModBotUIRoot.Instance.ModsWindow.Content);
+                addModToList(info, ModBotUIRoot.Instance.ModsWindow.Content);
             }
         }
 
-        List<GameObject> _modItems = new List<GameObject>();
-
-        const int MOD_ITEM_HEIGHT = 100;
+        private readonly List<GameObject> _modItems = new List<GameObject>();
+        private const int MOD_ITEM_HEIGHT = 100;
     }
 }

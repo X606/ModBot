@@ -1,9 +1,7 @@
-﻿using System;
+﻿using InternalModBot;
 using System.Collections.Generic;
-using UnityEngine;
-using ModLibrary;
-using InternalModBot;
 using System.Reflection;
+using UnityEngine;
 
 namespace ModLibrary
 {
@@ -12,11 +10,11 @@ namespace ModLibrary
     /// </summary>
     public abstract class Mod
     {
-		/// <summary>
-		/// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
-		/// </summary>
+        /// <summary>
+        /// The modinfo that goes with this Mod, this contains data about the mod name, version ect.
+        /// </summary>
         public ModInfo ModInfo => ModsManager.Instance.GetInfo(this);
-        
+
         /// <summary>
         /// Returns an ID you should use when harmony patching in this mod, this is to help mod-bot clean up patches made by this mod.
         /// </summary>
@@ -70,8 +68,8 @@ namespace ModLibrary
         /// </summary>
         /// <param name="owner">The owner of the new character model</param>
         protected internal virtual void OnCharacterModelCreated(FirstPersonMover owner)
-		{
-		}
+        {
+        }
 
         /// <summary>
         /// Called in <see cref="ModsManager.ReloadMods()"/>
@@ -209,14 +207,14 @@ namespace ModLibrary
         /// Called when we connect to a multiplayer server
         /// </summary>
         protected internal virtual void OnClientConnectedToServer()
-		{
-		}
+        {
+        }
 
         /// <summary>
         /// Called when we disconnect from a multiplayer server
         /// </summary>
         protected internal virtual void OnClientDisconnectedFromServer()
-		{
-		}
+        {
+        }
     }
 }

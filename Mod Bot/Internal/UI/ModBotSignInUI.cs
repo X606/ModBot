@@ -17,6 +17,11 @@ namespace InternalModBot
 	/// </summary>
 	internal class ModBotSignInUI : MonoBehaviour
 	{
+		private static string _userName = string.Empty;
+		public static string CurrentUserName { get => _userName; private set { _userName = value; } }
+
+		public static bool HasSignedIn => !string.IsNullOrEmpty(CurrentUserName);
+
 		InputField _usernameField;
 		InputField _passwordField;
 		Button _signUpButton;
@@ -180,6 +185,7 @@ namespace InternalModBot
 
 					debug.Log("logged in as " + username.Trim('\"'));
 					VersionLabelManager.Instance.SetLine(2, "Signed in as: " + username);
+					CurrentUserName = username;
                 });
 			});
 		}

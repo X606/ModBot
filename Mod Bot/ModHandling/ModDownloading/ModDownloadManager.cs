@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using ModLibrary;
-using UnityEngine;
 using Newtonsoft.Json;
-using UnityEngine.UI;
+using System;
 using System.Collections;
-using UnityEngine.Networking;
 using System.IO;
-using System.Diagnostics;
-using ICSharpCode.SharpZipLib.Zip;
+using System.Threading.Tasks;
+using UnityEngine.Networking;
 
 namespace InternalModBot
 {
-    internal static class ModDownloadManager
+    internal static class ModsDownloadManager
     {
+        public const int LOAD_MODINFOS_TIMEOUT = 9; // Is it enough?
+
         // A list of mod infos with download precentage
         private static ModDownloadInfo _currentlyDownloadingMod;
+
+        private static UnityWebRequest _modInfoDownloadWebRequest;
 
         /// <summary>
         /// Get mod download information
@@ -30,13 +28,19 @@ namespace InternalModBot
             return _currentlyDownloadingMod;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         internal static bool IsDownloadingAMod()
         {
-            return !_currentlyDownloadingMod.IsNull && _currentlyDownloadingMod.ModInformation != null;
+            return _currentlyDownloadingMod != null && _currentlyDownloadingMod.ModInformation != null;
+        }
+
+        internal static bool IsLoadingModInfos()
+        {
+            return _modInfoDownloadWebRequest != null;
+        }
+
+        internal static UnityWebRequest GetModInfosWebRequest()
+        {
+            return _modInfoDownloadWebRequest;
         }
 
         /// <summary>
@@ -54,28 +58,29 @@ namespace InternalModBot
         /// </summary>
         public static void EndDownload(ModDownloadCancelReason reason)
         {
-            if(reason == ModDownloadCancelReason.AlreadyDownloading)
+            if (reason == ModDownloadCancelReason.AlreadyDownloading)
             {
                 return;
             }
             _currentlyDownloadingMod.IsDone = true;
             _currentlyDownloadingMod.ModInformation = null;
             _currentlyDownloadingMod.DownloadProgress = 0;
-            _currentlyDownloadingMod.IsNull = true;
+            _currentlyDownloadingMod = null;
             StaticCoroutineRunner.StopStaticCoroutine(downloadModFile(null, null));
         }
 
-
-        static IEnumerator downloadModFile(ModInfo modInfo, Action onComplete)
+        private static IEnumerator downloadModFile(ModInfo modInfo, Action onComplete)
         {
-            if (!_currentlyDownloadingMod.IsNull)
+            if (_currentlyDownloadingMod != null)
             {
                 EndDownload(ModDownloadCancelReason.AlreadyDownloading);
             }
-            _currentlyDownloadingMod.ModInformation = modInfo;
-            _currentlyDownloadingMod.IsDone = false;
-            _currentlyDownloadingMod.IsNull = false;
-            _currentlyDownloadingMod.DownloadProgress = 0;
+            _currentlyDownloadingMod = new ModDownloadInfo
+            {
+                ModInformation = modInfo,
+                IsDone = false,
+                DownloadProgress = 0
+            };
 
             // If mod is already loaded, just cancel the download instead of throwing an exception
             if (ModsManager.Instance.GetLoadedModWithID(modInfo.UniqueID) != null)
@@ -113,6 +118,7 @@ namespace InternalModBot
                         EndDownload(ModDownloadCancelReason.Error);
 
                         onComplete?.Invoke();
+                        webRequest.Dispose();
                         yield break;
                     }
 
@@ -121,6 +127,7 @@ namespace InternalModBot
                 }
 
                 bytes = webRequest.downloadHandler.data;
+                webRequest.Dispose();
             }
 
             string tempFilePath = Path.GetTempFileName();
@@ -150,11 +157,51 @@ namespace InternalModBot
             EndDownload(ModDownloadCancelReason.SuccessDownload);
         }
 
-        internal struct ModDownloadInfo
+        /// <summary>
+        /// Download all mod infos from server
+        /// </summary>
+        /// <param name="onFinishDownload"></param>
+        /// <param name="onGotError"></param>
+        public static void DownloadModsData(Action<ModsHolder?> onFinishDownload, Action<string> onGotError = null)
+        {
+            if (IsDownloadingAMod()) return;
+            StaticCoroutineRunner.StartStaticCoroutine(downloadModData(onFinishDownload, onGotError));
+        }
+
+        private static IEnumerator downloadModData(Action<ModsHolder?> onFinishDownload, Action<string> onGotError = null)
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
+            {
+                _modInfoDownloadWebRequest = webRequest;
+                webRequest.timeout = LOAD_MODINFOS_TIMEOUT;
+
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    _modInfoDownloadWebRequest = null;
+                    string error = webRequest.error + "\n(" + "Network: " + webRequest.isNetworkError + " HTTP: " + webRequest.isHttpError + ")";
+                    if (onGotError != null) onGotError(error);
+                    if (onGotError != null) onFinishDownload(null);
+                    webRequest.Dispose();
+
+                    yield break;
+                }
+                _modInfoDownloadWebRequest = null;
+
+                ModsHolder? modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+                if (onGotError != null) onFinishDownload(modsHolder);
+
+                webRequest.Dispose();
+            }
+        }
+
+
+
+        internal class ModDownloadInfo
         {
             public ModInfo ModInformation;
             public float DownloadProgress;
-            public bool IsNull;
 
             public bool IsDone;
         }
