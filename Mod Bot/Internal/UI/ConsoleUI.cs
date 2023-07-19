@@ -46,15 +46,15 @@ namespace InternalModBot
             _input = input;
             _scroll = innerHolder.GetComponentInChildren<ScrollRect>();
 
-            _consoleTextElementPrefab = InternalAssetBundleReferences.ModBot.GetObject("ConsoleTextElement");
+            _consoleTextElementPrefab = InternalAssetBundleReferences.ModBot.GetObject("NewConsoleTextElement");
 
             _input.onEndEdit.AddListener(OnEndEdit);
 
             _isInitialized = true;
         }
 
-		private void OnEndEdit(string arg0)
-		{
+        private void OnEndEdit(string arg0)
+        {
             // If the console is not up, dont run any commands
             if (!_innerHolder.activeSelf)
                 return;
@@ -73,7 +73,7 @@ namespace InternalModBot
                 return;
 
             if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.OpenConsole)))
-				Flip();
+                Flip();
         }
 
         internal void Flip()
@@ -106,13 +106,91 @@ namespace InternalModBot
         /// <param name="whatToLog"></param>
         public void Log(string whatToLog)
         {
-            log(whatToLog);
+            logNew(whatToLog);
 
             Console.WriteLine(whatToLog);
         }
+        void logNew(string whatToLog, string prefix = "", string postfix = "")
+        {
+            if (!_isInitialized)
+                return;
 
+            GameObject obj = (GameObject)Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<ModdedObject>().objects[0];
+            Text spawnedText = obj.GetComponent<Text>();
+            _lines.Enqueue(spawnedText);
+
+            spawnedText.text = whatToLog;
+
+            Canvas.ForceUpdateCanvases();
+
+            Stack<TagHolder> stack = new Stack<TagHolder>();
+
+            string lineText = whatToLog;
+
+            string tagPrefix = "";
+            Stack<TagHolder> tagsToOpen = new Stack<TagHolder>(stack);
+            while (tagsToOpen.Count > 0)
+            {
+                tagPrefix += tagsToOpen.Pop().GetStartTag();
+            }
+
+            for (int j = 0; j < lineText.Length; j++)
+            {
+                if (containsStringAt(j, lineText, "<color="))
+                {
+                    if ((j + "<color=".Length) < lineText.Length)
+                    {
+                        string value = lineText.Substring(j + "<color=".Length, "#ff00ff".Length);
+                        stack.Push(new TagHolder(TagHolder.TagTypes.Color, false, value));
+                    }
+                }
+                else if (containsStringAt(j, lineText, "<b>"))
+                {
+                    stack.Push(new TagHolder(TagHolder.TagTypes.Bold, false, null));
+                }
+                else if (containsStringAt(j, lineText, "<i>"))
+                {
+                    stack.Push(new TagHolder(TagHolder.TagTypes.Italics, false, null));
+                }
+                else if (containsStringAt(j, lineText, "</i>") || containsStringAt(j, lineText, "</b>") || containsStringAt(j, lineText, "</color>"))
+                {
+                    if (stack.Count > 0)
+                    {
+                        stack.Pop();
+
+                    }
+
+                }
+            }
+
+            lineText = prefix + tagPrefix + lineText;
+
+            Queue<TagHolder> tagsToClose = new Queue<TagHolder>(stack);
+            while (tagsToClose.Count > 0)
+            {
+                lineText += tagsToClose.Dequeue().GetEndTag();
+            }
+            lineText += postfix;
+
+            lineText = lineText.Replace("\n", ""); // we are already splitting by newlines, no need to have the newline characters anymore
+
+
+            spawnedText.text = lineText;
+
+
+
+            while (_lines.Count > MAX_LINES_COUNT)
+            {
+                Destroy(_lines.Dequeue().gameObject);
+            }
+
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _scroll.ScrollToBottom();
+            }, -1f); // Run this next frame
+        }
         void log(string whatToLog, string prefix = "", string postfix = "")
-		{
+        {
             if (!_isInitialized)
                 return;
 
@@ -142,17 +220,17 @@ namespace InternalModBot
                 }
 
                 for (int j = 0; j < lineText.Length; j++)
-				{
+                {
                     if (containsStringAt(j, lineText, "<color="))
-					{
+                    {
                         if ((j + "<color=".Length) < lineText.Length)
                         {
                             string value = lineText.Substring(j + "<color=".Length, "#ff00ff".Length);
                             stack.Push(new TagHolder(TagHolder.TagTypes.Color, false, value));
                         }
-					}
-                    else if(containsStringAt(j, lineText, "<b>"))
-					{
+                    }
+                    else if (containsStringAt(j, lineText, "<b>"))
+                    {
                         stack.Push(new TagHolder(TagHolder.TagTypes.Bold, false, null));
                     }
                     else if (containsStringAt(j, lineText, "<i>"))
@@ -160,23 +238,23 @@ namespace InternalModBot
                         stack.Push(new TagHolder(TagHolder.TagTypes.Italics, false, null));
                     }
                     else if (containsStringAt(j, lineText, "</i>") || containsStringAt(j, lineText, "</b>") || containsStringAt(j, lineText, "</color>"))
-					{
+                    {
                         if (stack.Count > 0)
-						{
+                        {
                             stack.Pop();
 
                         }
-                            
+
                     }
                 }
 
                 lineText = prefix + tagPrefix + lineText;
 
                 Queue<TagHolder> tagsToClose = new Queue<TagHolder>(stack);
-				while (tagsToClose.Count > 0)
-				{
+                while (tagsToClose.Count > 0)
+                {
                     lineText += tagsToClose.Dequeue().GetEndTag();
-				}
+                }
                 lineText += postfix;
 
                 lineText = lineText.Replace("\n", ""); // we are already splitting by newlines, no need to have the newline characters anymore
@@ -193,8 +271,8 @@ namespace InternalModBot
                 }
             }
 
-            while(_lines.Count > MAX_LINES_COUNT)
-			{
+            while (_lines.Count > MAX_LINES_COUNT)
+            {
                 Destroy(_lines.Dequeue().gameObject);
             }
 
@@ -212,7 +290,7 @@ namespace InternalModBot
         public void Log(string whatToLog, Color color)
         {
             string colorText = ColorUtility.ToHtmlStringRGB(color);
-            log(whatToLog, "<color=#" + colorText + ">", "</color>");
+            logNew(whatToLog, "<color=#" + colorText + ">", "</color>");
 
             Console.WriteLine(whatToLog);
         }
@@ -237,9 +315,9 @@ namespace InternalModBot
         }
 
         bool containsStringAt(int index, string str, string substr)
-		{
-			for (int i = index; i < str.Length; i++)
-			{
+        {
+            for (int i = index; i < str.Length; i++)
+            {
                 int subStrIndex = i - index;
 
                 if (substr.Length <= subStrIndex)
@@ -250,15 +328,15 @@ namespace InternalModBot
             }
 
             return true;
-		}
+        }
 
         class TagHolder
-		{
+        {
             public TagHolder(TagTypes tagType, bool isEndTag, string content)
-			{
+            {
                 TagType = tagType;
                 Content = content;
-			}
+            }
 
             public TagTypes TagType;
             public string Content;
@@ -285,7 +363,7 @@ namespace InternalModBot
                 }
             }
             public string GetEndTag()
-			{
+            {
                 switch (TagType)
                 {
                     case TagTypes.Color:
