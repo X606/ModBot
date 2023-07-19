@@ -29,6 +29,8 @@ namespace InternalModBot
 
         bool _isInitialized = false;
 
+        bool _isShownOnScreen = false;
+
         /// <summary>
         /// Initialized the <see cref="ConsoleUI"/>
         /// </summary>
@@ -76,13 +78,26 @@ namespace InternalModBot
 
         internal void Flip()
         {
-            if (_innerHolder.activeSelf)
+            if (_isShownOnScreen)
             {
-                Animator.Play("hideConsole");
+                HideConsole();
                 return;
             }
 
+            ShowConsole();
+        }
+
+        internal void HideConsole()
+        {
+            Animator.Play("hideConsole");
+            _isShownOnScreen = false;
+            _input.DeactivateInputField();
+        }
+
+        internal void ShowConsole()
+        {
             Animator.Play("showConsole");
+            _isShownOnScreen = true;
         }
 
         /// <summary>
