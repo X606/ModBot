@@ -41,6 +41,7 @@ namespace InternalModBot
             modBotManagers.AddComponent<DebugLineDrawingManager>();           // Handles drawing lines on screen
             modBotManagers.AddComponent<VersionLabelManager>();               // Handles custom version label stuff
             modBotManagers.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
+            modBotManagers.AddComponent<ModdedTwitchManager>();               // Handles twitch chat messages
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {

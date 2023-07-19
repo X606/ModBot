@@ -3,6 +3,7 @@ using ModLibrary;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TwitchChatter;
 #pragma warning disable CS0618 // We dont care if its depricated sincei
 
 namespace InternalModBot
@@ -272,6 +273,7 @@ namespace InternalModBot
 				mods[i].OnClientConnectedToServer();
 			}
 		}
+
 		/// <summary>
 		/// Calls this method on all mods
 		/// </summary>
@@ -284,5 +286,17 @@ namespace InternalModBot
 			}
 		}
 
-	}
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void OnTwitchChatMessage(TwitchChatMessage message)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                mods[i].OnTwitchChatMessage(message);
+            }
+        }
+    }
 }
+

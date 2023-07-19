@@ -58,6 +58,7 @@
     <Compile Include="Experiments\UI\ModInfoUIVizualizator.cs" />
     <Compile Include="Experiments\WebisteInteraction\ModBotWebsiteInteraction.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
+    <Compile Include="Internal\ModdedTwitchManager.cs" />
     <Compile Include="Internal\Patches\Character_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorManager_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
