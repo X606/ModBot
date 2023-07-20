@@ -354,3 +354,9 @@ MigrationBackup/
 
 # Ignore .manifest files (the only thing that changes is hash and CRC)
 *.manifest
+
+# Ignore built version folder
+built version/
+
+# Ignore built asset bundles
+UnityProject/Assets/AssetBundles/
