@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Ignore .zip files, this is mostly so that the built version is not included in the commit
 *.zip
+
+# Ignore .manifest files (the only thing that changes is hash and CRC)
+*.manifest
