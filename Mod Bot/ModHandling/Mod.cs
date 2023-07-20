@@ -1,6 +1,7 @@
 ﻿using InternalModBot;
 using System.Collections.Generic;
 using System.Reflection;
+using TwitchChatter;
 using UnityEngine;
 
 namespace ModLibrary
@@ -214,6 +215,14 @@ namespace ModLibrary
         /// Called when we disconnect from a multiplayer server
         /// </summary>
         protected internal virtual void OnClientDisconnectedFromServer()
+        {
+        }
+
+        /// <summary>
+        /// Called when someone sends a message in twitch chat.
+        /// </summary>
+        /// <param name="message">The twitch chat message</param>
+        protected internal virtual void OnTwitchChatMessage(TwitchChatMessage message)
         {
         }
     }

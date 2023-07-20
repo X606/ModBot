@@ -62,6 +62,27 @@ namespace ModLibrary
             }
         }
 
+        /// <summary>
+        /// Removes all of the page content and spawns everything again
+        /// </summary>
+        /// <param name="page">The name of the page to refresh</param>
+        public void RefreshPage(Page page)
+        {
+            CloseWindow();
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(Singleton<ModBotUIRoot>.Instance.ModsWindow.WindowObject, _ownerMod);
+            _ownerMod.CreateSettingsWindow(builder);
+            SetPage(page);
+        }
+
+        /// <summary>
+        /// Removes all of the page content and spawns everything again (can crush the game if page with this index doesn't exist)
+        /// </summary>
+        /// <param name="pageIndex">The index of the page to refresh</param>
+        public void RefreshPage(int pageIndex)
+        {
+            RefreshPage(_pages[pageIndex]);
+        }
+
         void SetPage(Page page)
         {
             TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.Content.transform);

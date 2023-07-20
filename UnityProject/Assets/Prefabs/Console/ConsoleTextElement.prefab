@@ -65,7 +65,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 150d0e650a597a8c4f06dda7681d5701, type: 3}
+    m_Font: {fileID: 12800000, guid: 6ccd7d52256678447b88bb4b05845ad9, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -74,7 +74,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: dawdawdawAa
