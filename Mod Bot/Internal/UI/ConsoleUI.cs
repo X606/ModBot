@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ModLibrary;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace InternalModBot
 {
@@ -24,6 +26,7 @@ namespace InternalModBot
         /// The amount of lines we should allow in the console before we start removing lines
         /// </summary>
         public const int MAX_LINES_COUNT = 100;
+        const int MAX_SYMBOLS_IN_LINE = 41;
 
         Queue<Text> _lines = new Queue<Text>();
 
@@ -56,7 +59,7 @@ namespace InternalModBot
 		private void OnEndEdit(string arg0)
 		{
             // If the console is not up, dont run any commands
-            if (!_innerHolder.activeSelf)
+            if (!_isShownOnScreen)
                 return;
 
             // If the edit ended because we clicked away, don't do anything extra
@@ -110,8 +113,93 @@ namespace InternalModBot
 
             Console.WriteLine(whatToLog);
         }
-
         void log(string whatToLog, string prefix = "", string postfix = "")
+		{
+            if (!_isInitialized)
+                return;
+
+            Text spawnedText = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+            _lines.Enqueue(spawnedText);
+            spawnedText.text = whatToLog;
+
+            Canvas.ForceUpdateCanvases();
+
+            Stack<TagHolder> stack = new Stack<TagHolder>();
+            List<string> lines = whatToLog.SplitInParts(MAX_SYMBOLS_IN_LINE).ToList();
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string lineText = lines[i];
+
+                string tagPrefix = "";
+                Stack<TagHolder> tagsToOpen = new Stack<TagHolder>(stack);
+                while (tagsToOpen.Count > 0)
+                {
+                    tagPrefix += tagsToOpen.Pop().GetStartTag();
+                }
+
+                for (int j = 0; j < lineText.Length; j++)
+				{
+                    if (containsStringAt(j, lineText, "<color="))
+					{
+                        if ((j + "<color=".Length) < lineText.Length)
+                        {
+                            string value = lineText.Substring(j + "<color=".Length, "#ff00ff".Length);
+                            stack.Push(new TagHolder(TagHolder.TagTypes.Color, false, value));
+                        }
+					}
+                    else if(containsStringAt(j, lineText, "<b>"))
+					{
+                        stack.Push(new TagHolder(TagHolder.TagTypes.Bold, false, null));
+                    }
+                    else if (containsStringAt(j, lineText, "<i>"))
+                    {
+                        stack.Push(new TagHolder(TagHolder.TagTypes.Italics, false, null));
+                    }
+                    else if (containsStringAt(j, lineText, "</i>") || containsStringAt(j, lineText, "</b>") || containsStringAt(j, lineText, "</color>"))
+					{
+                        if (stack.Count > 0)
+						{
+                            stack.Pop();
+
+                        }
+                            
+                    }
+                }
+
+                lineText = prefix + tagPrefix + lineText;
+
+                Queue<TagHolder> tagsToClose = new Queue<TagHolder>(stack);
+				while (tagsToClose.Count > 0)
+				{
+                    lineText += tagsToClose.Dequeue().GetEndTag();
+				}
+                lineText += postfix;
+
+                lineText = lineText.Replace("\n", ""); // we are already splitting by newlines, no need to have the newline characters anymore
+
+                if (i == 0)
+                {
+                    spawnedText.text = lineText;
+                }
+                else
+                {
+                    Text newLine = Instantiate(_consoleTextElementPrefab, _content.transform).GetComponent<Text>();
+                    newLine.text = lineText;
+                    _lines.Enqueue(newLine);
+                }
+            }
+
+            while(_lines.Count > MAX_LINES_COUNT)
+			{
+                Destroy(_lines.Dequeue().gameObject);
+            }
+
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _scroll.ScrollToBottom();
+            }, -1f); // Run this next frame
+        }
+        /*void log(string whatToLog, string prefix = "", string postfix = "")
 		{
             if (!_isInitialized)
                 return;
@@ -202,7 +290,7 @@ namespace InternalModBot
             {
                 _scroll.ScrollToBottom();
             }, -1f); // Run this next frame
-        }
+        }*/
 
         /// <summary>
         /// Writes the specified text to the console, now in color!
