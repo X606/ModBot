@@ -351,5 +351,3 @@ MigrationBackup/
 
 # Ignore .zip files, this is mostly so that the built version is not included in the commit
 *.zip
-
-built version/Clone Drone in the Danger Zone_Data/modbot
