@@ -7,6 +7,7 @@ using InternalModBot.Scripting;
 using HarmonyLib;
 using System.Reflection;
 using System.Linq;
+using System.Text;
 
 namespace InternalModBot
 {
@@ -51,7 +52,6 @@ namespace InternalModBot
                         IgnoreCrashesManager.SetIsIgnoringCrashes(value);
                         break;
                     }
-
                 case "crash":
                     DelegateScheduler.Instance.Schedule(Crash, 1f);
                     break;
@@ -117,11 +117,67 @@ namespace InternalModBot
                 case "help":
                     {
                         debug.Log("Avaliable mod-bot commands (not including commands from mods):\n" +
-                           "ignoreallcrashes\n" +
+                           "ignoreallcrashes [1 - 0], [on - off], [true, false]\n" +
                            "crash\n" +
                            "clearcache\n" +
                            "listpatches\n" +
-                           "help\n", Color.yellow);
+                           "help\n" +
+                           "getplayfabids [copy ids: true, false]"
+
+                           , Color.yellow);
+                        break;
+                    }
+                case "getplayfabids":
+                    {
+                        var usage = "Usage: getplayfabids [true, false] \ntrue - will copy the results into clipboard, false - won't";
+                        bool? shouldCopy = null;
+                        if (subCommands.Length < 2 || subCommands.Length > 2)
+                        {
+                            debug.Log(usage);
+                            return;
+                        }
+                        if (subCommands[1] == "true")
+                            shouldCopy = true;
+                        if (subCommands[1] == "false")
+                            shouldCopy = false;
+                        if (!shouldCopy.HasValue)
+                        {
+                            debug.Log(usage);
+                            return;
+                        }
+                        if (!GameModeManager.IsMultiplayer())
+                        {
+                            debug.Log("this command is only usable in multiplayer");
+                            return;
+                        }
+
+                        var players = CharacterTracker.Instance.GetAllPlayers();
+                        var namesAndIds = new StringBuilder();
+                        debug.Log("\n");
+                        for (int i = 0; i < players.Count; i++)
+                        {
+                            FirstPersonMover player = players[i];
+                            var playfabID = player.GetPlayFabID();
+
+                            MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(playfabID).GetOrPrepareSafeDisplayName(delegate (string displayName)
+                            {
+                                namesAndIds.Append($"{displayName} : {playfabID}");
+
+                                if (i == players.Count - 1)//check if this player is the last one
+                                {
+                                    debug.Log(namesAndIds.ToString());
+                                    if (shouldCopy.Value)
+                                    {
+                                        GUIUtility.systemCopyBuffer = namesAndIds.ToString();
+                                        debug.Log("Successfully copied all playfab ids", Color.green);
+                                    }
+                                }
+                                else
+                                {
+                                    namesAndIds.Append('\n');
+                                }
+                            });
+                        }
                         break;
                     }
 #if DEBUG
