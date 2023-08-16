@@ -62,6 +62,7 @@
     <Compile Include="Internal\Patches\Character_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorManager_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorUI_Patch.cs" />
     <Compile Include="Internal\Patches\EscMenu_Patch.cs" />
     <Compile Include="Internal\Patches\FirstPersonMover_Patch.cs" />
     <Compile Include="Internal\Patches\LevelManager_SpawnCurrentLevel_ReversePatch.cs" />
