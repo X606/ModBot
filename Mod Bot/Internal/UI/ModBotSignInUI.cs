@@ -28,7 +28,11 @@ namespace InternalModBot
 		Button _signInButton;
 		Text _errorText;
 		Button _xButton;
-		GameObject _signInFormGameObject;
+
+		/// <summary>
+		/// The base window object
+		/// </summary>
+		public GameObject WindowObject;
 
 		/// <summary>
 		/// Sets up the sign in UI
@@ -43,7 +47,7 @@ namespace InternalModBot
 			_errorText = moddedObject.GetObject<Text>(4);
 			_xButton = moddedObject.GetObject<Button>(5);
 			
-			_signInFormGameObject = moddedObject.gameObject;
+			WindowObject = moddedObject.gameObject;
 		}
 
 		readonly string _sessionIdFilePath = Application.persistentDataPath + "/SessionID.txt";
@@ -106,7 +110,7 @@ namespace InternalModBot
 			_signUpButton.gameObject.SetActive(true);
 			_xButton.gameObject.SetActive(true);
 
-			_signInFormGameObject.SetActive(true);
+			WindowObject.SetActive(true);
 		}
 
 		void onSignUpButtonClicked()
@@ -162,7 +166,7 @@ namespace InternalModBot
 
 		void onCloseButton()
 		{
-			_signInFormGameObject.SetActive(false);
+			WindowObject.SetActive(false);
 		}
 
 		void onSignedIn()
