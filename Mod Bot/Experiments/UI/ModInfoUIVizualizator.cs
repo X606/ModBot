@@ -75,6 +75,7 @@ namespace InternalModBot
             m_DownloadCount = m_ModdedObject.GetObject_Alt<Text>(11);
             m_DownloadButton = m_ModdedObject.GetObject_Alt<Button>(4);
             m_DownloadButton.onClick.AddListener(downloadAMod);
+            m_DownloadButton.gameObject.SetActive(false);
             m_DownloadedText = m_ModdedObject.GetObject_Alt<Text>(10);
             m_Thumbnail = m_ModdedObject.GetObject_Alt<RawImage>(0);
             m_ControlsBG = m_ModdedObject.GetObject_Alt<Transform>(6);
@@ -96,7 +97,7 @@ namespace InternalModBot
 
         private void downloadAMod()
         {
-            if(!m_HasInitialized || m_DownloadInfo != null)
+            if (!m_HasInitialized || m_DownloadInfo != null)
             {
                 return;
             }
@@ -152,9 +153,9 @@ namespace InternalModBot
             }
 
             LoadedModInfo info = ModsManager.Instance.GetLoadedModWithID(m_ModInfo.UniqueID);
-            if(info == null)
+            if (info == null)
             {
-                m_DownloadButton.gameObject.SetActive(true);
+                //m_DownloadButton.gameObject.SetActive(true);
                 m_DownloadedText.gameObject.SetActive(false);
                 return;
             }
@@ -165,7 +166,7 @@ namespace InternalModBot
 
         private void refreshSpecialData()
         {
-            if(m_SpecialData == null)
+            if (m_SpecialData == null)
             {
                 m_DownloadCount.text = "?";
                 m_LikesCount.text = "?";
@@ -173,7 +174,15 @@ namespace InternalModBot
             }
             m_LikesCount.text = m_SpecialData["Likes"].ToObject<string>();
             m_DownloadCount.text = m_SpecialData["Downloads"].ToObject<string>();
-            m_NotVerifiedIcon.gameObject.SetActive(!m_SpecialData["Verified"].ToObject<bool>());
+            var isVerified = m_SpecialData["Verified"].ToObject<bool>();
+            if (!isVerified)
+            {
+                m_NotVerifiedIcon.gameObject.SetActive(true);
+                m_DownloadButton.gameObject.SetActive(false);
+                return;
+            }
+            if (!IsModInstalled)
+                m_DownloadButton.gameObject.SetActive(true);
         }
 
         private IEnumerator downloadImageAsync(string url)
@@ -228,10 +237,10 @@ namespace InternalModBot
         {
             m_ControlsBG.gameObject.SetActive(value);
         }
-        
+
         public void CopyModID()
         {
-            if(m_ModInfo == null || string.IsNullOrEmpty(m_ModInfo.UniqueID))
+            if (m_ModInfo == null || string.IsNullOrEmpty(m_ModInfo.UniqueID))
             {
                 return;
             }
@@ -247,7 +256,7 @@ namespace InternalModBot
 
         public void OpenModOnWebsite()
         {
-            if(m_ModInfo == null)
+            if (m_ModInfo == null)
             {
                 return;
             }
