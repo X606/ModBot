@@ -39,12 +39,13 @@ namespace InternalModBot
         private static bool areAnyModdedDialogsOpen()
         {
             var ui = ModBotUIRoot._instance;
-            return ui.Generic2ButtonDialogeUI.UIRoot.activeSelf ||
-                ui.ModBotSignInUI.WindowObject.activeSelf ||
-                ui.ModCreationWindow.TheGameObject.activeSelf ||
-                ui.ModDownloadPage.WindowObject.activeSelf ||
-                ui.ModOptionsWindow.WindowObject.activeSelf ||
-                ui.ModsWindow.WindowObject.activeSelf;
+            return ui.Generic2ButtonDialogeUI.UIRoot.activeInHierarchy ||
+                ui.ModBotSignInUI.WindowObject.activeInHierarchy ||
+                ui.ModCreationWindow.TheGameObject.activeInHierarchy ||
+                ModBotUIRootNew.DownloadWindow.gameObject.activeInHierarchy ||
+                ui.ModDownloadPage.WindowObject.activeInHierarchy ||
+                ui.ModOptionsWindow.WindowObject.activeInHierarchy ||
+                ui.ModsWindow.WindowObject.activeInHierarchy;
         }
     }
 }
