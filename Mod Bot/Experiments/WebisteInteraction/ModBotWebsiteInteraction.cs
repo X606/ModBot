@@ -38,13 +38,13 @@ namespace InternalModBot
 
         private static IEnumerator updateProgressOfAsyncOperation(UnityWebRequestAsyncOperation operation)
         {
-            ModBotHUDRootNew.LoadingBar.SetProgress(0f);
+            ModBotUIRootNew.LoadingBar.SetProgress(0f);
             while (!operation.isDone)
             {
-                ModBotHUDRootNew.LoadingBar.SetProgress(operation.progress);
+                ModBotUIRootNew.LoadingBar.SetProgress(operation.progress);
                 yield return null;
             }
-            ModBotHUDRootNew.LoadingBar.SetProgress(1f);
+            ModBotUIRootNew.LoadingBar.SetProgress(1f);
         }
     }
 }

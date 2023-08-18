@@ -26,12 +26,15 @@ namespace InternalModBot
         private Text m_ModDescription;
         private Text m_ModVersion;
 
+        public Button XButton;
+
         private readonly List<ModInfoUIVizualizator> m_ModInfos = new List<ModInfoUIVizualizator>();
 
         internal ModDownloadWindowNew Init()
         {
             m_ModdedObject = base.GetComponent<ModdedObject>();
-            m_ModdedObject.GetObject_Alt<Button>(3).onClick.AddListener(Hide);
+            XButton = m_ModdedObject.GetObject_Alt<Button>(3);
+            XButton.onClick.AddListener(Hide);
             m_ModInfoEntryPrefab = m_ModdedObject.GetObject_Alt<ModdedObject>(0);
             m_ModInfoEntryPrefab.gameObject.SetActive(false);
             m_ModInfoEntriesContainer = m_ModdedObject.GetObject_Alt<Transform>(2);
@@ -49,7 +52,13 @@ namespace InternalModBot
 
             return this;
         }
-
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && XButton.IsInteractable())
+            {
+                Hide();
+            }
+        }
         public void Show()
         {
             base.gameObject.SetActive(true);
@@ -60,7 +69,7 @@ namespace InternalModBot
         {
             StopAllCoroutines();
             closeInformationWindow();
-            ModBotHUDRootNew.LoadingBar.SetActive(false);
+            ModBotUIRootNew.LoadingBar.SetActive(false);
             base.gameObject.SetActive(false);
         }
 
@@ -109,7 +118,7 @@ namespace InternalModBot
         {
             m_ModInfos.Clear();
             TransformUtils.DestroyAllChildren(m_ModInfoEntriesContainer);
-            ModBotHUDRootNew.LoadingBar.SetActive("Loading mods", 0f);
+            ModBotUIRootNew.LoadingBar.SetActive("Loading mods", 0f);
             ModBotWebsiteInteraction.RequestAllModInfos(delegate (UnityWebRequest r)
             {
                 m_CurrentWebRequest = r;
@@ -119,14 +128,14 @@ namespace InternalModBot
         internal void OnLoadedModInfos(ModsHolder? holder)
         {
             m_CurrentModsHolder = holder.Value;
-            ModBotHUDRootNew.LoadingBar.SetActive(false);
+            ModBotUIRootNew.LoadingBar.SetActive(false);
             PopulateModsHolder();
         }
 
         internal void OnFailedToLoadModInfos(string error)
         {
             Hide();
-            ModBotHUDRootNew.LoadingBar.SetActive(false);
+            ModBotUIRootNew.LoadingBar.SetActive(false);
             if(ModBotUIRoot.Instance.ModsWindow.WindowObject.activeSelf) ModErrorManager.ShowModBotSiteError(error);
         }
 

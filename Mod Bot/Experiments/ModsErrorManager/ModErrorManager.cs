@@ -31,7 +31,7 @@ namespace InternalModBot
 
         public static void ShowModBotSiteError(string error) // Todo: make some more params{
         {
-            _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotHUDRootNew.DownloadWindow.OpenWebsite);
+            _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRootNew.DownloadWindow.OpenWebsite);
         }
 
         private static string getErrorTypeString(ModErrorType errorType)

@@ -122,7 +122,7 @@ namespace InternalModBot
             tabButton.ContentToShow = settingsPage.transform;
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
 
-            ModBotUIRoot.Instance.gameObject.AddComponent<ModBotHUDRootNew>().Init();
+            ModBotUIRoot.Instance.gameObject.AddComponent<ModBotUIRootNew>().Init();
 
             _theModUserGoingToDelete = null;
         }
@@ -161,7 +161,7 @@ namespace InternalModBot
 
         private void onGetMoreModsClicked()
         {
-            ModBotHUDRootNew.DownloadWindow.Show();
+            ModBotUIRootNew.DownloadWindow.Show();
             return;
             ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(true);
 
@@ -323,18 +323,18 @@ namespace InternalModBot
 
         private void Update()
         {
-            if (ModBotUIRoot.Instance.ModOptionsWindow.gameObject.activeInHierarchy && ModBotUIRoot.Instance.ModDownloadPage.XButton.interactable)
+            if (!ModBotUIRootNew.DownloadWindow.gameObject.activeInHierarchy)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     closeModsMenu();
                 }
             }
-            if (ModsDownloadManager.IsLoadingModInfos())
-            {
-                UnityWebRequest r = ModsDownloadManager.GetModInfosWebRequest();
-                ModBotUIRoot.Instance.ModDownloadPage.ProgressBarSlider.value = r.downloadProgress;
-            }
+            //if (ModsDownloadManager.IsLoadingModInfos())
+            //{
+            //    UnityWebRequest r = ModsDownloadManager.GetModInfosWebRequest();
+            //    ModBotUIRoot.Instance.ModDownloadPage.ProgressBarSlider.value = r.downloadProgress;
+            //}
         }
 
 

@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace InternalModBot
 {
-    public class ModBotHUDRootNew : MonoBehaviour
+    public class ModBotUIRootNew : MonoBehaviour
     {
         private ModdedObject m_ModdedObject;
 
-        private static ModBotHUDRootNew m_Instance;
-        public static ModBotHUDRootNew HUDRoot => m_Instance;
+        private static ModBotUIRootNew m_Instance;
+        public static ModBotUIRootNew HUDRoot => m_Instance;
 
         private static ModDownloadWindowNew m_DownloadWindow;
         public static ModDownloadWindowNew DownloadWindow => m_DownloadWindow;

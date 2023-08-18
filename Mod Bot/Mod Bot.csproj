@@ -53,7 +53,7 @@
     <Compile Include="Experiments\ModsErrorManager\ModErrorType.cs" />
     <Compile Include="Experiments\ModsErrorManager\ModErrorManager.cs" />
     <Compile Include="Experiments\UI\GenericLoadingBar.cs" />
-    <Compile Include="Experiments\UI\ModBotHUDRoot.cs" />
+    <Compile Include="Experiments\UI\ModBotUIRootNew.cs" />
     <Compile Include="Experiments\UI\ModDownloadWindowNew.cs" />
     <Compile Include="Experiments\UI\ModInfoUIVizualizator.cs" />
     <Compile Include="Experiments\WebisteInteraction\ModBotWebsiteInteraction.cs" />
