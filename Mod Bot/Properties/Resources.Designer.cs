@@ -241,7 +241,7 @@ namespace ModLibrary.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2.0.3.3.
+        ///   Looks up a localized string similar to 2.0.4.2.
         /// </summary>
         internal static string ModBotVersion {
             get {
