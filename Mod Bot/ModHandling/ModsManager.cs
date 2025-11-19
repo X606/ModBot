@@ -30,8 +30,6 @@ namespace InternalModBot
         /// </summary>
         public const string MOD_FOLDER_NAME = "mods";
 
-        public static bool HasEverLoadedMods { get; private set; }
-
         private readonly List<LoadedModInfo> _loadedMods = new List<LoadedModInfo>();
         private static readonly Dictionary<string, uint> _firstLoadedVersionOfMod = new Dictionary<string, uint>(); // this keeps track of what version of mods have been loaded, this is to make sure that if a new version of a mod gets loaded the user get alerted that they have to restart
 
@@ -50,10 +48,7 @@ namespace InternalModBot
         /// </summary>
         public void Initialize()
         {
-            if (!HasEverLoadedMods) ModDeletionInfo.LoadIDsOfModsToDelete();
             ReloadMods();
-            if (!HasEverLoadedMods) ModDeletionInfo.SaveModDeletionInfo(null);
-            HasEverLoadedMods = true;
         }
 
         private void Update()
@@ -140,13 +135,6 @@ namespace InternalModBot
 
                 if (modInfo == null)
                     continue;
-
-                if (!HasEverLoadedMods && modInfo.ModIsAboutToDelete())
-                {
-                    Directory.Delete(folderPath, true);
-                    modInfo.OnModDeleted();
-                    continue;
-                }
 
                 if (hasModAlreadyBeenLoaded(modInfo))
                 {
