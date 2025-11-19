@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace InternalModBot
 {
@@ -32,6 +33,9 @@ namespace InternalModBot
 
         private readonly List<LoadedModInfo> _loadedMods = new List<LoadedModInfo>();
         private static readonly Dictionary<string, uint> _firstLoadedVersionOfMod = new Dictionary<string, uint>(); // this keeps track of what version of mods have been loaded, this is to make sure that if a new version of a mod gets loaded the user get alerted that they have to restart
+
+        private static readonly Dictionary<string, Texture2D> _cachedModImages = new Dictionary<string, Texture2D>();
+        private static readonly List<string> _processingModImages = new List<string>();
 
         // private List<string> _TEMPModsBeforeSort, _TEMPModsAfterSort;
 
@@ -525,6 +529,62 @@ namespace InternalModBot
             }
 
             return null;
+        }
+
+        public void GetModImage(ModInfo modInfo, Action<Texture2D> callback)
+        {
+            string uniqueId = modInfo.UniqueID;
+            if (_cachedModImages.ContainsKey(uniqueId))
+            {
+                if (callback != null) callback(_cachedModImages[uniqueId]);
+                return;
+            }
+
+            if (_processingModImages.Contains(modInfo.UniqueID))
+            {
+                StaticCoroutineRunner.StartStaticCoroutine(waitThenGetImageCoroutine(modInfo, callback));
+                return;
+            }
+            StaticCoroutineRunner.StartStaticCoroutine(getImageCoroutine(modInfo, callback));
+        }
+
+        private IEnumerator getImageCoroutine(ModInfo modInfo, Action<Texture2D> callback)
+        {
+            _processingModImages.Add(modInfo.UniqueID);
+            using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture($"file://{Path.Combine(modInfo.FolderPath, modInfo.ImageFileName)}"))
+            {
+                yield return webRequest.SendWebRequest();
+
+                _processingModImages.Remove(modInfo.UniqueID);
+
+                if (webRequest.isNetworkError || webRequest.isHttpError)
+                {
+                    if (callback != null) callback(null);
+                }
+                else
+                {
+                    Texture2D texture = DownloadHandlerTexture.GetContent(webRequest);
+                    _cachedModImages.Add(modInfo.UniqueID, texture);
+                    if (callback != null) callback(texture);
+                }
+            }
+            yield break;
+        }
+
+        private IEnumerator waitThenGetImageCoroutine(ModInfo modInfo, Action<Texture2D> callback)
+        {
+            while (_processingModImages.Contains(modInfo.UniqueID))
+                yield return null;
+
+            if (_cachedModImages.ContainsKey(modInfo.UniqueID))
+            {
+                if (callback != null) callback(_cachedModImages[modInfo.UniqueID]);
+            }
+            else
+            {
+                if (callback != null) callback(null);
+            }
+            yield break;
         }
     }
 }

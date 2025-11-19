@@ -251,7 +251,18 @@ namespace InternalModBot
             modItemModdedObject.GetObject<Text>(1).text = mod.OwnerModInfo.Description; // Set description
             modItemModdedObject.GetObject<Text>(5).text = ModBotLocalizationManager.FormatLocalizedStringFromID("mods_menu_mod_id", mod.OwnerModInfo.UniqueID);
 
-            modItemModdedObject.GetObject<RawImage>(2).texture = mod.OwnerModInfo.HasImage ? mod.OwnerModInfo.CachedImage : null;
+            RawImage rawImage = modItemModdedObject.GetObject<RawImage>(2);
+            if (mod.OwnerModInfo.HasImage)
+            {
+                ModsManager.Instance.GetModImage(mod.OwnerModInfo, delegate (Texture2D texture)
+                {
+                    if (rawImage) rawImage.texture = texture;
+                });
+            }
+            else
+            {
+                rawImage.texture = null;
+            }
 
             Button enableOrDisableButton = modItem.GetComponent<ModdedObject>().GetObject<Button>(3);
 

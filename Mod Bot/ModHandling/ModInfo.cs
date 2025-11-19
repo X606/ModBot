@@ -1,8 +1,10 @@
 ﻿using InternalModBot;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace ModLibrary
 {
@@ -132,37 +134,6 @@ namespace ModLibrary
         /// True if this mod has an image provided, false otherwise
         /// </summary>
         public bool HasImage => !string.IsNullOrWhiteSpace(ImageFileName);
-
-        private Texture2D _cachedImage;
-
-        /// <summary>
-        /// The image to be displayed in the mods menu
-        /// </summary>
-        public Texture2D CachedImage // todo: remake this with unity web request, because this eats a lot of memory for some weird reason
-        {
-            get
-            {
-                if (!_cachedImage || _cachedImage == null)
-                {
-                    if (!string.IsNullOrEmpty(ImageFileName))
-                    {
-                        string imageFilePath = FolderPath + ImageFileName;
-                        if (File.Exists(imageFilePath))
-                        {
-                            byte[] imgData = File.ReadAllBytes(imageFilePath);
-
-                            _cachedImage = new Texture2D(1, 1)
-                            {
-                                name = $"{UniqueID}-icon"
-                            };
-                            _cachedImage.LoadImage(imgData);
-                        }
-                    }
-                }
-
-                return _cachedImage;
-            }
-        }
 
         /// <summary>
         /// NOTE: setting this value only sets the playerPrefs, use <see cref="LoadedModInfo.IsEnabled"/> to work with loaded mods
