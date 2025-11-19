@@ -33,6 +33,8 @@ namespace InternalModBot
         private readonly List<LoadedModInfo> _loadedMods = new List<LoadedModInfo>();
         private static readonly Dictionary<string, uint> _firstLoadedVersionOfMod = new Dictionary<string, uint>(); // this keeps track of what version of mods have been loaded, this is to make sure that if a new version of a mod gets loaded the user get alerted that they have to restart
 
+        // private List<string> _TEMPModsBeforeSort, _TEMPModsAfterSort;
+
         /// <summary>
         /// Gets the mod folder path
         /// </summary>
@@ -84,7 +86,7 @@ namespace InternalModBot
             stopwatch.Start();
 
             List<ModLoadError> errors = new List<ModLoadError>();
-            if (!reloadAllMods(errors))
+            if (!reloadAllMods(ref errors))
                 StartCoroutine(showModInvalidMessage(errors));
 
             stopwatch.Stop();
@@ -106,11 +108,11 @@ namespace InternalModBot
             ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_fail");
         }
 
-        private bool reloadAllMods(List<ModLoadError> errors)
+        private bool reloadAllMods(ref List<ModLoadError> errors)
         {
             unloadAllLoadedMods();
 
-            // first we take a pass to see if there any zip files we want to convert into folders
+            // First we take a pass to see if there any zip files we want to convert into folders
             string[] zipFiles = Directory.GetFiles(ModFolderPath, "*.zip");
             foreach (string zipFilePath in zipFiles)
             {
@@ -123,8 +125,10 @@ namespace InternalModBot
                 debug.Log("Unpacked " + System.IO.Path.GetFileName(zipFilePath) + "...");
             }
 
+            // Get all mod infos
             string[] folders = Directory.GetDirectories(ModFolderPath);
             List<ModInfo> modsToLoad = new List<ModInfo>();
+            Dictionary<string, ModInfo> modIdToInfo = new Dictionary<string, ModInfo>();
             foreach (string folderPath in folders)
             {
                 if (!loadModInfo(folderPath, out ModInfo modInfo, out ModLoadError error))
@@ -143,98 +147,61 @@ namespace InternalModBot
                 }
 
                 modsToLoad.Add(modInfo);
+                modIdToInfo.Add(modInfo.UniqueID, modInfo);
             }
-            List<ModInfo> modsToLoadSorted = new List<ModInfo>();
 
-            for (int i = 0; i < modsToLoad.Count; i++)
+            // Check if there're any missing mods
+            for (int i = modsToLoad.Count - 1; i >= 0; i--)
             {
                 ModInfo modInfo = modsToLoad[i];
                 string[] dependencies = modInfo.ModDependencies;
 
-                if (dependencies == null)
-                    dependencies = new string[0];
+                if (dependencies == null || dependencies.Length == 0) continue;
 
-                List<string> missingIds = new List<string>(dependencies);
+                List<string> missingMods = new List<string>();
 
                 foreach (string dependencyId in dependencies)
                 {
-                    foreach (ModInfo dependencyModInfo in modsToLoad)
-                    {
-                        if (dependencyModInfo.UniqueID == dependencyId)
-                        {
-                            missingIds.Remove(dependencyId);
-                            break;
-                        }
-                    }
-
+                    if (!modIdToInfo.ContainsKey(dependencyId) || !modIdToInfo[dependencyId].IsModEnabled)
+                        missingMods.Add(dependencyId);
                 }
 
-                if (missingIds.Count > 0)
+                if (missingMods.Count > 0)
                 {
                     //TODO: get the mod name from the site
                     string errorMsg = modInfo.DisplayName + " requires other mods: \"";
-                    errorMsg += string.Join("\", \"", missingIds) + "\"";
+                    errorMsg += string.Join("\", \"", missingMods) + "\"\n Make sure all mods are installed and enabled.";
 
                     errors.Add(new ModLoadError(modInfo, errorMsg));
 
                     modsToLoad.RemoveAt(i);
-                    i--;
+                    modIdToInfo.Remove(modInfo.UniqueID);
                 }
-            } // Checks that all the needed dependecies exist
-            HashSet<string> loadedModIds = new HashSet<string>();
-            int loops = 0;
-            while (modsToLoad.Count > 0)
-            {
-                for (int i = modsToLoad.Count - 1; i >= 0; i--)
-                {
-                    ModInfo modInfo = modsToLoad[i];
-
-                    bool allDependenciesLoaded = true;
-                    foreach (string dependency in modInfo.ModDependencies)
-                    {
-                        if (!loadedModIds.Contains(dependency))
-                            allDependenciesLoaded = false;
-                    }
-
-                    if (modInfo.ModDependencies.Length == 0 || allDependenciesLoaded)
-                    {
-                        modsToLoadSorted.Add(modInfo);
-                        modsToLoad.RemoveAt(i);
-                    }
-                }
-                if (loops > 2000)
-                {
-                    errors.Add(new ModLoadError("Something went wrong when sorting the mods to load"));
-                    return false;
-                }
-                loops++;
-            } // Sorts the mods to load after dependencies
-            Dictionary<string, ModInfo> idToModInfo = new Dictionary<string, ModInfo>();
-            foreach (ModInfo modInfo in modsToLoadSorted)
-            {
-                idToModInfo.Add(modInfo.UniqueID, modInfo);
             }
+
+            /*List<string> debugModIds = new List<string>();
+            for (int i = 0; i < modsToLoad.Count; i++)
+                debugModIds.Add(modsToLoad[i].UniqueID);
+            _TEMPModsBeforeSort = new List<string>(debugModIds);*/
+
+            // Sort mods to load
+            List<ModInfo> modsToLoadSorted = new List<ModInfo>();
+            for (int i = 0; i < modsToLoad.Count; i++)
+            {
+                ModInfo modInfo = modsToLoad[i];
+                addModDependenciesRecursive(modInfo, ref modsToLoad, ref modIdToInfo, ref modsToLoadSorted);
+            }
+
+            /*debugModIds.Clear();
+            for (int i = 0; i < modsToLoadSorted.Count; i++)
+                debugModIds.Add(modsToLoadSorted[i].UniqueID);
+            _TEMPModsAfterSort = new List<string>(debugModIds);*/
 
             for (int i = 0; i < modsToLoadSorted.Count; i++)
             {
                 ModInfo modInfo = modsToLoadSorted[i];
                 if (!modInfo.IsModEnabled)
                 {
-                    _loadedMods.Add(new LoadedModInfo(null, modInfo));
-                    continue;
-                }
-
-
-                bool allDependenciesActive = true;
-                foreach (string dependecy in modInfo.ModDependencies)
-                {
-                    if (!idToModInfo[dependecy].IsModEnabled)
-                        allDependenciesActive = false;
-                }
-
-                if (!allDependenciesActive)
-                {
-                    modInfo.IsModEnabled = false;
                     _loadedMods.Add(new LoadedModInfo(null, modInfo));
                     continue;
                 }
@@ -421,6 +388,20 @@ namespace InternalModBot
             }
 
             return false;
+        }
+
+        private void addModDependenciesRecursive(ModInfo modInfo, ref List<ModInfo> modsToLoad, ref Dictionary<string, ModInfo> modIdToInfo, ref List<ModInfo> sortedList)
+        {
+            if (sortedList.Contains(modInfo)) return;
+
+            if (modInfo.ModDependencies != null && modInfo.ModDependencies.Length != 0)
+                foreach (string dependencyId in modInfo.ModDependencies)
+                {
+                    ModInfo dependencyInfo = modIdToInfo[dependencyId];
+                    addModDependenciesRecursive(dependencyInfo, ref modsToLoad, ref modIdToInfo, ref sortedList);
+                }
+
+            sortedList.Add(modInfo);
         }
 
         private void unloadAllLoadedMods()
