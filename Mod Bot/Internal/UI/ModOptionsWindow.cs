@@ -28,7 +28,9 @@ namespace InternalModBot
 		/// </summary>
 		public GameObject WindowObject;
 
-		internal void Init(ModdedObject moddedObject)
+		public ModOptionsWindowBuilder Builder;
+
+        internal void Init(ModdedObject moddedObject)
 		{
 			Content = moddedObject.GetObject<GameObject>(0);
 			XButton = moddedObject.GetObject<Button>(1);

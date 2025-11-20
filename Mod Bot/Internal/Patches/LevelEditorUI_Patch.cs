@@ -40,7 +40,7 @@ namespace InternalModBot
                 ui.ModBotSignInUI.WindowObject.activeInHierarchy ||
                 ui.DownloadWindow.gameObject.activeInHierarchy ||
                 ui.ModOptionsWindow.WindowObject.activeInHierarchy ||
-                ui.ModsWindow.WindowObject.activeInHierarchy;
+                ui.ModList.gameObject.activeInHierarchy;
         }
     }
 }

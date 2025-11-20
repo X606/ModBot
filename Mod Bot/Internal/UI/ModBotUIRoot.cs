@@ -30,14 +30,14 @@ namespace InternalModBot
 		/// The modbot sign in UI
 		/// </summary>
 		public ModBotSignInUI ModBotSignInUI;
-		/// <summary>
-		/// The mods window UI
-		/// </summary>
-		public ModsWindow ModsWindow;
-		/// <summary>
-		/// The generic 2 Button dialoge UI
-		/// </summary>
-		public Generic2ButtonDialogeUI Generic2ButtonDialogeUI;
+        /// <summary>
+        /// The mods list window UI
+        /// </summary>
+        public ModListWindow ModList;
+        /// <summary>
+        /// The generic 2 Button dialoge UI
+        /// </summary>
+        public Generic2ButtonDialogeUI Generic2ButtonDialogeUI;
 		/// <summary>
 		/// The mod options window UI
 		/// </summary>
@@ -76,14 +76,14 @@ namespace InternalModBot
 			ModBotSignInUI = gameObject.AddComponent<ModBotSignInUI>();
 			ModBotSignInUI.Init(moddedObject.GetObject<ModdedObject>(6));
 
-			ModsWindow = gameObject.AddComponent<ModsWindow>();
-			ModsWindow.Init(moddedObject.GetObject<ModdedObject>(7));
-
 			Generic2ButtonDialogeUI = gameObject.AddComponent<Generic2ButtonDialogeUI>();
 			Generic2ButtonDialogeUI.Init(moddedObject.GetObject<ModdedObject>(8));
 
 			ModOptionsWindow = gameObject.AddComponent<ModOptionsWindow>();
 			ModOptionsWindow.Init(moddedObject.GetObject<ModdedObject>(9));
+
+            ModList = moddedObject.GetObject<ModdedObject>(7).gameObject.AddComponent<ModListWindow>();
+            ModList.Init();
 
             DownloadWindow = moddedObject.GetObject<ModdedObject>(10).gameObject.AddComponent<ModDownloadWindow>();
             DownloadWindow.Init();
@@ -91,5 +91,53 @@ namespace InternalModBot
             LoadingBar = moddedObject.GetObject<ModdedObject>(11).gameObject.AddComponent<GenericLoadingBar>();
             LoadingBar.Init();
         }
-	}
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                closeMenu();
+                refreshCursor();
+            }
+        }
+
+        private void closeMenu()
+        {
+            if (ModBotSignInUI.WindowObject.activeInHierarchy)
+            {
+                ModBotSignInUI.WindowObject.SetActive(false);
+                return;
+            }
+
+            if (DownloadWindow.gameObject.activeInHierarchy)
+            {
+                DownloadWindow.Hide();
+                return;
+            }
+
+            if (ModOptionsWindow.WindowObject.activeInHierarchy)
+            {
+                if(ModOptionsWindow.Builder != null)
+                {
+                    ModOptionsWindow.Builder.CloseWindow();
+                    return;
+                }
+
+                ModOptionsWindow.WindowObject.gameObject.SetActive(false);
+                GameUIRoot.Instance.SetEscMenuDisabled(false);
+                return;
+            }
+
+            if (ModList.gameObject.activeInHierarchy)
+            {
+                ModList.Hide();
+                return;
+            }
+        }
+
+        private void refreshCursor()
+        {
+            GameUIRoot.Instance.RefreshCursorEnabled();
+        }
+    }
 }

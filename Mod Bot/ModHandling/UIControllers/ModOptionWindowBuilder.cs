@@ -25,10 +25,12 @@ namespace ModLibrary
             _parentWindow = parentWindow;
             _ownerMod = ownerMod;
             //_spawnedBase = InternalAssetBundleReferences.ModsWindow.InstantiateObject("ModOptionsCanvas");
-            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(true);
-            ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.AddComponent<CloseModOptionsWindowOnEscapeKey>().Init(this); // used to make sure we can close the window with escape
-            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick = new Button.ButtonClickedEvent();
-            ModBotUIRoot.Instance.ModOptionsWindow.XButton.onClick.AddListener(CloseWindow);
+
+            ModOptionsWindow optionsWindow = ModBotUIRoot.Instance.ModOptionsWindow;
+            optionsWindow.WindowObject.SetActive(true);
+            optionsWindow.Builder = this;
+            optionsWindow.XButton.onClick = new Button.ButtonClickedEvent();
+            optionsWindow.XButton.onClick.AddListener(CloseWindow);
 
             DelegateScheduler.Instance.Schedule(delegate
             {
@@ -38,6 +40,8 @@ namespace ModLibrary
                     SetPage(_pages[0]);
                 }
             }, -1f); // We do -1f here because the game might be paused and cause this to be triggered right after it is unpaused
+
+            GameUIRoot.Instance.RefreshCursorEnabled();
         }
         
         /// <summary>
@@ -46,7 +50,6 @@ namespace ModLibrary
         public void PopulatePages()
         {
             GameUIRoot.Instance.SetEscMenuDisabled(true);
-            RegisterShouldCursorBeEnabledDelegate.Register(shouldCurorBeEnabled);
             GameUIRoot.Instance.RefreshCursorEnabled();
 
             TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
@@ -69,7 +72,7 @@ namespace ModLibrary
         public void RefreshPage(Page page)
         {
             CloseWindow();
-            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(Singleton<ModBotUIRoot>.Instance.ModsWindow.WindowObject, _ownerMod);
+            ModOptionsWindowBuilder builder = new ModOptionsWindowBuilder(_parentWindow, _ownerMod);
             _ownerMod.CreateSettingsWindow(builder);
             SetPage(page);
         }
@@ -117,8 +120,6 @@ namespace ModLibrary
         /// </summary>
         public void CloseWindow()
         {
-            RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
-
             ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             _parentWindow.SetActive(true);
 
@@ -130,17 +131,10 @@ namespace ModLibrary
         /// </summary>
         public void ForceCloseWindow()
         {
-            RegisterShouldCursorBeEnabledDelegate.UnRegister(shouldCurorBeEnabled);
-
             ModBotUIRoot.Instance.ModOptionsWindow.WindowObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
 
             GameUIRoot.Instance.RefreshCursorEnabled();
-        }
-
-        bool shouldCurorBeEnabled()
-        {
-            return true;
         }
 
         /// <summary>

@@ -51,6 +51,7 @@
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
     <Compile Include="Internal\UI\GenericLoadingBar.cs" />
+    <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
     <Compile Include="Internal\UI\ModInfoDisplay.cs" />
     <Compile Include="Internal\ModBotWebsiteInteraction.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Internal\Reflection\ParameterMatchType.cs" />
     <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
     <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
+    <Compile Include="Internal\UI\ModListWindow.cs" />
     <Compile Include="Internal\WaitForTask.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
@@ -123,7 +125,6 @@
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\UI\ModOptionsWindow.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
-    <Compile Include="Internal\UI\ModsWindow.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
     <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
-    <Compile Include="Internal\CloseModOptionsWindowOnEscapeKey.cs" />
     <Compile Include="Internal\LoadedModInfo.cs" />
     <Compile Include="ModHandling\MainModClassAttribute.cs" />
     <Compile Include="ModHandling\Mod.cs" />

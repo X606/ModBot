@@ -123,7 +123,7 @@ namespace InternalModBot
         private static void onModDownloadedStatic()
         {
             m_DownloadInfo = null;
-            ModsPanelManager.Instance.ReloadModItems();
+            ModBotUIRoot.Instance.ModList.ReloadList();
         }
 
         private void refreshModIsBeingDownloaded()

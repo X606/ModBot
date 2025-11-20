@@ -10,6 +10,8 @@ namespace InternalModBot
 {
     public class ModDownloadWindow : MonoBehaviour
     {
+        private Button _xButton;
+
         private ModdedObject _modInfoEntryPrefab;
         private Transform _modInfoEntriesContainer;
 
@@ -22,8 +24,6 @@ namespace InternalModBot
         private Text _modDescription;
         private Text _modVersion;
 
-        public Button XButton;
-
         private readonly List<ModInfoDisplay> _displays = new List<ModInfoDisplay>();
 
         private UnityWebRequest _webRequest;
@@ -32,8 +32,8 @@ namespace InternalModBot
         internal void Init()
         {
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
-            XButton = moddedObject.GetObject<Button>(3);
-            XButton.onClick.AddListener(Hide);
+            _xButton = moddedObject.GetObject<Button>(3);
+            _xButton.onClick.AddListener(Hide);
             _modInfoEntryPrefab = moddedObject.GetObject<ModdedObject>(0);
             _modInfoEntryPrefab.gameObject.SetActive(false);
             _modInfoEntriesContainer = moddedObject.GetObject<Transform>(2);
@@ -50,13 +50,7 @@ namespace InternalModBot
 
             base.gameObject.SetActive(false);
         }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape) && XButton.IsInteractable())
-            {
-                Hide();
-            }
-        }
+
         public void Show()
         {
             base.gameObject.SetActive(true);
@@ -134,7 +128,7 @@ namespace InternalModBot
         {
             Hide();
             ModBotUIRoot.Instance.LoadingBar.SetActive(false);
-            if(ModBotUIRoot.Instance.ModsWindow.WindowObject.activeSelf) _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
+            if(ModBotUIRoot.Instance.ModList.gameObject.activeInHierarchy) _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
         }
 
         public void OpenWebsite()
