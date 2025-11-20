@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +12,8 @@ namespace InternalModBot
         public const bool SHOWMAXFPS = false; // maybe implement a setting
         public const bool SHOWFPSONSTART = true;
 
+        private static bool _visible = SHOWFPSONSTART;
+
         Text _fpsCounter;
         float _timeToRefresh;
 
@@ -21,10 +22,13 @@ namespace InternalModBot
         void LateUpdate()
         {
             if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.ToggleFPSLabel)))
-                _fpsCounter.gameObject.SetActive(!_fpsCounter.gameObject.activeSelf);
+            {
+                _visible = !_visible;
+                RefreshVisibility();
+            }
 
             float time = Time.unscaledTime;
-            if(time < _timeToRefresh)
+            if (time < _timeToRefresh)
             {
                 return;
             }
@@ -52,8 +56,12 @@ namespace InternalModBot
         public void Init(Text text)
         {
             _fpsCounter = text;
-            _fpsCounter.gameObject.SetActive(SHOWFPSONSTART);
+            RefreshVisibility();
+        }
+
+        public void RefreshVisibility()
+        {
+            _fpsCounter.gameObject.SetActive(_visible);
         }
     }
-
 }
