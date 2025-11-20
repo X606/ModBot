@@ -42,7 +42,7 @@ namespace InternalModBot
             Text = moddedObject.GetObject<Text>(0);
             Button1 = moddedObject.GetObject<Button>(1);
             Button2 = moddedObject.GetObject<Button>(2);
-            TransformToResize = moddedObject.GetObject_Alt<RectTransform>(3);
+            TransformToResize = moddedObject.GetObject<RectTransform>(3);
 
             UIRoot = moddedObject.gameObject;
         }

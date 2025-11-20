@@ -1,5 +1,4 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using ModLibrary;
+﻿using ModLibrary;
 using Newtonsoft.Json;
 using System;
 using System.Collections;

@@ -117,8 +117,6 @@ namespace InternalModBot
             GameObject settingsPage = Instantiate(InternalAssetBundleReferences.ModBot.GetObject("ModBotSettings"), tabButton.ContentToShow.parent);
             tabButton.ContentToShow = settingsPage.transform;
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
-
-            ModBotUIRoot.Instance.gameObject.AddComponent<ModBotUIRootNew>().Init();
         }
 
         /// <summary>
@@ -136,7 +134,6 @@ namespace InternalModBot
             GameUIRoot.Instance.SetEscMenuDisabled(true);
 
             ModBotUIRoot.Instance.ModsWindow.WindowObject.SetActive(true);
-            ModBotUIRoot.Instance.ModsWindow.CreateModButton.gameObject.SetActive(ModCreationWindow.CanBeShown);
             ReloadModItems();
         }
 
@@ -155,66 +152,12 @@ namespace InternalModBot
 
         private void onGetMoreModsClicked()
         {
-            ModBotUIRootNew.DownloadWindow.Show();
-            return;
-            ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(true);
-
-            ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick = new Button.ButtonClickedEvent();
-            ModBotUIRoot.Instance.ModDownloadPage.XButton.onClick.AddListener(delegate
-            {
-                ModBotUIRoot.Instance.ModDownloadPage.WindowObject.SetActive(false);
-            });
-
-            //ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadModData(ModBotUIRoot.Instance.ModDownloadPage));
-            ModBotUIRoot.Instance.ModDownloadPage.ErrorWindow.gameObject.SetActive(false);
-            ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(true);
-            TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModDownloadPage.Content.transform);
-            ModsDownloadManager.DownloadModsData(onModInfosLoadingEnd, onModInfosLoadingError);
-        }
-
-        private static void onModInfosLoadingEnd(ModsHolder? loadedData)
-        {
-            ModBotUIRoot.Instance.ModDownloadPage.LoadingPopup.gameObject.SetActive(false);
-            if (loadedData == null)
-            {
-                return;
-            }
-            GameObject modDownloadInfoPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModDownloadInfo");
-            foreach (ModInfo modInfo in loadedData.Value.Mods)
-            {
-                ModBotUIRoot.Instance.ModDownloadPage.StartCoroutine(downloadSpecialModDataAndAdd(ModBotUIRoot.Instance.ModDownloadPage.Content.gameObject, modInfo, modDownloadInfoPrefab));
-            }
-        }
-
-        private static void onModInfosLoadingError(string error)
-        {
-            ModBotUIRoot.Instance.ModDownloadPage.ErrorText.text = error;
-            ModBotUIRoot.Instance.ModDownloadPage.ErrorWindow.SetActive(true);
+            ModBotUIRoot.Instance.DownloadWindow.Show();
         }
 
         private void onModsFolderClicked()
         {
             Process.Start(ModsManager.Instance.ModFolderPath);
-        }
-
-        private static IEnumerator downloadSpecialModDataAndAdd(GameObject content, ModInfo modInfo, GameObject modDownloadInfoPrefab)
-        {
-            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modInfo.UniqueID))
-            {
-                yield return webRequest.SendWebRequest(); // wait for the web request to send
-
-                if (webRequest.isNetworkError || webRequest.isHttpError)
-                    yield break;
-
-                Dictionary<string, JToken> specialModData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text);
-
-                if (!specialModData["Verified"].ToObject<bool>()) // do not want unchecked mods to come up in-game.
-                    yield break;
-            }
-
-            GameObject holder = Instantiate(modDownloadInfoPrefab);
-            holder.transform.SetParent(content.transform, false);
-            holder.AddComponent<ModDownloadInfoItem>().Init(modInfo);
         }
 
         private void openModsOptionsWindowForMod(LoadedModInfo mod)
@@ -297,7 +240,7 @@ namespace InternalModBot
 
         private void Update()
         {
-            if (!ModBotUIRootNew.DownloadWindow.gameObject.activeInHierarchy)
+            if (!ModBotUIRoot.Instance.DownloadWindow.gameObject.activeInHierarchy)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {

@@ -69,10 +69,8 @@ namespace InternalModBot
         static void initilizeUI()
         {
             GameObject spawnedUI = InternalAssetBundleReferences.ModBot.InstantiateObject("Canvas");
-            ModdedObject spawedUIModdedObject = spawnedUI.GetComponent<ModdedObject>();
-
             ModBotUIRoot modBotUIRoot = spawnedUI.AddComponent<ModBotUIRoot>();
-            modBotUIRoot.Init(spawedUIModdedObject);
+            modBotUIRoot.Init();
             
         }
     }

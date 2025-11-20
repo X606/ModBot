@@ -1,23 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using ModLibrary;
 
-namespace ModLibrary
+namespace InternalModBot
 {
     public class GenericLoadingBar : MonoBehaviour
     {
         private const string DEFAULT_HEADER_TEXT = "Loading";
 
-        private ModdedObject m_ModdedObject;
-        private Text m_Label;
-        private Slider m_ProgressBar;
+        private ModdedObject _moddedObject;
+        private Text _label;
+        private Slider _progressBar;
 
-        internal GenericLoadingBar Init()
+        internal void Init()
         {
-            m_ModdedObject = base.GetComponent<ModdedObject>();
-            m_Label = m_ModdedObject.GetObject_Alt<Text>(0);
-            m_ProgressBar = m_ModdedObject.GetObject_Alt<Slider>(1);
+            _moddedObject = base.GetComponent<ModdedObject>();
+            _label = _moddedObject.GetObject<Text>(0);
+            _progressBar = _moddedObject.GetObject<Slider>(1);
             SetActive(false);
-            return this;
         }
 
         public void SetActive(bool value)
@@ -34,11 +34,11 @@ namespace ModLibrary
 
         public void SetProgress(float value)
         {
-            if(m_ProgressBar == null)
+            if(_progressBar == null)
             {
                 return;
             }
-            m_ProgressBar.value = value;
+            _progressBar.value = value;
         }
 
         public void SetProgress(float current, float target)
@@ -48,16 +48,16 @@ namespace ModLibrary
 
         public void SetHeaderText(string text)
         {
-            if (m_Label == null)
+            if (_label == null)
             {
                 return;
             }
             if (string.IsNullOrWhiteSpace(text))
             {
-                m_Label.text = DEFAULT_HEADER_TEXT;
+                _label.text = DEFAULT_HEADER_TEXT;
                 return;
             }
-            m_Label.text = text;
+            _label.text = text;
         }
     }
 }

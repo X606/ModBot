@@ -37,12 +37,6 @@ namespace ModLibrary
             throw new InvalidCastException("Object at index " + index + " could not be casted to type " + typeof(T).ToString());
         }
 
-
-        internal static T GetObject_Alt<T>(this ModdedObject moddedObject, int index) where T : UnityEngine.Object
-        {
-            return (moddedObject.objects[index] as GameObject).GetComponent<T>();
-        }
-
         /// <summary>
         /// Checks if the given <see cref="Mod"/> is currently activated
         /// </summary>

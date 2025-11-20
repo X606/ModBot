@@ -1,7 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace InternalModBot
 {
@@ -38,12 +35,10 @@ namespace InternalModBot
         }
         private static bool areAnyModdedDialogsOpen()
         {
-            var ui = ModBotUIRoot._instance;
+            ModBotUIRoot ui = ModBotUIRoot._instance;
             return ui.Generic2ButtonDialogeUI.UIRoot.activeInHierarchy ||
                 ui.ModBotSignInUI.WindowObject.activeInHierarchy ||
-                ui.ModCreationWindow.TheGameObject.activeInHierarchy ||
-                ModBotUIRootNew.DownloadWindow.gameObject.activeInHierarchy ||
-                ui.ModDownloadPage.WindowObject.activeInHierarchy ||
+                ui.DownloadWindow.gameObject.activeInHierarchy ||
                 ui.ModOptionsWindow.WindowObject.activeInHierarchy ||
                 ui.ModsWindow.WindowObject.activeInHierarchy;
         }

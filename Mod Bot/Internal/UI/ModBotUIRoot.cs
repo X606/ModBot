@@ -1,4 +1,5 @@
 ﻿using ModLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,11 @@ namespace InternalModBot
 	/// The UI root for all mod-bot UI
 	/// </summary>
 	internal class ModBotUIRoot : Singleton<ModBotUIRoot>
-	{
-		/// <summary>
-		/// The Console UI
-		/// </summary>
-		public ConsoleUI ConsoleUI;
+    {
+        /// <summary>
+        /// The Console UI
+        /// </summary>
+        public ConsoleUI ConsoleUI;
 		/// <summary>
 		/// The FPS counter in the corner
 		/// </summary>
@@ -42,25 +43,26 @@ namespace InternalModBot
 		/// </summary>
 		public ModOptionsWindow ModOptionsWindow;
 		/// <summary>
-		/// The download page UI
+		/// The mods download UI
 		/// </summary>
-		public ModDownloadPage ModDownloadPage;
+        public ModDownloadWindow DownloadWindow;
 		/// <summary>
-		/// The mod creation UI
+		/// The loading bar
 		/// </summary>
-		public ModCreationWindow ModCreationWindow;
-		/// <summary>
-		/// The root canvas
-		/// </summary>
-		public Canvas Root;
+        public GenericLoadingBar LoadingBar;
+        /// <summary>
+        /// The root canvas
+        /// </summary>
+        public Canvas Root;
 
-		/// <summary>
-		/// Sets up the mod-bot UI from a modded object
-		/// </summary>
-		/// <param name="moddedObject"></param>
-		public void Init(ModdedObject moddedObject)
-		{
-			Root = moddedObject.GetComponent<Canvas>();
+        /// <summary>
+        /// Sets up the mod-bot UI
+        /// </summary>
+        public void Init()
+        {
+			ModdedObject moddedObject = base.GetComponent<ModdedObject>();
+
+            Root = moddedObject.GetComponent<Canvas>();
 
 			ConsoleUI = gameObject.AddComponent<ConsoleUI>();
 			ConsoleUI.Init(moddedObject.GetObject<Animator>(0), moddedObject.GetObject<GameObject>(1), moddedObject.GetObject<GameObject>(2), moddedObject.GetObject<InputField>(3));
@@ -83,12 +85,11 @@ namespace InternalModBot
 			ModOptionsWindow = gameObject.AddComponent<ModOptionsWindow>();
 			ModOptionsWindow.Init(moddedObject.GetObject<ModdedObject>(9));
 
-			ModDownloadPage = gameObject.AddComponent<ModDownloadPage>();
-			ModDownloadPage.Init(moddedObject.GetObject<ModdedObject>(10));
+            DownloadWindow = moddedObject.GetObject<ModdedObject>(10).gameObject.AddComponent<ModDownloadWindow>();
+            DownloadWindow.Init();
 
-			ModCreationWindow = gameObject.AddComponent<ModCreationWindow>();
-			ModCreationWindow.Init(moddedObject.GetObject_Alt<ModdedObject>(11));
+            LoadingBar = moddedObject.GetObject<ModdedObject>(11).gameObject.AddComponent<GenericLoadingBar>();
+            LoadingBar.Init();
         }
 	}
-
 }
