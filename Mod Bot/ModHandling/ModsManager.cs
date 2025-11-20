@@ -42,7 +42,7 @@ namespace InternalModBot
         /// <summary>
         /// Gets the mod folder path
         /// </summary>
-        public string ModFolderPath => InternalUtils.GetSubdomain(Application.dataPath) + MOD_FOLDER_NAME + "/";
+        public string ModFolderPath => Path.Combine(InternalUtils.GetSubdomain(Application.dataPath), MOD_FOLDER_NAME + "/");
 
         /// <summary>
         /// The "pass on mod" that calls everything called on it on all loaded mods
@@ -84,16 +84,23 @@ namespace InternalModBot
         /// <summary>
         /// Reloads all loaded mods
         /// </summary>
-        public void ReloadMods()
+        public void ReloadMods(bool loadOnlyNewMods = false)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             List<ModLoadError> errors = new List<ModLoadError>();
-            if (!reloadAllMods(ref errors))
+            int numNewMods = 0;
+            if (!reloadAllMods(loadOnlyNewMods, ref numNewMods, ref errors))
                 StartCoroutine(showModInvalidMessage(errors));
 
             stopwatch.Stop();
+
+            if (loadOnlyNewMods)
+            {
+                debug.Log("loaded " + numNewMods + " new mods in " + stopwatch.Elapsed.TotalSeconds + " seconds");
+                return;
+            }
             debug.Log("(re)loaded " + _loadedMods.Count + " mods in " + stopwatch.Elapsed.TotalSeconds + " seconds");
         }
 
@@ -112,15 +119,20 @@ namespace InternalModBot
             ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_fail");
         }
 
-        private bool reloadAllMods(ref List<ModLoadError> errors)
+        private bool reloadAllMods(bool loadOnlyNewMods, ref int numNewMods, ref List<ModLoadError> errors)
         {
-            unloadAllLoadedMods();
+            if (!loadOnlyNewMods)
+                unloadAllLoadedMods();
+
+            List<string> newMods = new List<string>();
 
             // First we take a pass to see if there any zip files we want to convert into folders
             string[] zipFiles = Directory.GetFiles(ModFolderPath, "*.zip");
             foreach (string zipFilePath in zipFiles)
             {
-                string newDirectory = ModFolderPath + System.IO.Path.GetFileNameWithoutExtension(zipFilePath);
+                string newDirectory = Path.Combine(ModFolderPath, Path.GetFileNameWithoutExtension(zipFilePath));
+                newMods.Add(newDirectory);
+
                 Directory.CreateDirectory(newDirectory);
                 FastZip fastZip = new FastZip();
                 fastZip.ExtractZip(zipFilePath, newDirectory, null);
@@ -129,12 +141,16 @@ namespace InternalModBot
                 debug.Log("Unpacked " + System.IO.Path.GetFileName(zipFilePath) + "...");
             }
 
+            numNewMods = newMods.Count;
+
             // Get all mod infos
             string[] folders = Directory.GetDirectories(ModFolderPath);
             List<ModInfo> modsToLoad = new List<ModInfo>();
             Dictionary<string, ModInfo> modIdToInfo = new Dictionary<string, ModInfo>();
             foreach (string folderPath in folders)
             {
+                if (loadOnlyNewMods && !newMods.Contains(folderPath)) continue;
+
                 if (!loadModInfo(folderPath, out ModInfo modInfo, out ModLoadError error))
                 {
                     errors.Add(error);
@@ -229,6 +245,7 @@ namespace InternalModBot
                 modInfo = null;
                 return false;
             }
+
             string modInfoFilePath = folderPath + "/" + MOD_INFO_FILE_NAME;
             if (!File.Exists(modInfoFilePath))
             {
@@ -237,6 +254,7 @@ namespace InternalModBot
                 modInfo = null;
                 return true;
             }
+
             string modInfoJson = File.ReadAllText(modInfoFilePath);
             try
             {
@@ -279,7 +297,6 @@ namespace InternalModBot
             {
                 _firstLoadedVersionOfMod.Add(modInfo.UniqueID, modInfo.Version);
             }
-
 
             error = null;
             return true;

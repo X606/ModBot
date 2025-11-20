@@ -96,7 +96,7 @@ namespace InternalModBot
                 folderName = folderName.Replace(invalidCharacter, '_');
             }
 
-            string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
+            string targetDirectory = Path.Combine(ModsManager.Instance.ModFolderPath, folderName);
             if (Directory.Exists(targetDirectory))
             {
                 onComplete?.Invoke();
@@ -130,27 +130,16 @@ namespace InternalModBot
                 webRequest.Dispose();
             }
 
-            string tempFilePath = Path.GetTempFileName();
-
             yield return new WaitForTask(Task.Run(async () =>
             {
-                using (FileStream tempFile = new FileStream(tempFilePath, FileMode.Create))
+                using (FileStream tempFile = new FileStream($"{targetDirectory}.zip", FileMode.Create))
                 {
                     tempFile.Seek(0, SeekOrigin.Begin);
                     await tempFile.WriteAsync(bytes, 0, bytes.Length);
                 }
             }));
 
-            Directory.CreateDirectory(targetDirectory);
-            FastZip fastZip = new FastZip();
-            fastZip.ExtractZip(tempFilePath, targetDirectory, null);
-
-            ModsManager.Instance.ReloadMods();
-
-            if (File.Exists(tempFilePath))
-            {
-                File.Delete(tempFilePath);
-            }
+            ModsManager.Instance.ReloadMods(true);
 
             onComplete?.Invoke();
 
