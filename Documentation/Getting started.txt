@@ -18,7 +18,7 @@ This page already exists in the documentation on the site but I have made some m
 		You will need to install the same version of Unity that Clone Drone has if you want to include custom assets in your mod (i.e. A custom model, animation, etc.).
 		<br>
 		<br>
-		NOTE: It needs to be the exact version of Unity that Clone Drone uses (2017.3) or the game will crash when trying to import the custom assets.
+		NOTE: It needs to be the exact version of Unity that Clone Drone uses (2019.4.41) or the game will crash when trying to import the custom assets.
 	</p>
 </div>
 <br>
