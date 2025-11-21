@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using InternalModBot;
 using System;
+using System.Text;
 
 namespace ModLibrary
 {
@@ -140,61 +141,77 @@ namespace ModLibrary
         /// Opens a notepad window with info about the passed transfrom like components and children
         /// </summary>
         /// <param name="obj"></param>
-        public static void PrintAllChildren(Transform obj) // TODO : Rewrite this function
+        public static void PrintAllChildren(Transform obj)
         {
-            _outputText = "";
-            writeToFile(obj.ToString());
-            recursivePrintAllChildren("    ", obj);
+            if (!obj) throw new ArgumentException($"{nameof(obj)} is destroyed or null");
 
-            File.WriteAllText(Application.persistentDataPath + "/debug.txt", _outputText);
-            Process.Start("notepad.exe", Application.persistentDataPath + "/debug.txt");
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(obj.name);
+            recursivePrintAllChildren(ref stringBuilder, string.Empty, obj);
+
+            string path = Path.Combine(Application.persistentDataPath, "debug.txt");
+
+            File.WriteAllText(path, stringBuilder.ToString());
+            Process.Start(path);
         }
 
-        static void recursivePrintAllChildren(string pre, Transform obj)
+        static void recursivePrintAllChildren(ref StringBuilder stringBuilder, string prefix, Transform obj)
         {
+            stringBuilder.Append(prefix);
             Component[] components = obj.GetComponents(typeof(Component));
-            if (components != null && components.Length > 0)
+            if (components != null && components.Length > 1)
             {
-                writeToFile(pre + "Components: ");
+                stringBuilder.AppendLine($"{components.Length - 1} components: ");
 
-                for (int i = 0; i < components.Length; i++)
+                for (int i = 1; i < components.Length; i++) // skip transform component
                 {
                     if (components[i] == null)
                     {
-                        writeToFile(pre + "null (Component)");
+                        stringBuilder.Append(prefix);
+                        stringBuilder.AppendLine("null");
                     }
                     else
                     {
-                        string componentString = components[i].name + " (" + components[i].GetType().FullName + ")";
-                        writeToFile(pre + componentString);
+                        stringBuilder.Append(prefix);
+                        stringBuilder.AppendLine(components[i].GetType().FullName);
                     }
                 }
             }
-
-            if (obj.childCount > 0)
+            else
             {
-                writeToFile(pre + "Children: ");
+                stringBuilder.AppendLine("0 components");
+            }
+
+            stringBuilder.Append(prefix);
+            if (obj.childCount != 0)
+            {
+                stringBuilder.AppendLine($"{obj.childCount} children: ");
+
+                string prefixBefore = prefix;
+                prefix += "  ";
                 for (int i = 0; i < obj.childCount; i++)
                 {
+                    stringBuilder.Append(prefix);
+                    stringBuilder.Append(i);
+                    stringBuilder.Append(": ");
+
                     Transform child = obj.GetChild(i);
                     if (child == null)
                     {
-                        writeToFile(pre + i + ": null");
+                        stringBuilder.AppendLine("null");
                     }
                     else
                     {
-                        writeToFile(pre + i + ": " + child.name);
-                        recursivePrintAllChildren(pre + "    ", child);
+                        stringBuilder.AppendLine(child.name);
+                        recursivePrintAllChildren(ref stringBuilder, prefix, child);
                     }
                 }
+                prefix = prefixBefore;
+            }
+            else
+            {
+                stringBuilder.AppendLine("0 children");
             }
         }
-
-        static void writeToFile(string msg)
-        {
-            _outputText += msg + "\n";
-        }
-
-        static string _outputText;
     }
 }
