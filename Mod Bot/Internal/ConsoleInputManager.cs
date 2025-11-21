@@ -1,13 +1,16 @@
-﻿using ModLibrary;
-using System;
-using UnityEngine;
-using System.Collections.Generic;
-using ModBotWebsiteAPI;
+﻿using HarmonyLib;
 using InternalModBot.Scripting;
-using HarmonyLib;
-using System.Reflection;
+using ModBotWebsiteAPI;
+using ModLibrary;
+using Rewired;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -122,7 +125,9 @@ namespace InternalModBot
                            "clearcache\n" +
                            "listpatches\n" +
                            "help\n" +
-                           "getplayfabids [copy ids: true, false]"
+                           "getplayfabids [copy ids: true, false]\n" +
+                           "viewlogs\n" + 
+                           "savefolder"
 
                            , Color.yellow);
                         break;
@@ -178,6 +183,16 @@ namespace InternalModBot
                                 }
                             });
                         }
+                        break;
+                    }
+                case "viewlogs":
+                    {
+                        Process.Start(Path.Combine(Application.persistentDataPath, "Player.log"));
+                        break;
+                    }
+                case "savefolder":
+                    {
+                        Process.Start(Path.Combine(Application.persistentDataPath));
                         break;
                     }
 #if DEBUG
