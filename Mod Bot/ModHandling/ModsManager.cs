@@ -64,20 +64,42 @@ namespace InternalModBot
             ThreadedDelegateScheduler.Update();
         }
 
-        private static IEnumerator showModInvalidMessage(List<ModLoadError> errors)
+        private IEnumerator showErrorsCoroutine(List<ModLoadError> errors)
         {
             for (int i = 0; i < errors.Count; i++)
             {
-                // TODO: This is a very bad way of handling errors, completely deleting the mod file is *very* rarely going to be what you want to do, would be much better to give the option to disable the mod, or just continue.
-                new Generic2ButtonDialogue("Mod \"" + errors[i].ModName + "\" could not be loaded (" + errors[i].ErrorMessage + "). Do you want to remove the mod?",
-                    "Yes",
-                    delegate
-                    {
-                        Directory.Delete(errors[i].FolderPath, true);
-                    },
-                    "No", null);
+                showError(errors[i]);
 
-                yield return new WaitWhile(delegate { return Generic2ButtonDialogue.IsWindowOpen; });
+                while (Generic2ButtonDialogue.IsWindowOpen) yield return null;
+            }
+        }
+
+        private void showError(ModLoadError error)
+        {
+            if (error.Info == null)
+            {
+                if (!string.IsNullOrEmpty(error.FolderPath) && Directory.Exists(error.FolderPath))
+                {
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "View mod's folder", delegate
+                    {
+                        _ = Process.Start(error.FolderPath);
+                    });
+                }
+                else
+                {
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "Ok", null);
+                }
+            }
+            else
+            {
+                new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}\nDo you want to disable the mod?", "Yes", delegate
+                {
+                    try
+                    {
+                        error.Info.IsModEnabled = false;
+                    }
+                    catch { }
+                }, "No", null);
             }
         }
 
@@ -92,7 +114,7 @@ namespace InternalModBot
             List<ModLoadError> errors = new List<ModLoadError>();
             int numNewMods = 0;
             if (!reloadAllMods(loadOnlyNewMods, ref numNewMods, ref errors))
-                StartCoroutine(showModInvalidMessage(errors));
+                StartCoroutine(showErrorsCoroutine(errors));
 
             stopwatch.Stop();
 
@@ -306,7 +328,7 @@ namespace InternalModBot
         {
             if (!loadMod(modInfo, out ModLoadError error))
             {
-                StartCoroutine(showModInvalidMessage(new List<ModLoadError>() { error }));
+                StartCoroutine(showErrorsCoroutine(new List<ModLoadError>() { error }));
             }
         }
 

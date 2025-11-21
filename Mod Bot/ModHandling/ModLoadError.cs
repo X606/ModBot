@@ -11,6 +11,7 @@ namespace InternalModBot
     {
         public ModLoadError(ModInfo modInfo, string errorMessage) : this(modInfo.FolderPath, modInfo.DisplayName, errorMessage)
         {
+            Info = modInfo;
         }
 
         public ModLoadError(string folderPath, string errorMessage) : this(folderPath, folderPath.Split('/').Last(), errorMessage)
@@ -27,6 +28,7 @@ namespace InternalModBot
 		{
 		}
 
+        public ModInfo Info;
         public string FolderPath;
         public string ModName;
         public string ErrorMessage;
