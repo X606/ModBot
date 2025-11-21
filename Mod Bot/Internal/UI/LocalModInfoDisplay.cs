@@ -1,5 +1,7 @@
 ﻿using ModLibrary;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,7 +11,7 @@ namespace InternalModBot
     internal class LocalModInfoDisplay : MonoBehaviour
     {
         public const string BG_ENABLED_COLOR = "#373C43";
-        public const string BG_DISABLED_COLOR = "#740900";
+        public const string BG_DISABLED_COLOR = "#801500";
 
         public const string TOGGLE_ENABLED_COLOR = "#FF6666";
         public const string TOGGLE_DISABLED_COLOR = "#34FF37";
@@ -52,10 +54,12 @@ namespace InternalModBot
             string authorString = $"By {modInfo.OwnerModInfo.Author}".AddColor(authorColor);
             string versionString = $"Version {modInfo.OwnerModInfo.Version}".AddColor(versionColor);
             string idString = $"ID <size=9>{modInfo.OwnerModInfo.UniqueID}</size>";
+            string displayName = modInfo.OwnerModInfo.DisplayName;
+            bool notLoaded = modInfo.IsEnabled && modInfo.ModReference == null;
 
             canvasGroup = base.GetComponent<CanvasGroup>();
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
-            moddedObject.GetObject<Text>(0).text = modInfo.OwnerModInfo.DisplayName;
+            moddedObject.GetObject<Text>(0).text = notLoaded ? $"{displayName} (Not loaded)".AddColor(Color.yellow) : displayName;
             moddedObject.GetObject<Text>(1).text = modInfo.OwnerModInfo.Description;
             moddedObject.GetObject<Text>(9).text = $"{authorString} · {versionString} · {idString}";
 
@@ -94,7 +98,6 @@ namespace InternalModBot
         public void Refresh()
         {
             LoadedModInfo modInfo = loadedModInfo;
-            bool exception = false;//!string.IsNullOrEmpty(loadedModInfo.OwnerModInfo?.Exception);
             bool isEnabled = loadedModInfo.IsEnabled;
             bool isMultiplayer = GameModeManager.IsMultiplayer();
             bool hasSettings = isEnabled && modInfo.ModReference != null && modInfo.ModReference.ImplementsSettingsWindow();
@@ -107,8 +110,8 @@ namespace InternalModBot
 
             //_optionsButton.gameObject.SetActive(isEnabled);
             _optionsButton.interactable = hasSettings;
-            _descriptionHolderObject.SetActive(!exception);
-            _errorsButton.gameObject.SetActive(exception);
+            _descriptionHolderObject.SetActive(true);
+            _errorsButton.gameObject.SetActive(false);
             _shareButton.gameObject.SetActive(isMultiplayer);
             _toggleButtonText.ChangeIDAndTryLocalize(isEnabled ? "mods_menu_disable_mod" : "mods_menu_enable_mod");
         }
@@ -134,24 +137,92 @@ namespace InternalModBot
             }
         }
 
-        public void OnToggleButtonClicked()
+        private void setModActive(LoadedModInfo mod, bool value)
         {
-            if (loadedModInfo == null)
-                return;
+            if (mod.IsEnabled == value) return;
 
             try // ensure that the mod list will still work properly if the mod is enabled/disabled with an error
             {
-                loadedModInfo.IsEnabled = !loadedModInfo.IsEnabled;
+                mod.IsEnabled = value;
             }
             catch (System.Exception exc)
             {
                 UnityEngine.Debug.LogException(exc);
             }
-            finally
+        }
+
+        public void OnToggleButtonClicked()
+        {
+            if (loadedModInfo == null)
+                return;
+
+            ModInfo modInfo = loadedModInfo.OwnerModInfo;
+            if (!loadedModInfo.IsEnabled && modInfo.ModDependencies != null && modInfo.ModDependencies.Length != 0)
             {
-                Refresh();
-                ModBotUIRoot.Instance.ModList.RefreshModsInfoLabel();
+                ModsManager modsManager = ModsManager.Instance;
+                List<LoadedModInfo> dependencies = new List<LoadedModInfo>();
+                addModDependenciesRecursive(loadedModInfo, modsManager.GetAllMods(), ref dependencies);
+
+                List<LoadedModInfo> toEnable = new List<LoadedModInfo>();
+                foreach (LoadedModInfo mod in dependencies)
+                {
+                    if (mod == loadedModInfo) continue;
+
+                    if (string.IsNullOrEmpty(mod.OwnerModInfo.DisplayName) || !mod.IsEnabled) toEnable.Add(mod);
+                }
+
+                if (toEnable.Count != 0)
+                {
+                    bool hasMissingMods = false;
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.AppendLine($"Mod \"{modInfo.DisplayName}\" requires following mods to be installed and enabled:");
+                    stringBuilder.AppendLine();
+                    foreach (LoadedModInfo lmi in toEnable)
+                    {
+                        if (string.IsNullOrEmpty(lmi.OwnerModInfo.DisplayName))
+                        {
+                            stringBuilder.AppendLine($"A mod with id {lmi.OwnerModInfo.UniqueID} (missing)".AddColor(Color.red));
+                            hasMissingMods = true;
+                        }
+                        else
+                        {
+                            stringBuilder.AppendLine($"{lmi.OwnerModInfo.DisplayName} (disabled)".AddColor(Color.yellow));
+                        }
+                    }
+                    stringBuilder.AppendLine();
+
+                    if (hasMissingMods)
+                    {
+                        stringBuilder.Append("You cannot enable this mod due to missing mods.\nCheck mod's description for information or ask around Discord how to fix this.");
+                        new Generic2ButtonDialogue(stringBuilder.ToString(), "Ok", null, "Get mods", delegate
+                        {
+                            ModBotUIRoot.Instance.DownloadWindow.Show();
+                        });
+                        return;
+                    }
+
+                    stringBuilder.Append("Would you like to enable these mods?");
+                    new Generic2ButtonDialogue(stringBuilder.ToString(), "Yes", delegate
+                    {
+                        foreach (LoadedModInfo lmi in toEnable)
+                        {
+                            if (string.IsNullOrEmpty(lmi.OwnerModInfo.DisplayName)) continue;
+
+                            setModActive(lmi, true);
+                        }
+                        setModActive(loadedModInfo, true);
+
+                        ModBotUIRoot.Instance.ModList.ReloadList();
+                    }, "No", null);
+
+                    return;
+                }
             }
+
+            setModActive(loadedModInfo, !loadedModInfo.IsEnabled);
+            Refresh();
+            ModBotUIRoot.Instance.ModList.RefreshModsInfoLabel();
         }
 
         public void OnOptionsButtonClicked()
@@ -194,16 +265,6 @@ namespace InternalModBot
 
         public void OnErrorsButtonClicked()
         {
-            /*_ = new Generic2ButtonDialogue("Mod errors:\n" + loadedModInfo.OwnerModInfo.Exception,
-                "Ok",
-                null,
-                "Disable mod",
-                delegate
-                {
-                    loadedModInfo.IsEnabled = false;
-                    Refresh();
-                },
-                Generic2ButtonDialogeUI.ModErrorSizeDelta);*/
         }
 
         private void OnEnable()
@@ -226,6 +287,41 @@ namespace InternalModBot
 
             _modImageObject.SetActive(true);
             _placeholderModImageObject.SetActive(false);
+        }
+
+        private void addModDependenciesRecursive(LoadedModInfo loadedModInfo, List<LoadedModInfo> modsList, ref List<LoadedModInfo> sortedList)
+        {
+            if (sortedList.Contains(loadedModInfo)) return;
+
+            ModInfo modInfo = loadedModInfo.OwnerModInfo;
+            if (modInfo.ModDependencies != null && modInfo.ModDependencies.Length != 0)
+            {
+                foreach (string dependencyId in modInfo.ModDependencies)
+                {
+                    if (string.IsNullOrEmpty(dependencyId)) continue;
+
+                    LoadedModInfo dependencyInfo = null;
+                    foreach (LoadedModInfo lmi in modsList)
+                        if (lmi.OwnerModInfo != null && lmi.OwnerModInfo.UniqueID == dependencyId)
+                        {
+                            dependencyInfo = lmi;
+                            break;
+                        }
+
+                    if (dependencyInfo == null)
+                    {
+                        dependencyInfo = new LoadedModInfo(null, new ModInfo()
+                        {
+                            DisplayName = null,
+                            UniqueID = dependencyId
+                        });
+                    }
+
+                    addModDependenciesRecursive(dependencyInfo, modsList, ref sortedList);
+                }
+            }
+
+            sortedList.Add(loadedModInfo);
         }
 
         public class DescriptionHolder : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler

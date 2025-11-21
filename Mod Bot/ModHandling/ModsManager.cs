@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -36,8 +37,6 @@ namespace InternalModBot
 
         private static readonly Dictionary<string, Texture2D> _cachedModImages = new Dictionary<string, Texture2D>();
         private static readonly List<string> _processingModImages = new List<string>();
-
-        // private List<string> _TEMPModsBeforeSort, _TEMPModsAfterSort;
 
         /// <summary>
         /// Gets the mod folder path
@@ -76,23 +75,25 @@ namespace InternalModBot
 
         private void showError(ModLoadError error)
         {
+            ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
+
             if (error.Info == null)
             {
                 if (!string.IsNullOrEmpty(error.FolderPath) && Directory.Exists(error.FolderPath))
                 {
-                    new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "View mod's folder", delegate
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "View mod's folder", delegate
                     {
                         _ = Process.Start(error.FolderPath);
                     });
                 }
                 else
                 {
-                    new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "Ok", null);
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "Ok", null);
                 }
             }
             else
             {
-                new Generic2ButtonDialogue($"Mod \"{error.ModName}\" could not be loaded. Error:\n{error.ErrorMessage}\nDo you want to disable the mod?", "Yes", delegate
+                new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}\nDo you want to disable the mod?", "Yes", delegate
                 {
                     try
                     {
@@ -167,6 +168,7 @@ namespace InternalModBot
 
             // Get all mod infos
             string[] folders = Directory.GetDirectories(ModFolderPath);
+            List<ModInfo> allMods = new List<ModInfo>();
             List<ModInfo> modsToLoad = new List<ModInfo>();
             Dictionary<string, ModInfo> modIdToInfo = new Dictionary<string, ModInfo>();
             foreach (string folderPath in folders)
@@ -188,6 +190,7 @@ namespace InternalModBot
                     continue;
                 }
 
+                allMods.Add(modInfo);
                 modsToLoad.Add(modInfo);
                 modIdToInfo.Add(modInfo.UniqueID, modInfo);
             }
@@ -196,8 +199,9 @@ namespace InternalModBot
             for (int i = modsToLoad.Count - 1; i >= 0; i--)
             {
                 ModInfo modInfo = modsToLoad[i];
-                string[] dependencies = modInfo.ModDependencies;
+                if (!modInfo.IsModEnabled) continue;
 
+                string[] dependencies = modInfo.ModDependencies;
                 if (dependencies == null || dependencies.Length == 0) continue;
 
                 List<string> missingMods = new List<string>();
@@ -211,20 +215,36 @@ namespace InternalModBot
                 if (missingMods.Count > 0)
                 {
                     //TODO: get the mod name from the site
-                    string errorMsg = modInfo.DisplayName + " requires other mods: \"";
-                    errorMsg += string.Join("\", \"", missingMods) + "\"\n Make sure all mods are installed and enabled.";
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.AppendLine($"\"{modInfo.DisplayName}\" requires following mods to be installed and enabled:");
+                    foreach (string id in missingMods)
+                    {
+                        ModInfo info = null;
+                        foreach (ModInfo mi in allMods)
+                            if (mi.UniqueID == id)
+                            {
+                                info = mi;
+                                break;
+                            }
 
-                    errors.Add(new ModLoadError(modInfo, errorMsg));
+                        if (info == null)
+                        {
+                            stringBuilder.AppendLine($"A mod with id {id} (missing)".AddColor(Color.red));
+                        }
+                        else
+                        {
+                            stringBuilder.AppendLine($"{info.DisplayName} (disabled)".AddColor(Color.yellow));
+                        }
+                    }
+                    stringBuilder.Append("Check mod's description for information or ask around Discord how to fix this.");
+                    stringBuilder.AppendLine();
 
-                    modsToLoad.RemoveAt(i);
+                    errors.Add(new ModLoadError(modInfo, stringBuilder.ToString()));
+
+                    modsToLoad.Remove(modInfo);
                     modIdToInfo.Remove(modInfo.UniqueID);
                 }
             }
-
-            /*List<string> debugModIds = new List<string>();
-            for (int i = 0; i < modsToLoad.Count; i++)
-                debugModIds.Add(modsToLoad[i].UniqueID);
-            _TEMPModsBeforeSort = new List<string>(debugModIds);*/
 
             // Sort mods to load
             List<ModInfo> modsToLoadSorted = new List<ModInfo>();
@@ -233,11 +253,6 @@ namespace InternalModBot
                 ModInfo modInfo = modsToLoad[i];
                 addModDependenciesRecursive(modInfo, ref modsToLoad, ref modIdToInfo, ref modsToLoadSorted);
             }
-
-            /*debugModIds.Clear();
-            for (int i = 0; i < modsToLoadSorted.Count; i++)
-                debugModIds.Add(modsToLoadSorted[i].UniqueID);
-            _TEMPModsAfterSort = new List<string>(debugModIds);*/
 
             for (int i = 0; i < modsToLoadSorted.Count; i++)
             {
@@ -440,6 +455,8 @@ namespace InternalModBot
             if (modInfo.ModDependencies != null && modInfo.ModDependencies.Length != 0)
                 foreach (string dependencyId in modInfo.ModDependencies)
                 {
+                    if (!modIdToInfo.ContainsKey(dependencyId)) continue;
+
                     ModInfo dependencyInfo = modIdToInfo[dependencyId];
                     addModDependenciesRecursive(dependencyInfo, ref modsToLoad, ref modIdToInfo, ref sortedList);
                 }

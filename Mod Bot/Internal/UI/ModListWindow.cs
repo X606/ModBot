@@ -189,18 +189,7 @@ namespace InternalModBot
                 return;
             }
 
-            int countOfErrors = 0;
-            /*foreach (LoadedModInfo loadedMod in list)
-                if (loadedMod.OwnerModInfo != null && !string.IsNullOrEmpty(loadedMod.OwnerModInfo.Exception))
-                    countOfErrors++;*/
-
-            string errorString = "0 errors";
-            if (countOfErrors != 0)
-            {
-                errorString = (countOfErrors + " errors").AddColor(Color.red);
-            }
-
-            label.text = string.Format("{0} mods installed, {1} enabled, {2}", new object[] { list.Count, ModsManager.Instance.GetAllLoadedActiveMods()?.Count, errorString });
+            label.text = $"{list.Count} mods installed, {ModsManager.Instance.GetAllLoadedActiveMods()?.Count} enabled";
         }
 
         private void setElementsInteractable(bool value)
