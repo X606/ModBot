@@ -151,14 +151,12 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
     <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
-    <Compile Include="ModUtilities\CharacterInputRestrictor.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\SingleExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\StringAndByteArrayConverterExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\Vector3Extensions.cs" />
-    <Compile Include="ModUtilities\InputRestrictions.cs" />
     <Compile Include="ModUtilities\Layers.cs" />
     <Compile Include="ModUtilities\ModdedSettings.cs" />
     <Compile Include="ModUtilities\ModTools.cs" />
