@@ -30,9 +30,12 @@ namespace InternalModBot
 
         Queue<Text> _lines = new Queue<Text>();
 
-        bool _isInitialized = false;
+        bool _isInitialized;
 
-        bool _isShownOnScreen = false;
+        bool _isShownOnScreen;
+
+        bool _shouldHideInnerHolder;
+        float _timeLeftToHide;
 
         /// <summary>
         /// Initialized the <see cref="ConsoleUI"/>
@@ -53,6 +56,7 @@ namespace InternalModBot
 
             _input.onEndEdit.AddListener(OnEndEdit);
 
+            _innerHolder.SetActive(false);
             _isInitialized = true;
         }
 
@@ -72,6 +76,16 @@ namespace InternalModBot
 
         void Update()
         {
+            if (_shouldHideInnerHolder)
+            {
+                _timeLeftToHide = Mathf.Max(0f, _timeLeftToHide - Time.unscaledDeltaTime);
+                if(_timeLeftToHide == 0f)
+                {
+                    _shouldHideInnerHolder = false;
+                    _innerHolder.SetActive(false);
+                }
+            }
+
             if (!_isInitialized)
                 return;
 
@@ -95,12 +109,18 @@ namespace InternalModBot
             Animator.Play("hideConsole");
             _isShownOnScreen = false;
             _input.DeactivateInputField();
+
+            _shouldHideInnerHolder = true;
+            _timeLeftToHide = 1f;
         }
 
         internal void ShowConsole()
         {
             Animator.Play("showConsole");
+            _innerHolder.SetActive(true);
             _isShownOnScreen = true;
+
+            _shouldHideInnerHolder = false;
         }
 
         /// <summary>
