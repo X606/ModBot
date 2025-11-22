@@ -38,6 +38,10 @@ namespace InternalModBot
         private static readonly Dictionary<string, Texture2D> _cachedModImages = new Dictionary<string, Texture2D>();
         private static readonly List<string> _processingModImages = new List<string>();
 
+        private static readonly Dictionary<string, ModAssemblyCache> _cachedAssemblies = new Dictionary<string, ModAssemblyCache>();
+
+        internal List<Mod> _allLoadedActiveMods = new List<Mod>();
+
         /// <summary>
         /// Gets the mod folder path
         /// </summary>
@@ -355,60 +359,71 @@ namespace InternalModBot
                 error = new ModLoadError(modInfo, "The file \"" + modInfo.MainDLLFileName + "\" could not be found");
                 return false;
             }
-            Assembly loadedAssembly;
-            try
-            {
-                loadedAssembly = Assembly.LoadFile(dllPath);
-            }
-            catch
-            {
-                error = new ModLoadError(modInfo, "Could not load \"" + modInfo.MainDLLFileName + "\"");
-                return false;
-            }
 
-            Type[] types = loadedAssembly.GetTypes();
+            Assembly loadedAssembly = null;
             Type mainType = null;
-            foreach (Type type in types)
+            if (_cachedAssemblies.ContainsKey(modInfo.UniqueID))
             {
-                if (type.GetCustomAttribute<MainModClassAttribute>(true) != null)
+                ModAssemblyCache modAssemblyCache = _cachedAssemblies[modInfo.UniqueID];
+                loadedAssembly = modAssemblyCache.LoadedAssembly;
+                mainType = modAssemblyCache.MainClassType;
+            }
+            else
+            {
+                try
                 {
-                    mainType = type;
+                    loadedAssembly = Assembly.LoadFile(dllPath);
                 }
-            }
+                catch
+                {
+                    error = new ModLoadError(modInfo, "Could not load \"" + modInfo.MainDLLFileName + "\"");
+                    return false;
+                }
 
-            if (mainType == null)
-            {
-                error = new ModLoadError(modInfo, "Could not find type with the " + nameof(MainModClassAttribute) + " attribute");
-                return false;
-            }
+                Type[] types = loadedAssembly.GetTypes();
+                foreach (Type type in types)
+                {
+                    if (type.GetCustomAttribute<MainModClassAttribute>(true) != null)
+                    {
+                        mainType = type;
+                    }
+                }
 
-            if (mainType.BaseType != typeof(Mod))
-            {
-                error = new ModLoadError(modInfo, "The type with the " + nameof(MainModClassAttribute) + " attribute was not of type " + nameof(Mod));
-                return false;
+                if (mainType == null)
+                {
+                    error = new ModLoadError(modInfo, "Could not find type with the " + nameof(MainModClassAttribute) + " attribute");
+                    return false;
+                }
+
+                if (mainType.BaseType != typeof(Mod))
+                {
+                    error = new ModLoadError(modInfo, "The type with the " + nameof(MainModClassAttribute) + " attribute was not of type " + nameof(Mod));
+                    return false;
+                }
+
+                string relativePath = InternalUtils.GetRelativePathFromFullPath(modInfo.FolderPath);
+                DataSaver.TryLoadDataFromFile(relativePath);
+
+                ModAssemblyCache modAssemblyCache = new ModAssemblyCache()
+                {
+                    LoadedAssembly = loadedAssembly,
+                    MainClassType = mainType
+                };
+                _cachedAssemblies.Add(modInfo.UniqueID, modAssemblyCache);
             }
 
             Mod loadedMod = (Mod)Activator.CreateInstance(mainType);
             loadedMod.SourceAssembly = loadedAssembly;
 
-            string relativePath = InternalUtils.GetRelativePathFromFullPath(modInfo.FolderPath);
-
-            DataSaver.TryLoadDataFromFile(relativePath);
-
-            LoadedModInfo loadedModInfo = null;
-            foreach (LoadedModInfo existingModInfo in _loadedMods)
-            {
-                if (existingModInfo.OwnerModInfo.UniqueID == modInfo.UniqueID)
-                {
-                    existingModInfo.ModReference = loadedMod;
-                    loadedModInfo = existingModInfo;
-                }
-            }
-
-            if (loadedModInfo == null)
+            LoadedModInfo loadedModInfo = GetLoadedModWithID(modInfo.UniqueID);
+            if(loadedModInfo == null)
             {
                 loadedModInfo = new LoadedModInfo(loadedMod, modInfo);
                 _loadedMods.Add(loadedModInfo);
+            }
+            else
+            {
+                loadedModInfo.ModReference = loadedMod;
             }
 
             try
@@ -477,7 +492,7 @@ namespace InternalModBot
 
         private static IEnumerator callOnModRefreshedNextFrame(LoadedModInfo mod)
         {
-            yield return 0;
+            yield return null;
 
             try
             {
@@ -513,8 +528,6 @@ namespace InternalModBot
             return null;
         }
 
-        internal List<Mod> _allLoadedActiveMods = new List<Mod>();
-
         /// <summary>
         /// Refreshes the cache for what mods are active and loaded
         /// </summary>
@@ -541,7 +554,7 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Returns all the mods that are active Infos
+        /// Returns infos of all active mods
         /// </summary>
         /// <returns></returns>
         public List<ModInfo> GetActiveModInfos()
@@ -641,6 +654,13 @@ namespace InternalModBot
                 if (callback != null) callback(null);
             }
             yield break;
+        }
+
+        internal class ModAssemblyCache
+        {
+            public Assembly LoadedAssembly;
+
+            public Type MainClassType;
         }
     }
 }
