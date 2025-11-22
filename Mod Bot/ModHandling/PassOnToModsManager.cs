@@ -1,9 +1,9 @@
 ﻿// New mod loading system
 using ModLibrary;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
 using TwitchChatter;
+using UnityEngine;
 #pragma warning disable CS0618 // We dont care if its depricated sincei
 
 namespace InternalModBot
@@ -22,7 +22,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnFirstPersonMoverSpawned(me);
+                try
+                {
+                    mods[i].OnFirstPersonMoverSpawned(me);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnFirstPersonMoverSpawned)}.\n", exc)));
+                }
             }
         }
 
@@ -35,7 +42,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnFirstPersonMoverUpdate(me);
+                try
+                {
+                    mods[i].OnFirstPersonMoverUpdate(me);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnFirstPersonMoverUpdate)}.\n", exc)));
+                }
             }
         }
 
@@ -47,7 +61,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnModRefreshed();
+                try
+                {
+                    mods[i].OnModRefreshed();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnModRefreshed)}.\n", exc)));
+                }
             }
         }
 
@@ -62,7 +83,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnLevelEditorStarted();
+                try
+                {
+                    mods[i].OnLevelEditorStarted();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnLevelEditorStarted)}.\n", exc)));
+                }
             }
         }
 
@@ -75,7 +103,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnCommandRan(command);
+                try
+                {
+                    mods[i].OnCommandRan(command);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnCommandRan)}.\n", exc)));
+                }
             }
         }
 
@@ -95,7 +130,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnUpgradesRefreshed(me, upgrades);
+                try
+                {
+                    mods[i].OnUpgradesRefreshed(me, upgrades);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnUpgradesRefreshed)}.\n", exc)));
+                }
             }
         }
 
@@ -113,7 +155,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnCharacterSpawned(me);
+                try
+                {
+                    mods[i].OnCharacterSpawned(me);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnCharacterSpawned)}.\n", exc)));
+                }
             }
         }
 
@@ -131,7 +180,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnCharacterUpdate(me);
+                try
+                {
+                    mods[i].OnCharacterUpdate(me);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnCharacterUpdate)}.\n", exc)));
+                }
             }
         }
 
@@ -157,7 +213,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].AfterUpgradesRefreshed(owner, upgrades);
+                try
+                {
+                    mods[i].AfterUpgradesRefreshed(owner, upgrades);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(AfterUpgradesRefreshed)}.\n", exc)));
+                }
             }
         }
 
@@ -173,7 +236,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType, attackID);
+                try
+                {
+                    mods[i].OnCharacterKilled(killedCharacter, killerCharacter, damageSourceType, attackID);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnCharacterKilled)}.\n", exc)));
+                }
             }
         }
 
@@ -185,7 +255,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnModDeactivated();
+                try
+                {
+                    mods[i].OnModDeactivated();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnModDeactivated)}.\n", exc)));
+                }
             }
         }
 
@@ -196,9 +273,20 @@ namespace InternalModBot
         protected internal override bool ShouldCursorBeEnabled() // if any mod tells the game that the cursor should be enabled, it will be
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
-            foreach(Mod mod in mods)
+            for (int i = 0; i < mods.Count; i++)
             {
-                if (mod.ShouldCursorBeEnabled())
+                bool result;
+                try
+                {
+                    result = mods[i].ShouldCursorBeEnabled();
+                }
+                catch (Exception exc)
+                {
+                    result = false;
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(ShouldCursorBeEnabled)}.\n", exc)));
+                }
+
+                if (result)
                     return true;
             }
 
@@ -213,7 +301,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].GlobalUpdate();
+                try
+                {
+                    mods[i].GlobalUpdate();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(GlobalUpdate)}.\n", exc)));
+                }
             }
         }
 
@@ -226,7 +321,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnMultiplayerEventReceived(moddedEvent);
+                try
+                {
+                    mods[i].OnMultiplayerEventReceived(moddedEvent);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnMultiplayerEventReceived)}.\n", exc)));
+                }
             }
         }
 
@@ -238,10 +340,20 @@ namespace InternalModBot
         protected internal override UnityEngine.Object OnResourcesLoad(string path)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
-            for(int i = 0; i < mods.Count; i++)
+            for (int i = 0; i < mods.Count; i++)
             {
-                UnityEngine.Object obj = mods[i].OnResourcesLoad(path);
-                if(obj != null)
+                UnityEngine.Object obj;
+                try
+                {
+                    obj = mods[i].OnResourcesLoad(path);
+                }
+                catch (Exception exc)
+                {
+                    obj = null;
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnResourcesLoad)}.\n", exc)));
+                }
+
+                if (obj != null)
                     return obj;
             }
 
@@ -258,7 +370,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnLanguageChanged(newLanguageID, localizationDictionary);
+                try
+                {
+                    mods[i].OnLanguageChanged(newLanguageID, localizationDictionary);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnLanguageChanged)}.\n", exc)));
+                }
             }
         }
 
@@ -266,25 +385,39 @@ namespace InternalModBot
         /// Calls this method on all mods
         /// </summary>
         protected internal override void OnClientConnectedToServer()
-		{
-			List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
-			for(int i = 0; i < mods.Count; i++)
-			{
-				mods[i].OnClientConnectedToServer();
-			}
-		}
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].OnClientConnectedToServer();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnClientConnectedToServer)}.\n", exc)));
+                }
+            }
+        }
 
-		/// <summary>
-		/// Calls this method on all mods
-		/// </summary>
-		protected internal override void OnClientDisconnectedFromServer()
-		{
-			List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
-			for(int i = 0; i < mods.Count; i++)
-			{
-				mods[i].OnClientDisconnectedFromServer();
-			}
-		}
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void OnClientDisconnectedFromServer()
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].OnClientDisconnectedFromServer();
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnClientDisconnectedFromServer)}.\n", exc)));
+                }
+            }
+        }
 
         /// <summary>
         /// Calls this method on all mods
@@ -294,7 +427,14 @@ namespace InternalModBot
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
-                mods[i].OnTwitchChatMessage(message);
+                try
+                {
+                    mods[i].OnTwitchChatMessage(message);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnTwitchChatMessage)}.\n", exc)));
+                }
             }
         }
     }
