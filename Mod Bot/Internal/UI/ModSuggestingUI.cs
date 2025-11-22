@@ -1,15 +1,7 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using Jint.Runtime.Debugger;
-using ModLibrary;
+﻿using ModLibrary;
 using Newtonsoft.Json;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using TwitchChatter;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -51,7 +43,7 @@ namespace InternalModBot
             TwitchChatClient.singleton.AddChatListener(OnTwitchChatMessage);
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelSpawned, ShowNextInSuggestedModsQueue);
         }
-        
+
         void OnDestroy()
         {
             if (TwitchChatClient.singleton != null)
@@ -59,7 +51,7 @@ namespace InternalModBot
 
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.LevelSpawned, ShowNextInSuggestedModsQueue);
         }
-        
+
         /// <summary>
         /// Shows the next in the suggested mods queue
         /// </summary>
@@ -153,67 +145,53 @@ namespace InternalModBot
 
             ModSuggestionAnimator.Play("suggestMod");
 
-            KeyCode clickedKey;
+            bool accepted;
             while (true)
             {
                 if (Input.GetKeyDown(KeyCode.PageDown))
                 {
-                    clickedKey = KeyCode.PageDown;
+                    accepted = false;
                     break;
                 }
-                if (Input.GetKeyDown(KeyCode.PageUp))
+                else if (Input.GetKeyDown(KeyCode.PageUp))
                 {
-                    clickedKey = KeyCode.PageUp;
+                    accepted = true;
                     break;
                 }
 
-                yield return 0;
+                yield return null;
             }
 
-            if (clickedKey == KeyCode.PageUp)
+            if (accepted)
             {
                 AudioManager.Instance.PlayClipGlobal(AudioLibrary.Instance.DogVoteUpZap);
                 ModSuggestionAnimator.Play("AcceptMod");
 
-                if (gameMode == GameMode.Twitch)
-                    TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
-
-                using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + mod.ModID))
+                if (ModsManager.Instance.GetLoadedModWithID(mod.ModID) == null)
                 {
-                    yield return webRequest.SendWebRequest();
+                    if (gameMode == GameMode.Twitch) TwitchManager.Instance.EnqueueChatMessage("Mod accepted :)");
 
-                    byte[] data = webRequest.downloadHandler.data;
-
-                    string tempFile = Path.GetTempFileName();
-                    File.WriteAllBytes(tempFile, data);
-
-                    string folderName = mod.ModName;
-                    foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
+                    bool isDone = false;
+                    ModsDownloadManager.DownloadMod(new ModsDownloadManager.ModGeneralInfo()
                     {
-                        folderName = folderName.Replace(invalidCharacter, '_');
-                    }
-
-                    string targetDirectory = ModsManager.Instance.ModFolderPath + folderName;
-                    if (Directory.Exists(targetDirectory))
+                        DisplayName = mod.ModName,
+                        UniqueID = mod.ModID,
+                        Version = 0
+                    }, false, delegate
                     {
-                        if (gameMode == GameMode.Twitch)
-                            TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
+                        isDone = true;
+                    });
 
-                        yield return 0;
-                        ShowNextInSuggestedModsQueue();
-                        yield break;
-                    }
-
-                    Directory.CreateDirectory(targetDirectory);
-                    FastZip fastZip = new FastZip();
-                    fastZip.ExtractZip(tempFile, targetDirectory, null);
-
-                    ModsManager.Instance.ReloadMods();
-
-                    File.Delete(tempFile);
+                    while (!isDone) yield return null;
                 }
+                else
+                {
+                    if (gameMode == GameMode.Twitch) TwitchManager.Instance.EnqueueChatMessage("Mod already installed! FailFish");
+                }
+
+                ShowNextInSuggestedModsQueue();
             }
-            if (clickedKey == KeyCode.PageDown)
+            else
             {
                 AudioManager.Instance.PlayClipGlobal(AudioLibrary.Instance.DogVoteDown);
                 ModSuggestionAnimator.Play("DenyMod");
@@ -224,7 +202,7 @@ namespace InternalModBot
                 DeniedModIds.Add(mod.ModID);
             }
 
-            yield return 0;
+            yield return null;
             ShowNextInSuggestedModsQueue();
         }
 
@@ -259,17 +237,17 @@ namespace InternalModBot
                 List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
 
                 string allMods = "";
-                for(int i = 0; i < mods.Count; i++)
+                for (int i = 0; i < mods.Count; i++)
                 {
                     Mod mod = mods[i];
 
                     allMods += mod.ModInfo.DisplayName;
 
-                    if (i != mods.Count-1)
+                    if (i != mods.Count - 1)
                     {
                         allMods += ", ";
                     }
-                    
+
                 }
 
                 TwitchManager.Instance.EnqueueChatMessage("MrDestructoid " + msg.userName + " Loaded mods: " + allMods + " MrDestructoid");

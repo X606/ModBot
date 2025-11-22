@@ -42,7 +42,7 @@ namespace InternalModBot
         public bool CanInteractWithSpecialData => ModBotSignInUI.HasSignedIn && _remoteModInfo != null && !string.IsNullOrEmpty(_remoteModInfo.UniqueID);
 
         private static ModsDownloadManager.ModDownloadInfo m_DownloadInfo;
-        public static bool IsDownloadingAMod(string id) => m_DownloadInfo != null && m_DownloadInfo.ModInformation != null && id.Equals(m_DownloadInfo.ModInformation.UniqueID);
+        public static bool IsDownloadingAMod(string id) => m_DownloadInfo != null && m_DownloadInfo.Info != null && id.Equals(m_DownloadInfo.Info.UniqueID);
 
         public ModInfoDisplay Init(ModInfo info)
         {
@@ -102,16 +102,31 @@ namespace InternalModBot
 
             _ = new Generic2ButtonDialogue("Do you want to install this mod?\n" + _remoteModInfo.DisplayName, "Yes", delegate
             {
-                ModsDownloadManager.DownloadMod(_remoteModInfo, onModDownloaded);
+                ModsDownloadManager.DownloadMod(new ModsDownloadManager.ModGeneralInfo()
+                {
+                    DisplayName = _remoteModInfo.DisplayName,
+                    UniqueID = _remoteModInfo.UniqueID,
+                    Version = _remoteModInfo.Version,
+                }, false, onModDownloaded);
                 m_DownloadInfo = ModsDownloadManager.GetDownloadingModInfo();
                 refreshModIsBeingDownloaded();
             }, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
         }
 
-        private void onModDownloaded()
+        private void onModDownloaded(ModsDownloadManager.DownloadModResult result)
         {
             if (!_initialized)
             {
+                return;
+            }
+
+            if (result.HasFailed())
+            {
+                ModsDownloadManager.ModGeneralInfo modInfo = result.Info;
+                _ = new Generic2ButtonDialogue($"Failed to download {modInfo.DisplayName}.\n{result.Error}",
+                    "Ok", null,
+                    "Ok", null);
+
                 return;
             }
 
@@ -172,7 +187,7 @@ namespace InternalModBot
             }
             _likesCount.text = _specialData["Likes"].ToObject<string>();
             _downloadCount.text = _specialData["Downloads"].ToObject<string>();
-            var isVerified = _specialData["Verified"].ToObject<bool>();
+            bool isVerified = _specialData["Verified"].ToObject<bool>();
             if (!isVerified)
             {
                 _notVerifiedIcon.gameObject.SetActive(true);
