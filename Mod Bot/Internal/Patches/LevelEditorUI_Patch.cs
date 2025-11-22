@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using ModLibrary;
 
 namespace InternalModBot
 {
@@ -9,7 +10,7 @@ namespace InternalModBot
         [HarmonyPatch("IsAnyDialogueOpen")]
         static bool IsAnyDialogueOpen_Prefix(ref bool __result)
         {
-            if (areAnyModdedDialogsOpen())
+            if (ModBotUIRoot.Instance.AreAnyMenusOpen())
             {
                 __result = true;
                 return false;
@@ -23,7 +24,7 @@ namespace InternalModBot
         [HarmonyPatch("AreAnyDialogsOpen")]
         static bool AreAnyDialogsOpen_Prefix(ref bool __result)
         {
-            if (areAnyModdedDialogsOpen())
+            if (ModBotUIRoot.Instance.AreAnyMenusOpen())
             {
                 __result = true;
                 return false;
@@ -32,15 +33,6 @@ namespace InternalModBot
             {
                 return true;
             }
-        }
-        private static bool areAnyModdedDialogsOpen()
-        {
-            ModBotUIRoot ui = ModBotUIRoot._instance;
-            return ui.Generic2ButtonDialogeUI.UIRoot.activeInHierarchy ||
-                ui.ModBotSignInUI.WindowObject.activeInHierarchy ||
-                ui.DownloadWindow.gameObject.activeInHierarchy ||
-                ui.ModOptionsWindow.WindowObject.activeInHierarchy ||
-                ui.ModList.gameObject.activeInHierarchy;
         }
     }
 }

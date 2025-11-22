@@ -1,6 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary;
-using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;

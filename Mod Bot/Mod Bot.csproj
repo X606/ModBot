@@ -50,6 +50,7 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
     <Compile Include="Internal\UI\GenericLoadingBar.cs" />
     <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
     <Compile Include="Internal\MultiplayerPlayerNameManager.cs" />
     <Compile Include="Internal\NameTagRefreshListener.cs" />
-    <Compile Include="Internal\RegisterShouldCursorBeEnabledDelegate.cs" />
     <Compile Include="Internal\StartupManager.cs" />
     <Compile Include="Internal\UI\ModOptionsWindow.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />

@@ -290,7 +290,7 @@ namespace InternalModBot
                     return true;
             }
 
-            return Generic2ButtonDialogue.IsWindowOpen;
+            return false;
         }
 
         /// <summary>

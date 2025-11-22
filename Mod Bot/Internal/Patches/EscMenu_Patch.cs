@@ -1,7 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace InternalModBot
 {
