@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -67,7 +68,7 @@ namespace InternalModBot
 
         public void ShowModsWithMatchingNames(string name)
         {
-            foreach(ModInfoDisplay ui in _displays)
+            foreach (ModInfoDisplay ui in _displays)
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
@@ -92,13 +93,15 @@ namespace InternalModBot
             int index = 1;
             foreach (ModInfo info in _modsHolder.Mods)
             {
+                if (info.Tags.Contains("vr")) continue;
+
                 yield return new WaitForSecondsRealtime(wait);
 
                 ModInfoDisplay v = Instantiate(_modInfoEntryPrefab, _modInfoEntriesContainer).gameObject.AddComponent<ModInfoDisplay>().Init(info);
                 _displays.Add(v);
 
                 index++;
-                if(index >= 9)
+                if (index >= 9)
                 {
                     wait = 0.1f;
                 }
@@ -128,7 +131,7 @@ namespace InternalModBot
         {
             Hide();
             ModBotUIRoot.Instance.LoadingBar.SetActive(false);
-            if(ModBotUIRoot.Instance.ModList.gameObject.activeInHierarchy) _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
+            if (ModBotUIRoot.Instance.ModList.gameObject.activeInHierarchy) _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
         }
 
         public void OpenWebsite()
@@ -139,7 +142,7 @@ namespace InternalModBot
         public void OpenInformationWindow(ModInfo info, Dictionary<string, JToken> specialData, Texture previewImage)
         {
             _informationWindow.gameObject.SetActive(info != null && specialData != null);
-            if(info == null || specialData == null)
+            if (info == null || specialData == null)
             {
                 return;
             }
