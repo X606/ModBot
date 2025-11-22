@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using ModLibrary;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
@@ -35,17 +37,17 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Download a mod using its info
+        /// Download the mod from the server
         /// </summary>
         /// <param name="info"></param>
         /// <param name="update"></param>
         /// <param name="callback"></param>
         internal static void DownloadMod(ModGeneralInfo info, bool update, Action<DownloadModResult> callback)
         {
-            StaticCoroutineRunner.StartStaticCoroutine(downloadModFile(info, update, callback));
+            StaticCoroutineRunner.StartStaticCoroutine(downloadModCoroutine(info, update, callback));
         }
 
-        private static IEnumerator downloadModFile(ModGeneralInfo info, bool update, Action<DownloadModResult> callback)
+        private static IEnumerator downloadModCoroutine(ModGeneralInfo info, bool update, Action<DownloadModResult> callback)
         {
             _currentlyDownloadingMod = new ModDownloadInfo
             {
@@ -123,16 +125,15 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Download all mod infos from server
+        /// Download all mod infos from the server
         /// </summary>
         /// <param name="callback"></param>
-        public static void DownloadModsData(Action<GetModInfosResult> callback)
+        public static void GetModInfos(Action<GetModInfosResult> callback)
         {
-            if (IsDownloadingAMod()) return;
-            StaticCoroutineRunner.StartStaticCoroutine(downloadModData(callback));
+            StaticCoroutineRunner.StartStaticCoroutine(getModInfosCoroutine(callback));
         }
 
-        private static IEnumerator downloadModData(Action<GetModInfosResult> callback)
+        private static IEnumerator getModInfosCoroutine(Action<GetModInfosResult> callback)
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
             {
@@ -158,6 +159,117 @@ namespace InternalModBot
             }
         }
 
+        /// <summary>
+        /// Find updates for mods from the list
+        /// </summary>
+        /// <param name="installedMods"></param>
+        /// <param name="callback"></param>
+        internal static void CheckForUpdates(List<LoadedModInfo> installedMods, Action<CheckForModUpdatesResult> callback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(checkForUpdatesCoroutine(installedMods, callback));
+        }
+
+        private static IEnumerator checkForUpdatesCoroutine(List<LoadedModInfo> installedMods, Action<CheckForModUpdatesResult> callback)
+        {
+            GetModInfosResult modInfosResult = null;
+            GetModInfos(delegate (GetModInfosResult result)
+            {
+                modInfosResult = result;
+            });
+
+            while (modInfosResult == null) yield return null;
+
+            if (modInfosResult.HasFailed())
+            {
+                if (callback != null) callback(new CheckForModUpdatesResult()
+                {
+                    Error = modInfosResult.Error
+                });
+                yield break;
+            }
+
+            List<ModPair> pairs = new List<ModPair>();
+            foreach (LoadedModInfo localMod in installedMods)
+            {
+                ModInfo localModInfo = localMod.OwnerModInfo;
+                if (localModInfo == null) continue;
+
+                foreach (ModInfo remoteModInfo in modInfosResult.Holder.Value.Mods)
+                {
+                    if (remoteModInfo.UniqueID == localModInfo.UniqueID && remoteModInfo.Version > localModInfo.Version)
+                    {
+                        pairs.Add(new ModPair()
+                        {
+                            Old = localModInfo,
+                            New = remoteModInfo
+                        });
+                    }
+                }
+            }
+
+            if (callback != null) callback(new CheckForModUpdatesResult()
+            {
+                Updates = pairs
+            });
+        }
+
+        /// <summary>
+        /// Update mods from the list
+        /// </summary>
+        /// <param name="mods"></param>
+        /// <param name="callback"></param>
+        internal static void UpdateMods(List<ModPair> mods, Action<UpdateModsCallback> callback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(updateModsCoroutine(mods, callback));
+        }
+
+        internal static IEnumerator updateModsCoroutine(List<ModPair> mods, Action<UpdateModsCallback> callback)
+        {
+            UpdateModsCallback updateModsCallback = new UpdateModsCallback();
+
+            foreach (ModPair pair in mods)
+            {
+                ModInfo newModInfo = pair.New;
+                DownloadModResult downloadModResult = null;
+                updateModsCallback.ProcessingModInfo = newModInfo;
+                updateModsCallback.Progress = 0f;
+                updateModsCallback.Error = null;
+
+                DownloadMod(new ModGeneralInfo()
+                {
+                    DisplayName = newModInfo.DisplayName,
+                    UniqueID = newModInfo.UniqueID,
+                    Version = newModInfo.Version,
+                }, true, delegate (DownloadModResult result)
+                {
+                    if (result.HasFailed())
+                    {
+                        updateModsCallback.Progress = 1f;
+                        updateModsCallback.Error = result.Error;
+                        if (callback != null) callback(updateModsCallback);
+                    }
+                });
+
+                while (downloadModResult == null)
+                {
+                    updateModsCallback.Progress = _currentlyDownloadingMod == null ? 0f : _currentlyDownloadingMod.DownloadProgress;
+                    if (callback != null) callback(updateModsCallback);
+                    yield return null;
+                }
+            }
+
+            updateModsCallback.ProcessingModInfo = null;
+            updateModsCallback.Progress = 1f;
+            updateModsCallback.Error = null;
+            updateModsCallback.HasUpdatedAllMods = true;
+            if (callback != null) callback(updateModsCallback);
+
+            yield break;
+        }
+
+        /// <summary>
+        /// Most important information about mod
+        /// </summary>
         public class ModGeneralInfo
         {
             public string DisplayName;
@@ -165,12 +277,26 @@ namespace InternalModBot
             public uint Version;
         }
 
+        /// <summary>
+        /// Mod download information
+        /// </summary>
         public class ModDownloadInfo
         {
             public ModGeneralInfo Info;
             public float DownloadProgress;
         }
 
+        /// <summary>
+        /// A pair of 2 mod infos
+        /// </summary>
+        public class ModPair
+        {
+            public ModInfo Old, New;
+        }
+
+        /// <summary>
+        /// Used by <see cref="GetModInfos(Action{GetModInfosResult})"/>
+        /// </summary>
         public class GetModInfosResult
         {
             public ModsHolder? Holder;
@@ -179,12 +305,40 @@ namespace InternalModBot
             public bool HasFailed() => !string.IsNullOrEmpty(Error);
         }
 
+        /// <summary>
+        /// Used by <see cref="DownloadMod(ModGeneralInfo, bool, Action{DownloadModResult})"/>
+        /// </summary>
         public class DownloadModResult
         {
             public ModGeneralInfo Info;
             public string Error;
 
             public bool HasFailed() => !string.IsNullOrEmpty(Error);
+        }
+
+        /// <summary>
+        /// Used by <see cref="CheckForUpdates(List{LoadedModInfo}, Action{CheckForModUpdatesResult})"/>
+        /// </summary>
+        public class CheckForModUpdatesResult
+        {
+            public List<ModPair> Updates;
+            public string Error;
+
+            public bool HasFailed() => !string.IsNullOrEmpty(Error);
+        }
+
+        /// <summary>
+        /// Used by <see cref="UpdateMods(List{ModPair}, Action{UpdateModsCallback})"/>
+        /// </summary>
+        public class UpdateModsCallback
+        {
+            public ModInfo ProcessingModInfo;
+            public float Progress;
+            public string Error;
+
+            public bool HasUpdatedAllMods;
+
+            public bool HasModDownloadFailed() => !string.IsNullOrEmpty(Error);
         }
     }
 }
