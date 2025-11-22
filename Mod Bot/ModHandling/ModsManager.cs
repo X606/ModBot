@@ -33,7 +33,6 @@ namespace InternalModBot
         public const string MOD_FOLDER_NAME = "mods";
 
         private readonly List<LoadedModInfo> _loadedMods = new List<LoadedModInfo>();
-        private static readonly Dictionary<string, uint> _firstLoadedVersionOfMod = new Dictionary<string, uint>(); // this keeps track of what version of mods have been loaded, this is to make sure that if a new version of a mod gets loaded the user get alerted that they have to restart
 
         private static readonly Dictionary<string, Texture2D> _cachedModImages = new Dictionary<string, Texture2D>();
         private static readonly List<string> _processingModImages = new List<string>();
@@ -65,47 +64,6 @@ namespace InternalModBot
             PassOnMod.GlobalUpdate();
 
             ThreadedDelegateScheduler.Update();
-        }
-
-        private IEnumerator showErrorsCoroutine(List<ModLoadError> errors)
-        {
-            for (int i = 0; i < errors.Count; i++)
-            {
-                showError(errors[i]);
-
-                while (Generic2ButtonDialogue.IsWindowOpen) yield return null;
-            }
-        }
-
-        private void showError(ModLoadError error)
-        {
-            ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
-
-            if (error.Info == null)
-            {
-                if (!string.IsNullOrEmpty(error.FolderPath) && Directory.Exists(error.FolderPath))
-                {
-                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "View mod's folder", delegate
-                    {
-                        _ = Process.Start(error.FolderPath);
-                    });
-                }
-                else
-                {
-                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "Ok", null);
-                }
-            }
-            else
-            {
-                new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}\nDo you want to disable the mod?", "Yes", delegate
-                {
-                    try
-                    {
-                        error.Info.IsModEnabled = false;
-                    }
-                    catch { }
-                }, "No", null);
-            }
         }
 
         /// <summary>
@@ -179,14 +137,11 @@ namespace InternalModBot
             {
                 if (loadOnlyNewMods && !newMods.Contains(folderPath)) continue;
 
-                if (!loadModInfo(folderPath, out ModInfo modInfo, out ModLoadError error))
+                if (!loadModInfo(folderPath, ref modsToLoad, out ModInfo modInfo, out ModLoadError error))
                 {
-                    errors.Add(error);
+                    if (error != null) errors.Add(error);
                     continue;
                 }
-
-                if (modInfo == null)
-                    continue;
 
                 if (hasModAlreadyBeenLoaded(modInfo))
                 {
@@ -275,7 +230,7 @@ namespace InternalModBot
             return errors.Count == 0;
         }
 
-        private bool loadModInfo(string folderPath, out ModInfo modInfo, out ModLoadError error)
+        private bool loadModInfo(string folderPath, ref List<ModInfo> modsToLoad, out ModInfo modInfo, out ModLoadError error)
         {
             if (folderPath.EndsWith("/") || folderPath.EndsWith("\\"))
                 folderPath = folderPath.Remove(folderPath.Length - 1);
@@ -293,7 +248,7 @@ namespace InternalModBot
                 //error = new ModLoadError(folderPath, "Could not find the \"" + MOD_INFO_FILE_NAME + "\" file");
                 error = null; // if the folder doesnt have a mod info file we can just treat it as some random folder we don't care about.
                 modInfo = null;
-                return true;
+                return false;
             }
 
             string modInfoJson = File.ReadAllText(modInfoFilePath);
@@ -316,28 +271,26 @@ namespace InternalModBot
             modInfo.FixFieldValues();
             modInfo.FolderPath = folderPath + "/";
 
-            if (_firstLoadedVersionOfMod.ContainsKey(modInfo.UniqueID))
+            bool newVersionDetected = false;
+            ModInfo prevVersion = null;
+            foreach (ModInfo mi in modsToLoad)
             {
-                if (_firstLoadedVersionOfMod[modInfo.UniqueID] != modInfo.Version)
+                if (modInfo.UniqueID != mi.UniqueID) continue;
+
+                if (modInfo.Version > mi.Version)
                 {
-                    Generic2ButtonDialogue generic2ButtonDialogue = new Generic2ButtonDialogue("Some other version of the " + modInfo.DisplayName + " mod already been loaded, you will need to restart the game for the new version to work. Do you want to restart now?",
-                        "No, not right now.", delegate
-                        {
-
-                        },
-                        "Yes, restart now", delegate
-                        {
-                            Application.Quit();
-                        });
-
-                    generic2ButtonDialogue.SetColorOfFirstButton(Color.red);
-                    generic2ButtonDialogue.SetColorOfSecondButton(Color.green);
+                    newVersionDetected = true;
+                    prevVersion = mi;
+                    break;
+                }
+                else if (modInfo.Version <= mi.Version)
+                {
+                    error = null;
+                    return false;
                 }
             }
-            else
-            {
-                _firstLoadedVersionOfMod.Add(modInfo.UniqueID, modInfo.Version);
-            }
+
+            if (newVersionDetected) modsToLoad.Remove(prevVersion);
 
             error = null;
             return true;
@@ -416,7 +369,7 @@ namespace InternalModBot
             loadedMod.SourceAssembly = loadedAssembly;
 
             LoadedModInfo loadedModInfo = GetLoadedModWithID(modInfo.UniqueID);
-            if(loadedModInfo == null)
+            if (loadedModInfo == null)
             {
                 loadedModInfo = new LoadedModInfo(loadedMod, modInfo);
                 _loadedMods.Add(loadedModInfo);
@@ -510,6 +463,47 @@ namespace InternalModBot
             catch (Exception exception)
             {
                 throw new Exception("Exception in OnModEnabled for \"" + mod.OwnerModInfo.DisplayName + "\" (ID: " + mod.OwnerModInfo.UniqueID + ")", exception);
+            }
+        }
+
+        private IEnumerator showErrorsCoroutine(List<ModLoadError> errors)
+        {
+            for (int i = 0; i < errors.Count; i++)
+            {
+                showError(errors[i]);
+
+                while (Generic2ButtonDialogue.IsWindowOpen) yield return null;
+            }
+        }
+
+        private void showError(ModLoadError error)
+        {
+            ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
+
+            if (error.Info == null)
+            {
+                if (!string.IsNullOrEmpty(error.FolderPath) && Directory.Exists(error.FolderPath))
+                {
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "View mod's folder", delegate
+                    {
+                        _ = Process.Start(error.FolderPath);
+                    });
+                }
+                else
+                {
+                    new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}", "Ok", null, "Ok", null);
+                }
+            }
+            else
+            {
+                new Generic2ButtonDialogue($"Mod \"{error.ModName.AddColor(color)}\" could not be loaded. Error:\n{error.ErrorMessage}\nDo you want to disable the mod?", "Yes", delegate
+                {
+                    try
+                    {
+                        error.Info.IsModEnabled = false;
+                    }
+                    catch { }
+                }, "No", null);
             }
         }
 
