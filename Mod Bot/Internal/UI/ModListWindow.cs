@@ -10,6 +10,9 @@ namespace InternalModBot
 {
     public class ModListWindow : MonoBehaviour
     {
+        private static bool _hasCheckedForUpdates;
+        private static List<ModsDownloadManager.ModPair> _updates = new List<ModsDownloadManager.ModPair>();
+
         private Transform _container;
 
         private Button _xButton;
@@ -29,6 +32,12 @@ namespace InternalModBot
         private bool _isPopulatingList;
 
         private bool _hasEverPopulatedList;
+
+        private bool _isCheckingForUpdates;
+
+        private bool _isUpdatingMods;
+
+        private bool _shouldShowRestartMessage;
 
         public void Init()
         {
@@ -68,10 +77,22 @@ namespace InternalModBot
                 ReloadList();
                 _hasEverPopulatedList = true;
             }
+
+            if (!_hasCheckedForUpdates) checkForUpdates();
         }
 
         public void Hide()
         {
+            if (_isUpdatingMods) return;
+
+            if (_shouldShowRestartMessage)
+            {
+                _shouldShowRestartMessage = false;
+                _ = new Generic2ButtonDialogue($"Restart the game to finish updating mods.",
+                    "Later", null,
+                    "Restart now", Application.Quit);
+            }
+
             base.gameObject.SetActive(false);
             GameUIRoot.Instance.SetEscMenuDisabled(false);
 
@@ -81,6 +102,12 @@ namespace InternalModBot
             _hasEverPopulatedList = !_isPopulatingList;
             setElementsInteractable(true);
             if (!string.IsNullOrEmpty(_searchBox.text)) _searchBox.text = string.Empty;
+        }
+
+        public void RefreshDisplays()
+        {
+            foreach (LocalModInfoDisplay display in _instantiatedDisplays)
+                display.Refresh();
         }
 
         public void ReloadList()
@@ -191,7 +218,97 @@ namespace InternalModBot
                 return;
             }
 
-            label.text = $"{list.Count} mods installed, {ModsManager.Instance.GetAllLoadedActiveMods()?.Count} enabled";
+            string updatesString;
+            if (_isCheckingForUpdates)
+            {
+                updatesString = ", checking for updates...";
+            }
+            else
+            {
+                if (_updates == null || _updates.Count == 0)
+                {
+                    updatesString = string.Empty;
+                }
+                else
+                {
+                    updatesString = $", {_updates.Count} updates available".AddColor(Color.yellow);
+                }
+            }
+
+            label.text = $"{list.Count} mods installed, {ModsManager.Instance.GetAllLoadedActiveMods()?.Count} enabled{updatesString}";
+        }
+
+        public bool DoesModHaveUpdate(ModInfo modInfo, out ModInfo newVersion)
+        {
+            newVersion = null;
+            if (_updates == null || _updates.Count == 0) return false;
+
+            for (int i = 0; i < _updates.Count; i++)
+                if (_updates[i].Old.UniqueID == modInfo.UniqueID)
+                {
+                    newVersion = _updates[i].New;
+                    return true;
+                }
+
+            return false;
+        }
+
+        public void OnUpdatedMod(ModInfo modInfo)
+        {
+            ModsDownloadManager.ModPair modPair = null;
+            foreach (ModsDownloadManager.ModPair pair in _updates)
+                if (pair.Old.UniqueID == modInfo.UniqueID)
+                {
+                    modPair = pair;
+                    modInfo.Version = pair.New.Version; // set fake version to avoid updating this mod again
+                    break;
+                }
+
+            if (modPair != null)
+                _updates.Remove(modPair);
+
+            _shouldShowRestartMessage = true;
+        }
+
+        public void SetIsUpdatingMods(bool value)
+        {
+            _isUpdatingMods = value;
+            setElementsInteractable(!value);
+            RefreshDisplays();
+
+            if (value)
+            {
+                ModBotUIRoot.Instance.LoadingBar.SetActive("Updating...", 0f);
+            }
+            else
+            {
+                ModBotUIRoot.Instance.LoadingBar.SetActive(false);
+            }
+        }
+
+        public bool GetIsUpdatingMods()
+        {
+            return _isUpdatingMods;
+        }
+
+        private void checkForUpdates()
+        {
+            if (_isCheckingForUpdates) return;
+
+            _isCheckingForUpdates = true;
+            RefreshModsInfoLabel();
+            ModsDownloadManager.CheckForUpdates(ModsManager.Instance.GetAllMods(), onCheckedForUpdates);
+        }
+
+        private void onCheckedForUpdates(ModsDownloadManager.CheckForModUpdatesResult result)
+        {
+            if (!this) return;
+
+            _updates = result.Updates;
+            _isCheckingForUpdates = false;
+            _hasCheckedForUpdates = true;
+            RefreshModsInfoLabel();
+            RefreshDisplays();
         }
 
         private void setElementsInteractable(bool value)
@@ -200,6 +317,15 @@ namespace InternalModBot
             _reloadListButton.interactable = value;
             _searchBox.interactable = value;
             _sortDropdown.interactable = value;
+        }
+
+        private void Update()
+        {
+            if (_isUpdatingMods)
+            {
+                ModsDownloadManager.ModDownloadInfo downloadInfo = ModsDownloadManager.GetDownloadingModInfo();
+                ModBotUIRoot.Instance.LoadingBar.SetProgress(downloadInfo == null ? 0f : downloadInfo.DownloadProgress);
+            }
         }
 
         public void OnGetMoreModsButtonClicked()

@@ -189,13 +189,13 @@ namespace InternalModBot
             }
 
             List<ModPair> pairs = new List<ModPair>();
-            foreach (LoadedModInfo localMod in installedMods)
+            foreach (ModInfo remoteModInfo in modInfosResult.Holder.Value.Mods)
             {
-                ModInfo localModInfo = localMod.OwnerModInfo;
-                if (localModInfo == null) continue;
-
-                foreach (ModInfo remoteModInfo in modInfosResult.Holder.Value.Mods)
+                foreach (LoadedModInfo localMod in installedMods)
                 {
+                    ModInfo localModInfo = localMod.OwnerModInfo;
+                    if (localModInfo == null) continue;
+
                     if (remoteModInfo.UniqueID == localModInfo.UniqueID && remoteModInfo.Version > localModInfo.Version)
                     {
                         pairs.Add(new ModPair()

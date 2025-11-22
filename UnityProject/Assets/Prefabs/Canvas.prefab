@@ -3563,7 +3563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23157895, g: 1, b: 0.43684205, a: 1}
+  m_Color: {r: 0, g: 0.9, b: 0.23877561, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6666,7 +6666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.34900004, g: 0.66257054, b: 1, a: 1}
+  m_Color: {r: 0.19999999, g: 0.58554226, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -8468,9 +8468,9 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 8, y: 0}
-  m_SizeDelta: {x: 300, y: 0}
+  m_SizeDelta: {x: -16, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5525837886200810511
 CanvasRenderer:
@@ -8509,7 +8509,7 @@ MonoBehaviour:
     m_Alignment: 3
     m_AlignByGeometry: 1
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 100 mods installed, 100 enabled
@@ -13455,7 +13455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.936709, g: 0.4261604, b: 1, a: 1}
+  m_Color: {r: 0.9123287, g: 0.19999999, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

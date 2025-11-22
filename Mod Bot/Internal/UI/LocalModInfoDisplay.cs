@@ -23,6 +23,7 @@ namespace InternalModBot
         private Button _optionsButton;
         private Button _errorsButton;
         private Button _shareButton;
+        private Button _updateButton;
 
         private RawImage _modImage;
         private GameObject _modImageObject;
@@ -74,6 +75,8 @@ namespace InternalModBot
             _errorsButton.onClick.AddListener(OnErrorsButtonClicked);
             _shareButton = moddedObject.GetObject<Button>(6);
             _shareButton.onClick.AddListener(OnShareButtonClicked);
+            _updateButton = moddedObject.GetObject<Button>(15);
+            _updateButton.onClick.AddListener(OnUpdateButtonClicked);
 
             _descriptionHolderImage = moddedObject.GetObject<Image>(13);
             _descriptionHolderObject = _descriptionHolderImage.gameObject;
@@ -98,17 +101,20 @@ namespace InternalModBot
         public void Refresh()
         {
             LoadedModInfo modInfo = loadedModInfo;
+            ModListWindow modListWindow = ModBotUIRoot.Instance.ModList;
             bool isEnabled = loadedModInfo.IsEnabled;
             bool isMultiplayer = GameModeManager.IsMultiplayer();
             bool hasSettings = isEnabled && modInfo.ModReference != null && modInfo.ModReference.ImplementsSettingsWindow();
 
-            SetColor(base.transform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
-            SetColor(_toggleButton.transform, isEnabled ? TOGGLE_ENABLED_COLOR : TOGGLE_DISABLED_COLOR);
-            SetColor(_descriptionHolderTransform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
+            setColor(base.transform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
+            setColor(_toggleButton.transform, isEnabled ? TOGGLE_ENABLED_COLOR : TOGGLE_DISABLED_COLOR);
+            setColor(_descriptionHolderTransform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
 
             _optionsButtonText.color = hasSettings ? Color.white : Color.gray;
 
             //_optionsButton.gameObject.SetActive(isEnabled);
+            _updateButton.gameObject.SetActive(GameModeManager.IsOnTitleScreen() && modListWindow.DoesModHaveUpdate(modInfo.OwnerModInfo, out _));
+            _updateButton.interactable = !modListWindow.GetIsUpdatingMods();
             _optionsButton.interactable = hasSettings;
             _descriptionHolderObject.SetActive(true);
             _errorsButton.gameObject.SetActive(false);
@@ -127,7 +133,7 @@ namespace InternalModBot
             if (hasImage) ModsManager.Instance.GetModImage(modInfo, onLoadedImage);
         }
 
-        public static void SetColor(Transform transform, string hexColor)
+        private void setColor(Transform transform, string hexColor)
         {
             ColorUtility.TryParseHtmlString(hexColor, out Color color);
             Graphic graphic = transform.GetComponent<Graphic>();
@@ -213,7 +219,7 @@ namespace InternalModBot
                         }
                         setModActive(loadedModInfo, true);
 
-                        ModBotUIRoot.Instance.ModList.ReloadList();
+                        ModBotUIRoot.Instance.ModList.RefreshDisplays();
                     }, "No", null);
 
                     return;
@@ -243,6 +249,42 @@ namespace InternalModBot
                 {
                     ModSharingManager.SendModToAllModBotClients(modInfo.UniqueID);
                 });
+        }
+
+        public void OnUpdateButtonClicked()
+        {
+            ModInfo modInfo = loadedModInfo.OwnerModInfo;
+            ModListWindow modListWindow = ModBotUIRoot.Instance.ModList;
+            if (!modListWindow.DoesModHaveUpdate(modInfo, out ModInfo newInfo)) return;
+
+            ColorUtility.TryParseHtmlString(VERSION_COLOR, out Color color);
+
+            new Generic2ButtonDialogue($"Update {newInfo.DisplayName.AddColor(color)}?", "Yes", delegate
+            {
+                modListWindow.SetIsUpdatingMods(true);
+                ModsDownloadManager.DownloadMod(new ModsDownloadManager.ModGeneralInfo()
+                {
+                    DisplayName = newInfo.DisplayName,
+                    UniqueID = newInfo.UniqueID,
+                    Version = newInfo.Version
+                }, true, delegate (ModsDownloadManager.DownloadModResult downloadModResult)
+                {
+                    if (!modListWindow) return;
+
+                    modListWindow.SetIsUpdatingMods(false);
+
+                    if (downloadModResult.HasFailed())
+                    {
+                        _ = new Generic2ButtonDialogue($"Failed to update {newInfo.DisplayName}.\n{downloadModResult.Error}",
+                            "Ok", null,
+                            "Ok", null);
+
+                        return;
+                    }
+
+                    modListWindow.OnUpdatedMod(modInfo);
+                });
+            }, "No", null);
         }
 
         public void OnCopyIDButtonClicked()
