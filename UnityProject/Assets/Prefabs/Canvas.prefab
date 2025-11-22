@@ -5530,7 +5530,7 @@ GameObject:
   - component: {fileID: 5808014366419555880}
   - component: {fileID: 780527668580956205}
   m_Layer: 5
-  m_Name: SortByLabel
+  m_Name: SortLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5552,7 +5552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -362, y: 0}
+  m_AnchoredPosition: {x: -347, y: 0}
   m_SizeDelta: {x: 75, y: -10}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &7517987510898338940
@@ -5595,7 +5595,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Sort by:'
+  m_Text: 'Sort:'
 --- !u!114 &780527668580956205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6035,8 +6035,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 15}
-  m_SizeDelta: {x: -30, y: 15}
+  m_AnchoredPosition: {x: 0, y: 20}
+  m_SizeDelta: {x: -30, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1969883639014788894
 MonoBehaviour:
@@ -8735,7 +8735,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -210, y: 0}
-  m_SizeDelta: {x: 150, y: -10}
+  m_SizeDelta: {x: 135, y: -10}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &316115940032459179
 CanvasRenderer:
@@ -8819,16 +8819,20 @@ MonoBehaviour:
   m_CaptionImage: {fileID: 0}
   m_ItemText: {fileID: 3235810124288550174}
   m_ItemImage: {fileID: 0}
-  m_Value: 0
+  m_Value: 5
   m_Options:
     m_Options:
-    - m_Text: Alphabet
+    - m_Text: A-Z
       m_Image: {fileID: 0}
-    - m_Text: Version
+    - m_Text: Z-A
+      m_Image: {fileID: 0}
+    - m_Text: Enabled
       m_Image: {fileID: 0}
     - m_Text: Author
       m_Image: {fileID: 0}
-    - m_Text: Enabled
+    - m_Text: Version
+      m_Image: {fileID: 0}
+    - m_Text: Load order
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10200,7 +10204,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -35}
-  m_SizeDelta: {x: -132, y: 30}
+  m_SizeDelta: {x: -30, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8651587201362018560
 CanvasRenderer:
@@ -10235,7 +10239,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 24
+    m_MaxSize: 30
     m_Alignment: 7
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -13686,11 +13690,11 @@ RectTransform:
   m_Father: {fileID: 3923752127370759435}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 5}
   m_SizeDelta: {x: -20, y: 20}
-  m_Pivot: {x: 0.5, y: 1}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &8563152084753756619
 GameObject:
   m_ObjectHideFlags: 0
@@ -14422,8 +14426,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -34}
-  m_SizeDelta: {x: -20, y: -78}
+  m_AnchoredPosition: {x: 0, y: -11}
+  m_SizeDelta: {x: -20, y: -82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1807647691190273957
 MonoBehaviour:
@@ -14490,7 +14494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 0}
+  m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: 25, y: 25}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &8040908763543587893
@@ -14846,8 +14850,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -18.5, y: 0}
-  m_SizeDelta: {x: -53, y: 0}
+  m_AnchoredPosition: {x: -11, y: 0}
+  m_SizeDelta: {x: -38, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5422824877316166956
 CanvasRenderer:
@@ -14889,7 +14893,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Alphabet
+  m_Text: Load order
 --- !u!114 &5234496163534879499
 MonoBehaviour:
   m_ObjectHideFlags: 0

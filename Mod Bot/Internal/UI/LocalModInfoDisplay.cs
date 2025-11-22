@@ -13,8 +13,8 @@ namespace InternalModBot
         public const string BG_ENABLED_COLOR = "#373C43";
         public const string BG_DISABLED_COLOR = "#801500";
 
-        public const string TOGGLE_ENABLED_COLOR = "#FF6666";
-        public const string TOGGLE_DISABLED_COLOR = "#34FF37";
+        public const string TOGGLE_ENABLED_COLOR = "#FF3333";
+        public const string TOGGLE_DISABLED_COLOR = "#14CC17";
 
         public const string AUTHOR_COLOR = "#5ABAFF";
         public const string VERSION_COLOR = "#FF9500";

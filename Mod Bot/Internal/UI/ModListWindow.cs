@@ -46,6 +46,7 @@ namespace InternalModBot
             _searchBox = moddedObject.GetObject<InputField>(2);
             _searchBox.onValueChanged.AddListener(OnSearchBoxValueChanged);
             _sortDropdown = moddedObject.GetObject<Dropdown>(6);
+            _sortDropdown.value = 0;
             _sortDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
 
             _container = moddedObject.GetObject<Transform>(5);
@@ -106,25 +107,26 @@ namespace InternalModBot
             int index = 0;
             List<LoadedModInfo> mods = ModsManager.Instance.GetAllMods();
             List<LoadedModInfo> orderedMods;
-            if (_sortType == 0)
+            switch (_sortType)
             {
-                orderedMods = mods.OrderBy(mod => mod.OwnerModInfo.DisplayName).ToList();
-            }
-            else if (_sortType == 1)
-            {
-                orderedMods = mods.OrderBy(mod => -mod.OwnerModInfo.Version).ToList();
-            }
-            else if (_sortType == 2)
-            {
-                orderedMods = mods.OrderBy(mod => mod.OwnerModInfo.Author).ToList();
-            }
-            else if (_sortType == 3)
-            {
-                orderedMods = mods.OrderBy(mod => !mod.IsEnabled).ToList();
-            }
-            else
-            {
-                orderedMods = mods;
+                case 0:
+                    orderedMods = mods.OrderBy(mod => mod.OwnerModInfo.DisplayName).ToList();
+                    break;
+                case 1:
+                    orderedMods = mods.OrderByDescending(mod => mod.OwnerModInfo.DisplayName).ToList();
+                    break;
+                case 2:
+                    orderedMods = mods.OrderBy(mod => !mod.IsEnabled).ToList();
+                    break;
+                case 3:
+                    orderedMods = mods.OrderBy(mod => mod.OwnerModInfo.Author).ToList();
+                    break;
+                case 4:
+                    orderedMods = mods.OrderBy(mod => -mod.OwnerModInfo.Version).ToList();
+                    break;
+                default:
+                    orderedMods = mods;
+                    break;
             }
 
             long totalMs = 0;
