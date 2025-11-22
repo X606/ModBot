@@ -278,6 +278,10 @@ namespace InternalModBot
 
             if (state)
             {
+                ErrorManager.Instance._hasCrashed = false;
+                TimeManager.Instance.OnGameUnPaused();
+                GameUIRoot.Instance.ErrorWindow.Hide();
+
                 debug.Log(LocalizationManager.Instance.GetTranslatedString("ignoreallcrashes_on"), Color.red);
             }
             else
