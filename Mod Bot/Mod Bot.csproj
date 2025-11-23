@@ -55,7 +55,6 @@
     <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
     <Compile Include="Internal\UI\ModInfoDisplay.cs" />
-    <Compile Include="Internal\ModBotWebsiteInteraction.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
     <Compile Include="Internal\ModdedTwitchManager.cs" />
     <Compile Include="Internal\Patches\Character_Patch.cs" />

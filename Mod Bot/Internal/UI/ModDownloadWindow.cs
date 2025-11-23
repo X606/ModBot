@@ -1,4 +1,5 @@
-﻿using ModLibrary;
+﻿using BestHTTP.SocketIO;
+using ModLibrary;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,7 +28,6 @@ namespace InternalModBot
 
         private readonly List<ModInfoDisplay> _displays = new List<ModInfoDisplay>();
 
-        private UnityWebRequest _webRequest;
         private ModsHolder _modsHolder;
 
         internal void Init()
@@ -93,7 +93,7 @@ namespace InternalModBot
             int index = 1;
             foreach (ModInfo info in _modsHolder.Mods)
             {
-                if (info.Tags.Contains("vr")) continue;
+                if (info.Tags != null && info.Tags.Contains("vr")) continue;
 
                 yield return new WaitForSecondsRealtime(wait);
 
@@ -114,24 +114,22 @@ namespace InternalModBot
             _displays.Clear();
             TransformUtils.DestroyAllChildren(_modInfoEntriesContainer);
             ModBotUIRoot.Instance.LoadingBar.SetActive("Loading mods", 0f);
-            ModBotWebsiteInteraction.RequestAllModInfos(delegate (UnityWebRequest r)
-            {
-                _webRequest = r;
-            }, OnLoadedModInfos, OnFailedToLoadModInfos);
+            ModsDownloadManager.GetModInfos(OnGotModInfos);
         }
 
-        internal void OnLoadedModInfos(ModsHolder? holder)
+        internal void OnGotModInfos(ModsDownloadManager.GetModInfosResult getModInfosResult)
         {
-            _modsHolder = holder.Value;
+            if (getModInfosResult.HasFailed())
+            {
+                Hide();
+                ModBotUIRoot.Instance.LoadingBar.SetActive(false);
+                if (ModBotUIRoot.Instance.ModList.gameObject.activeInHierarchy) _ = new Generic2ButtonDialogue(getModInfosResult.Error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
+                return;
+            }
+
+            _modsHolder = getModInfosResult.Holder.Value;
             ModBotUIRoot.Instance.LoadingBar.SetActive(false);
             PopulateModsHolder();
-        }
-
-        internal void OnFailedToLoadModInfos(string error)
-        {
-            Hide();
-            ModBotUIRoot.Instance.LoadingBar.SetActive(false);
-            if (ModBotUIRoot.Instance.ModList.gameObject.activeInHierarchy) _ = new Generic2ButtonDialogue(error, "Ok", null, "Visit Website", ModBotUIRoot.Instance.DownloadWindow.OpenWebsite);
         }
 
         public void OpenWebsite()
