@@ -281,6 +281,7 @@ namespace InternalModBot
                 ErrorManager.Instance._hasCrashed = false;
                 TimeManager.Instance.OnGameUnPaused();
                 GameUIRoot.Instance.ErrorWindow.Hide();
+                GameUIRoot.Instance.RefreshCursorEnabled();
 
                 debug.Log(LocalizationManager.Instance.GetTranslatedString("ignoreallcrashes_on"), Color.red);
             }
