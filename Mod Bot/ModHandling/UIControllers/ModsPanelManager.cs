@@ -1,12 +1,4 @@
-﻿using ModLibrary;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine;
-using UnityEngine.Networking;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace InternalModBot
@@ -16,13 +8,6 @@ namespace InternalModBot
     /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
-        /// <summary>
-        /// The color used for disabled mods
-        /// </summary>
-        public readonly Color DisabledModColor = new Color32(123, 14, 14, 255);
-
-        private Action _actionOnModsPanelClose = null;
-
         private void Start()
         {
             Vector3 pauseScreenButtonOffset = new Vector3(0f, 1.2f, 0f);
