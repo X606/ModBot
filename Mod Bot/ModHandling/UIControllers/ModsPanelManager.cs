@@ -21,14 +21,21 @@ namespace InternalModBot
             mainMenuModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton"; // Set LocalizationID
             mainMenuModsButton.transform.SetSiblingIndex(1);
 
+            EscMenu escMenu = GameUIRoot.Instance.EscMenu;
             GameObject pauseScreenModsButton = Instantiate(GameUIRoot.Instance.EscMenu.SettingsButton.transform.gameObject, GameUIRoot.Instance.EscMenu.SettingsButton.transform.parent); // All of these lines edit the buttons on the pause menu
-            GameUIRoot.Instance.EscMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.SettingsButton.transform.position += pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.AchievementsButton.transform.position -= pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.ExitButton.transform.position -= pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.MainMenuButton.transform.position -= pauseScreenButtonOffset;
-            GameUIRoot.Instance.EscMenu.MainMenuConfirmUI.transform.position -= pauseScreenButtonOffset;
+            escMenu.ReturnToGameButton.transform.position += pauseScreenButtonOffset;
+            escMenu.SettingsButton.transform.position += pauseScreenButtonOffset;
+            escMenu.AchievementsButton.transform.position -= pauseScreenButtonOffset;
+            escMenu.ExitButton.transform.position -= pauseScreenButtonOffset;
+            escMenu.ExitConfirmUI.transform.position -= pauseScreenButtonOffset;
+            escMenu.MainMenuButton.transform.position -= pauseScreenButtonOffset;
+            escMenu.MainMenuConfirmUI.transform.position -= pauseScreenButtonOffset;
+
+            RectTransform pauseMenuBgTransform = (RectTransform)escMenu.ButtonsCanvasGroup.transform;
+            pauseMenuBgTransform.anchoredPosition = new Vector2(0f, -15f);
+            pauseMenuBgTransform.sizeDelta = new Vector2(200f, 240f);
+            RectTransform backToLvlEditorButtonTransform = (RectTransform)escMenu.BackToLevelEditorButton.transform;
+            backToLvlEditorButtonTransform.anchoredPosition = new Vector2(0f, -250f);
 
             pauseScreenModsButton.transform.position -= pauseScreenButtonOffset;
             pauseScreenModsButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "modsbutton";
