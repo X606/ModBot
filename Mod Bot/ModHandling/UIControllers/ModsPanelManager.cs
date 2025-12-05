@@ -42,6 +42,9 @@ namespace InternalModBot
 
             mainMenuModsButton.GetComponent<Button>().onClick = new Button.ButtonClickedEvent(); // This is used to remove the persistent listeners that the options button has
             mainMenuModsButton.GetComponent<Button>().onClick.AddListener(openModsMenu); // Add open menu callback
+
+            RectTransform achievementNewHintTransform = (RectTransform)TransformUtils.FindChildRecursive(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer, "AchievementsNewHint");
+            achievementNewHintTransform.anchoredPosition = new Vector2(achievementNewHintTransform.anchoredPosition.x, -144f);
         }
 
         private void patchPauseMenu()
