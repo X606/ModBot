@@ -22,10 +22,6 @@ namespace InternalModBot
         IEnumerator checkVersion()
         {
             string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
-
-            string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", installedModBotVersion);
-            VersionLabelManager.Instance.SetLine(1, modBotVersionLabel);
-
             if (installedModBotVersion.ToLower().Contains("beta"))
                 yield break;
 

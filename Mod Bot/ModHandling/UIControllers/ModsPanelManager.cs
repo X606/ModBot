@@ -45,6 +45,9 @@ namespace InternalModBot
 
             RectTransform achievementNewHintTransform = (RectTransform)TransformUtils.FindChildRecursive(GameUIRoot.Instance.TitleScreenUI.RootButtonsContainer, "AchievementsNewHint");
             achievementNewHintTransform.anchoredPosition = new Vector2(achievementNewHintTransform.anchoredPosition.x, -144f);
+
+            string modBotVersionLabel = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotversion", ModLibrary.Properties.Resources.ModBotVersion);
+            VersionLabelManager.Instance.SetLine(1, modBotVersionLabel);
         }
 
         private void patchPauseMenu()
