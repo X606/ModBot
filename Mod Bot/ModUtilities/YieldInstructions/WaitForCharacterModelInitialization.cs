@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModLibrary.YieldInstructions
 {
@@ -12,6 +7,8 @@ namespace ModLibrary.YieldInstructions
     /// </summary>
     public class WaitForCharacterModelInitialization : CustomYieldInstruction
     {
+        readonly FirstPersonMover _firstPersonMover;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitForCharacterModelInitialization"/> instruction
         /// </summary>
@@ -25,7 +22,5 @@ namespace ModLibrary.YieldInstructions
         /// Returns if the <see cref="Coroutine"/> should keep waiting
         /// </summary>
         public override bool keepWaiting => !_firstPersonMover.HasCharacterModel();
-
-        FirstPersonMover _firstPersonMover;
     }
 }

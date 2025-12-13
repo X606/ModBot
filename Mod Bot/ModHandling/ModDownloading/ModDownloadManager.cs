@@ -10,13 +10,14 @@ using UnityEngine.Networking;
 
 namespace InternalModBot
 {
+    /// <summary>
+    /// Downloads mod infos and their files from the server
+    /// </summary>
     internal static class ModsDownloadManager
     {
         public const int LOAD_MODINFOS_TIMEOUT = 9;
 
         private static ModDownloadInfo _currentlyDownloadingMod;
-
-        private static UnityWebRequest _modInfoDownloadWebRequest;
 
         /// <summary>
         /// Get mod download information
@@ -27,14 +28,13 @@ namespace InternalModBot
             return _currentlyDownloadingMod;
         }
 
+        /// <summary>
+        /// Check if there's a mod downloading right now
+        /// </summary>
+        /// <returns></returns>
         internal static bool IsDownloadingAMod()
         {
             return _currentlyDownloadingMod != null && _currentlyDownloadingMod.Info != null;
-        }
-
-        internal static bool IsLoadingModInfos()
-        {
-            return _modInfoDownloadWebRequest != null;
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace InternalModBot
                 bytes = webRequest.downloadHandler.data;
             }
 
-            yield return new WaitForTask(Task.Run(async () =>
+            yield return new WaitForTaskCompletion(Task.Run(async () =>
             {
                 using (FileStream tempFile = new FileStream($"{targetDirectory}.zip", FileMode.Create))
                 {
@@ -138,12 +138,10 @@ namespace InternalModBot
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
             {
-                _modInfoDownloadWebRequest = webRequest;
                 webRequest.timeout = LOAD_MODINFOS_TIMEOUT;
 
                 yield return webRequest.SendWebRequest();
 
-                _modInfoDownloadWebRequest = null;
                 if (webRequest.isNetworkError || webRequest.isHttpError)
                 {
                     if (callback != null) callback(new GetModInfosResult()

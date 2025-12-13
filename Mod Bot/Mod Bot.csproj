@@ -78,10 +78,9 @@
     <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
     <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
     <Compile Include="Internal\UI\ModListWindow.cs" />
-    <Compile Include="ModUtilities\YieldInstructions\WaitForTask.cs" />
+    <Compile Include="ModUtilities\YieldInstructions\WaitForTaskCompletion.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
-    <Compile Include="Internal\ProgressBar.cs" />
     <Compile Include="ModHandling\ModDownloading\ModDownloadManager.cs" />
     <Compile Include="ModHandling\ModDownloading\ModsHolder.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
@@ -149,7 +148,7 @@
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionLabelItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModdedOptionItemTypes\ModdedOptionSliderItem.cs" />
     <Compile Include="ModHandling\UIControllers\ModOptionWindowBuilder.cs" />
-    <Compile Include="ModHandling\UIControllers\ModsPanelManager.cs" />
+    <Compile Include="Internal\ModsPanelManager.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\FirstPersonMoverExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\GlobalEventManagerExtensions.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\IEnumerableExtensions.cs" />

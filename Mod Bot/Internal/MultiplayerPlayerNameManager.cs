@@ -20,7 +20,7 @@ namespace InternalModBot
 	{
 		const string MOD_BOT_USER_KEY = "ModBotUser";
 
-		const string DEFUALT_MOD_BOT_USER_PREFIX = "<color=#ffac00>[Mod-Bot]</color>";
+		const string DEFAULT_MOD_BOT_USER_PREFIX = "<color=#ffac00>[Mod-Bot]</color>";
 
 		Dictionary<string, string> playfabIDToCustomPrefixDictionary = new Dictionary<string, string>();
 		Dictionary<string, string> playfabIDToOverrideNameDictionary = new Dictionary<string, string>();
@@ -35,19 +35,22 @@ namespace InternalModBot
 		}
 
 		void onPlayerInfoStateAttached(IPlayerInfoState playerInfoState)
+        {
+            if (playerInfoState == null) return;
+			StartCoroutine(waitForPlayerInfoStateToInitialize(playerInfoState));
+		}
+
+		IEnumerator waitForPlayerInfoStateToInitialize(IPlayerInfoState playerInfoState)
 		{
-			DelegateScheduler.Instance.Schedule(delegate
-			{
-				if (playerInfoState == null || playerInfoState.IsDisconnected)
-					return;
+			float timeout = Time.unscaledTime + 5f;
+			while (Time.unscaledTime < timeout && !playerInfoState.IsDisconnected && string.IsNullOrWhiteSpace(playerInfoState.PlayFabID))
+				yield return null;
 
-				string playfabID = playerInfoState.PlayFabID;
+			string playFabId = playerInfoState.PlayFabID;
+            if (string.IsNullOrWhiteSpace(playFabId)) yield break;
 
-				if (string.IsNullOrWhiteSpace(playfabID))
-					return;
-
-				API.GetPlayerPrefix(playfabID, json => onPlayerNameDataReceived(json, playfabID));
-			}, 0.2f);
+            API.GetPlayerPrefix(playFabId, json => onPlayerNameDataReceived(json, playFabId));
+            yield break;
 		}
 
 		void onPlayerNameDataReceived(JsonObject json, string playfabID)
@@ -120,7 +123,7 @@ namespace InternalModBot
 				}
 				else
 				{
-					prefix += DEFUALT_MOD_BOT_USER_PREFIX + " ";
+					prefix += DEFAULT_MOD_BOT_USER_PREFIX + " ";
 				}
 			}
 
