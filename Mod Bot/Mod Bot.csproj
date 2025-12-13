@@ -78,6 +78,7 @@
     <Compile Include="Internal\Reflection\PropertyInfoKey.cs" />
     <Compile Include="Internal\Reflection\ReflectionUtils.cs" />
     <Compile Include="Internal\UI\ModListWindow.cs" />
+    <Compile Include="ModHandling\ModImagesManager.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForTaskCompletion.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
     <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />

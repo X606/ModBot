@@ -130,7 +130,7 @@ namespace InternalModBot
             _modImageObject.SetActive(false);
             _placeholderModImageObject.SetActive(true);
 
-            if (hasImage) ModsManager.Instance.GetModImage(modInfo, onLoadedImage);
+            if (hasImage) ModImagesManager.Instance.GetModImage(modInfo, onLoadedImage);
         }
 
         private void setColor(Transform transform, string hexColor)

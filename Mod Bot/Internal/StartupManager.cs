@@ -30,6 +30,7 @@ namespace InternalModBot
             GameObject modBotManagers = new GameObject("ModBotManagers");
 
             modBotManagers.AddComponent<ModsManager>();
+            modBotManagers.AddComponent<ModImagesManager>();                  // Gets images of installed mods
             modBotManagers.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
             modBotManagers.AddComponent<ModsPanelManager>();                  // Adds the mods button in the main menu and pause screen
             modBotManagers.AddComponent<CustomUpgradeManager>();              // Handles modded upgrades

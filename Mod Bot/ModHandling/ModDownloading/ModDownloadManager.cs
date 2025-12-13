@@ -114,7 +114,7 @@ namespace InternalModBot
             }));
 
             endDownload();
-            if (!update) ModsManager.Instance.ReloadMods(true);
+            if (!update) ModsManager.Instance.LoadNewMods();
             if (callback != null) callback(new DownloadModResult() { Info = info });
         }
 
