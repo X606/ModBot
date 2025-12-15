@@ -19,6 +19,10 @@ namespace InternalModBot
         public const string AUTHOR_COLOR = "#5ABAFF";
         public const string VERSION_COLOR = "#FF9500";
 
+        private Text _modNameLabel;
+        private Text _modDescriptionLabel;
+        private Text _modVersionLabel;
+
         private Button _toggleButton;
         private Button _optionsButton;
         private Button _errorsButton;
@@ -49,20 +53,11 @@ namespace InternalModBot
         {
             loadedModInfo = modInfo;
 
-            ColorUtility.TryParseHtmlString(AUTHOR_COLOR, out Color authorColor);
-            ColorUtility.TryParseHtmlString(VERSION_COLOR, out Color versionColor);
-
-            string authorString = $"By {modInfo.OwnerModInfo.Author}".AddColor(authorColor);
-            string versionString = $"Version {modInfo.OwnerModInfo.Version}".AddColor(versionColor);
-            string idString = $"ID <size=9>{modInfo.OwnerModInfo.UniqueID}</size>";
-            string displayName = modInfo.OwnerModInfo.DisplayName;
-            bool notLoaded = modInfo.IsEnabled && modInfo.ModReference == null;
-
             canvasGroup = base.GetComponent<CanvasGroup>();
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
-            moddedObject.GetObject<Text>(0).text = notLoaded ? $"{displayName} (Not loaded)".AddColor(Color.yellow) : displayName;
-            moddedObject.GetObject<Text>(1).text = modInfo.OwnerModInfo.Description;
-            moddedObject.GetObject<Text>(9).text = $"{authorString} · {versionString} · {idString}";
+            _modNameLabel = moddedObject.GetObject<Text>(0);
+            _modDescriptionLabel = moddedObject.GetObject<Text>(1);
+            _modVersionLabel = moddedObject.GetObject<Text>(9);
 
             moddedObject.GetObject<Button>(7).onClick.AddListener(OnCopyIDButtonClicked);
             moddedObject.GetObject<Button>(11).onClick.AddListener(OnFolderButtonClicked);
@@ -106,15 +101,28 @@ namespace InternalModBot
             bool isMultiplayer = GameModeManager.IsMultiplayer();
             bool hasSettings = isEnabled && modInfo.ModReference != null && modInfo.ModReference.ImplementsSettingsWindow();
 
+            ColorUtility.TryParseHtmlString(AUTHOR_COLOR, out Color authorColor);
+            ColorUtility.TryParseHtmlString(VERSION_COLOR, out Color versionColor);
+
+            string nameString = modInfo.OwnerModInfo.DisplayName;
+            string idString = $"ID <size=9>{modInfo.OwnerModInfo.UniqueID}</size>";
+            string authorString = $"By {modInfo.OwnerModInfo.Author}".AddColor(authorColor);
+            string versionString = $"Version {modInfo.OwnerModInfo.Version}".AddColor(versionColor);
+            bool hasUpdate = modListWindow.DoesModHaveUpdate(modInfo.OwnerModInfo, out ModInfo newVersion);
+
             setColor(base.transform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
             setColor(_toggleButton.transform, isEnabled ? TOGGLE_ENABLED_COLOR : TOGGLE_DISABLED_COLOR);
             setColor(_descriptionHolderTransform, isEnabled ? BG_ENABLED_COLOR : BG_DISABLED_COLOR);
 
+            _modNameLabel.text = hasUpdate ? $"{nameString} (Outdated)".AddColor(Color.yellow) : nameString;
+            _modDescriptionLabel.text = modInfo.OwnerModInfo.Description;
+            _modVersionLabel.text = $"{authorString} · {versionString} · {idString}";
+
             _optionsButtonText.color = hasSettings ? Color.white : Color.gray;
 
             //_optionsButton.gameObject.SetActive(isEnabled);
-            _updateButton.gameObject.SetActive(GameModeManager.IsOnTitleScreen() && modListWindow.DoesModHaveUpdate(modInfo.OwnerModInfo, out _));
-            _updateButton.interactable = !modListWindow.GetIsUpdatingMods();
+            _updateButton.gameObject.SetActive(modListWindow.DoesModHaveUpdate(modInfo.OwnerModInfo, out _));
+            _updateButton.interactable = !modListWindow.IsUpdatingMods();
             _optionsButton.interactable = hasSettings;
             _descriptionHolderObject.SetActive(true);
             _errorsButton.gameObject.SetActive(false);
@@ -181,19 +189,21 @@ namespace InternalModBot
                 {
                     bool hasMissingMods = false;
 
+                    ColorUtility.TryParseHtmlString(VERSION_COLOR, out Color color);
+
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.AppendLine($"Mod \"{modInfo.DisplayName}\" requires following mods to be installed and enabled:");
+                    stringBuilder.AppendLine($"{modInfo.DisplayName.AddColor(color)} requires following mods to be installed and enabled:");
                     stringBuilder.AppendLine();
                     foreach (LoadedModInfo lmi in toEnable)
                     {
                         if (string.IsNullOrEmpty(lmi.OwnerModInfo.DisplayName))
                         {
-                            stringBuilder.AppendLine($"A mod with id {lmi.OwnerModInfo.UniqueID} (missing)".AddColor(Color.red));
+                            stringBuilder.AppendLine($"A mod with id \"{lmi.OwnerModInfo.UniqueID.AddColor(color)}\" (missing)".AddColor(Color.red));
                             hasMissingMods = true;
                         }
                         else
                         {
-                            stringBuilder.AppendLine($"{lmi.OwnerModInfo.DisplayName} (disabled)".AddColor(Color.yellow));
+                            stringBuilder.AppendLine($"{lmi.OwnerModInfo.DisplayName.AddColor(color)} (disabled)".AddColor(Color.yellow));
                         }
                     }
                     stringBuilder.AppendLine();
@@ -275,7 +285,7 @@ namespace InternalModBot
 
                     if (downloadModResult.HasFailed())
                     {
-                        _ = new Generic2ButtonDialogue($"Failed to update {newInfo.DisplayName}.\n{downloadModResult.Error}",
+                        _ = new Generic2ButtonDialogue($"Failed to update {newInfo.DisplayName.AddColor(color)}.\n{downloadModResult.Error}",
                             "Ok", null,
                             "Ok", null);
 

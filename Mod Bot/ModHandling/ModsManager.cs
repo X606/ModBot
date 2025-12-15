@@ -151,7 +151,8 @@ namespace InternalModBot
                     continue;
                 }
 
-                // remove old version from the list
+                // check if we're loading the same mod or its old/new version
+                bool hasSameModBeenAlreadyLoaded = false;
                 ModInfo versionToRemove = null;
                 foreach (ModInfo installedModInfo in modInfos)
                 {
@@ -159,6 +160,7 @@ namespace InternalModBot
 
                     if (newModInfo.Version > installedModInfo.Version) versionToRemove = installedModInfo;
                     else if (newModInfo.Version < installedModInfo.Version) versionToRemove = newModInfo;
+                    else if (newModInfo.Version == installedModInfo.Version) hasSameModBeenAlreadyLoaded = true;
 
                     break;
                 }
@@ -169,7 +171,7 @@ namespace InternalModBot
                     modInfos.Remove(versionToRemove);
                 }
 
-                if (hasModAlreadyBeenLoaded(newModInfo))
+                if (hasSameModBeenAlreadyLoaded)
                 {
                     errors.Add(new ModLoadError(newModInfo, "Mod with the same ID has already been loaded"));
                     continue;
@@ -451,17 +453,6 @@ namespace InternalModBot
             }
 
             _loadedMods.Clear();
-        }
-
-        private bool hasModAlreadyBeenLoaded(ModInfo modInfo)
-        {
-            foreach (LoadedModInfo loadedMod in _loadedMods)
-            {
-                if (loadedMod.OwnerModInfo.UniqueID == modInfo.UniqueID)
-                    return true;
-            }
-
-            return false;
         }
 
         private void addModDependenciesRecursive(ModInfo modInfo, ref List<ModInfo> modsToLoad, ref List<ModInfo> sortedList)

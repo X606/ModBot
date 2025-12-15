@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace InternalModBot
@@ -16,6 +17,8 @@ namespace InternalModBot
     internal static class ModsDownloadManager
     {
         public const int LOAD_MODINFOS_TIMEOUT = 9;
+
+        public const bool DEBUG_PLACEHOLDER_MOD_INFOS = false;
 
         private static ModDownloadInfo _currentlyDownloadingMod;
 
@@ -136,6 +139,51 @@ namespace InternalModBot
 
         private static IEnumerator getModInfosCoroutine(Action<GetModInfosResult> callback)
         {
+            if (DEBUG_PLACEHOLDER_MOD_INFOS)
+            {
+                float timeout = Time.unscaledTime + 2f;
+                while (Time.unscaledTime < timeout)
+                    yield return null;
+
+                if (callback != null) callback(new GetModInfosResult()
+                {
+                    Holder = new ModsHolder()
+                    {
+                        Mods = new ModInfo[]
+                        {
+                            new ModInfo()
+                            {
+                                DisplayName = "cool mod",
+                                UniqueID = "1234567890-1234567890",
+                                Description = "descriptive description",
+                                Version = 1111,
+                                Author = "a cool person"
+                            },
+
+                            new ModInfo()
+                            {
+                                DisplayName = "cool mod 2",
+                                UniqueID = "1234567890-123456789012121",
+                                Description = "another cool mod",
+                                Version = 22,
+                                Author = "a cool person"
+                            },
+
+                            new ModInfo()
+                            {
+                                DisplayName = "level editor plus update real",
+                                UniqueID = "vQYm07Oxu0VnydSFsjsl",
+                                Description = "b",
+                                Version = 10,
+                                Author = "Gorakh"
+                            }
+                        }
+                    }
+                });
+
+                yield break;
+            }
+
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
             {
                 webRequest.timeout = LOAD_MODINFOS_TIMEOUT;

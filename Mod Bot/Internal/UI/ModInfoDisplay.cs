@@ -72,7 +72,7 @@ namespace InternalModBot
             _downloadProgressBar = moddedObject.GetObject<Slider>(12);
             _downloadCount = moddedObject.GetObject<Text>(11);
             _downloadButton = moddedObject.GetObject<Button>(4);
-            _downloadButton.onClick.AddListener(downloadAMod);
+            _downloadButton.onClick.AddListener(downloadMod);
             _downloadButton.gameObject.SetActive(false);
             _downloadedText = moddedObject.GetObject<Text>(10);
             _thumbnail = moddedObject.GetObject<RawImage>(0);
@@ -93,7 +93,7 @@ namespace InternalModBot
             return this;
         }
 
-        private void downloadAMod()
+        private void downloadMod()
         {
             if (!_initialized || m_DownloadInfo != null)
             {

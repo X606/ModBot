@@ -231,7 +231,7 @@ namespace InternalModBot
                 }
                 else
                 {
-                    updatesString = $", {_updates.Count} updates available".AddColor(Color.yellow);
+                    updatesString = ", " + $"{_updates.Count} {(_updates.Count == 1 ? "update" : "updates")} available".AddColor(Color.yellow);
                 }
             }
 
@@ -286,7 +286,7 @@ namespace InternalModBot
             }
         }
 
-        public bool GetIsUpdatingMods()
+        public bool IsUpdatingMods()
         {
             return _isUpdatingMods;
         }
