@@ -107,18 +107,31 @@ namespace InternalModBot
                 bytes = webRequest.downloadHandler.data;
             }
 
+            bool successful = false;
+            string zipFile = $"{targetDirectory}.zip";
             yield return new WaitForTaskCompletion(Task.Run(async () =>
             {
-                using (FileStream tempFile = new FileStream($"{targetDirectory}.zip", FileMode.Create))
+                try
                 {
-                    tempFile.Seek(0, SeekOrigin.Begin);
-                    await tempFile.WriteAsync(bytes, 0, bytes.Length);
+                    using (FileStream tempFile = new FileStream(zipFile, FileMode.Create))
+                    {
+                        tempFile.Seek(0, SeekOrigin.Begin);
+                        await tempFile.WriteAsync(bytes, 0, bytes.Length);
+                    }
+                    successful = true;
+                }
+                catch (Exception exc)
+                {
+                    if (callback != null) callback(new DownloadModResult() { Info = info, Error = exc.ToString() });
                 }
             }));
 
             endDownload();
-            if (!update) ModsManager.Instance.LoadNewMods();
-            if (callback != null) callback(new DownloadModResult() { Info = info });
+            if (successful)
+            {
+                if (!update) ModsManager.Instance.LoadNewMods(new List<string>() { zipFile });
+                if (callback != null) callback(new DownloadModResult() { Info = info });
+            }
         }
 
         private static void endDownload()

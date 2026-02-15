@@ -281,10 +281,10 @@ namespace InternalModBot
                 {
                     if (!modListWindow) return;
 
-                    modListWindow.SetIsUpdatingMods(false);
-
                     if (downloadModResult.HasFailed())
                     {
+                        modListWindow.SetIsUpdatingMods(false);
+
                         _ = new Generic2ButtonDialogue($"Failed to update {newInfo.DisplayName.AddColor(color)}.\n{downloadModResult.Error}",
                             "Ok", null,
                             "Ok", null);
@@ -293,6 +293,7 @@ namespace InternalModBot
                     }
 
                     modListWindow.OnUpdatedMod(modInfo);
+                    modListWindow.SetIsUpdatingMods(false);
                 });
             }, "No", null);
         }

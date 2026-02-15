@@ -93,11 +93,11 @@ namespace InternalModBot
         /// <summary>
         /// Load only unpacked mods
         /// </summary>
-        public void LoadNewMods()
+        public void LoadNewMods(List<string> loadOnly = null)
         {
             List<ModLoadError> errors = new List<ModLoadError>();
 
-            loadNewMods(ref errors);
+            loadNewMods(loadOnly, ref errors);
 
             if (errors.Count != 0) StartCoroutine(showErrorsCoroutine(errors));
         }
@@ -117,11 +117,11 @@ namespace InternalModBot
             ModBotLocalizationManager.LogLocalizedStringOnceLocalizationManagerInitialized("clear_cache_fail");
         }
 
-        private List<string> unpackMods()
+        private List<string> unpackMods(List<string> unpackOnly)
         {
             List<string> unpackedModPaths = new List<string>();
 
-            string[] zipFiles = Directory.GetFiles(ModFolderPath, "*.zip");
+            List<string> zipFiles = unpackOnly == null ? new List<string>(Directory.GetFiles(ModFolderPath, "*.zip")) : unpackOnly;
             foreach (string zipFilePath in zipFiles)
             {
                 string newDirectory = Path.Combine(ModFolderPath, Path.GetFileNameWithoutExtension(zipFilePath));
@@ -250,7 +250,7 @@ namespace InternalModBot
         private void prepareAndLoadMods(ref List<ModLoadError> errors)
         {
             // First we take a pass to see if there any zip files we want to convert into folders
-            unpackMods();
+            unpackMods(null);
 
             // Get all mod infos
             List<ModInfo> modInfos = readModInfos(ref errors, null);
@@ -262,9 +262,9 @@ namespace InternalModBot
             loadMods(_cachedModInfos, ref errors);
         }
 
-        private void loadNewMods(ref List<ModLoadError> errors)
+        private void loadNewMods(List<string> loadOnly, ref List<ModLoadError> errors)
         {
-            List<string> newMods = unpackMods();
+            List<string> newMods = unpackMods(loadOnly);
 
             List<ModInfo> modInfos = readModInfos(ref errors, newMods);
 

@@ -97,8 +97,9 @@ namespace InternalModBot
 
                 yield return new WaitForSecondsRealtime(wait);
 
-                ModInfoDisplay v = Instantiate(_modInfoEntryPrefab, _modInfoEntriesContainer).gameObject.AddComponent<ModInfoDisplay>().Init(info);
-                _displays.Add(v);
+                ModInfoDisplay modInfoDisplay = Instantiate(_modInfoEntryPrefab, _modInfoEntriesContainer).gameObject.AddComponent<ModInfoDisplay>();
+                modInfoDisplay.Init(info);
+                _displays.Add(modInfoDisplay);
 
                 index++;
                 if (index >= 9)

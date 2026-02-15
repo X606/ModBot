@@ -37,14 +37,16 @@ namespace InternalModBot
         private ModInfo _localModInfo;
         private Dictionary<string, JToken> _specialData;
 
+        private bool _reloadModListOnHide;
+
         public bool IsModInstalled => _localModInfo != null;
         public string ModName => _remoteModInfo.DisplayName;
         public bool CanInteractWithSpecialData => ModBotSignInUI.HasSignedIn && _remoteModInfo != null && !string.IsNullOrEmpty(_remoteModInfo.UniqueID);
 
-        private static ModsDownloadManager.ModDownloadInfo m_DownloadInfo;
-        public static bool IsDownloadingAMod(string id) => m_DownloadInfo != null && m_DownloadInfo.Info != null && id.Equals(m_DownloadInfo.Info.UniqueID);
+        private static ModsDownloadManager.ModDownloadInfo _downloadInfo;
+        public static bool IsDownloadingAMod(string id) => _downloadInfo != null && _downloadInfo.Info != null && id.Equals(_downloadInfo.Info.UniqueID);
 
-        public ModInfoDisplay Init(ModInfo info)
+        public void Init(ModInfo info)
         {
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
             _canvasGroup = base.GetComponent<CanvasGroup>();
@@ -89,18 +91,18 @@ namespace InternalModBot
             refreshModIsInstalled();
             refreshSpecialData();
             refreshModIsBeingDownloaded();
-
-            return this;
         }
 
         private void downloadMod()
         {
-            if (!_initialized || m_DownloadInfo != null)
+            if (!_initialized || _downloadInfo != null)
             {
                 return;
             }
 
-            _ = new Generic2ButtonDialogue("Do you want to install this mod?\n" + _remoteModInfo.DisplayName, "Yes", delegate
+            ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
+
+            _ = new Generic2ButtonDialogue($"Install {_remoteModInfo.DisplayName.AddColor(color)}?", "Yes", delegate
             {
                 ModsDownloadManager.DownloadMod(new ModsDownloadManager.ModGeneralInfo()
                 {
@@ -108,7 +110,7 @@ namespace InternalModBot
                     UniqueID = _remoteModInfo.UniqueID,
                     Version = _remoteModInfo.Version,
                 }, false, onModDownloaded);
-                m_DownloadInfo = ModsDownloadManager.GetDownloadingModInfo();
+                _downloadInfo = ModsDownloadManager.GetDownloadingModInfo();
                 refreshModIsBeingDownloaded();
             }, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
         }
@@ -130,15 +132,11 @@ namespace InternalModBot
                 return;
             }
 
-            onModDownloadedStatic();
+            _downloadInfo = null;
+            _reloadModListOnHide = true;
+
             refreshModIsBeingDownloaded();
             refreshModIsInstalled();
-        }
-
-        private static void onModDownloadedStatic()
-        {
-            m_DownloadInfo = null;
-            ModBotUIRoot.Instance.ModList.ReloadList();
         }
 
         private void refreshModIsBeingDownloaded()
@@ -154,7 +152,7 @@ namespace InternalModBot
                 _downloadButton.gameObject.SetActive(false);
                 _downloadedText.gameObject.SetActive(false);
                 _downloadProgressBar.gameObject.SetActive(true);
-                _downloadProgressBar.value = m_DownloadInfo.DownloadProgress;
+                _downloadProgressBar.value = _downloadInfo.DownloadProgress;
             }
         }
 
@@ -192,6 +190,7 @@ namespace InternalModBot
             {
                 _notVerifiedIcon.gameObject.SetActive(true);
                 _downloadButton.gameObject.SetActive(false);
+                _moreInfoButton.gameObject.SetActive(false);
                 return;
             }
             if (!IsModInstalled)
@@ -313,6 +312,12 @@ namespace InternalModBot
 
         private void OnDisable()
         {
+            if (_reloadModListOnHide)
+            {
+                _reloadModListOnHide = false;
+                ModBotUIRoot.Instance.ModList.ReloadList();
+            }
+
             _initialized = false;
             StopAllCoroutines();
         }
@@ -333,7 +338,7 @@ namespace InternalModBot
                 }
             }
 
-            _downloadButton.interactable = !ModsDownloadManager.IsDownloadingAMod() || m_DownloadInfo == null;
+            _downloadButton.interactable = !ModsDownloadManager.IsDownloadingAMod() || _downloadInfo == null;
             if (!_downloadButton.interactable && Time.frameCount % 3 == 0)
             {
                 refreshModIsBeingDownloaded();
