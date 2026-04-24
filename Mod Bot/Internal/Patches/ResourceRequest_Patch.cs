@@ -7,7 +7,7 @@ namespace InternalModBot
     static class ResourceRequest_Patch
     {
         [HarmonyPostfix]
-        [HarmonyPatch("asset", MethodType.Getter)]
+        [HarmonyPatch(nameof(ResourceRequest.asset), MethodType.Getter)]
         static UnityEngine.Object asset_Getter_Postfix(UnityEngine.Object __result, string ___m_Path)
         {
             UnityEngine.Object overrideResource;

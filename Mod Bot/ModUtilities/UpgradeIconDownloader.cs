@@ -52,13 +52,7 @@ namespace InternalModBot
             string textureName = fileName + CUSTOM_ICON_POSTFIX;
             if (File.Exists(upgradeIconsFolderPath + fileName))
             {
-                byte[] imageData = File.ReadAllBytes(upgradeIconsFolderPath + fileName);
-
-                Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
-                texture.name = textureName;
-                texture.LoadImage(imageData);
-
-                upgrade.Icon = getSpriteFromTexture(texture);
+                StartCoroutine(downloadImageAndSetIconOnUpgrade(upgrade, $"file://{upgradeIconsFolderPath + fileName}", textureName));
             }
             else
             {
@@ -90,7 +84,7 @@ namespace InternalModBot
 
         static Sprite getSpriteFromTexture(Texture2D texture)
         {
-            return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), Vector2.one * 0.5f);
+            return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
         }
 
         static string getFileNameForUpgrade(UpgradeDescription upgrade)

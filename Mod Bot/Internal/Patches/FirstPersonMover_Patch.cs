@@ -6,7 +6,7 @@ namespace InternalModBot
     static class FirstPersonMover_Patch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("RefreshUpgrades")]
+        [HarmonyPatch(nameof(FirstPersonMover.RefreshUpgrades))]
         static void RefreshUpgrades_Prefix(FirstPersonMover __instance)
         {
             if (__instance == null || __instance.gameObject == null || !__instance.IsAlive() || __instance.GetCharacterModel() == null)
@@ -17,7 +17,7 @@ namespace InternalModBot
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("CreateCharacterModel")]
+        [HarmonyPatch(nameof(FirstPersonMover.CreateCharacterModel))]
         static void CreateCharacterModel_Postfix(FirstPersonMover __instance)
         {
             ModsManager.Instance.PassOnMod.OnCharacterModelCreated(__instance);

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -8,15 +7,31 @@ namespace InternalModBot
     [HarmonyPatch]
     static class Resources_Load_Patch
     {
+        /// <summary>
+        /// Finds <see cref="Resources.Load(string)"/>
+        /// </summary>
+        /// <returns></returns>
         static MethodBase TargetMethod()
         {
-            return typeof(Resources).GetMethods(BindingFlags.Public | BindingFlags.Static).Single((m) => m.Name == "Load" && m.ReturnType == typeof(UnityEngine.Object) && m.GetMethodBody() != null);
+            MethodInfo[] methods = typeof(Resources).GetMethods(BindingFlags.Public | BindingFlags.Static);
+            foreach (MethodInfo method in methods)
+            {
+                if (!method.IsGenericMethod && method.Name == nameof(Resources.Load))
+                {
+                    ParameterInfo[] parameters = method.GetParameters();
+                    if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
+                    {
+                        return method;
+                    }
+                }
+            }
+            return null;
         }
 
         [HarmonyPostfix]
-        static UnityEngine.Object Load_Postfix(UnityEngine.Object __result, string path)
+        static Object Load_Postfix(Object __result, string path)
         {
-            UnityEngine.Object overrideResource;
+            Object overrideResource;
 
             if (ModsManager.Instance != null)
             {

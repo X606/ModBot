@@ -7,7 +7,7 @@ namespace InternalModBot
     static class GameUIRoot_Patch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("RefreshCursorEnabled")]
+        [HarmonyPatch(nameof(GameUIRoot.RefreshCursorEnabled))]
         static bool GameUIRoot_RefreshCursorEnabled_Prefix()
         {
             if (ModBotUIRoot.Instance && ModBotUIRoot.Instance.AreAnyMenusOpen())

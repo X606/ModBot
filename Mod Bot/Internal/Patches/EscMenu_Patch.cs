@@ -6,14 +6,14 @@ namespace InternalModBot
     static class EscMenu_Patch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("Show")]
+        [HarmonyPatch(nameof(EscMenu.Show))]
         static bool Show_Prefix()
         {
             return !GameUIRoot.Instance._isEscMenuDisabled;
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch("Hide")]
+        [HarmonyPatch(nameof(EscMenu.Hide))]
         static bool Hide_Prefix()
         {
             return !GameUIRoot.Instance._isEscMenuDisabled;

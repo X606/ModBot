@@ -7,7 +7,7 @@ namespace InternalModBot
     static class ErrorWindow_Patch
     {
         [HarmonyPostfix]
-        [HarmonyPatch("Show")]
+        [HarmonyPatch(nameof(ErrorWindow.Show))]
         static void Show_Postfix(ErrorWindow __instance)
         {
             Text descriptionLabel = __instance.transform.GetChild(2).GetChild(1).GetComponent<Text>();
