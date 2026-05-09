@@ -364,7 +364,7 @@ namespace InternalModBot
             {
                 try
                 {
-                    loadedAssembly = Assembly.LoadFile(dllPath);
+                    loadedAssembly = Assembly.Load(AssemblyName.GetAssemblyName(dllPath));
                 }
                 catch
                 {
