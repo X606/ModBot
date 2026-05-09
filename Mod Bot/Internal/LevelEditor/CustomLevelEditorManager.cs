@@ -172,7 +172,7 @@ namespace InternalModBot.LevelEditor
         {
             if (HasPathOverride(path))
             {
-                return getObjectPathOverrideRecursive(GetObjectPathOverride(path));
+                return getObjectPathOverrideRecursive(s_pathOverrides[path]);
             }
             return path;
         }
