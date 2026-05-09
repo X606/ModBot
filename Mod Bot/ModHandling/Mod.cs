@@ -87,6 +87,32 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Called once in the entire session right after <see cref="OnModLoaded"/>. Use <see cref="InternalModBot.LevelEditor.ModBotCustomLevelEditorManager"/> to add custom level editor objects
+        /// </summary>
+        protected internal virtual void AddLevelEditorObjects()
+        {
+
+        }
+
+        /// <summary>
+        /// Called at the start of <see cref="ObjectPlacedInLevel.Initialize(Transform)"/>
+        /// </summary>
+        /// <param name="objectPlacedInLevel"></param>
+        protected internal virtual void OnObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+
+        }
+
+        /// <summary>
+        /// Called at the end of <see cref="ObjectPlacedInLevel.Initialize(Transform)"/>
+        /// </summary>
+        /// <param name="objectPlacedInLevel"></param>
+        protected internal virtual void AfterObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+
+        }
+
+        /// <summary>
         /// Called when you run a command in the console (mostly for debuging).
         /// </summary>
         /// <param name="command">The text entered into the command field of the console</param>

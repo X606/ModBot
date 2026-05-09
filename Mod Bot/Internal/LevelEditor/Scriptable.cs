@@ -11,9 +11,6 @@ using InternalModBot.Scripting;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-// This was used as custom level editor stuff, pushed up until 2.1 or something like that for now
-
-/*
 namespace InternalModBot.LevelEditor
 {
 	/// <summary>
@@ -276,4 +273,3 @@ namespace InternalModBot.LevelEditor
 		public bool HasDropDownForValue(string fieldName) => fieldName == "Language";
 	}
 }
-*/

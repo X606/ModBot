@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using InternalModBot.LevelEditor;
 using System.Reflection;
 using UnityEngine;
 
@@ -31,9 +32,9 @@ namespace InternalModBot
         [HarmonyPostfix]
         static Object Load_Postfix(Object __result, string path)
         {
-            Object overrideResource;
+            Object overrideResource = ModBotCustomLevelEditorManager.GetResourceObject(path);
 
-            if (ModsManager.Instance != null)
+            if (overrideResource == null && ModsManager.Instance != null)
             {
                 overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
                 if (overrideResource != null)

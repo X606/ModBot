@@ -17,7 +17,7 @@ using UnityEngine;
 namespace InternalModBot
 {
     /// <summary>
-    /// Handles mod loading, disableing and enableing.
+    /// Handles mod loading, disabling and enabling.
     /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
@@ -352,16 +352,22 @@ namespace InternalModBot
                 return false;
             }
 
+            bool firstTimeLoading;
+
             Assembly loadedAssembly = null;
             Type mainType = null;
             if (_cachedAssemblies.ContainsKey(modInfo.UniqueID))
             {
+                firstTimeLoading = false;
+
                 ModAssemblyCache modAssemblyCache = _cachedAssemblies[modInfo.UniqueID];
                 loadedAssembly = modAssemblyCache.LoadedAssembly;
                 mainType = modAssemblyCache.MainClassType;
             }
             else
             {
+                firstTimeLoading = true;
+
                 try
                 {
                     loadedAssembly = Assembly.Load(AssemblyName.GetAssemblyName(dllPath));
@@ -436,6 +442,19 @@ namespace InternalModBot
             {
                 error = new ModLoadError(modInfo, "Caught exception in OnModLoaded, exception details: " + e.ToString());
                 return false;
+            }
+
+            if (firstTimeLoading)
+            {
+                try
+                {
+                    loadedMod.AddLevelEditorObjects();
+                }
+                catch (Exception e)
+                {
+                    error = new ModLoadError(modInfo, $"Caught exception in AddLevelEditorObjects, exception details: " + e.ToString());
+                    return false;
+                }
             }
 
             StartCoroutine(callOnModRefreshedNextFrame(loadedModInfo));

@@ -19,6 +19,7 @@ namespace InternalModBot
 	internal static class ModBotSettingsManager
 	{
 		static ModdedObject _settingsPageModdedObject;
+
 		/// <summary>
 		/// Sets up the <see cref="ModBotSettingsManager"/>
 		/// </summary>
@@ -26,10 +27,11 @@ namespace InternalModBot
 		public static void Init(ModdedObject moddedObject)
 		{
 			_settingsPageModdedObject = moddedObject;
-
 		}
 
-		class ModBotSettingsBuilder
+		public static ModdedObject GetSettingsPageModdedObject() => _settingsPageModdedObject;
+
+		public class ModBotSettingsBuilder
 		{
 			Transform _holder;
 
@@ -78,7 +80,7 @@ namespace InternalModBot
 		/// Populates the settings widow using the builder
 		/// </summary>
 		/// <param name="builder"></param>
-		static void CreateSettingsWindow(ModBotSettingsBuilder builder)
+		internal static void CreateSettingsWindow(ModBotSettingsBuilder builder)
 		{
 			builder.AddLabel("Controls");
 			foreach (ModBotInputManager.InputOption inputOption in ModBotInputManager.InputOptions)
@@ -153,17 +155,6 @@ namespace InternalModBot
 			input.Key = foundKey.Value;
 
 			buttonText.text = input.Key.ToString();
-		}
-
-		[HarmonyPatch(typeof(SettingsMenu))]
-		static class SettingsMenu_Patch
-		{
-			[HarmonyPostfix]
-			[HarmonyPatch("populateSettings")]
-			static void populateSettings_Postfix()
-			{
-				CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
-			}
 		}
 	}
 }

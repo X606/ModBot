@@ -50,6 +50,9 @@
     <Reference Include="ModLibrary">
       <HintPath>..\UsedDlls\ModLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="netstandard">
+      <HintPath>..\UsedDlls\netstandard.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.dll</HintPath>

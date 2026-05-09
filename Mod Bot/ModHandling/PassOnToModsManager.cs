@@ -77,9 +77,6 @@ namespace InternalModBot
         /// </summary>
         protected internal override void OnLevelEditorStarted()
         {
-#if MODDED_LEVEL_OBJECTS
-            LevelEditorObjectAdder.OnLevelEditorStarted();
-#endif
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
@@ -90,6 +87,44 @@ namespace InternalModBot
                 catch (Exception exc)
                 {
                     Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnLevelEditorStarted)}.\n", exc)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void OnObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].OnObjectPlacedInLevelInitialized(objectPlacedInLevel, levelRoot);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnObjectPlacedInLevelInitialized)}.\n", exc)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void AfterObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].AfterObjectPlacedInLevelInitialized(objectPlacedInLevel, levelRoot);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(AfterObjectPlacedInLevelInitialized)}.\n", exc)));
                 }
             }
         }

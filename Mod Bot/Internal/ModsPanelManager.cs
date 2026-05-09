@@ -117,30 +117,6 @@ namespace InternalModBot
             ModBotSettingsManager.Init(settingsPage.GetComponent<ModdedObject>());
         }
 
-        private void patchOldCreditsMenu()
-        {
-            Transform image = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
-            image.gameObject.SetActive(true);
-            image.GetComponent<Image>().sprite = InternalAssetBundleReferences.ModBot.GetObject<Sprite>("modbot");
-            image.transform.localScale = new Vector3(image.transform.localScale.x * 1.5f, image.transform.localScale.y * 0.375f, 1f);
-            image.transform.position -= new Vector3(7f, 0f);
-
-            Transform spawnedObject = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
-            spawnedObject.gameObject.SetActive(true);
-            spawnedObject.gameObject.AddComponent<LocalizedTextField>().LocalizationID = "mod_bot_credits_developers_list";
-            spawnedObject.transform.position -= new Vector3(7f, -2f);
-
-            Transform upperTitle = Instantiate(GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3), GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform);
-            upperTitle.gameObject.SetActive(true);
-            upperTitle.GetComponent<LocalizedTextField>().LocalizationID = "mod_bot_credits_by";
-            upperTitle.GetComponent<Text>().color = new Color32(255, 165, 0, 255);
-            upperTitle.transform.position -= new Vector3(7f, -2f);
-
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(1).transform.position += new Vector3(7f, 0f);
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(3).transform.position += new Vector3(7f, 0f);
-            GameUIRoot.Instance.TitleScreenUI.CreditsUI.transform.GetChild(4).transform.position += new Vector3(7f, 0f);
-        }
-
         private void patchCreditsScreen()
         {
             CreditsCrawlAnimation creditsCrawlAnimation = GameUIRoot.Instance.CreditsCrawl;
