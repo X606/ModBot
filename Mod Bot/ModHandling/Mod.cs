@@ -87,7 +87,7 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called once in the entire session right after <see cref="OnModLoaded"/>. Use <see cref="InternalModBot.LevelEditor.ModBotCustomLevelEditorManager"/> to add custom level editor objects
+        /// Called once in the entire session right after <see cref="OnModLoaded"/>. Use <see cref="InternalModBot.LevelEditor.CustomLevelEditorManager"/> to add custom level editor objects
         /// </summary>
         protected internal virtual void AddLevelEditorObjects()
         {

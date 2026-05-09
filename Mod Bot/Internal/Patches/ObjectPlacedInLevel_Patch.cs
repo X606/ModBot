@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace InternalModBot
@@ -18,6 +19,13 @@ namespace InternalModBot
         static void Initialize_Postfix(ObjectPlacedInLevel __instance, Transform levelRoot)
         {
             ModsManager.Instance.PassOnMod.AfterObjectPlacedInLevelInitialized(__instance, levelRoot);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(ObjectPlacedInLevel.SetCustomInspectorValuesFromData))]
+        private static void SetCustomInspectorValuesFromData_Postfix(ObjectPlacedInLevel __instance, List<CustomInspectorValue> inspectorValuesFromData)
+        {
+            if (__instance.GetComponent<LevelEditorMissingObject>()) __instance._customInspectorValues = inspectorValuesFromData;
         }
     }
 }

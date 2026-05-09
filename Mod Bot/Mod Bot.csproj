@@ -50,7 +50,21 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Internal\LevelEditor\CustomObjectsList.cs" />
+    <Compile Include="Internal\LevelEditor\LevelEditorDisableRendererAndCollission.cs" />
+    <Compile Include="Internal\LevelEditor\LevelEditorMissingObject.cs" />
+    <Compile Include="Internal\LevelEditor\LevelObjectPath.cs" />
+    <Compile Include="Internal\Patches\CustomInspectorValue_Patch.cs" />
     <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorBaseTrigger_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorDataManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelObjectsLibraryManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorObjectPlacementManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LibraryListItemDisplay_Patch.cs" />
+    <Compile Include="Internal\Patches\LocalizationManager_Patch.cs" />
+    <Compile Include="Internal\Patches\ObjectPlacedInLevel_Patch.cs" />
+    <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
+    <Compile Include="Internal\TypeMigrationSerializationBinder.cs" />
     <Compile Include="Internal\UI\GenericLoadingBar.cs" />
     <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
@@ -63,7 +77,6 @@
     <Compile Include="Internal\Patches\LevelEditorUI_Patch.cs" />
     <Compile Include="Internal\Patches\EscMenu_Patch.cs" />
     <Compile Include="Internal\Patches\FirstPersonMover_Patch.cs" />
-    <Compile Include="Internal\Patches\LevelManager_SpawnCurrentLevel_ReversePatch.cs" />
     <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
     <Compile Include="Internal\Patches\Resources_Patch.cs" />
     <Compile Include="Internal\Reflection\ConstructorInfoKey.cs" />
@@ -98,7 +111,7 @@
     <Compile Include="Internal\DebugLineDrawing.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
-    <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
+    <Compile Include="Internal\LevelEditor\CustomLevelEditorManager.cs" />
     <Compile Include="Internal\LevelEditor\Scriptable.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
@@ -125,7 +138,6 @@
     <Compile Include="Internal\UI\ModOptionsWindow.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
-    <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />
     <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
     <Compile Include="ModdedUpgrades\UpgradeAngleSetter.cs" />

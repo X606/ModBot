@@ -44,6 +44,8 @@ namespace InternalModBot
             modBotManagers.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
             modBotManagers.AddComponent<ModdedTwitchManager>();               // Handles twitch chat messages
 
+            CustomLevelEditorManager.Initialize();
+
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
                 initilizeUI(); // Initialize all custom UI
@@ -55,8 +57,6 @@ namespace InternalModBot
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
                 ModBotUIRoot.Instance.ConsoleUI.Animator.Play("hideConsole");
             }
-
-            ModBotCustomLevelEditorManager.Init();
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));

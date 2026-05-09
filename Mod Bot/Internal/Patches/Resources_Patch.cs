@@ -32,9 +32,14 @@ namespace InternalModBot
         [HarmonyPostfix]
         static Object Load_Postfix(Object __result, string path)
         {
-            Object overrideResource = ModBotCustomLevelEditorManager.GetResourceObject(path);
+            Object overrideResource = CustomLevelEditorManager.GetResourceObject(path);
 
-            if (overrideResource == null && ModsManager.Instance != null)
+            if (overrideResource != null)
+            {
+                return overrideResource;
+            }
+
+            if (ModsManager.Instance != null)
             {
                 overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
                 if (overrideResource != null)

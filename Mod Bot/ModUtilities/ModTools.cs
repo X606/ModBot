@@ -1,6 +1,8 @@
+using InternalModBot.LevelEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace ModLibrary
@@ -211,5 +213,35 @@ namespace ModLibrary
 
             return mindSpaceBodyParts;
         }
+
+        /// <summary>
+        /// Check if <see cref="ObjectPlacedInLevel"/> was added by one of the mods
+        /// </summary>
+        /// <param name="objectPlacedInLevel"></param>
+        /// <returns></returns>
+        public static bool IsCustomLevelObject(this ObjectPlacedInLevel objectPlacedInLevel)
+        {
+            return objectPlacedInLevel && objectPlacedInLevel.LevelObjectEntry != null && objectPlacedInLevel.LevelObjectEntry.IsCustomLevelObject();
+        }
+
+        /// <summary>
+        /// Check if <see cref="LevelObjectEntry"/> is related to a mod
+        /// </summary>
+        /// <param name="levelObjectEntry"></param>
+        /// <returns></returns>
+        public static bool IsCustomLevelObject(this LevelObjectEntry levelObjectEntry)
+        {
+            if (levelObjectEntry == null || string.IsNullOrEmpty(levelObjectEntry.PathUnderResources))
+                return false;
+
+            return CustomLevelEditorManager.IsPathToCustomObject(levelObjectEntry.PathUnderResources);
+        }
+
+        /// <summary>
+        /// Quickly creates a sprite from texture
+        /// </summary>
+        /// <param name="texture2D"></param>
+        /// <returns></returns>
+        public static Sprite ToSprite(this Texture2D texture2D) => texture2D ? Sprite.Create(texture2D, new Rect(0f, 0f, texture2D.width, texture2D.height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect) : null;
     }
 }
