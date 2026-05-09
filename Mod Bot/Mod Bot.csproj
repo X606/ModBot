@@ -56,7 +56,6 @@
     <Compile Include="Internal\LevelEditor\LevelObjectPath.cs" />
     <Compile Include="Internal\Patches\CustomInspectorValue_Patch.cs" />
     <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
-    <Compile Include="Internal\Patches\LevelEditorBaseTrigger_Patch.cs" />
     <Compile Include="Internal\Patches\LevelEditorDataManager_Patch.cs" />
     <Compile Include="Internal\Patches\LevelObjectsLibraryManager_Patch.cs" />
     <Compile Include="Internal\Patches\LevelEditorObjectPlacementManager_Patch.cs" />

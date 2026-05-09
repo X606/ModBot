@@ -22,11 +22,16 @@ namespace InternalModBot.LevelEditor
 
         private static Transform s_missingObjectPrefab;
 
+        private static bool s_hasInitialized;
+
         /// <summary>
-        /// Sets up the all custom level editor things
+        /// Sets up all custom level editor things
         /// </summary>
         internal static void Initialize()
         {
+            if (s_hasInitialized) return;
+            s_hasInitialized = true;
+
             GameObject scriptableObjectPrefab = InternalAssetBundleReferences.ModBot.GetObject("ScriptableObject");
             AddObjectAndTexture(new LevelObjectPath(null, "ScriptableObject"), scriptableObjectPrefab.transform,
                 InternalAssetBundleReferences.ModBot.GetObject<Texture2D>("script"),
@@ -37,12 +42,26 @@ namespace InternalModBot.LevelEditor
             scriptableObjectPrefab.AddComponent<LevelEditorComponentDescription>().Description = "Runs a bit of code when the level starts";
         }
 
+        /// <summary>
+        /// Adds object to level editor registry
+        /// </summary>
+        /// <param name="objectPath">Path the the object</param>
+        /// <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
+        /// <param name="textureFilePath">Path to preview image on disk</param>
+        /// <param name="components">Components to add</param>
         public static void AddObject(LevelObjectPath objectPath, Transform prefab, string textureFilePath = null, Type[] components = null)
         {
             addObject(objectPath, prefab, components, out string textureLoadPath);
             if (!string.IsNullOrEmpty(textureFilePath)) AddTexture(textureFilePath, textureLoadPath);
         }
 
+        /// <summary>
+        /// Adds object to level editor registry
+        /// </summary>
+        /// <param name="objectPath">Path the the object</param>
+        /// <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
+        /// <param name="texture">Preview image</param>
+        /// <param name="components">Components to add</param>
         public static void AddObjectAndTexture(LevelObjectPath objectPath, Transform prefab, Texture2D texture = null, Type[] components = null)
         {
             addObject(objectPath, prefab, components, out string textureLoadPath);
@@ -56,7 +75,8 @@ namespace InternalModBot.LevelEditor
 
             ensureContainerIsPresent();
 
-            transform.SetParent(s_objectContainer);
+            if(transform.gameObject.scene.name != null) transform.SetParent(s_objectContainer); // reparent if the "prefab" is not an actual prefab
+
             transform.name = objectPath.ObjectName;
             if (componentTypes != null)
                 foreach (Type type in componentTypes)
@@ -157,6 +177,11 @@ namespace InternalModBot.LevelEditor
             return null;
         }
 
+        /// <summary>
+        /// Binds old path to the new one
+        /// </summary>
+        /// <param name="oldPath"></param>
+        /// <param name="newPath"></param>
         public static void AddPathOverride(LevelObjectPath oldPath, LevelObjectPath newPath)
         {
             addPathOverride(GetFullPath(false, oldPath), GetFullPath(false, newPath));

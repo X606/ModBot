@@ -1,7 +1,7 @@
 ﻿namespace InternalModBot.LevelEditor
 {   
     /// <summary>
-    /// Represents a path under resources folder to an object
+    /// Represents a path under Mods folder to an object
     /// </summary>
     public readonly struct LevelObjectPath
     {
