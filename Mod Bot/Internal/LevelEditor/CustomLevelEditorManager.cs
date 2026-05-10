@@ -75,7 +75,7 @@ namespace InternalModBot.LevelEditor
 
             ensureContainerIsPresent();
 
-            if(transform.gameObject.scene.name != null) transform.SetParent(s_objectContainer); // reparent if the "prefab" is not an actual prefab
+            if (transform.gameObject.scene.name != null) transform.SetParent(s_objectContainer); // reparent if the "prefab" is not an actual prefab
 
             transform.name = objectPath.ObjectName;
             if (componentTypes != null)
@@ -234,6 +234,29 @@ namespace InternalModBot.LevelEditor
         internal static bool IsPathToCustomObject(string path) => path.StartsWith("Prefabs/LevelObjects/Mods");
 
         internal static List<LevelObjectEntry> GetLevelObjectEntries() => s_customObjects;
+
+        internal static void AddMissingEntries(List<LevelObjectEntry> entriesToAdd, List<LevelObjectEntry> allEntries)
+        {
+            foreach (LevelObjectEntry entry in entriesToAdd)
+            {
+                bool isPresent = false;
+
+                for (int i = allEntries.Count - 1; i >= 0; i--) // check entries from the end, where custom entries are located
+                {
+                    LevelObjectEntry existingEntry = allEntries[i];
+                    if (entry.PathUnderResources == existingEntry.PathUnderResources)
+                    {
+                        isPresent = true;
+                        break;
+                    }
+                }
+
+                if (!isPresent)
+                {
+                    allEntries.Add(entry);
+                }
+            }
+        }
 
         private static void ensureContainerIsPresent()
         {

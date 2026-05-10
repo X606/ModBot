@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\ModLibrary.xml</DocumentationFile>
+    <DocumentationFile>bin\ModLibrary.xml</DocumentationFile>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -39,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\ModLibrary.xml</DocumentationFile>
+    <DocumentationFile>bin\ModLibrary.xml</DocumentationFile>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
@@ -364,8 +364,8 @@
     <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
 set "modlibraryxml=$(TargetName).xml"
 
-copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
-copy /Y "$(TargetDir)%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
+copy /y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
+copy /y "$(TargetDir)/../%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

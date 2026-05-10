@@ -13,8 +13,9 @@ namespace InternalModBot
         {
             List<LevelObjectEntry> list = CustomLevelEditorManager.GetLevelObjectEntries();
 
-            __instance._levelObjects.AddRange(list);
-            __instance._visibleLevelObjects.AddRange(list);
+            // to be extra sure custom entries dont get duplicated by some mod
+            CustomLevelEditorManager.AddMissingEntries(list, __instance._levelObjects);
+            CustomLevelEditorManager.AddMissingEntries(list, __instance._visibleLevelObjects);
         }
     }
 }
