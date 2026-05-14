@@ -1928,6 +1928,14 @@
             Called when the mod gets loaded or enabled after previously being disabled
             </summary>
         </member>
+        <member name="M:ModLibrary.Mod.OnResourcesLoad(System.String,System.Type)">
+            <summary>
+            Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="M:UnityEngine.Resources.Load(System.String,System.Type)"/> instead.
+            </summary>
+            <param name="path">The path specified</param>
+            <param name="objectType">The subtype of <see cref="T:UnityEngine.Object"/></param>
+            <returns></returns>
+        </member>
         <member name="M:ModLibrary.Mod.OnResourcesLoad(System.String)">
             <summary>
             Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="M:UnityEngine.Resources.Load(System.String)"/> instead.
@@ -4344,6 +4352,11 @@
             Adds custom objects to level editor
             </summary>
         </member>
+        <member name="F:InternalModBot.LevelEditor.CustomLevelEditorManager.CUSTOM_OBJECTS_FOLDER_PATH">
+            <summary>
+            Path to custom objects folder under resources folder
+            </summary>
+        </member>
         <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.Initialize">
             <summary>
             Sets up all custom level editor things
@@ -4369,7 +4382,7 @@
         </member>
         <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.AddPathOverride(InternalModBot.LevelEditor.LevelObjectPath,InternalModBot.LevelEditor.LevelObjectPath)">
             <summary>
-            Binds old path to the new one
+            Binds the old path to the new one
             </summary>
             <param name="oldPath"></param>
             <param name="newPath"></param>
@@ -4436,7 +4449,7 @@
         </member>
         <member name="M:InternalModBot.Resources_Load_Patch.TargetMethod">
             <summary>
-            Finds <see cref="M:UnityEngine.Resources.Load(System.String)"/>
+            Finds <see cref="M:UnityEngine.Resources.Load(System.String,System.Type)"/>
             </summary>
             <returns></returns>
         </member>
@@ -6274,6 +6287,13 @@
             Calls this method on all mods
             </summary>
             <param name="moddedEvent"></param>
+        </member>
+        <member name="M:InternalModBot.PassOnToModsManager.OnResourcesLoad(System.String,System.Type)">
+            <summary>
+            Calls this method on all mods
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.OnResourcesLoad(System.String)">
             <summary>

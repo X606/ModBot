@@ -9,7 +9,7 @@ namespace InternalModBot
     static class Resources_Load_Patch
     {
         /// <summary>
-        /// Finds <see cref="Resources.Load(string)"/>
+        /// Finds <see cref="Resources.Load(string, System.Type)"/>
         /// </summary>
         /// <returns></returns>
         static MethodBase TargetMethod()
@@ -20,7 +20,7 @@ namespace InternalModBot
                 if (!method.IsGenericMethod && method.Name == nameof(Resources.Load))
                 {
                     ParameterInfo[] parameters = method.GetParameters();
-                    if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
+                    if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string) && parameters[1].ParameterType == typeof(System.Type))
                     {
                         return method;
                     }
@@ -30,9 +30,23 @@ namespace InternalModBot
         }
 
         [HarmonyPostfix]
-        static Object Load_Postfix(Object __result, string path)
+        static Object Load_Postfix(Object __result, string path, System.Type systemTypeInstance)
         {
-            Object overrideResource = CustomLevelEditorManager.GetResourceObject(path);
+            Object overrideResource;
+
+            // get transform or preview image of level editor custom object
+            if (systemTypeInstance == typeof(Transform))
+            {
+                overrideResource = CustomLevelEditorManager.GetTransform(path);
+            }
+            else if (systemTypeInstance == typeof(Texture2D))
+            {
+                overrideResource = CustomLevelEditorManager.GetTexture(path);
+            }
+            else
+            {
+                overrideResource = null;
+            }
 
             if (overrideResource != null)
             {
@@ -41,7 +55,13 @@ namespace InternalModBot
 
             if (ModsManager.Instance != null)
             {
-                overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
+                PassOnToModsManager passOnMod = ModsManager.Instance.PassOnMod;
+                overrideResource = passOnMod.OnResourcesLoad(path, systemTypeInstance);
+                if (overrideResource == null)
+                {
+                    overrideResource = passOnMod.OnResourcesLoad(path);
+                }
+
                 if (overrideResource != null)
                 {
                     return overrideResource;
@@ -50,24 +70,5 @@ namespace InternalModBot
 
             return __result;
         }
-
-        /* Harmony REALLY does not like generic methods, I have given up on trying to make this work, it will continue being in Injector.exe
-        [ExtraInjectionData(Namespace = "UnityEngine", HasGenericParameters = true, GenericParameterTypes = new Type[] { typeof(UnityEngine.Object) }, ArgumentTypes = new Type[] { typeof(string) })]
-        public static UnityEngine.Object Resources_Load_Postfix_T(UnityEngine.Object __result, string path)
-        {
-            UnityEngine.Object moddedResource = LevelEditorObjectAdder.GetObjectData(path);
-            if (moddedResource != null)
-                return moddedResource;
-
-            if (ModsManager.Instance != null)
-            {
-                moddedResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
-                if (moddedResource != null)
-                    return moddedResource;
-            }
-
-            return __result;
-        }
-        */
     }
 }

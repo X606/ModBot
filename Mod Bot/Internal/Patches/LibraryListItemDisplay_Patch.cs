@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
-using InternalModBot.LevelEditor;
 using ModLibrary;
-using System.Runtime.Serialization;
 using UnityEngine;
 
 namespace InternalModBot
@@ -11,18 +9,9 @@ namespace InternalModBot
     {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(LibraryListItemDisplay.PNGPathToSprite))]
-        private static bool PNGPathToSprite_Prefix(ref Sprite __result, string previewPathUnderResources)
+        private static bool PNGPathToSprite_Prefix(ref Sprite __result, string previewPathUnderResources) // makes the game not crash if some object doesn't have a preview image
         {
-            Texture2D texture;
-            if (CustomLevelEditorManager.HasTexture(previewPathUnderResources))
-            {
-                texture = CustomLevelEditorManager.GetTexture(previewPathUnderResources);
-            }
-            else
-            {
-                texture = Resources.Load<Texture2D>(previewPathUnderResources.Replace(".png", ""));
-            }
-
+            Texture2D texture = Resources.Load<Texture2D>(previewPathUnderResources.Replace(".png", ""));
             if (texture == null)
             {
                 __result = null;

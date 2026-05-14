@@ -15,24 +15,14 @@ namespace InternalModBot
             string modName = null;
             string path = objectPlacedLevelObjectEntry.PathUnderResources;
 
-            Debug.Log($"LOADING: {path}");
-
             // try load the prefab
-            Transform transform;
-            if (CustomLevelEditorManager.HasTransform(path))
+            Transform transform = Resources.Load<Transform>(path);
+            if (transform == null)
             {
-                transform = CustomLevelEditorManager.GetTransform(path);
-            }
-            else
-            {
-                transform = Resources.Load<Transform>(path);
-                if (transform == null)
+                string newPath = LevelObjectsLibraryManager.Instance.GetRenamedPath(path);
+                if (path != newPath)
                 {
-                    string newPath = LevelObjectsLibraryManager.Instance.GetRenamedPath(path);
-                    if (path != newPath)
-                    {
-                        transform = Resources.Load<Transform>(newPath);
-                    }
+                    transform = Resources.Load<Transform>(newPath);
                 }
             }
 

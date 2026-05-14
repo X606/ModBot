@@ -11,6 +11,11 @@ namespace InternalModBot.LevelEditor
     /// </summary>
     public static class CustomLevelEditorManager
     {
+        /// <summary>
+        /// Path to custom objects folder under resources folder
+        /// </summary>
+        public const string CUSTOM_OBJECTS_FOLDER_PATH = "Prefabs/LevelObjects/Mods";
+
         private static readonly Dictionary<string, Texture2D> s_textures = new Dictionary<string, Texture2D>();
         private static readonly Dictionary<string, Transform> s_objectTransforms = new Dictionary<string, Transform>();
 
@@ -30,16 +35,17 @@ namespace InternalModBot.LevelEditor
         internal static void Initialize()
         {
             if (s_hasInitialized) return;
-            s_hasInitialized = true;
 
             GameObject scriptableObjectPrefab = InternalAssetBundleReferences.ModBot.GetObject("ScriptableObject");
-            AddObjectAndTexture(new LevelObjectPath(null, "ScriptableObject"), scriptableObjectPrefab.transform,
-                InternalAssetBundleReferences.ModBot.GetObject<Texture2D>("script"),
-                null);
+            Texture2D scriptableObjectImage = InternalAssetBundleReferences.ModBot.GetObject<Texture2D>("script");
+            AddObjectAndTexture(new LevelObjectPath(null, "ScriptableObject"), scriptableObjectPrefab.transform, scriptableObjectImage, null);
 
+            // add components after adding object so they dont activate early
             scriptableObjectPrefab.AddComponent<Scriptable>();
             scriptableObjectPrefab.AddComponent<LevelEditorToolRestriction>().DisallowedTools = new List<LevelEditorToolType>() { LevelEditorToolType.Rotate, LevelEditorToolType.Scale };
             scriptableObjectPrefab.AddComponent<LevelEditorComponentDescription>().Description = "Runs a bit of code when the level starts";
+
+            s_hasInitialized = true;
         }
 
         /// <summary>
@@ -52,7 +58,7 @@ namespace InternalModBot.LevelEditor
         public static void AddObject(LevelObjectPath objectPath, Transform prefab, string textureFilePath = null, Type[] components = null)
         {
             addObject(objectPath, prefab, components, out string textureLoadPath);
-            if (!string.IsNullOrEmpty(textureFilePath)) AddTexture(textureFilePath, textureLoadPath);
+            if (!string.IsNullOrEmpty(textureFilePath)) LoadTexture(textureFilePath, textureLoadPath);
         }
 
         /// <summary>
@@ -91,20 +97,6 @@ namespace InternalModBot.LevelEditor
             });
         }
 
-        internal static bool HasTransform(string path)
-        {
-            string actualPath;
-            if (HasPathOverride(path))
-            {
-                actualPath = GetObjectPathOverride(path);
-            }
-            else
-            {
-                actualPath = path;
-            }
-            return s_objectTransforms.ContainsKey(actualPath);
-        }
-
         internal static Transform GetTransform(string path)
         {
             string actualPath;
@@ -116,19 +108,19 @@ namespace InternalModBot.LevelEditor
             {
                 actualPath = path;
             }
-            return s_objectTransforms[actualPath];
+            return s_objectTransforms.ContainsKey(actualPath) ? s_objectTransforms[actualPath] : null;
         }
 
-        internal static void AddTexture(string path, string resourcePath)
+        internal static void LoadTexture(string pathToFileOnDisk, string resourcePath)
         {
             if (!s_textures.ContainsKey(resourcePath))
             {
                 s_textures.Add(resourcePath, null);
-                _ = StaticCoroutineRunner.StartStaticCoroutine(addTextureCoroutine(path, resourcePath));
+                _ = StaticCoroutineRunner.StartStaticCoroutine(loadTextureCoroutine(pathToFileOnDisk, resourcePath));
             }
         }
 
-        internal static IEnumerator addTextureCoroutine(string path, string resourcePath)
+        internal static IEnumerator loadTextureCoroutine(string path, string resourcePath)
         {
             using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture("file://" + path))
             {
@@ -159,26 +151,10 @@ namespace InternalModBot.LevelEditor
             s_textures.Add(resourcePath, texture2D);
         }
 
-
-        internal static bool HasTexture(string path) => s_textures.ContainsKey(path);
-
-        internal static Texture2D GetTexture(string path) => s_textures[path];
-
-        internal static UnityEngine.Object GetResourceObject(string path)
-        {
-            if (HasTexture(path))
-            {
-                return GetTexture(path);
-            }
-            else if (HasTransform(path))
-            {
-                return GetTransform(path);
-            }
-            return null;
-        }
+        internal static Texture2D GetTexture(string path) => s_textures.ContainsKey(path) ? s_textures[path] : null;
 
         /// <summary>
-        /// Binds old path to the new one
+        /// Binds the old path to the new one
         /// </summary>
         /// <param name="oldPath"></param>
         /// <param name="newPath"></param>
@@ -231,7 +207,7 @@ namespace InternalModBot.LevelEditor
             return transform;
         }
 
-        internal static bool IsPathToCustomObject(string path) => path.StartsWith("Prefabs/LevelObjects/Mods");
+        internal static bool IsPathToCustomObject(string path) => path.StartsWith(CUSTOM_OBJECTS_FOLDER_PATH);
 
         internal static List<LevelObjectEntry> GetLevelObjectEntries() => s_customObjects;
 

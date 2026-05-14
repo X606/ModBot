@@ -372,6 +372,34 @@ namespace InternalModBot
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
+        protected internal override UnityEngine.Object OnResourcesLoad(string path, Type objectType)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                UnityEngine.Object obj;
+                try
+                {
+                    obj = mods[i].OnResourcesLoad(path, objectType);
+                }
+                catch (Exception exc)
+                {
+                    obj = null;
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at OnResourcesLoad(string path, Type objectType).\n", exc)));
+                }
+
+                if (obj != null)
+                    return obj;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         protected internal override UnityEngine.Object OnResourcesLoad(string path)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
@@ -385,7 +413,7 @@ namespace InternalModBot
                 catch (Exception exc)
                 {
                     obj = null;
-                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnResourcesLoad)}.\n", exc)));
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at OnResourcesLoad(string path).\n", exc)));
                 }
 
                 if (obj != null)

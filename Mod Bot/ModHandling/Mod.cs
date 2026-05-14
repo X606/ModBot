@@ -205,11 +205,23 @@ namespace ModLibrary
         }
 
         /// <summary>
+        /// Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="Resources.Load(string, System.Type)"/> instead.
+        /// </summary>
+        /// <param name="path">The path specified</param>
+        /// <param name="objectType">The subtype of <see cref="Object"/></param>
+        /// <returns></returns>
+        protected internal virtual Object OnResourcesLoad(string path, System.Type objectType)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Will be called just before anything tries to load something from the Resources folder. If this returns <see langword="null"/> it will continue like normal, but if this returns anything else than <see langword="null"/> that will be returned by <see cref="Resources.Load(string)"/> instead.
         /// </summary>
         /// <param name="path">The path specified</param>
         /// <returns></returns>
-        protected internal virtual UnityEngine.Object OnResourcesLoad(string path)
+        [System.Obsolete("Use OnResourcesLoad(string path, System.Type objectType) instead.")]
+        protected internal virtual Object OnResourcesLoad(string path)
         {
             return null;
         }
