@@ -50,10 +50,11 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
-    <Compile Include="LevelEditor\CustomObjectsList.cs" />
-    <Compile Include="LevelEditor\LevelEditorDisableRendererAndCollision.cs" />
-    <Compile Include="LevelEditor\LevelEditorMissingObject.cs" />
-    <Compile Include="LevelEditor\LevelObjectPath.cs" />
+    <Compile Include="ModHandling\ModDownloading\ModSpecialData.cs" />
+    <Compile Include="ModUtilities\LevelEditor\CustomObjectsList.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelEditorDisableRendererAndCollision.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelEditorMissingObject.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelObjectPath.cs" />
     <Compile Include="Internal\Patches\CustomInspectorValue_Patch.cs" />
     <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
     <Compile Include="Internal\Patches\LevelEditorDataManager_Patch.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Internal\UI\GenericLoadingBar.cs" />
     <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
-    <Compile Include="Internal\UI\ModInfoDisplay.cs" />
+    <Compile Include="Internal\UI\ModInfoCard.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
     <Compile Include="Internal\ModdedTwitchManager.cs" />
     <Compile Include="Internal\Patches\Character_Patch.cs" />
@@ -110,7 +111,7 @@
     <Compile Include="Internal\DebugLineDrawing.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
-    <Compile Include="LevelEditor\CustomLevelEditorManager.cs" />
+    <Compile Include="ModUtilities\LevelEditor\CustomLevelEditorManager.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotInputManager.cs" />

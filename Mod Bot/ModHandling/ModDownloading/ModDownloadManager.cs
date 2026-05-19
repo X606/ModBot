@@ -1,6 +1,7 @@
 ﻿using ModLibrary;
 using ModLibrary.YieldInstructions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,11 +17,15 @@ namespace InternalModBot
     /// </summary>
     internal static class ModsDownloadManager
     {
-        public const int LOAD_MODINFOS_TIMEOUT = 9;
+        public const int LOAD_MOD_INFOS_TIMEOUT = 10;
+
+        public const int LOAD_MOD_SPECIAL_DATAS_TIMEOUT = 10;
 
         public const bool DEBUG_PLACEHOLDER_MOD_INFOS = false;
 
         private static ModDownloadInfo _currentlyDownloadingMod;
+
+        private static readonly Dictionary<string, ModSpecialData> s_specialDatas = new Dictionary<string, ModSpecialData>();
 
         /// <summary>
         /// Get mod download information
@@ -92,7 +97,7 @@ namespace InternalModBot
                     yield return null;
                 }
 
-                if (webRequest.isHttpError || webRequest.isNetworkError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
                     endDownload();
 
@@ -132,12 +137,12 @@ namespace InternalModBot
         /// Download all mod infos from the server
         /// </summary>
         /// <param name="callback"></param>
-        public static void GetModInfos(Action<GetModInfosResult> callback)
+        public static void GetModInfos(Action<GetModInfosResult> callback, Action<GetModInfosProgress> progressCallback)
         {
-            StaticCoroutineRunner.StartStaticCoroutine(getModInfosCoroutine(callback));
+            StaticCoroutineRunner.StartStaticCoroutine(getModInfosCoroutine(callback, progressCallback));
         }
 
-        private static IEnumerator getModInfosCoroutine(Action<GetModInfosResult> callback)
+        private static IEnumerator getModInfosCoroutine(Action<GetModInfosResult> callback, Action<GetModInfosProgress> progressCallback)
         {
             if (DEBUG_PLACEHOLDER_MOD_INFOS)
             {
@@ -186,24 +191,145 @@ namespace InternalModBot
 
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getAllModInfos"))
             {
-                webRequest.timeout = LOAD_MODINFOS_TIMEOUT;
+                webRequest.timeout = LOAD_MOD_INFOS_TIMEOUT;
 
+                StaticCoroutineRunner.StartStaticCoroutine(reportDownloadProgressOverTimeCoroutine(webRequest, progressCallback));
                 yield return webRequest.SendWebRequest();
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
                     if (callback != null) callback(new GetModInfosResult()
                     {
-                        Error = webRequest.error + "\n(" + "Network: " + webRequest.isNetworkError + " HTTP: " + webRequest.isHttpError + ")"
+                        Error = webRequest.error
                     });
                     yield break;
                 }
 
+                if (progressCallback != null) progressCallback(new GetModInfosProgress()
+                {
+                    GettingSpecialData = true,
+                    Progress = 0f
+                });
+
+                int totalSpecialDatas = 0;
+                int numSpecialDatasToDownload = 0;
+                ModsHolder modsHolder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text);
+                foreach (ModInfo mod in modsHolder.Mods)
+                {
+                    if (s_specialDatas.ContainsKey(mod.UniqueID) && s_specialDatas[mod.UniqueID] != null) continue;
+
+                    totalSpecialDatas++;
+                    numSpecialDatasToDownload++;
+                    UpdateSpecialModData(mod.UniqueID, delegate (ModSpecialData data)
+                    {
+                        numSpecialDatasToDownload--;
+
+                        if (progressCallback != null) progressCallback(new GetModInfosProgress()
+                        {
+                            GettingSpecialData = true,
+                            Progress = (totalSpecialDatas - numSpecialDatasToDownload) / (float)totalSpecialDatas
+                        });
+                    });
+                }
+
+                float timeout = Time.unscaledTime + LOAD_MOD_SPECIAL_DATAS_TIMEOUT;
+                while (numSpecialDatasToDownload > 0 && Time.unscaledTime < timeout)
+                    yield return null;
+
                 if (callback != null) callback(new GetModInfosResult()
                 {
-                    Holder = JsonConvert.DeserializeObject<ModsHolder>(webRequest.downloadHandler.text)
+                    Holder = modsHolder
                 });
             }
+            yield break;
+        }
+
+        private static IEnumerator reportDownloadProgressOverTimeCoroutine(UnityWebRequest webRequest, Action<GetModInfosProgress> callback)
+        {
+            yield return null;
+
+            bool isDone = false;
+            float progress = 0f;
+            float timeToReportProgress = 0f;
+            while (!isDone)
+            {
+                try
+                {
+                    progress = webRequest.downloadProgress;
+                }
+                catch { }
+
+                if (Time.unscaledTime >= timeToReportProgress)
+                {
+                    timeToReportProgress = Time.unscaledTime + 0.1f;
+                    if (callback != null) callback(new GetModInfosProgress()
+                    {
+                        GettingSpecialData = false,
+                        Progress = progress
+                    });
+                }
+
+                yield return null;
+
+                try
+                {
+                    isDone = webRequest.isDone;
+                }
+                catch { }
+            }
+
+            yield break;
+        }
+
+        internal static ModSpecialData GetSpecialDataFor(string modId)
+        {
+            if (s_specialDatas.ContainsKey(modId))
+            {
+                return s_specialDatas[modId];
+            }
+            return null;
+        }
+
+        internal static void UpdateSpecialModData(string modId, Action<ModSpecialData> callback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(downloadSpecialModData(modId, delegate (ModSpecialData data)
+            {
+                if (data == null)
+                {
+                    if (callback != null) callback(null);
+                    return;
+                }
+
+                s_specialDatas[modId] = data;
+                if (callback != null) callback(data);
+            }));
+        }
+
+        internal static void DownloadSpecialModData(string modId, Action<ModSpecialData> callback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(downloadSpecialModData(modId, callback));
+        }
+
+        private static IEnumerator downloadSpecialModData(string modId, Action<ModSpecialData> callback)
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + modId))
+            {
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
+                {
+                    if (callback != null) callback(null);
+                    yield break;
+                }
+
+                ModSpecialData modSpecialData = new ModSpecialData
+                {
+                    Data = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text)
+                };
+
+                if (callback != null) callback(modSpecialData);
+            }
+            yield break;
         }
 
         /// <summary>
@@ -222,7 +348,7 @@ namespace InternalModBot
             GetModInfos(delegate (GetModInfosResult result)
             {
                 modInfosResult = result;
-            });
+            }, null);
 
             while (modInfosResult == null) yield return null;
 
@@ -350,6 +476,13 @@ namespace InternalModBot
             public string Error;
 
             public bool HasFailed() => !string.IsNullOrEmpty(Error);
+        }
+
+        public struct GetModInfosProgress
+        {
+            public bool GettingSpecialData;
+
+            public float Progress;
         }
 
         /// <summary>

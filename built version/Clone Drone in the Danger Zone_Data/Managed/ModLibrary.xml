@@ -1239,6 +1239,109 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager">
+            <summary>
+            Handles reading/writing modded level metadata in the level editor
+            </summary>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.IsCurrentlyEditingLevel">
+            <summary>
+            Returns if the level editor is active, and a level is loaded
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata">
+            <summary>
+            Gets the modded metadata in the current level owned by the caller mod instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata(LevelEditorLevelData)">
+            <summary>
+            Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
+            </summary>
+            <param name="level">The level to search for metadata</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata(LevelDescription)">
+            <summary>
+            Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
+            </summary>
+            <param name="level">The level to search for metadata</param>
+            <returns></returns>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod)">
+            <summary>
+            Gets the modded metadata in the current level owned by <paramref name="owner"/>
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod,LevelDescription)">
+            <summary>
+            Gets the modded metadata in <paramref name="levelDescription"/> owned by <paramref name="owner"/>
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
+            <param name="levelDescription">The level to search for metadata</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod,LevelEditorLevelData)">
+            <summary>
+            Gets the modded metadata in <paramref name="levelData"/> owned by <paramref name="owner"/>
+            </summary>
+            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
+            <param name="levelData">The level to search for metadata</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.TrySetMetadata(System.String,System.String)">
+            <summary>
+            Attempts to set the modded metadata of the current level open in the level editor
+            </summary>
+            <remarks>
+            Modded metadata is stored in the <see cref="T:LevelEditorLevelData"/> class as a <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>)
+            <br/>
+            This method uses the caller's ModID as the key in this <see cref="T:System.Collections.Generic.Dictionary`2"/>, and a json serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>) as its value, the <paramref name="key"/> and <paramref name="value"/> arguments are used as the key and value in this serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>
+            </remarks>
+            <param name="key">The key to store the <paramref name="value"/> with, must not be <see langword="null"/>, empty, or whitespace</param>
+            <param name="value">The value to store with the <paramref name="key"/>, can be any string value, including <see langword="null"/></param>
+            <returns>If the metadata of the current level was successfully set</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="key"/> is <see langword="null"/>, empty, or whitespace</exception>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.TryGetMetadata(System.String,System.String@)">
+            <summary>
+            Attempts to read the modded metadata of the current level that is either open in the level editor or currently being played
+            </summary>
+            <remarks>
+            Modded metadata is stored in the <see cref="T:LevelEditorLevelData"/> class as a <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>)
+            <br/>
+            This method uses the caller's ModID as the key in this <see cref="T:System.Collections.Generic.Dictionary`2"/>, and a json serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>) as its value, the <paramref name="key"/> and <paramref name="value"/> arguments are used as the key and value in this serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>
+            </remarks>
+            <param name="key">The key to read the stored value of, must not be <see langword="null"/>, empty, or whitespace</param>
+            <param name="value">The stored metadata value, or <see langword="null"/> if the operation was unsuccessful.</param>
+            <returns><see langword="true"/> if a value was successfully read from the level metadata, <see langword="false"/> if not</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="key"/> is <see langword="null"/>, empty, or whitespace</exception>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.TryGetMetadata(LevelDescription,System.String,System.String@)">
+            <summary>
+            Attempts to read a value of the modded metadata of a <see cref="T:LevelDescription"/>
+            </summary>
+            <param name="levelDescription">The level to read the metadata of</param>
+            <param name="key">The key to use when retrieving the metadata value</param>
+            <param name="value">The value stored in the metadata with the specified key</param>
+            <returns><see langword="true"/> if <paramref name="key"/> exists in the metadata of <paramref name="levelDescription"/>, and <see langword="false"/> if not, or the level data couldn't be loaded</returns>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelEditorModdedMetadataManager.TryGetMetadata(LevelEditorLevelData,System.String,System.String@)">
+            <summary>
+            Attempts to read a value of the modded metadata of a <see cref="T:LevelEditorLevelData"/>
+            </summary>
+            <param name="levelData">The level data to read the metadata of</param>
+            <param name="key">The key to use when retrieving the metadata value</param>
+            <param name="value">The value stored in the metadata with the specified key</param>
+            <returns><see langword="true"/> if <paramref name="key"/> exists in the metadata of <paramref name="levelData"/>, and <see langword="false"/> if not</returns>
+        </member>
         <member name="T:ModLibrary.LevelEditor.CustomLevelEditorManager">
             <summary>
             Adds custom objects to level editor
@@ -1394,109 +1497,6 @@
             <summary>
             Compare both the <see cref="F:HarmonyLib.CodeInstruction.opcode"/> and <see cref="F:HarmonyLib.CodeInstruction.operand"/> fields from both instances
             </summary>
-        </member>
-        <member name="T:ModLibrary.LevelEditorModdedMetadataManager">
-            <summary>
-            Handles reading/writing modded level metadata in the level editor
-            </summary>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.IsCurrentlyEditingLevel">
-            <summary>
-            Returns if the level editor is active, and a level is loaded
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata">
-            <summary>
-            Gets the modded metadata in the current level owned by the caller mod instance
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata(LevelEditorLevelData)">
-            <summary>
-            Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
-            </summary>
-            <param name="level">The level to search for metadata</param>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata(LevelDescription)">
-            <summary>
-            Gets the modded metadata in <paramref name="level"/> owned by the caller mod instance
-            </summary>
-            <param name="level">The level to search for metadata</param>
-            <returns></returns>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod)">
-            <summary>
-            Gets the modded metadata in the current level owned by <paramref name="owner"/>
-            </summary>
-            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod,LevelDescription)">
-            <summary>
-            Gets the modded metadata in <paramref name="levelDescription"/> owned by <paramref name="owner"/>
-            </summary>
-            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
-            <param name="levelDescription">The level to search for metadata</param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.GetMetadata(ModLibrary.Mod,LevelEditorLevelData)">
-            <summary>
-            Gets the modded metadata in <paramref name="levelData"/> owned by <paramref name="owner"/>
-            </summary>
-            <param name="owner">The <see cref="T:ModLibrary.Mod"/> that owns the metadata</param>
-            <param name="levelData">The level to search for metadata</param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentNullException"><paramref name="owner"/> is <see langword="null"/></exception>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.TrySetMetadata(System.String,System.String)">
-            <summary>
-            Attempts to set the modded metadata of the current level open in the level editor
-            </summary>
-            <remarks>
-            Modded metadata is stored in the <see cref="T:LevelEditorLevelData"/> class as a <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>)
-            <br/>
-            This method uses the caller's ModID as the key in this <see cref="T:System.Collections.Generic.Dictionary`2"/>, and a json serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>) as its value, the <paramref name="key"/> and <paramref name="value"/> arguments are used as the key and value in this serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>
-            </remarks>
-            <param name="key">The key to store the <paramref name="value"/> with, must not be <see langword="null"/>, empty, or whitespace</param>
-            <param name="value">The value to store with the <paramref name="key"/>, can be any string value, including <see langword="null"/></param>
-            <returns>If the metadata of the current level was successfully set</returns>
-            <exception cref="T:System.ArgumentException"><paramref name="key"/> is <see langword="null"/>, empty, or whitespace</exception>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.TryGetMetadata(System.String,System.String@)">
-            <summary>
-            Attempts to read the modded metadata of the current level that is either open in the level editor or currently being played
-            </summary>
-            <remarks>
-            Modded metadata is stored in the <see cref="T:LevelEditorLevelData"/> class as a <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>)
-            <br/>
-            This method uses the caller's ModID as the key in this <see cref="T:System.Collections.Generic.Dictionary`2"/>, and a json serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>(<see cref="T:System.String"/>, <see cref="T:System.String"/>) as its value, the <paramref name="key"/> and <paramref name="value"/> arguments are used as the key and value in this serialized <see cref="T:System.Collections.Generic.Dictionary`2"/>
-            </remarks>
-            <param name="key">The key to read the stored value of, must not be <see langword="null"/>, empty, or whitespace</param>
-            <param name="value">The stored metadata value, or <see langword="null"/> if the operation was unsuccessful.</param>
-            <returns><see langword="true"/> if a value was successfully read from the level metadata, <see langword="false"/> if not</returns>
-            <exception cref="T:System.ArgumentException"><paramref name="key"/> is <see langword="null"/>, empty, or whitespace</exception>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.TryGetMetadata(LevelDescription,System.String,System.String@)">
-            <summary>
-            Attempts to read a value of the modded metadata of a <see cref="T:LevelDescription"/>
-            </summary>
-            <param name="levelDescription">The level to read the metadata of</param>
-            <param name="key">The key to use when retrieving the metadata value</param>
-            <param name="value">The value stored in the metadata with the specified key</param>
-            <returns><see langword="true"/> if <paramref name="key"/> exists in the metadata of <paramref name="levelDescription"/>, and <see langword="false"/> if not, or the level data couldn't be loaded</returns>
-        </member>
-        <member name="M:ModLibrary.LevelEditorModdedMetadataManager.TryGetMetadata(LevelEditorLevelData,System.String,System.String@)">
-            <summary>
-            Attempts to read a value of the modded metadata of a <see cref="T:LevelEditorLevelData"/>
-            </summary>
-            <param name="levelData">The level data to read the metadata of</param>
-            <param name="key">The key to use when retrieving the metadata value</param>
-            <param name="value">The value stored in the metadata with the specified key</param>
-            <returns><see langword="true"/> if <paramref name="key"/> exists in the metadata of <paramref name="levelData"/>, and <see langword="false"/> if not</returns>
         </member>
         <member name="T:ModLibrary.InjectionPostfixTargetAttribute">
             <summary>
@@ -4440,7 +4440,7 @@
             <param name="update"></param>
             <param name="callback"></param>
         </member>
-        <member name="M:InternalModBot.ModsDownloadManager.GetModInfos(System.Action{InternalModBot.ModsDownloadManager.GetModInfosResult})">
+        <member name="M:InternalModBot.ModsDownloadManager.GetModInfos(System.Action{InternalModBot.ModsDownloadManager.GetModInfosResult},System.Action{InternalModBot.ModsDownloadManager.GetModInfosProgress})">
             <summary>
             Download all mod infos from the server
             </summary>
@@ -4477,7 +4477,7 @@
         </member>
         <member name="T:InternalModBot.ModsDownloadManager.GetModInfosResult">
             <summary>
-            Used by <see cref="M:InternalModBot.ModsDownloadManager.GetModInfos(System.Action{InternalModBot.ModsDownloadManager.GetModInfosResult})"/>
+            Used by <see cref="!:GetModInfos(Action&lt;GetModInfosResult&gt;)"/>
             </summary>
         </member>
         <member name="T:InternalModBot.ModsDownloadManager.DownloadModResult">

@@ -61,7 +61,7 @@ namespace InternalModBot
             {
                 yield return webRequest.SendWebRequest();
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
                     debug.Log(webRequest.error, Color.red);
                     upgrade.Icon = null;

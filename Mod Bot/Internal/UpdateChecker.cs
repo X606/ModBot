@@ -30,7 +30,7 @@ namespace InternalModBot
                 yield return modBotVersionRequest.SendWebRequest();
                 _hasChecked = true;
 
-                if (modBotVersionRequest.isNetworkError || modBotVersionRequest.isHttpError)
+                if (modBotVersionRequest.result != UnityWebRequest.Result.Success)
                     yield break;
 
                 string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version

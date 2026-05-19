@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace ModLibrary
+namespace ModLibrary.LevelEditor
 {
     /// <summary>
     /// Handles reading/writing modded level metadata in the level editor

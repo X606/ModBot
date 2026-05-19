@@ -47,7 +47,7 @@ namespace InternalModBot
 
                 _processingModImages.Remove(modInfo.UniqueID);
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
                     if (callback != null) callback(null);
                 }

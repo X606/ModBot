@@ -1,18 +1,16 @@
 ﻿using ModBotWebsiteAPI;
 using ModLibrary;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace InternalModBot
 {
-    internal class ModInfoDisplay : MonoBehaviour
+    internal class ModInfoCard : MonoBehaviour
     {
         private CanvasGroup _canvasGroup;
+        private CanvasRenderer _bgRenderer;
 
         private RawImage _thumbnail;
         private Transform _notVerifiedIcon;
@@ -32,34 +30,34 @@ namespace InternalModBot
         private bool _isFading;
         private int _prevLikeCount = -1;
 
-        private JsonObject _modInfoJsonObject;
         private ModInfo _remoteModInfo;
         private ModInfo _localModInfo;
-        private Dictionary<string, JToken> _specialData;
+        private ModSpecialData _specialData;
+
+        private bool _isDestroyed;
 
         public bool IsModInstalled => _localModInfo != null;
         public string ModName => _remoteModInfo.DisplayName;
         public bool CanInteractWithSpecialData => ModBotSignInUI.HasSignedIn && _remoteModInfo != null && !string.IsNullOrEmpty(_remoteModInfo.UniqueID);
 
-        private static ModsDownloadManager.ModDownloadInfo m_DownloadInfo;
-        public static bool IsDownloadingAMod(string id) => m_DownloadInfo != null && m_DownloadInfo.Info != null && id.Equals(m_DownloadInfo.Info.UniqueID);
+        private static ModsDownloadManager.ModDownloadInfo _downloadInfo;
+        public static bool IsDownloadingAMod(string id) => _downloadInfo != null && _downloadInfo.Info != null && id.Equals(_downloadInfo.Info.UniqueID);
 
-        public ModInfoDisplay Init(ModInfo info)
+        private void OnDestroy()
+        {
+            _isDestroyed = true;
+        }
+
+        public void Init(ModInfo info, ModSpecialData specialData)
         {
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
             _canvasGroup = base.GetComponent<CanvasGroup>();
             _remoteModInfo = info;
-
-            string description = info.Description;/*
-            if(description.Length > 70)
-            {
-                description = description.Remove(70) + "...";
-            }*/
+            _specialData = specialData;
 
             moddedObject.GetObject<Text>(1).text = "By " + info.Author;
             moddedObject.GetObject<Text>(2).text = info.DisplayName;
             moddedObject.GetObject<Text>(3).text = info.Description;
-            moddedObject.GetObject<Text>(3).text = description;
             moddedObject.GetObject<Button>(8).onClick.AddListener(CopyModID);
             moddedObject.GetObject<Button>(9).onClick.AddListener(OpenModOnWebsite);
             moddedObject.GetObject<Button>(7).onClick.AddListener(ShowDetails);
@@ -79,23 +77,22 @@ namespace InternalModBot
             _controlsBG = moddedObject.GetObject<Transform>(6);
             _notVerifiedIcon = moddedObject.GetObject<Transform>(16);
             _notVerifiedIcon.gameObject.SetActive(false);
+            _bgRenderer = moddedObject.GetObject<CanvasRenderer>(17);
             _initialized = true;
 
             base.gameObject.SetActive(true);
-            DoAnimation();
-            _ = StartCoroutine(downloadImageAsync("https://modbot.org/api?operation=getModImage&size=256x256&id=" + _remoteModInfo.UniqueID));
-            _ = StartCoroutine(downloadSpecialModData());
+            StartCoroutine(downloadImageAsync("https://modbot.org/api?operation=getModImage&size=256x256&id=" + _remoteModInfo.UniqueID));
             SetControlsBGVisible(false);
             refreshModIsInstalled();
             refreshSpecialData();
             refreshModIsBeingDownloaded();
-
-            return this;
         }
+
+        public bool IsOffScreen() => _bgRenderer.cull;
 
         private void downloadMod()
         {
-            if (!_initialized || m_DownloadInfo != null)
+            if (!_initialized || _downloadInfo != null)
             {
                 return;
             }
@@ -108,7 +105,7 @@ namespace InternalModBot
                     UniqueID = _remoteModInfo.UniqueID,
                     Version = _remoteModInfo.Version,
                 }, false, onModDownloaded);
-                m_DownloadInfo = ModsDownloadManager.GetDownloadingModInfo();
+                _downloadInfo = ModsDownloadManager.GetDownloadingModInfo();
                 refreshModIsBeingDownloaded();
             }, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
         }
@@ -137,7 +134,7 @@ namespace InternalModBot
 
         private static void onModDownloadedStatic()
         {
-            m_DownloadInfo = null;
+            _downloadInfo = null;
             ModBotUIRoot.Instance.ModList.ReloadList();
         }
 
@@ -154,7 +151,7 @@ namespace InternalModBot
                 _downloadButton.gameObject.SetActive(false);
                 _downloadedText.gameObject.SetActive(false);
                 _downloadProgressBar.gameObject.SetActive(true);
-                _downloadProgressBar.value = m_DownloadInfo.DownloadProgress;
+                _downloadProgressBar.value = _downloadInfo.DownloadProgress;
             }
         }
 
@@ -185,9 +182,20 @@ namespace InternalModBot
                 _likesCount.text = "?";
                 return;
             }
-            _likesCount.text = _specialData["Likes"].ToObject<string>();
-            _downloadCount.text = _specialData["Downloads"].ToObject<string>();
-            bool isVerified = _specialData["Verified"].ToObject<bool>();
+
+            _likesCount.text = _specialData.Likes.ToString();
+
+            int downloadCount = _specialData.Downloads;
+            if(downloadCount < 1000)
+            {
+                _downloadCount.text = downloadCount.ToString();
+            }
+            else
+            {
+                _downloadCount.text = $"{Mathf.FloorToInt(downloadCount / 1000f)}K";
+            }
+
+            bool isVerified = _specialData.Verified;
             if (!isVerified)
             {
                 _notVerifiedIcon.gameObject.SetActive(true);
@@ -203,41 +211,46 @@ namespace InternalModBot
             using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(url))
             {
                 yield return webRequest.SendWebRequest();
-                if (webRequest.isHttpError || webRequest.isNetworkError)
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
                     yield break;
 
                 Texture2D texture = (webRequest.downloadHandler as DownloadHandlerTexture).texture;
+                if (_isDestroyed)
+                {
+                    Destroy(texture);
+                    yield break;
+                }
+
                 _thumbnail.color = Color.white;
                 _thumbnail.texture = texture;
             }
         }
 
-        private IEnumerator downloadSpecialModData()
+        private void updateSpecialData()
         {
-            using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getSpecialModData&id=" + _remoteModInfo.UniqueID))
+            ModsDownloadManager.UpdateSpecialModData(_remoteModInfo.UniqueID, delegate (ModSpecialData modSpecialData)
             {
-                yield return webRequest.SendWebRequest();
+                if (modSpecialData == null || _isDestroyed) return;
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
-                    yield break;
-
-                _specialData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(webRequest.downloadHandler.text);
+                _specialData = modSpecialData;
                 refreshSpecialData();
-                _likeButton.interactable = CanInteractWithSpecialData;
 
-                if (_prevLikeCount != -1 && _prevLikeCount == _specialData["Likes"].ToObject<int>())
+                if (_prevLikeCount != -1 && _prevLikeCount == _specialData.Likes)
                 {
                     _prevLikeCount = -1;
                     _ = new Generic2ButtonDialogue("It seems like you have already liked the mod.", "I want to dislike the mod", UnLikeTheMod, "OK", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
                 }
-
-                yield break;
-            }
+            });
         }
 
-        public void DoAnimation()
+        public void MakeInvisible()
         {
             _canvasGroup.alpha = 0f;
+        }
+
+        public void FadeOut()
+        {
             _isFading = true;
         }
 
@@ -285,30 +298,25 @@ namespace InternalModBot
 
         public void LikeTheMod()
         {
-            if (!CanInteractWithSpecialData)
-            {
-                return;
-            }
-            _prevLikeCount = _specialData["Likes"].ToObject<int>();
+            if (!CanInteractWithSpecialData) return;
+
+            _prevLikeCount = _specialData.Likes;
             _likeButton.interactable = false;
             API.Like(_remoteModInfo.UniqueID, "true", onLikedTheMod);
         }
 
         public void UnLikeTheMod()
         {
-            if (!CanInteractWithSpecialData)
-            {
-                return;
-            }
-            _prevLikeCount = _specialData["Likes"].ToObject<int>();
+            if (!CanInteractWithSpecialData) return;
+
+            _prevLikeCount = _specialData.Likes;
             _likeButton.interactable = false;
             API.Like(_remoteModInfo.UniqueID, "false", onLikedTheMod);
         }
 
         private void onLikedTheMod(JsonObject callback)
         {
-            _modInfoJsonObject = callback;
-            _ = StartCoroutine(downloadSpecialModData());
+            updateSpecialData();
         }
 
         private void OnDisable()
@@ -333,7 +341,7 @@ namespace InternalModBot
                 }
             }
 
-            _downloadButton.interactable = !ModsDownloadManager.IsDownloadingAMod() || m_DownloadInfo == null;
+            _downloadButton.interactable = !ModsDownloadManager.IsDownloadingAMod() || _downloadInfo == null;
             if (!_downloadButton.interactable && Time.frameCount % 3 == 0)
             {
                 refreshModIsBeingDownloaded();
