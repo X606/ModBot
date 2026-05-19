@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 20146183f5734e64194ea07aecb94cb9
+guid: ecab6416fa8e7a54c915709774693306
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 21300000
-    second: Background-ModBot-16x16_0
+    second: BackgroundV2-ModBot-16x16_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 45
@@ -82,7 +82,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -95,12 +95,12 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Background-ModBot-16x16_0
+      name: BackgroundV2-ModBot-16x16_0
       rect:
         serializedVersion: 2
         x: 0
@@ -109,13 +109,13 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 3, y: 3, z: 3, w: 3}
+      border: {x: 4, y: 4, z: 4, w: 4}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: de0bc54e449e22a448d7152f8cb86fae
+      spriteID: be3df6dfbe2cfa04888c852a3fcd01f6
       internalID: 21300000
       vertices: []
       indices: 
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2951dc7517819d54a840f479cbabf988
+    spriteID: 881fc2dea5938104d9dec66abbd5867b
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Background-ModBot-16x16_0: 21300000
+      BackgroundV2-ModBot-16x16_0: 21300000
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

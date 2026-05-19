@@ -60,7 +60,7 @@ namespace InternalModBot
 
             _container = moddedObject.GetObject<Transform>(5);
 
-            _modsInfoLabel = moddedObject.GetObject<Text>(11);
+            _modsInfoLabel = moddedObject.GetObject<Text>(7);
 
             _instantiatedDisplays = new List<LocalModInfoDisplay>();
 

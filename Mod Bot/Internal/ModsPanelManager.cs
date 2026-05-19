@@ -136,7 +136,7 @@ namespace InternalModBot
             modBotLogo.SetSiblingIndex(siblingIndex+1);
             ((RectTransform)modBotLogo.GetChild(0)).sizeDelta = new Vector2(435f, 85f);
             Image image = modBotLogo.GetChild(0).GetComponent<Image>();
-            image.sprite = InternalAssetBundleReferences.ModBot.GetObject<Sprite>("modbot");
+            image.sprite = InternalAssetBundleReferences.ModBot.GetObject<Sprite>("ModBotLogo");
             image.color = Color.white;
 
             RectTransform modbotCreatorsLabel = (RectTransform)Instantiate(multiplePersonsLabel, container);

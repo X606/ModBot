@@ -1,35 +1,25 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.3.14f1
-CRC: 3518100700
+CRC: 3524215115
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e5c2ed18b3cda1f117e88ea22925b35d
+    Hash: 85c2e41e35fd9063bd5df4814bf21b85
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ca55927d12ed23cf3c77acb1cefb688b
+    Hash: c72deb8c225dcab9cfbdd8caae7bcd85
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: b7e141aade5ff177553154ced4986b85
+    Hash: 091ac3f8ac63b627bc59378594c5e052
 HashAppended: 0
 ClassTypes:
 - Class: 1
   Script: {instanceID: 0}
-- Class: 4
-  Script: {instanceID: 0}
 - Class: 21
-  Script: {instanceID: 0}
-- Class: 23
   Script: {instanceID: 0}
 - Class: 28
   Script: {instanceID: 0}
-- Class: 33
-  Script: {instanceID: 0}
-- Class: 43
-  Script: {instanceID: 0}
 - Class: 48
-  Script: {instanceID: 0}
-- Class: 65
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
@@ -99,6 +89,8 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 225
   Script: {instanceID: 0}
+- Class: 687078895
+  Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.PersistentCallGroup
@@ -142,25 +134,20 @@ Assets:
 - Assets/Prefabs/ModDownloadPage/ModDownloadInfo.prefab
 - Assets/Prefabs/ModBotSettings.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabel.prefab
-- Assets/Images/script.png
-- Assets/Images/lua.png
 - Assets/Materials/Line.mat
 - Assets/Prefabs/UpgradeScreenButtons/PreviousPageButton.prefab
-- Assets/Images/javascript.png
 - Assets/Prefabs/ModsMenu/ModItemPrefab.prefab
 - Assets/Prefabs/Console/ConsoleTextElement.prefab
 - Assets/Prefabs/ModOptions/PageButton.prefab
 - Assets/Prefabs/ModOptions/Checkbox.prefab
-- Assets/Images/modbot.png
+- Assets/Images/ModBotLogo.png
 - Assets/Prefabs/ModOptions/CustomKeyCodeInput.prefab
 - Assets/Prefabs/ModOptions/DropDown.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabelAndButton.prefab
 - Assets/Prefabs/ModOptions/Label.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsSingleButton.prefab
 - Assets/Prefabs/Canvas.prefab
-- Assets/Materials/ScriptableObject.mat
 - Assets/Prefabs/ModOptions/InputField.prefab
-- Assets/Prefabs/LevelEditor/ScriptableObject.prefab
 - Assets/Prefabs/ModOptions/Button.prefab
 - Assets/Prefabs/UpgradeScreenButtons/NextPageButton.prefab
 - Assets/Prefabs/ModOptions/Slider.prefab
