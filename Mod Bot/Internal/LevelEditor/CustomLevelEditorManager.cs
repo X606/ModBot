@@ -36,14 +36,7 @@ namespace InternalModBot.LevelEditor
         {
             if (s_hasInitialized) return;
 
-            GameObject scriptableObjectPrefab = InternalAssetBundleReferences.ModBot.GetObject("ScriptableObject");
-            Texture2D scriptableObjectImage = InternalAssetBundleReferences.ModBot.GetObject<Texture2D>("script");
-            AddObjectAndTexture(new LevelObjectPath(null, "ScriptableObject"), scriptableObjectPrefab.transform, scriptableObjectImage, null);
-
-            // add components after adding object so they dont activate early
-            scriptableObjectPrefab.AddComponent<Scriptable>();
-            scriptableObjectPrefab.AddComponent<LevelEditorToolRestriction>().DisallowedTools = new List<LevelEditorToolType>() { LevelEditorToolType.Rotate, LevelEditorToolType.Scale };
-            scriptableObjectPrefab.AddComponent<LevelEditorComponentDescription>().Description = "Runs a bit of code when the level starts";
+            AddObjectAndTexture(new LevelObjectPath(null, "TempObject"), new GameObject("CustomLevelEditorObject").transform, null, null); // todo: replace it with something better
 
             s_hasInitialized = true;
         }

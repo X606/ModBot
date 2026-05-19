@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
-using InternalModBot.Scripting;
-using ModBotWebsiteAPI;
 using ModLibrary;
-using Rewired;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -126,7 +123,7 @@ namespace InternalModBot
                            "listpatches\n" +
                            "help\n" +
                            "getplayfabids [copy ids: true, false]\n" +
-                           "viewlogs\n" + 
+                           "viewlogs\n" +
                            "savefolder"
 
                            , Color.yellow);
@@ -134,7 +131,7 @@ namespace InternalModBot
                     }
                 case "getplayfabids":
                     {
-                        var usage = "Usage: getplayfabids [true, false] \ntrue - will copy the results into clipboard, false - won't";
+                        string usage = "Usage: getplayfabids [true, false] \ntrue - will copy the results into clipboard, false - won't";
                         bool? shouldCopy = null;
                         if (subCommands.Length < 2 || subCommands.Length > 2)
                         {
@@ -156,13 +153,13 @@ namespace InternalModBot
                             return;
                         }
 
-                        var players = CharacterTracker.Instance.GetAllPlayers();
-                        var namesAndIds = new StringBuilder();
+                        List<FirstPersonMover> players = CharacterTracker.Instance.GetAllPlayers();
+                        StringBuilder namesAndIds = new StringBuilder();
                         debug.Log("\n");
                         for (int i = 0; i < players.Count; i++)
                         {
                             FirstPersonMover player = players[i];
-                            var playfabID = player.GetPlayFabID();
+                            string playfabID = player.GetPlayFabID();
 
                             MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(playfabID).GetOrPrepareSafeDisplayName(delegate (string displayName)
                             {
@@ -298,17 +295,6 @@ namespace InternalModBot
         public static bool GetIsIgnoringCrashes()
         {
             return _isIgnoringCrashes;
-        }
-
-        [HarmonyPatch]
-        static class Patches
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
-            static bool ErrorManager_HandleLog_Prefix()
-            {
-                return !GetIsIgnoringCrashes();
-            }
         }
     }
 }

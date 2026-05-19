@@ -20,6 +20,7 @@ namespace InternalModBot
                 return true;
             }
         }
+
         [HarmonyPrefix]
         [HarmonyPatch(nameof(LevelEditorUI.AreAnyDialogsOpen))]
         static bool AreAnyDialogsOpen_Prefix(ref bool __result)

@@ -2,7 +2,7 @@
 
 namespace InternalModBot
 {
-    public class LevelEditorMissingObject : MonoBehaviour
+    internal class LevelEditorMissingObject : MonoBehaviour
     {
     }
 }

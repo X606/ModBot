@@ -7,6 +7,13 @@ namespace InternalModBot
     static class ErrorManager_Patch
     {
         [HarmonyPrefix]
+        [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
+        static bool ErrorManager_HandleLog_Prefix()
+        {
+            return !IgnoreCrashesManager.GetIsIgnoringCrashes();
+        }
+
+        [HarmonyPrefix]
         [HarmonyPatch(nameof(ErrorManager.SendDataToLoggly))]
         static void SendDataToLoggly_Prefix(WWWForm form)
         {
