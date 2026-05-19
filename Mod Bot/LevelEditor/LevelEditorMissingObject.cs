@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace InternalModBot
+namespace ModLibrary.LevelEditor
 {
     internal class LevelEditorMissingObject : MonoBehaviour
     {

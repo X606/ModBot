@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.3.14f1
-CRC: 3524215115
+CRC: 3253249176
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 85c2e41e35fd9063bd5df4814bf21b85
+    Hash: 6f71a4643151a3bfe16be160ef4fc275
   TypeTreeHash:
     serializedVersion: 2
     Hash: c72deb8c225dcab9cfbdd8caae7bcd85
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 091ac3f8ac63b627bc59378594c5e052
+    Hash: e3eaa9a7952671d742556bab0eb839c0
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -131,7 +131,6 @@ SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.Toggle/ToggleEvent
 Assets:
-- Assets/Prefabs/ModDownloadPage/ModDownloadInfo.prefab
 - Assets/Prefabs/ModBotSettings.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabel.prefab
 - Assets/Materials/Line.mat

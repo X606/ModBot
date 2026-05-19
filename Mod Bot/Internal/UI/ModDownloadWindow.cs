@@ -1,11 +1,9 @@
-﻿using BestHTTP.SocketIO;
-using ModLibrary;
+﻿using ModLibrary;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace InternalModBot

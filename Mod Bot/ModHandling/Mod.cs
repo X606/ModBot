@@ -87,14 +87,6 @@ namespace ModLibrary
         }
 
         /// <summary>
-        /// Called once in the entire session right after <see cref="OnModLoaded"/>. Use <see cref="InternalModBot.LevelEditor.CustomLevelEditorManager"/> to add custom level editor objects
-        /// </summary>
-        protected internal virtual void AddLevelEditorObjects()
-        {
-
-        }
-
-        /// <summary>
         /// Called at the start of <see cref="ObjectPlacedInLevel.Initialize(Transform)"/>
         /// </summary>
         /// <param name="objectPlacedInLevel"></param>
@@ -240,6 +232,14 @@ namespace ModLibrary
         /// </summary>
         protected internal virtual void OnModLoaded()
         {
+        }
+
+        /// <summary>
+        /// Called right after <see cref="OnModLoaded"/> once in the entire session. Can be used for making persistent changes to the game instance
+        /// </summary>
+        protected internal virtual void OnModLoadedFirstTime()
+        {
+
         }
 
         /// <summary>

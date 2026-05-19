@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-namespace InternalModBot.LevelEditor
+namespace ModLibrary.LevelEditor
 {
-    internal class LevelEditorDisableRendererAndCollission : MonoBehaviour
+    /// <summary>
+    /// Disables <see cref="Collider"/> and <see cref="Renderer"/> components outside of the level editor
+    /// </summary>
+    public class LevelEditorDisableRendererAndCollision : MonoBehaviour
     {
         private void Start()
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace InternalModBot.LevelEditor
+namespace ModLibrary.LevelEditor
 {
     /// <summary>
     /// Adds custom objects to level editor
@@ -193,7 +193,7 @@ namespace InternalModBot.LevelEditor
             gameObject.transform.SetParent(s_objectContainer);
 
             gameObject.AddComponent<LevelEditorMissingObject>();
-            gameObject.AddComponent<LevelEditorDisableRendererAndCollission>();
+            gameObject.AddComponent<LevelEditorDisableRendererAndCollision>();
 
             Transform transform = gameObject.transform;
             s_missingObjectPrefab = transform;

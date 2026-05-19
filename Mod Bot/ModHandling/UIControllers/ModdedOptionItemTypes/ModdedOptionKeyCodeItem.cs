@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,14 +42,14 @@ namespace InternalModBot
             });
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is int intValue && intValue != (int)DefaultValue)
+            if (loadedValue != null && loadedValue is int intValue && intValue != (int)DefaultValue)
                 keyCodeInput.SelectedKey = (KeyCode)intValue;
 
             keyCodeInput.GetComponent<ModdedObject>().GetObject<Text>(2).text = DisplayName;
 
             applyCustomRect(keyCodeInput.gameObject);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(keyCodeInput);
         }
 

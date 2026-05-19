@@ -1309,7 +1309,7 @@ namespace ModLibrary
             ConstructorInfo constructorInfo = findConstructorRecursive(constructorIdentifier, flags, alwaysMatchIfNoArguments);
             if (throwIfMissing && constructorInfo is null)
                 throw new MissingMethodException(constructorIdentifier.ReflectedType.FullName, constructorIdentifier.MemberName);
-            
+
             return constructorInfo;
         }
 
@@ -1487,7 +1487,7 @@ namespace ModLibrary
             Type nestedType = typeIdentifier.ReflectedType.GetNestedType(typeIdentifier.MemberName, flags);
             if (throwIfMissing && nestedType is null)
                 throw new MissingMemberException(typeIdentifier.ReflectedType.FullName, typeIdentifier.MemberName);
-            
+
             return nestedType;
         }
 

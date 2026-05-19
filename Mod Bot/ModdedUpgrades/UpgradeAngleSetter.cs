@@ -1,13 +1,10 @@
-﻿using System;
+﻿using ModLibrary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -43,10 +40,10 @@ namespace InternalModBot
         {
             _saveButtonObject = InternalAssetBundleReferences.ModBot.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
+            _saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 
 
-			Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
+            Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
             saveButton.onClick.AddListener(saveAngleChangesToFile);
 
             saveButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "upgrade_screen_generate";

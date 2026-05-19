@@ -1,9 +1,7 @@
 ﻿// New mod loading system
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HarmonyLib;
 using ModLibrary;
+using System.Collections.Generic;
 
 namespace InternalModBot
 {
@@ -29,7 +27,7 @@ namespace InternalModBot
             ModdedUpgradeRepresenter moddedUpgrade = findUpgradeOnCurrentPage(upgradeType, level);
             if (moddedUpgrade != null)
                 return moddedUpgrade.GetAngleOffset();
-            
+
             UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
             if (upgradeDescription != null)
                 return upgradeDescription.GetAngleOffset();

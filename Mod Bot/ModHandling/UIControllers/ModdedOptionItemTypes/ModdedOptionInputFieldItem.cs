@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +14,7 @@ namespace InternalModBot
         /// The default value of the input field
         /// </summary>
         public string DefaultValue;
-        
+
         /// <summary>
         /// Called when the InputField is spawned
         /// </summary>
@@ -43,17 +39,17 @@ namespace InternalModBot
             inputField.text = DefaultValue;
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is string stringValue)
+            if (loadedValue != null && loadedValue is string stringValue)
                 inputField.text = stringValue;
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(inputField.text);
 
             inputField.onValueChanged.AddListener(delegate (string value)
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 

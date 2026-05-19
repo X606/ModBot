@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using InternalModBot.LevelEditor;
+using ModLibrary.LevelEditor;
 using System.Reflection;
 using UnityEngine;
 

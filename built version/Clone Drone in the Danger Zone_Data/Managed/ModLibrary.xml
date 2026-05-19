@@ -1208,6 +1208,77 @@
             <param name="key">The key associated with the value you want to load</param>
             <returns>The loading value</returns>
         </member>
+        <member name="T:ModLibrary.LevelEditor.LevelEditorDisableRendererAndCollision">
+            <summary>
+            Disables <see cref="T:UnityEngine.Collider"/> and <see cref="T:UnityEngine.Renderer"/> components outside of the level editor
+            </summary>
+        </member>
+        <member name="T:ModLibrary.LevelEditor.LevelObjectPath">
+            <summary>
+            Represents a path under Mods folder to an object
+            </summary>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelObjectPath.#ctor(System.String,System.String)">
+            <summary>
+            Path to an object
+            </summary>
+            <param name="modName">The name of the mod adding the object</param>
+            <param name="objectName">The name of the object</param>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelObjectPath.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Path to an object
+            </summary>
+            <param name="modName">The name of the mod adding the object</param>
+            <param name="folderName">The name of subfolder</param>
+            <param name="objectName">The name of the object</param>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.LevelObjectPath.ToString">
+            <summary>
+            Converts to [ModName]/[FolderName]/[ObjectName]
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ModLibrary.LevelEditor.CustomLevelEditorManager">
+            <summary>
+            Adds custom objects to level editor
+            </summary>
+        </member>
+        <member name="F:ModLibrary.LevelEditor.CustomLevelEditorManager.CUSTOM_OBJECTS_FOLDER_PATH">
+            <summary>
+            Path to custom objects folder under resources folder
+            </summary>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.CustomLevelEditorManager.Initialize">
+            <summary>
+            Sets up all custom level editor things
+            </summary>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.CustomLevelEditorManager.AddObject(ModLibrary.LevelEditor.LevelObjectPath,UnityEngine.Transform,System.String,System.Type[])">
+            <summary>
+            Adds object to level editor registry
+            </summary>
+            <param name="objectPath">Path the the object</param>
+            <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
+            <param name="textureFilePath">Path to preview image on disk</param>
+            <param name="components">Components to add</param>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.CustomLevelEditorManager.AddObjectAndTexture(ModLibrary.LevelEditor.LevelObjectPath,UnityEngine.Transform,UnityEngine.Texture2D,System.Type[])">
+            <summary>
+            Adds object to level editor registry
+            </summary>
+            <param name="objectPath">Path the the object</param>
+            <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
+            <param name="texture">Preview image</param>
+            <param name="components">Components to add</param>
+        </member>
+        <member name="M:ModLibrary.LevelEditor.CustomLevelEditorManager.AddPathOverride(ModLibrary.LevelEditor.LevelObjectPath,ModLibrary.LevelEditor.LevelObjectPath)">
+            <summary>
+            Binds the old path to the new one
+            </summary>
+            <param name="oldPath"></param>
+            <param name="newPath"></param>
+        </member>
         <member name="T:ModLibrary.Generic2ButtonDialogue">
             <summary>
             Used to bring up a dialoge with 2 buttons
@@ -1843,11 +1914,6 @@
             Called when the level editor is started.
             </summary>
         </member>
-        <member name="M:ModLibrary.Mod.AddLevelEditorObjects">
-            <summary>
-            Called once in the entire session right after <see cref="M:ModLibrary.Mod.OnModLoaded"/>. Use <see cref="T:InternalModBot.LevelEditor.CustomLevelEditorManager"/> to add custom level editor objects
-            </summary>
-        </member>
         <member name="M:ModLibrary.Mod.OnObjectPlacedInLevelInitialized(ObjectPlacedInLevel,UnityEngine.Transform)">
             <summary>
             Called at the start of <see cref="M:ObjectPlacedInLevel.Initialize(UnityEngine.Transform)"/>
@@ -1953,6 +2019,11 @@
         <member name="M:ModLibrary.Mod.OnModLoaded">
             <summary>
             Gets called directly after the mod is loaded. WARNING: Any exceptions thrown in the method will not be displayed by the <see cref="T:ErrorManager"/> since is hasn't been initialized at this point in time, if an exception is thrown, the game will pause itself before the title screen appears. The crahs log can still be found in the outbut_log.txt file
+            </summary>
+        </member>
+        <member name="M:ModLibrary.Mod.OnModLoadedFirstTime">
+            <summary>
+            Called right after <see cref="M:ModLibrary.Mod.OnModLoaded"/> once in the entire session. Can be used for making persistent changes to the game instance
             </summary>
         </member>
         <member name="M:ModLibrary.Mod.OnClientConnectedToServer">
@@ -4320,72 +4391,6 @@
             <summary>
               Looks up a localized string similar to 2.1.0.0.
             </summary>
-        </member>
-        <member name="T:InternalModBot.LevelEditor.LevelObjectPath">
-            <summary>
-            Represents a path under Mods folder to an object
-            </summary>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.LevelObjectPath.#ctor(System.String,System.String)">
-            <summary>
-            Path to an object
-            </summary>
-            <param name="modName">The name of the mod adding the object</param>
-            <param name="objectName">The name of the object</param>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.LevelObjectPath.#ctor(System.String,System.String,System.String)">
-            <summary>
-            Path to an object
-            </summary>
-            <param name="modName">The name of the mod adding the object</param>
-            <param name="folderName">The name of subfolder</param>
-            <param name="objectName">The name of the object</param>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.LevelObjectPath.ToString">
-            <summary>
-            Converts to [ModName]/[FolderName]/[ObjectName]
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:InternalModBot.LevelEditor.CustomLevelEditorManager">
-            <summary>
-            Adds custom objects to level editor
-            </summary>
-        </member>
-        <member name="F:InternalModBot.LevelEditor.CustomLevelEditorManager.CUSTOM_OBJECTS_FOLDER_PATH">
-            <summary>
-            Path to custom objects folder under resources folder
-            </summary>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.Initialize">
-            <summary>
-            Sets up all custom level editor things
-            </summary>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.AddObject(InternalModBot.LevelEditor.LevelObjectPath,UnityEngine.Transform,System.String,System.Type[])">
-            <summary>
-            Adds object to level editor registry
-            </summary>
-            <param name="objectPath">Path the the object</param>
-            <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
-            <param name="textureFilePath">Path to preview image on disk</param>
-            <param name="components">Components to add</param>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.AddObjectAndTexture(InternalModBot.LevelEditor.LevelObjectPath,UnityEngine.Transform,UnityEngine.Texture2D,System.Type[])">
-            <summary>
-            Adds object to level editor registry
-            </summary>
-            <param name="objectPath">Path the the object</param>
-            <param name="prefab">An object to instantiate. Can be an actual prefab or an already instantiated object</param>
-            <param name="texture">Preview image</param>
-            <param name="components">Components to add</param>
-        </member>
-        <member name="M:InternalModBot.LevelEditor.CustomLevelEditorManager.AddPathOverride(InternalModBot.LevelEditor.LevelObjectPath,InternalModBot.LevelEditor.LevelObjectPath)">
-            <summary>
-            Binds the old path to the new one
-            </summary>
-            <param name="oldPath"></param>
-            <param name="newPath"></param>
         </member>
         <member name="T:InternalModBot.ModdedTwitchManager">
             <summary>

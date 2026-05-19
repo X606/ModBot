@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +18,7 @@ namespace InternalModBot
         /// The default value of the dropdown
         /// </summary>
         public int DefaultValue;
-        
+
         /// <summary>
         /// Called when the dropdown is created
         /// </summary>
@@ -50,7 +46,7 @@ namespace InternalModBot
             Dropdown dropdown = spawnedModdedObject.GetObject<Dropdown>(1);
             dropdown.options.Clear();
 
-            foreach(string option in Options)
+            foreach (string option in Options)
             {
                 Dropdown.OptionData data = new Dropdown.OptionData(option);
                 dropdown.options.Add(data);
@@ -59,26 +55,26 @@ namespace InternalModBot
             dropdown.RefreshShownValue();
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is int intValue)
+            if (loadedValue != null && loadedValue is int intValue)
             {
                 dropdown.value = intValue;
                 dropdown.RefreshShownValue();
             }
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(dropdown.value);
 
             dropdown.onValueChanged.AddListener(delegate (int value)
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 
             applyCustomRect(spawnedPrefab);
 
-            if(OnCreate != null)
+            if (OnCreate != null)
                 OnCreate(dropdown);
         }
 

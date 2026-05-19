@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ModLibrary;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -24,9 +20,9 @@ namespace InternalModBot
             ModName = modName;
             ErrorMessage = errorMessage;
         }
-		public ModLoadError(string errorMesage) : this("", "", errorMesage)
-		{
-		}
+        public ModLoadError(string errorMesage) : this("", "", errorMesage)
+        {
+        }
 
         public ModInfo Info;
         public string FolderPath;

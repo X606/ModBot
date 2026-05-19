@@ -8,7 +8,8 @@ namespace InternalModBot
     {
         private static readonly Dictionary<string, string> _oldToNewTypeFullNames = new Dictionary<string, string>()
         {
-            { "LevelEditorPatch.CustomObjectsList", "InternalModBot.LevelEditor.CustomObjectsList" } // support levels made with mods that use LevelEditorPatch.dll
+            { "LevelEditorPatch.CustomObjectsList", "ModLibrary.LevelEditor.CustomObjectsList" }, // support levels made with mods that use LevelEditorPatch.dll
+            { "InternalModBot.LevelEditor.CustomObjectsList", "ModLibrary.LevelEditor.CustomObjectsList" }
         };
 
         public TypeMigrationSerializationBinder()

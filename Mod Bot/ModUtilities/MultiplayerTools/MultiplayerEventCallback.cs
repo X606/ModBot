@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Bolt;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bolt;
 
 namespace ModLibrary
 {
@@ -50,7 +47,7 @@ namespace ModLibrary
         public static void RemoveEventListener<T>(Action<T> callback) where T : Event
         {
             addEventTypeToDictionary(typeof(T));
-            
+
             _eventListeners[typeof(T)].Remove(callback);
         }
 

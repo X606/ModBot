@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -61,7 +57,7 @@ namespace InternalModBot
 
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 

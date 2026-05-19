@@ -448,7 +448,7 @@ namespace InternalModBot
             {
                 try
                 {
-                    loadedMod.AddLevelEditorObjects();
+                    loadedMod.OnModLoadedFirstTime();
                 }
                 catch (Exception e)
                 {

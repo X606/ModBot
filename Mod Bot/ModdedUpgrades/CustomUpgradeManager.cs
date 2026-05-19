@@ -1,6 +1,4 @@
 ﻿using InternalModBot;
-using ModLibrary;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -18,7 +16,7 @@ namespace ModLibrary
         void Start()
         {
             _backButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("PreviousPageButton"), new Vector3(-300f, 50f, 0f), BackClicked);
-			_nextButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
+            _nextButton = createButtonAt(InternalAssetBundleReferences.ModBot.GetObject("NextPageButton"), new Vector3(300f, 50f, 0f), NextClicked);
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
         }
@@ -52,12 +50,12 @@ namespace ModLibrary
             spawedButton.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
             spawedButton.GetComponent<RectTransform>().localPosition = position;
 
-			Button button = spawedButton.GetComponent<Button>();
+            Button button = spawedButton.GetComponent<Button>();
             button.onClick.AddListener(call);
 
             return spawedButton;
         }
-        
+
         /// <summary>
         /// Should be called when the back button is clicked on the UI.
         /// </summary>

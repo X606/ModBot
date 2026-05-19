@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using InternalModBot.LevelEditor;
 using ModLibrary;
+using ModLibrary.LevelEditor;
 using System.Collections.Generic;
 using UnityEngine;
 

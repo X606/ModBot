@@ -1,5 +1,5 @@
-﻿namespace InternalModBot.LevelEditor
-{   
+﻿namespace ModLibrary.LevelEditor
+{
     /// <summary>
     /// Represents a path under Mods folder to an object
     /// </summary>

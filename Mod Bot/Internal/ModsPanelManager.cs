@@ -133,17 +133,17 @@ namespace InternalModBot
             newSpacer.SetSiblingIndex(siblingIndex);
 
             RectTransform modBotLogo = (RectTransform)Instantiate(kouHeader, container);
-            modBotLogo.SetSiblingIndex(siblingIndex+1);
+            modBotLogo.SetSiblingIndex(siblingIndex + 1);
             ((RectTransform)modBotLogo.GetChild(0)).sizeDelta = new Vector2(435f, 85f);
             Image image = modBotLogo.GetChild(0).GetComponent<Image>();
             image.sprite = InternalAssetBundleReferences.ModBot.GetObject<Sprite>("ModBotLogo");
             image.color = Color.white;
 
             RectTransform modbotCreatorsLabel = (RectTransform)Instantiate(multiplePersonsLabel, container);
-            modbotCreatorsLabel.SetSiblingIndex(siblingIndex+2);
+            modbotCreatorsLabel.SetSiblingIndex(siblingIndex + 2);
             Text text = modbotCreatorsLabel.GetChild(0).GetComponent<Text>();
             StringBuilder stringBuilder = new StringBuilder();
-            for(int i = 0; i < _modBotDevs.Length; i++)
+            for (int i = 0; i < _modBotDevs.Length; i++)
             {
                 stringBuilder.AppendLine(_modBotDevs[i]);
                 stringBuilder.AppendLine();

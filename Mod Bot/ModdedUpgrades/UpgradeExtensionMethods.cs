@@ -1,7 +1,5 @@
-﻿using System;
+﻿using InternalModBot;
 using System.Collections.Generic;
-using System.Text;
-using InternalModBot;
 
 namespace ModLibrary
 {

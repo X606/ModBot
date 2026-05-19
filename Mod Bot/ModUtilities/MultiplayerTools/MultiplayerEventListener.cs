@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bolt;
+﻿using Bolt;
 using ModLibrary;
-using System.Collections;
 
 namespace InternalModBot
 {
@@ -160,7 +154,7 @@ namespace InternalModBot
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
         }
-        
+
         public override void OnEvent(DismissAutomatedLaserBlastEvent evnt)
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
@@ -258,16 +252,16 @@ namespace InternalModBot
             MultiplayerEventCallback.OnEventReceived(evnt);
         }
 
-		public override void Connected(BoltConnection connection)
-		{
-			ModBotUserIdentifier.Instance.OnLocalClientConnected();
-			ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
-		}
+        public override void Connected(BoltConnection connection)
+        {
+            ModBotUserIdentifier.Instance.OnLocalClientConnected();
+            ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
+        }
 
-		public override void Disconnected(BoltConnection connection)
-		{
-			ModsManager.Instance.PassOnMod.OnClientDisconnectedFromServer();
-		}
+        public override void Disconnected(BoltConnection connection)
+        {
+            ModsManager.Instance.PassOnMod.OnClientDisconnectedFromServer();
+        }
 
         public override void OnEvent(ArenaLiftArrivedEvent evnt)
         {

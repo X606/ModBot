@@ -1,10 +1,5 @@
-﻿using System;
+﻿using InternalModBot;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
-using InternalModBot;
 
 namespace ModLibrary
 {
@@ -15,8 +10,8 @@ namespace ModLibrary
     {
         List<string> _playFabIDs = new List<string>();
 
-		const string CLIENT_CONNECTED_PREFIX = "[ClientConnected]";
-		const string BROADCAST_PLAYFAB_ID_PREFIX = "[PlayfabIDBroadcast]";
+        const string CLIENT_CONNECTED_PREFIX = "[ClientConnected]";
+        const string BROADCAST_PLAYFAB_ID_PREFIX = "[PlayfabIDBroadcast]";
 
         /// <summary>
         /// Returns if the player with the target playfabID is running Mod-Bot
@@ -29,30 +24,30 @@ namespace ModLibrary
         }
 
         internal void OnLocalClientConnected()
-		{
-			string localPlayfabID = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
+        {
+            string localPlayfabID = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
 
-			MultiplayerMessageSender.SendToAllClients(CLIENT_CONNECTED_PREFIX + localPlayfabID);
-		}
+            MultiplayerMessageSender.SendToAllClients(CLIENT_CONNECTED_PREFIX + localPlayfabID);
+        }
 
-		void onClientConnectedMessageRecived(string playfabID)
-		{
-			if (!_playFabIDs.Contains(playfabID))
-			{
-				_playFabIDs.Add(playfabID);
-			}
+        void onClientConnectedMessageRecived(string playfabID)
+        {
+            if (!_playFabIDs.Contains(playfabID))
+            {
+                _playFabIDs.Add(playfabID);
+            }
 
-			string localPlayfabID = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
-			MultiplayerMessageSender.SendToAllClients(BROADCAST_PLAYFAB_ID_PREFIX + localPlayfabID);
-		}
-		void onPlayfabIDBroadcastMessageRecived(string playfabID)
-		{
-			if(!_playFabIDs.Contains(playfabID))
-			{
-				_playFabIDs.Add(playfabID);
-			}
-			MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
-		}
+            string localPlayfabID = MultiplayerLoginManager.Instance.GetLocalPlayFabID();
+            MultiplayerMessageSender.SendToAllClients(BROADCAST_PLAYFAB_ID_PREFIX + localPlayfabID);
+        }
+        void onPlayfabIDBroadcastMessageRecived(string playfabID)
+        {
+            if (!_playFabIDs.Contains(playfabID))
+            {
+                _playFabIDs.Add(playfabID);
+            }
+            MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
+        }
 
         /// <summary>
         /// Called when we recive a modded event
@@ -60,21 +55,21 @@ namespace ModLibrary
         /// <param name="moddedEvent"></param>
         internal void OnEvent(GenericStringForModdingEvent moddedEvent)
         {
-			
-			string message = moddedEvent.EventData;
 
-			if (message.StartsWith(CLIENT_CONNECTED_PREFIX))
-			{
-				string playfabID = message.Substring(CLIENT_CONNECTED_PREFIX.Length);
-				onClientConnectedMessageRecived(playfabID);
-			}
-			else if(message.StartsWith(BROADCAST_PLAYFAB_ID_PREFIX))
-			{
-				string playfabID = message.Substring(BROADCAST_PLAYFAB_ID_PREFIX.Length);
-				onPlayfabIDBroadcastMessageRecived(playfabID);
-			}
+            string message = moddedEvent.EventData;
 
-		}
+            if (message.StartsWith(CLIENT_CONNECTED_PREFIX))
+            {
+                string playfabID = message.Substring(CLIENT_CONNECTED_PREFIX.Length);
+                onClientConnectedMessageRecived(playfabID);
+            }
+            else if (message.StartsWith(BROADCAST_PLAYFAB_ID_PREFIX))
+            {
+                string playfabID = message.Substring(BROADCAST_PLAYFAB_ID_PREFIX.Length);
+                onPlayfabIDBroadcastMessageRecived(playfabID);
+            }
+
+        }
 
     }
 }

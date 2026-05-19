@@ -50,10 +50,10 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
-    <Compile Include="Internal\LevelEditor\CustomObjectsList.cs" />
-    <Compile Include="Internal\LevelEditor\LevelEditorDisableRendererAndCollission.cs" />
-    <Compile Include="Internal\LevelEditor\LevelEditorMissingObject.cs" />
-    <Compile Include="Internal\LevelEditor\LevelObjectPath.cs" />
+    <Compile Include="LevelEditor\CustomObjectsList.cs" />
+    <Compile Include="LevelEditor\LevelEditorDisableRendererAndCollision.cs" />
+    <Compile Include="LevelEditor\LevelEditorMissingObject.cs" />
+    <Compile Include="LevelEditor\LevelObjectPath.cs" />
     <Compile Include="Internal\Patches\CustomInspectorValue_Patch.cs" />
     <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
     <Compile Include="Internal\Patches\LevelEditorDataManager_Patch.cs" />
@@ -110,7 +110,7 @@
     <Compile Include="Internal\DebugLineDrawing.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
-    <Compile Include="Internal\LevelEditor\CustomLevelEditorManager.cs" />
+    <Compile Include="LevelEditor\CustomLevelEditorManager.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
     <Compile Include="Internal\ModBotInputManager.cs" />

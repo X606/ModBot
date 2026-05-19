@@ -1,12 +1,9 @@
-﻿using System;
+﻿using InternalModBot;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using InternalModBot;
 
 namespace ModLibrary
 {
@@ -155,7 +152,7 @@ namespace ModLibrary
             if (_cachedObjects.TryGetValue(objectName, out UnityEngine.Object obj))
             {
                 asset = obj as T;
-                
+
                 if (asset == null || !asset)
                 {
                     _cachedObjects.Clear();

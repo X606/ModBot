@@ -1,11 +1,9 @@
 ﻿using ModLibrary;
-using Rewired;
+using ModLibrary.LevelEditor;
 using System;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
-using InternalModBot.LevelEditor;
 
 namespace InternalModBot
 {
@@ -71,7 +69,7 @@ namespace InternalModBot
         {
             GameObject spawnedUI = InternalAssetBundleReferences.ModBot.InstantiateObject("Canvas");
             ModBotUIRoot modBotUIRoot = spawnedUI.AddComponent<ModBotUIRoot>();
-            modBotUIRoot.Init();            
+            modBotUIRoot.Init();
         }
     }
 }

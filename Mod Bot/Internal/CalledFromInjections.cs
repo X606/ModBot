@@ -1,10 +1,4 @@
-﻿using InternalModBot;
-using ModLibrary;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using UnityEngine;
-using ModLibrary.Properties;
+﻿using UnityEngine;
 
 namespace InternalModBot
 {

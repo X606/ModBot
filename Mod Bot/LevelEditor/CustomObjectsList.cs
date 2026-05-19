@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using InternalModBot;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
-namespace InternalModBot.LevelEditor
+namespace ModLibrary.LevelEditor
 {
     internal class CustomObjectsList
     {

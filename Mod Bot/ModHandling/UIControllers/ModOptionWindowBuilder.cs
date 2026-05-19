@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using InternalModBot;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using InternalModBot;
-using ModLibrary;
 
 #pragma warning disable IDE1005 // Delegate invocation can be simplefied
 
@@ -35,7 +33,7 @@ namespace ModLibrary
             DelegateScheduler.Instance.Schedule(delegate
             {
                 PopulatePages();
-                if(_pages.Count >= 1)
+                if (_pages.Count >= 1)
                 {
                     SetPage(_pages[0]);
                 }
@@ -43,7 +41,7 @@ namespace ModLibrary
 
             GameUIRoot.Instance.RefreshCursorEnabled();
         }
-        
+
         /// <summary>
         /// Removes all of the page buttons and spawns in new ones
         /// </summary>
@@ -55,7 +53,7 @@ namespace ModLibrary
             TransformUtils.DestroyAllChildren(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform);
             GameObject buttonPrefab = InternalAssetBundleReferences.ModBot.GetObject("PageButton");
 
-            foreach(Page page in _pages)
+            foreach (Page page in _pages)
             {
                 GameObject spawnedButton = GameObject.Instantiate(buttonPrefab);
                 spawnedButton.transform.SetParent(ModBotUIRoot.Instance.ModOptionsWindow.PageButtonsHolder.transform, false);
@@ -100,9 +98,9 @@ namespace ModLibrary
         /// <returns></returns>
         public Page AddPage(string pageName, float? forcedHeight = null)
         {
-            foreach(Page item in _pages)
+            foreach (Page item in _pages)
             {
-                if(item.Name == pageName)
+                if (item.Name == pageName)
                 {
                     return item;
                 }
@@ -151,7 +149,7 @@ namespace ModLibrary
 
             internal void Populate(GameObject container, Mod owner)
             {
-                foreach(ModdedOptionPageItem item in _items)
+                foreach (ModdedOptionPageItem item in _items)
                 {
                     item.CreatePageItem(container, owner);
                 }
@@ -164,7 +162,7 @@ namespace ModLibrary
             public readonly float? ForcedHeight;
 
             readonly List<ModdedOptionPageItem> _items;
-            
+
             /// <summary>
             /// Adds a slider to the page with the passed arguements
             /// </summary>
@@ -331,7 +329,7 @@ namespace ModLibrary
             /// <param name="onChange">Called when the value of the <see cref="Dropdown"/> is changed</param>
             public void AddDropdown<T>(T defaultValue, string displayName, string saveID, Action<Dropdown> onCreate = null, Rect? customRect = null, Action<T> onChange = null)
             {
-                if(!typeof(T).IsEnum)
+                if (!typeof(T).IsEnum)
                     throw new InvalidOperationException("Generic type must be an enum");
 
                 string[] names = Enum.GetNames(typeof(T));
@@ -459,11 +457,11 @@ namespace ModLibrary
         /// <param name="spawnedObject"></param>
         protected void applyCustomRect(GameObject spawnedObject)
         {
-            if(!CustomRect.HasValue)
+            if (!CustomRect.HasValue)
                 return;
 
             LayoutElement element = spawnedObject.GetComponent<LayoutElement>();
-            if(element == null)
+            if (element == null)
                 element = spawnedObject.AddComponent<LayoutElement>();
 
             element.ignoreLayout = true;
@@ -471,7 +469,7 @@ namespace ModLibrary
             RectTransform rectTransform = spawnedObject.GetComponent<RectTransform>();
             if (CustomRect.Value.Scale.HasValue)
                 rectTransform.sizeDelta = CustomRect.Value.Scale.Value;
-            if(CustomRect.Value.Position.HasValue)
+            if (CustomRect.Value.Position.HasValue)
                 rectTransform.anchoredPosition = CustomRect.Value.Position.Value;
         }
     }
