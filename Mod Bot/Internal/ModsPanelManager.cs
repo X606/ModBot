@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace InternalModBot
 {
     /// <summary>
-    /// Used by Mod-Bot to control most of the UI in Mod-Bot.
+    /// Adjusts game ui for modded things
     /// </summary>
     public class ModsPanelManager : Singleton<ModsPanelManager>
     {
@@ -23,10 +23,12 @@ namespace InternalModBot
 
         private void Start()
         {
+            patchErrorWindow();
             patchTitleScreen();
             patchPauseMenu();
             patchSettingsMenu();
             patchCreditsScreen();
+            patchMultiplayerUIsToSupportRichText();
         }
 
         private void patchTitleScreen()
@@ -97,6 +99,8 @@ namespace InternalModBot
                 button.anchoredPosition -= new Vector2(newSize * 0.2f * (i + 0), 0);
             }
 
+            settingsButtonHolder.GetComponent<HorizontalLayoutGroup>().spacing = 16;
+
             GameObject buttonContainerPrefab = settingsButtonHolder.GetChild(0).gameObject;
             RectTransform spawnedButtonContainer = Instantiate(buttonContainerPrefab, settingsButtonHolder).GetComponent<RectTransform>();
             spawnedButtonContainer.GetComponentInChildren<Text>().text = "Mod-Bot";
@@ -111,6 +115,11 @@ namespace InternalModBot
             GameUIRoot.Instance.SettingsMenu.TabButtons = buttons;
             GameUIRoot.Instance.SettingsMenu.TabNavigationSetter.TabButtons = null;
             GameUIRoot.Instance.SettingsMenu.TabNavigationSetter.InitializeSetter();
+
+            RectTransform bg = settingsButtonHolder.parent as RectTransform;
+            Vector2 size = bg.sizeDelta;
+            size.x = 720f;
+            bg.sizeDelta = size;
 
             GameObject settingsPage = Instantiate(InternalAssetBundleReferences.ModBot.GetObject("ModBotSettings"), tabButton.ContentToShow.parent);
             tabButton.ContentToShow = settingsPage.transform;
@@ -155,6 +164,30 @@ namespace InternalModBot
             float addY = modbotCreatorsLabel.sizeDelta.y + modBotLogo.sizeDelta.y + newSpacer.sizeDelta.y;
             creditsCrawlAnimation.StopScrollingAtY += addY;
             creditsCrawlAnimation.ShowExitAtY += addY;
+        }
+
+        private void patchMultiplayerUIsToSupportRichText()
+        {
+            GameUIRoot uiRoot = GameUIRoot.Instance;
+
+            uiRoot.BlockListSettingsUI.BlockedUserEntryPrefab.UserDisplayNameLabel.supportRichText = true;
+            uiRoot.EscMenu.BlockListMultiplayerUI.BlockListEntryPrefab.DisplayNameText.supportRichText = true;
+            uiRoot.CurrentlySpectatingUI.CurrentPlayerText.supportRichText = true;
+
+            uiRoot.MultiplayerPlayerList.PlayerInfoLabelPrefab.PlayerNameLabel.supportRichText = true; // Support custom colors and bold/italic text
+            uiRoot.MultiplayerPlayerList.PlayerInfoLabelPrefab.PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+        }
+
+        private void patchErrorWindow()
+        {
+            Transform errorWindowTransform = GameUIRoot.Instance.ErrorWindow.transform;
+
+            LocalizedTextField titleLabel = errorWindowTransform.GetChild(0).GetChild(1).GetComponent<LocalizedTextField>();
+            titleLabel.ChangeIDAndTryLocalize("crashscreen_customtitle");
+
+            LocalizedTextField descriptionLabel = errorWindowTransform.GetChild(2).GetChild(1).GetComponent<LocalizedTextField>();
+            descriptionLabel.ChangeIDAndTryLocalize("crashscreen_customdescription");
+            descriptionLabel.GetComponent<Text>().fontSize = 9;
         }
 
         private void openModsMenu()

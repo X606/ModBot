@@ -183,7 +183,7 @@ namespace InternalModBot
         public override void OnEvent(GenericStringForModdingEvent evnt)
         {
             ModSharingManager.Instance.OnModdedEvent(evnt);
-            ModBotUserIdentifier.Instance.OnEvent(evnt);
+            ModBotUserIdentifier.Instance.OnMultiplayerEvent(evnt);
             ModsManager.Instance.PassOnMod.OnMultiplayerEventReceived(evnt);
         }
 
@@ -254,7 +254,7 @@ namespace InternalModBot
 
         public override void Connected(BoltConnection connection)
         {
-            ModBotUserIdentifier.Instance.OnLocalClientConnected();
+            ModBotUserIdentifier.Instance.OnLocalClientConnectedToMultiplayer();
             ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
         }
 
@@ -289,6 +289,16 @@ namespace InternalModBot
         }
 
         public override void OnEvent(MatchInstance evnt)
+        {
+            MultiplayerEventCallback.OnEventReceived(evnt);
+        }
+
+        public override void OnEvent(AliveEnemiesAuditEvent evnt)
+        {
+            MultiplayerEventCallback.OnEventReceived(evnt);
+        }
+
+        public override void OnEvent(AliveEnemyKilledBasedOnClientFeedback evnt)
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
         }

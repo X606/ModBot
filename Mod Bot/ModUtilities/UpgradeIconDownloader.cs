@@ -40,14 +40,15 @@ namespace InternalModBot
             // If there already is an icon with a modded icon texture, destroy both
             if (upgrade.Icon != null && upgrade.Icon.texture != null && upgrade.Icon.texture.name.EndsWith(CUSTOM_ICON_POSTFIX))
             {
-                GameObject.Destroy(upgrade.Icon.texture);
-                GameObject.Destroy(upgrade.Icon);
+                Destroy(upgrade.Icon.texture);
+                Destroy(upgrade.Icon);
             }
 
             string textureName = fileName + CUSTOM_ICON_POSTFIX;
-            if (File.Exists(upgradeIconsFolderPath + fileName))
+            string textureFilePath = Path.Combine(upgradeIconsFolderPath, fileName);
+            if (File.Exists(textureFilePath))
             {
-                StartCoroutine(downloadImageAndSetIconOnUpgrade(upgrade, $"file://{upgradeIconsFolderPath + fileName}", textureName));
+                StartCoroutine(loadImageFromDiskAndSetIconOnUpgrade(upgrade, textureFilePath, textureName));
             }
             else
             {
@@ -63,7 +64,7 @@ namespace InternalModBot
 
                 if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    debug.Log(webRequest.error, Color.red);
+                    debug.Log($"Failed to download upgrade icon \"{textureName}\" from network. ({webRequest.error})", Color.red);
                     upgrade.Icon = null;
                     yield break;
                 }
@@ -73,7 +74,29 @@ namespace InternalModBot
 
                 upgrade.Icon = getSpriteFromTexture(texture);
 
-                File.WriteAllBytes(upgradeIconsFolderPath + getFileNameForUpgrade(upgrade), texture.EncodeToPNG());
+                string textureFilePath = Path.Combine(upgradeIconsFolderPath, getFileNameForUpgrade(upgrade));
+                File.WriteAllBytes(Path.Combine(upgradeIconsFolderPath, textureFilePath), texture.EncodeToPNG());
+            }
+        }
+
+        static IEnumerator loadImageFromDiskAndSetIconOnUpgrade(UpgradeDescription upgrade, string path, string textureName)
+        {
+            using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture($"file://{path}"))
+            {
+                webRequest.timeout = 5;
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
+                {
+                    debug.Log($"Failed to load upgrade icon \"{textureName}\" from disk. ({webRequest.error})", Color.red);
+                    upgrade.Icon = null;
+                    yield break;
+                }
+
+                Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
+                texture.name = textureName;
+
+                upgrade.Icon = getSpriteFromTexture(texture);
             }
         }
 

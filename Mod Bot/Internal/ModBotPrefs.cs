@@ -5,9 +5,9 @@ using UnityEngine;
 namespace InternalModBot
 {
     /// <summary>
-    /// Handles what keys are associated with what actions in mod-bot
+    /// Handles Mod-Bot settings
     /// </summary>
-    internal static class ModBotInputManager
+    internal static class ModBotPrefs
     {
         /// <summary>
         /// All the input options in mod-bot
@@ -18,15 +18,45 @@ namespace InternalModBot
             new InputOption(ModBotInputType.ToggleFPSLabel, KeyCode.F3, "Toggle FPS Label Key")
         };
 
-        static Dictionary<ModBotInputType, InputOption> _cachedDictionary = null;
-        static void populateCachedDictionary()
+        private static bool s_hideCustomTags;
+        public static bool HideCustomTags
         {
-            _cachedDictionary = new Dictionary<ModBotInputType, InputOption>();
+            get => s_hideCustomTags;
+            set
+            {
+                PlayerPrefs.SetInt("ModBot_HideCustomTags", value ? 1 : 0);
+                s_hideCustomTags = value;
+            }
+        }
+
+        private static bool s_showMaxFPS;
+        public static bool ShowMaxFPS
+        {
+            get => s_showMaxFPS;
+            set
+            {
+                PlayerPrefs.SetInt("ModBot_ShowMaxFPS", value ? 1 : 0);
+                s_showMaxFPS = value;
+            }
+        }
+
+        private static Dictionary<ModBotInputType, InputOption> s_cachedDictionary = null;
+
+        private static bool s_hasInitialized;
+
+        internal static void Initialize()
+        {
+            if (s_hasInitialized) return;
+            s_hasInitialized = true;
+
+            s_cachedDictionary = new Dictionary<ModBotInputType, InputOption>();
             foreach (InputOption inputOption in InputOptions)
             {
-                _cachedDictionary.Add(inputOption.Type, inputOption);
+                s_cachedDictionary.Add(inputOption.Type, inputOption);
             }
 
+            s_hideCustomTags = PlayerPrefs.GetInt("ModBot_HideCustomTags", 0) == 0 ? false : true;
+            s_showMaxFPS = PlayerPrefs.GetInt("ModBot_ShowMaxFPS", 0) == 0 ? false : true;
         }
 
         /// <summary>
@@ -36,10 +66,7 @@ namespace InternalModBot
         /// <returns></returns>
         public static KeyCode GetKeyCode(ModBotInputType type)
         {
-            if (_cachedDictionary == null)
-                populateCachedDictionary();
-
-            if (_cachedDictionary.TryGetValue(type, out InputOption value))
+            if (s_cachedDictionary.TryGetValue(type, out InputOption value))
             {
                 return value.Key;
             }
@@ -100,9 +127,9 @@ namespace InternalModBot
                     PlayerPrefs.SetInt("ModBot_Keys_" + Type.ToString(), (int)value);
                 }
             }
-
         }
     }
+
     /// <summary>
     /// Different actions we want to accociate keys with
     /// </summary>
@@ -117,5 +144,4 @@ namespace InternalModBot
         /// </summary>
         ToggleFPSLabel
     }
-
 }

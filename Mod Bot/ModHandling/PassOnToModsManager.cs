@@ -227,18 +227,6 @@ namespace InternalModBot
         }
 
         /// <summary>
-        /// Moved from <see cref="CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="AfterUpgradesRefreshed(FirstPersonMover, UpgradeCollection)"/>
-        /// </summary>
-        /// <param name="firstPersonMover"></param>
-        protected internal static void AfterUpgradesRefreshed(FirstPersonMover firstPersonMover)
-        {
-            if (firstPersonMover == null || firstPersonMover.gameObject == null || !firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
-                return;
-
-            ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(firstPersonMover, firstPersonMover.GetComponent<UpgradeCollection>());
-        }
-
-        /// <summary>
         /// Calls this method on all mods
         /// </summary>
         /// <param name="owner"></param>

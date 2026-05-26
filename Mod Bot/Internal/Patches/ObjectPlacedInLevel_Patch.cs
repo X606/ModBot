@@ -24,7 +24,7 @@ namespace InternalModBot
 
         [HarmonyPostfix]
         [HarmonyPatch(nameof(ObjectPlacedInLevel.SetCustomInspectorValuesFromData))]
-        private static void SetCustomInspectorValuesFromData_Postfix(ObjectPlacedInLevel __instance, List<CustomInspectorValue> inspectorValuesFromData)
+        static void SetCustomInspectorValuesFromData_Postfix(ObjectPlacedInLevel __instance, List<CustomInspectorValue> inspectorValuesFromData)
         {
             if (__instance.GetComponent<LevelEditorMissingObject>()) __instance._customInspectorValues = inspectorValuesFromData;
         }

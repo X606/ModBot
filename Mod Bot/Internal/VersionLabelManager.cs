@@ -26,7 +26,6 @@ namespace InternalModBot
                 VersionLabel.horizontalOverflow = UnityEngine.HorizontalWrapMode.Overflow;
             }
 
-
             string[] lines = VersionLabel.text.Split("\n".ToCharArray());
 
             if (lines.Length > line)

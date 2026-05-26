@@ -120,7 +120,7 @@ namespace InternalModBot
             {
                 if (card.IsOffScreen()) hasToWait = false; // fade out only first couple of entries as they're the first thing the use sees
 
-                if(hasToWait) yield return new WaitForSecondsRealtime(0.05f);
+                if (hasToWait) yield return new WaitForSecondsRealtime(0.05f);
 
                 card.FadeOut();
             }

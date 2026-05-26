@@ -9,7 +9,7 @@ namespace InternalModBot
     {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(LibraryListItemDisplay.PNGPathToSprite))]
-        private static bool PNGPathToSprite_Prefix(ref Sprite __result, string previewPathUnderResources) // makes the game not crash if some object doesn't have a preview image
+        static bool PNGPathToSprite_Prefix(ref Sprite __result, string previewPathUnderResources) // makes the game not crash if some object doesn't have a preview image
         {
             Texture2D texture = Resources.Load<Texture2D>(previewPathUnderResources.Replace(".png", ""));
             if (texture == null)

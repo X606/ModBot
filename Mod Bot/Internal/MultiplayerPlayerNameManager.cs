@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
-using ModBotWebsiteAPI;
+﻿using ModBotWebsiteAPI;
 using ModLibrary;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace InternalModBot
@@ -17,6 +17,8 @@ namespace InternalModBot
 
         const string DEFAULT_MOD_BOT_USER_PREFIX = "<color=#ffac00>[Mod-Bot]</color>";
 
+        public const string REFRESH_NAME_TAGS_EVENT = "RefreshNameTags";
+
         Dictionary<string, string> playfabIDToCustomPrefixDictionary = new Dictionary<string, string>();
         Dictionary<string, string> playfabIDToOverrideNameDictionary = new Dictionary<string, string>();
 
@@ -24,6 +26,7 @@ namespace InternalModBot
         {
             GlobalEventManager.Instance.AddEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttached);
         }
+
         void OnDestroy()
         {
             GlobalEventManager.Instance.RemoveEventListener<IPlayerInfoState>(GlobalEvents.MultiplayerPlayerInfoStateAttached, onPlayerInfoStateAttached);
@@ -81,16 +84,9 @@ namespace InternalModBot
             }
         }
 
-        /// <summary>
-        /// Will be called when we want to refresh name tags
-        /// </summary>
-        public event Action RefreshNameTags;
-
         internal void TriggerRefreshNameTagsEvent()
         {
-            if (RefreshNameTags != null)
-                RefreshNameTags();
-
+            GlobalEventManager.Instance.Dispatch(REFRESH_NAME_TAGS_EVENT);
         }
 
         public string GetCompleteNameForPlayer(MultiplayerPlayerInfoState playerInfoState, string normalDisplayName)
@@ -105,24 +101,23 @@ namespace InternalModBot
         /// <returns></returns>
         string getFullPrefixForPlayfabID(string playfabID)
         {
-            string prefix = "";
+            StringBuilder stringBuilder = new StringBuilder();
 
-            if (playfabIDToCustomPrefixDictionary.TryGetValue(playfabID, out string customPrefix))
-                prefix += customPrefix + " ";
-
-            if (ModBotUserIdentifier.Instance != null && ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
+            // append custom tags
+            if (!ModBotPrefs.HideCustomTags && playfabIDToCustomPrefixDictionary.TryGetValue(playfabID, out string customPrefix))
             {
-                if (playfabIDToCustomPrefixDictionary.TryGetValue(MOD_BOT_USER_KEY, out string modBotUserPrefix))
-                {
-                    prefix += modBotUserPrefix + " ";
-                }
-                else
-                {
-                    prefix += DEFAULT_MOD_BOT_USER_PREFIX + " ";
-                }
+                stringBuilder.Append(customPrefix);
+                stringBuilder.Append(' ');
             }
 
-            return prefix;
+            // append modbot tag
+            if (ModBotUserIdentifier.Instance.IsUsingModBot(playfabID))
+            {
+                stringBuilder.Append(DEFAULT_MOD_BOT_USER_PREFIX);
+                stringBuilder.Append(' ');
+            }
+
+            return stringBuilder.ToString();
         }
 
         /// <summary>
@@ -134,76 +129,6 @@ namespace InternalModBot
         string getNameForPlayfabID(string playfabID, string defaultName)
         {
             return playfabIDToOverrideNameDictionary.TryGetValue(playfabID, out string overrideName) ? overrideName : defaultName;
-        }
-
-        internal static void OnNameTagRefreshed(EnemyNameTag nameTag, string ownerPlayfabID)
-        {
-            MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(ownerPlayfabID, delegate (string displayName)
-            {
-                nameTag.NameText.text = displayName;
-            });
-        }
-
-        [HarmonyPatch]
-        static class Patches
-        {
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(CurrentlySpectatingUI), "Show")]
-            static void CurrentlySpectatingUI_Show_Postfix(CurrentlySpectatingUI __instance)
-            {
-                __instance.CurrentPlayerText.supportRichText = true;
-            }
-
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(EnemyNameTag), "Initialize")]
-            static void EnemyNameTag_Initialize_Postfix(EnemyNameTag __instance, Character character)
-            {
-                if (MultiplayerPlayerInfoManager.Instance != null && MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(character.state.PlayFabID) != null)
-                {
-                    __instance.NameText.supportRichText = true;
-                    __instance.gameObject.AddComponent<NameTagRefreshListener>().Init(character, __instance);
-                }
-            }
-
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(MultiplayerPlayerInfoLabel), "Initialize")]
-            static void MultiplayerPlayerInfoLabel_Initialize_Postfix(MultiplayerPlayerInfoLabel __instance)
-            {
-                __instance.PlayerNameLabel.supportRichText = true; // Support custom colors and bold/italic text
-                __instance.PlayerNameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
-            }
-
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(MultiplayerPlayerInfoState), "GetOrPrepareSafeDisplayName")]
-            static void MultiplayerPlayerInfoState_GetOrPrepareSafeDisplayName_Prefix(MultiplayerPlayerInfoState __instance, ref Action<string> onSafeDisplayNameReceived)
-            {
-                if (onSafeDisplayNameReceived != null)
-                {
-                    // Create new callback delegate that invokes the original with the name given by MultiplayerPlayerNameManager
-                    Action<string> callbackCopy = onSafeDisplayNameReceived;
-                    onSafeDisplayNameReceived = delegate (string safeDisplayName)
-                    {
-                        string name;
-                        if (MultiplayerPlayerNameManager.Instance != null)
-                        {
-                            name = MultiplayerPlayerNameManager.Instance.GetCompleteNameForPlayer(__instance, safeDisplayName);
-                        }
-                        else
-                        {
-                            name = safeDisplayName;
-                        }
-
-                        callbackCopy(name);
-                    };
-                }
-            }
-
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(BlockListMultiplayerEntryUI), nameof(BlockListMultiplayerEntryUI.Initialize))]
-            static void BlockListMultiplayerEntryUI_Initialize_Prefix(BlockListMultiplayerEntryUI __instance)
-            {
-                __instance.DisplayNameText.supportRichText = true;
-            }
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace InternalModBot
 {
     /// <summary>
-    /// Add this component to a name tag and call Init to have it listen for <see cref="MultiplayerPlayerNameManager.RefreshNameTags"/> and refresh itself if that event gets called
+    /// Add this component to a name tag and call Init to have it listen for <see cref="MultiplayerPlayerNameManager.REFRESH_NAME_TAGS_EVENT"/> global event and refresh itself if that event gets called
     /// </summary>
     internal class NameTagRefreshListener : MonoBehaviour
     {
@@ -20,23 +20,23 @@ namespace InternalModBot
             _owner = owner;
             _nameTag = nameTag;
 
-            MultiplayerPlayerNameManager.Instance.RefreshNameTags += multiplayerNamePrefixManager_RefreshNameTags;
-        }
-        void OnDestroy()
-        {
-            MultiplayerPlayerNameManager.Instance.RefreshNameTags -= multiplayerNamePrefixManager_RefreshNameTags;
+            GlobalEventManager.Instance.AddEventListener(MultiplayerPlayerNameManager.REFRESH_NAME_TAGS_EVENT, refreshNameTag);
         }
 
-        void multiplayerNamePrefixManager_RefreshNameTags()
+        void OnDestroy()
+        {
+            GlobalEventManager.Instance.RemoveEventListener(MultiplayerPlayerNameManager.REFRESH_NAME_TAGS_EVENT, refreshNameTag);
+        }
+
+        void refreshNameTag()
         {
             string playfabID = _owner.GetPlayFabID();
-            if (playfabID != null)
+            if (string.IsNullOrEmpty(playfabID)) return;
+
+            MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID, delegate (string displayName)
             {
-                MultiplayerPlayerInfoManager.Instance.TryGetDisplayName(playfabID, delegate (string displayName)
-                {
-                    _nameTag.NameText.text = displayName;
-                });
-            }
+                _nameTag.NameText.text = displayName;
+            });
         }
     }
 }

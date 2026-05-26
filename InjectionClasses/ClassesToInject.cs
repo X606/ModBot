@@ -9,12 +9,4 @@ namespace InjectionClasses
 
         public List<Object> objects;
     }
-
-    public class XButton : MonoBehaviour
-    {
-        public void Close()
-        {
-            gameObject.SetActive(false);
-        }
-    }
 }

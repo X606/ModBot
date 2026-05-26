@@ -1208,6 +1208,31 @@
             <param name="key">The key associated with the value you want to load</param>
             <returns>The loading value</returns>
         </member>
+        <member name="T:ModLibrary.CameraManager">
+            <summary>
+            Optimal way of getting camera instances
+            </summary>
+        </member>
+        <member name="P:ModLibrary.CameraManager.MainCamera">
+            <summary>
+            Instance of main camera if there's one
+            </summary>
+        </member>
+        <member name="P:ModLibrary.CameraManager.CurrentCamera">
+            <summary>
+            Instance of current camera if there's one
+            </summary>
+        </member>
+        <member name="M:ModLibrary.CameraManager.ForceRefreshMainCamera">
+            <summary>
+            Force refresh main camera
+            </summary>
+        </member>
+        <member name="M:ModLibrary.CameraManager.ForceRefreshCurrentCamera">
+            <summary>
+            Force refresh current camera
+            </summary>
+        </member>
         <member name="T:ModLibrary.LevelEditor.LevelEditorDisableRendererAndCollision">
             <summary>
             Disables <see cref="T:UnityEngine.Collider"/> and <see cref="T:UnityEngine.Renderer"/> components outside of the level editor
@@ -1497,32 +1522,6 @@
             <summary>
             Compare both the <see cref="F:HarmonyLib.CodeInstruction.opcode"/> and <see cref="F:HarmonyLib.CodeInstruction.operand"/> fields from both instances
             </summary>
-        </member>
-        <member name="T:ModLibrary.InjectionPostfixTargetAttribute">
-            <summary>
-            Patches the target property with whatever method it's applied to as the postfix. See <see href="https://harmony.pardeike.net/articles/patching-postfix.html"/> for details about how postfixes work.<para/>Generic methods are not officially supported by 0Harmony and cannot be patched by using this attribute.
-            </summary>
-        </member>
-        <member name="M:ModLibrary.InjectionPostfixTargetAttribute.#ctor(System.Type,System.String,System.Type[])">
-            <summary>
-            Initializes the <see cref="T:ModLibrary.InjectionPostfixTargetAttribute"/> attribute with a target method
-            </summary>
-            <param name="type">The type the target method is attached to</param>
-            <param name="methodName">The name of the target method</param>
-            <param name="methodParameters">The parameter types on the target method</param>
-        </member>
-        <member name="T:ModLibrary.InjectionPrefixTargetAttribute">
-            <summary>
-            Patches the target method with whatever method it's applied to as the prefix. See <see href="https://harmony.pardeike.net/articles/patching-prefix.html"/> for details about how prefixes work.<para/>Generic methods are not officially supported by 0Harmony and cannot be patched by using this attribute.
-            </summary>
-        </member>
-        <member name="M:ModLibrary.InjectionPrefixTargetAttribute.#ctor(System.Type,System.String,System.Type[])">
-            <summary>
-            Initializes the <see cref="T:ModLibrary.InjectionPrefixTargetAttribute"/> attribute with a target method
-            </summary>
-            <param name="type">The type the target method is attached to</param>
-            <param name="methodName">The name of the target method</param>
-            <param name="methodParameters">The parameter types on the target method</param>
         </member>
         <member name="T:ModLibrary.debug">
             <summary>
@@ -4172,10 +4171,49 @@
             <param name="texture2D"></param>
             <returns></returns>
         </member>
+        <member name="T:ModLibrary.ScrollRectExtensions">
+            <summary>
+            Adds a few extension methods to the <see cref="T:UnityEngine.UI.ScrollRect"/> class
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ScrollRectExtensions.ScrollToTop(UnityEngine.UI.ScrollRect)">
+            <summary>
+            Scrolls the <see cref="T:UnityEngine.UI.ScrollRect"/> to the top
+            </summary>
+            <param name="scrollRect"></param>
+        </member>
+        <member name="M:ModLibrary.ScrollRectExtensions.ScrollToBottom(UnityEngine.UI.ScrollRect)">
+            <summary>
+            Scrolls the <see cref="T:UnityEngine.UI.ScrollRect"/> to the bottom
+            </summary>
+            <param name="scrollRect"></param>
+        </member>
         <member name="T:ModLibrary.ModBotUserIdentifier">
             <summary>
-            Used to find out other players <see cref="T:BoltConnection"/> and if they are using Mod-Bot
+            Handles singing into Mod-Bot and used to find out if other players are using Mod-Bot
             </summary>
+        </member>
+        <member name="P:ModLibrary.ModBotUserIdentifier.UserName">
+            <summary>
+            The user name of local user
+            </summary>
+        </member>
+        <member name="P:ModLibrary.ModBotUserIdentifier.HasSignedIn">
+            <summary>
+            Has the local user signed in?
+            </summary>
+        </member>
+        <member name="M:ModLibrary.ModBotUserIdentifier.SetSession(System.String)">
+            <summary>
+            Sets the current session in the API
+            </summary>
+            <param name="sessionId"></param>
+        </member>
+        <member name="M:ModLibrary.ModBotUserIdentifier.OnMultiplayerEvent(GenericStringForModdingEvent)">
+            <summary>
+            Called when we recive a modded event
+            </summary>
+            <param name="moddedEvent"></param>
         </member>
         <member name="M:ModLibrary.ModBotUserIdentifier.IsUsingModBot(System.String)">
             <summary>
@@ -4183,12 +4221,6 @@
             </summary>
             <param name="playfabID"></param>
             <returns></returns>
-        </member>
-        <member name="M:ModLibrary.ModBotUserIdentifier.OnEvent(GenericStringForModdingEvent)">
-            <summary>
-            Called when we recive a modded event
-            </summary>
-            <param name="moddedEvent"></param>
         </member>
         <member name="T:ModLibrary.MultiplayerEventCallback">
             <summary>
@@ -4234,6 +4266,32 @@
             </summary>
             <param name="message"></param>
             <param name="targets"></param>
+        </member>
+        <member name="T:ModLibrary.InjectionPostfixTargetAttribute">
+            <summary>
+            Patches the target property with whatever method it's applied to as the postfix. See <see href="https://harmony.pardeike.net/articles/patching-postfix.html"/> for details about how postfixes work.<para/>Generic methods are not officially supported by 0Harmony and cannot be patched by using this attribute.
+            </summary>
+        </member>
+        <member name="M:ModLibrary.InjectionPostfixTargetAttribute.#ctor(System.Type,System.String,System.Type[])">
+            <summary>
+            Initializes the <see cref="T:ModLibrary.InjectionPostfixTargetAttribute"/> attribute with a target method
+            </summary>
+            <param name="type">The type the target method is attached to</param>
+            <param name="methodName">The name of the target method</param>
+            <param name="methodParameters">The parameter types on the target method</param>
+        </member>
+        <member name="T:ModLibrary.InjectionPrefixTargetAttribute">
+            <summary>
+            Patches the target method with whatever method it's applied to as the prefix. See <see href="https://harmony.pardeike.net/articles/patching-prefix.html"/> for details about how prefixes work.<para/>Generic methods are not officially supported by 0Harmony and cannot be patched by using this attribute.
+            </summary>
+        </member>
+        <member name="M:ModLibrary.InjectionPrefixTargetAttribute.#ctor(System.Type,System.String,System.Type[])">
+            <summary>
+            Initializes the <see cref="T:ModLibrary.InjectionPrefixTargetAttribute"/> attribute with a target method
+            </summary>
+            <param name="type">The type the target method is attached to</param>
+            <param name="methodName">The name of the target method</param>
+            <param name="methodParameters">The parameter types on the target method</param>
         </member>
         <member name="T:ModLibrary.Properties.Resources">
             <summary>
@@ -4392,16 +4450,16 @@
               Looks up a localized string similar to 2.1.0.0.
             </summary>
         </member>
-        <member name="T:InternalModBot.ModdedTwitchManager">
-            <summary>
-            Used by Mod-Bot to intercept messages from twitch chat.
-            </summary>
-        </member>
         <member name="M:InternalModBot.Resources_Load_Patch.TargetMethod">
             <summary>
             Finds <see cref="M:UnityEngine.Resources.Load(System.String,System.Type)"/>
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:InternalModBot.ModdedTwitchManager">
+            <summary>
+            Used by Mod-Bot to intercept messages from twitch chat.
+            </summary>
         </member>
         <member name="T:InternalModBot.ModImagesManager">
             <summary>
@@ -4503,11 +4561,6 @@
         <member name="F:InternalModBot.ModsHolder.Mods">
             <summary>
             A list of all the mods downloaded.
-            </summary>
-        </member>
-        <member name="T:InternalModBot.InjectionTargetAttribute">
-            <summary>
-            Base attribute type for 0Harmony patch targets
             </summary>
         </member>
         <member name="T:InternalModBot.CalledFromInjections">
@@ -4652,52 +4705,52 @@
             Injects all patches if it is not already done
             </summary>
         </member>
-        <member name="T:InternalModBot.ModBotInputManager">
+        <member name="T:InternalModBot.ModBotPrefs">
             <summary>
-            Handles what keys are associated with what actions in mod-bot
+            Handles Mod-Bot settings
             </summary>
         </member>
-        <member name="F:InternalModBot.ModBotInputManager.InputOptions">
+        <member name="F:InternalModBot.ModBotPrefs.InputOptions">
             <summary>
             All the input options in mod-bot
             </summary>
         </member>
-        <member name="M:InternalModBot.ModBotInputManager.GetKeyCode(InternalModBot.ModBotInputType)">
+        <member name="M:InternalModBot.ModBotPrefs.GetKeyCode(InternalModBot.ModBotInputType)">
             <summary>
             Gets the key associated with a specifc <see cref="T:InternalModBot.ModBotInputType"/>
             </summary>
             <param name="type"></param>
             <returns></returns>
         </member>
-        <member name="T:InternalModBot.ModBotInputManager.InputOption">
+        <member name="T:InternalModBot.ModBotPrefs.InputOption">
             <summary>
             Class for holding information about a input
             </summary>
         </member>
-        <member name="F:InternalModBot.ModBotInputManager.InputOption.Type">
+        <member name="F:InternalModBot.ModBotPrefs.InputOption.Type">
             <summary>
             <see cref="T:InternalModBot.ModBotInputType"/> we want this input to be
             </summary>
         </member>
-        <member name="F:InternalModBot.ModBotInputManager.InputOption.DefaultKey">
+        <member name="F:InternalModBot.ModBotPrefs.InputOption.DefaultKey">
             <summary>
             The defualt key for the input
             </summary>
         </member>
-        <member name="F:InternalModBot.ModBotInputManager.InputOption.DisplayName">
+        <member name="F:InternalModBot.ModBotPrefs.InputOption.DisplayName">
             <summary>
             The display name for the key
             </summary>
         </member>
-        <member name="M:InternalModBot.ModBotInputManager.InputOption.#ctor(InternalModBot.ModBotInputType,UnityEngine.KeyCode,System.String)">
+        <member name="M:InternalModBot.ModBotPrefs.InputOption.#ctor(InternalModBot.ModBotInputType,UnityEngine.KeyCode,System.String)">
             <summary>
-            Creates a new <see cref="T:InternalModBot.ModBotInputManager.InputOption"/>
+            Creates a new <see cref="T:InternalModBot.ModBotPrefs.InputOption"/>
             </summary>
             <param name="type"></param>
             <param name="defaultKey"></param>
             <param name="displayName"></param>
         </member>
-        <member name="P:InternalModBot.ModBotInputManager.InputOption.Key">
+        <member name="P:InternalModBot.ModBotPrefs.InputOption.Key">
             <summary>
             Gets or sets the key we want to associate with this input
             </summary>
@@ -4817,12 +4870,6 @@
             </summary>
             <param name="moddedObject"></param>
         </member>
-        <member name="M:InternalModBot.ModBotSignInUI.SetSession(System.String)">
-            <summary>
-            Sets the current session in the API
-            </summary>
-            <param name="sessionId"></param>
-        </member>
         <member name="M:InternalModBot.ModBotSignInUI.OpenSignInForm">
             <summary>
             Opens the sign in form
@@ -4904,11 +4951,6 @@
             Used by mod-bot to manage custom name tags in multiplayer
             </summary>
         </member>
-        <member name="E:InternalModBot.MultiplayerPlayerNameManager.RefreshNameTags">
-            <summary>
-            Will be called when we want to refresh name tags
-            </summary>
-        </member>
         <member name="M:InternalModBot.MultiplayerPlayerNameManager.getFullPrefixForPlayfabID(System.String)">
             <summary>
             Gets the full prefix for a player from their playfabID
@@ -4926,7 +4968,7 @@
         </member>
         <member name="T:InternalModBot.NameTagRefreshListener">
             <summary>
-            Add this component to a name tag and call Init to have it listen for <see cref="E:InternalModBot.MultiplayerPlayerNameManager.RefreshNameTags"/> and refresh itself if that event gets called
+            Add this component to a name tag and call Init to have it listen for <see cref="F:InternalModBot.MultiplayerPlayerNameManager.REFRESH_NAME_TAGS_EVENT"/> global event and refresh itself if that event gets called
             </summary>
         </member>
         <member name="M:InternalModBot.NameTagRefreshListener.Init(Character,EnemyNameTag)">
@@ -5074,23 +5116,6 @@
             Gets called when the user types in a command into the input field and presses enter
             </summary>
             <param name="command"></param>
-        </member>
-        <member name="T:InternalModBot.ScrollRectExtensions">
-            <summary>
-            Adds a few extension methods to the <see cref="T:UnityEngine.UI.ScrollRect"/> class
-            </summary>
-        </member>
-        <member name="M:InternalModBot.ScrollRectExtensions.ScrollToTop(UnityEngine.UI.ScrollRect)">
-            <summary>
-            Scrolls the <see cref="T:UnityEngine.UI.ScrollRect"/> to the top
-            </summary>
-            <param name="scrollRect"></param>
-        </member>
-        <member name="M:InternalModBot.ScrollRectExtensions.ScrollToBottom(UnityEngine.UI.ScrollRect)">
-            <summary>
-            Scrolls the <see cref="T:UnityEngine.UI.ScrollRect"/> to the bottom
-            </summary>
-            <param name="scrollRect"></param>
         </member>
         <member name="T:InternalModBot.UpgradeAngleSetter">
             <summary>
@@ -5428,7 +5453,7 @@
         </member>
         <member name="T:InternalModBot.ModsPanelManager">
             <summary>
-            Used by Mod-Bot to control most of the UI in Mod-Bot.
+            Adjusts game ui for modded things
             </summary>
         </member>
         <member name="T:InternalModBot.StringAndByteArrayConverterExtensions">
@@ -5516,12 +5541,6 @@
             Calls this method on all mods, also calls OnFirstPersonMoverUpdate if the passed character is a firstpersonmover
             </summary>
             <param name="me"></param>
-        </member>
-        <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover)">
-            <summary>
-            Moved from <see cref="T:InternalModBot.CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)"/>
-            </summary>
-            <param name="firstPersonMover"></param>
         </member>
         <member name="M:InternalModBot.PassOnToModsManager.AfterUpgradesRefreshed(FirstPersonMover,UpgradeCollection)">
             <summary>
@@ -5625,6 +5644,11 @@
             </summary>
             <param name="upgrade"></param>
             <param name="url"></param>
+        </member>
+        <member name="T:InternalModBot.InjectionTargetAttribute">
+            <summary>
+            Base attribute type for 0Harmony patch targets
+            </summary>
         </member>
         <member name="T:InternalModBot.UpdateChecker">
             <summary>

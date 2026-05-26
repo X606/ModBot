@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using ModLibrary;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,11 @@ namespace InternalModBot
     {
         List<LineInfo> _linesToDraw = new List<LineInfo>();
 
+        private void Start()
+        {
+            StartCoroutine(runAtEndOfFrame());
+        }
+
         /// <summary>
         /// Adds a line to the lines to draw this frame
         /// </summary>
@@ -22,39 +28,25 @@ namespace InternalModBot
 
         void Update()
         {
-            Camera main = Camera.main;
-            if (main == null)
-            {
-                FirstPersonMover player = CharacterTracker.Instance.GetPlayerRobot();
-                if (player == null)
-                    return;
-
-                main = player.GetPlayerCamera();
-                if (main == null)
-                    return;
-
-            }
-            if (main.GetComponent<DebugLineDrawer>() == null)
-            {
-                main.gameObject.AddComponent<DebugLineDrawer>();
-            }
-
-            StartCoroutine(runAtEndOfFrame());
+            Camera camera = CameraManager.MainCamera;
+            if (camera && !camera.GetComponent<DebugLineDrawer>()) camera.gameObject.AddComponent<DebugLineDrawer>();
         }
 
         IEnumerator runAtEndOfFrame()
         {
-            yield return new WaitForEndOfFrame();
-
-            for (int i = 0; i < _linesToDraw.Count; i++)
+            while (true)
             {
-                if (_linesToDraw[i].EndTime <= Time.unscaledTime)
+                yield return new WaitForEndOfFrame();
+
+                for (int i = 0; i < _linesToDraw.Count; i++)
                 {
-                    _linesToDraw.RemoveAt(i);
-                    i--;
+                    if (_linesToDraw[i].EndTime <= Time.unscaledTime)
+                    {
+                        _linesToDraw.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
-
         }
 
         class DebugLineDrawer : MonoBehaviour

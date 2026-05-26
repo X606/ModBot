@@ -24,12 +24,6 @@ namespace ModLibrary
         void OnDestroy()
         {
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, refreshPageContents);
-
-            if (_backButton != null)
-                Destroy(_backButton);
-
-            if (_nextButton != null)
-                Destroy(_nextButton);
         }
 
         void Update()

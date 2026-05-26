@@ -33,6 +33,7 @@ namespace InternalModBot
             GameObject _modBotOptionsLabelPrefab;
             GameObject _modBotOptionsLabelAndButton;
             GameObject _modBotOptionsSingleButton;
+            GameObject _modBotOptionsCheckbox;
 
             public ModBotSettingsBuilder(ModdedObject moddedObject)
             {
@@ -43,14 +44,17 @@ namespace InternalModBot
                 _modBotOptionsLabelPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabel");
                 _modBotOptionsLabelAndButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabelAndButton");
                 _modBotOptionsSingleButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsSingleButton");
-
+                _modBotOptionsCheckbox = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsCheckbox");
             }
 
-            public void AddLabel(string label)
+            public Text AddLabel(string label)
             {
                 ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelPrefab, _holder).GetComponent<ModdedObject>();
-                moddedObject.GetObject<Text>(0).text = label;
+                Text text = moddedObject.GetObject<Text>(0);
+                text.text = label;
+                return text;
             }
+
             public void AddLabelAndButton(string label, string buttonText, Color buttonColor, Action<Button> onClick)
             {
                 ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelAndButton, _holder).GetComponent<ModdedObject>();
@@ -60,6 +64,7 @@ namespace InternalModBot
                 button.GetComponent<Image>().color = buttonColor;
                 button.onClick.AddListener(delegate { onClick?.Invoke(button); });
             }
+
             public void AddSingleButton(string buttonText, Color buttonColor, Action<Button> onClick)
             {
                 ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsSingleButton, _holder).GetComponent<ModdedObject>();
@@ -69,6 +74,14 @@ namespace InternalModBot
                 button.onClick.AddListener(delegate { onClick?.Invoke(button); });
             }
 
+            public void AddCheckbox(string text, bool isOn, Action<Toggle> onClick)
+            {
+                ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsCheckbox, _holder).GetComponent<ModdedObject>();
+                Toggle toggle = moddedObject.GetObject<Toggle>(0);
+                toggle.isOn = isOn;
+                toggle.GetComponentInChildren<Text>().text = text;
+                toggle.onValueChanged.AddListener(delegate { onClick?.Invoke(toggle); });
+            }
         }
 
         /// <summary>
@@ -77,16 +90,26 @@ namespace InternalModBot
         /// <param name="builder"></param>
         internal static void CreateSettingsWindow(ModBotSettingsBuilder builder)
         {
+            builder.AddLabel("Interface");
+            builder.AddCheckbox("Hide custom tags", ModBotPrefs.HideCustomTags, delegate (Toggle toggle)
+            {
+                ModBotPrefs.HideCustomTags = toggle.isOn;
+                MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
+            });
+            builder.AddCheckbox("Show max FPS", ModBotPrefs.ShowMaxFPS, delegate (Toggle toggle)
+            {
+                ModBotPrefs.ShowMaxFPS = toggle.isOn;
+                ModBotUIRoot.Instance.FPSCounter.ForceRefreshNextFrame();
+            });
+
             builder.AddLabel("Controls");
-            foreach (ModBotInputManager.InputOption inputOption in ModBotInputManager.InputOptions)
+            foreach (ModBotPrefs.InputOption inputOption in ModBotPrefs.InputOptions)
             {
                 builder.AddLabelAndButton(inputOption.DisplayName, inputOption.Key.ToString(), new Color(0.3437611f, 0.5951038f, 0.9716981f), delegate (Button button)
                 {
                     StaticCoroutineRunner.StartStaticCoroutine(assignKeyFromNextInput(button, inputOption, 3f));
                 });
             }
-            //builder.AddLabelAndButton("Open Console", "F1", new Color(0.3437611f, 0.5951038f, 0.9716981f), null);
-            //builder.AddLabelAndButton("Toggle FPS label", "F3", new Color(0.3437611f, 0.5951038f, 0.9716981f), null);
 
             builder.AddLabel("Website Integration");
             if (API.HasSession)
@@ -97,17 +120,25 @@ namespace InternalModBot
                 });
                 builder.AddSingleButton("Sign out", Color.red, delegate (Button button)
                 {
+                    button.interactable = false;
                     debug.Log("Logging out...");
                     API.SignOut(delegate (JsonObject json)
                     {
-                        ModBotUIRoot.Instance.ModBotSignInUI.SetSession("");
-                        VersionLabelManager.Instance.SetLine(2, "Not signed in");
+                        ModBotUserIdentifier.Instance.SignOut();
                         CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
                     });
                 });
             }
             else
             {
+                if (!ModBotUserIdentifier.Instance.CanSignIn())
+                {
+                    Text text = builder.AddLabel("Can't sign in. Check your internet connection");
+                    text.alignment = TextAnchor.LowerCenter;
+                    text.color = Color.white;
+                    return;
+                }
+
                 builder.AddSingleButton("Sign in", Color.green, delegate
                 {
                     GameUIRoot.Instance.SettingsMenu.Hide();
@@ -117,7 +148,7 @@ namespace InternalModBot
 
         }
 
-        static IEnumerator assignKeyFromNextInput(Button button, ModBotInputManager.InputOption input, float timeoutTime)
+        static IEnumerator assignKeyFromNextInput(Button button, ModBotPrefs.InputOption input, float timeoutTime)
         {
             yield return new WaitForSecondsRealtime(0.1f); // wait a little so we dont pick up the mouse button
 

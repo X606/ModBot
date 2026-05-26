@@ -19,16 +19,13 @@ namespace InternalModBot
 
         static readonly string[] _oldSaveFormatTypeStrings = new string[] { "_str_", "_int_", "_flt_", "_bol_" };
 
-        static OptionsSaver()
-        {
-            if (File.Exists(_settingsFilePath))
-            {
-                populateSettingDictionary();
-            }
-        }
+        static bool s_hasPopulatedSettingDictionary;
 
-        static void populateSettingDictionary()
+        public static void PopulateSettingDictionary()
         {
+            if (s_hasPopulatedSettingDictionary) return;
+            s_hasPopulatedSettingDictionary = true;
+
             string json = File.ReadAllText(_settingsFilePath);
 
             object deserializedObject = JsonConvert.DeserializeObject(json);

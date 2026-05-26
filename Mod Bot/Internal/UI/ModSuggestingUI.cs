@@ -101,7 +101,7 @@ namespace InternalModBot
                 unityWebRequest.timeout = 5;
                 yield return unityWebRequest.SendWebRequest();
 
-                if (!string.IsNullOrWhiteSpace(unityWebRequest.error))
+                if (unityWebRequest.result != UnityWebRequest.Result.Success)
                 {
                     debug.Log("Error while trying to fetch mod data.", Color.red);
                     yield break;

@@ -117,6 +117,7 @@ namespace ModLibrary.LevelEditor
         {
             using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture("file://" + path))
             {
+                webRequest.timeout = 10;
                 yield return webRequest.SendWebRequest();
                 if (webRequest.result == UnityWebRequest.Result.Success && webRequest.downloadHandler is DownloadHandlerTexture download)
                 {

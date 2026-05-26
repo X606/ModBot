@@ -7,7 +7,7 @@ namespace InternalModBot
     static class LocalizationManager_Patch
     {
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(LocalizationManager), nameof(LocalizationManager.populateDictionaryForCurrentLanguage))]
+        [HarmonyPatch(nameof(LocalizationManager.populateDictionaryForCurrentLanguage))]
         static void populateDictionaryForCurrentLanguage_Postfix(LocalizationManager __instance, Dictionary<string, string> ____translatedStringsDictionary)
         {
             ModBotLocalizationManager.OnLocalizationDictionaryUpdated();

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ModLibrary
 {
@@ -242,5 +243,29 @@ namespace ModLibrary
         /// <param name="texture2D"></param>
         /// <returns></returns>
         public static Sprite ToSprite(this Texture2D texture2D) => texture2D ? Sprite.Create(texture2D, new Rect(0f, 0f, texture2D.width, texture2D.height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect) : null;
+    }
+
+    /// <summary>
+    /// Adds a few extension methods to the <see cref="ScrollRect"/> class
+    /// </summary>
+    public static class ScrollRectExtensions
+    {
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the top
+        /// </summary>
+        /// <param name="scrollRect"></param>
+        public static void ScrollToTop(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 1);
+        }
+
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the bottom
+        /// </summary>
+        /// <param name="scrollRect"></param>
+        public static void ScrollToBottom(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 0);
+        }
     }
 }

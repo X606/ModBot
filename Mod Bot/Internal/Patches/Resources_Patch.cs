@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using ModLibrary.LevelEditor;
+using ModLibrary.Internal;
 using System.Reflection;
 using UnityEngine;
 
@@ -29,46 +29,16 @@ namespace InternalModBot
             return null;
         }
 
-        [HarmonyPostfix]
-        static Object Load_Postfix(Object __result, string path, System.Type systemTypeInstance)
+        [HarmonyPrefix]
+        static bool Load_Prefix(ref Object __result, string path, System.Type systemTypeInstance)
         {
-            Object overrideResource;
-
-            // get transform or preview image of level editor custom object
-            if (systemTypeInstance == typeof(Transform))
-            {
-                overrideResource = CustomLevelEditorManager.GetTransform(path);
-            }
-            else if (systemTypeInstance == typeof(Texture2D))
-            {
-                overrideResource = CustomLevelEditorManager.GetTexture(path);
-            }
-            else
-            {
-                overrideResource = null;
-            }
-
+            Object overrideResource = OverrideResourceManager.GetObjectOverride(path, systemTypeInstance);
             if (overrideResource != null)
             {
-                return overrideResource;
+                __result = overrideResource;
+                return false;
             }
-
-            if (ModsManager.Instance != null)
-            {
-                PassOnToModsManager passOnMod = ModsManager.Instance.PassOnMod;
-                overrideResource = passOnMod.OnResourcesLoad(path, systemTypeInstance);
-                if (overrideResource == null)
-                {
-                    overrideResource = passOnMod.OnResourcesLoad(path);
-                }
-
-                if (overrideResource != null)
-                {
-                    return overrideResource;
-                }
-            }
-
-            return __result;
+            return true;
         }
     }
 }

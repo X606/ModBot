@@ -20,6 +20,7 @@ namespace InternalModBot
             ModName = modName;
             ErrorMessage = errorMessage;
         }
+
         public ModLoadError(string errorMesage) : this("", "", errorMesage)
         {
         }

@@ -1,9 +1,5 @@
-﻿using ModBotWebsiteAPI;
-using ModLibrary;
-using System;
-using System.IO;
+﻿using ModLibrary;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace InternalModBot
@@ -13,11 +9,6 @@ namespace InternalModBot
     /// </summary>
     internal class ModBotSignInUI : MonoBehaviour
     {
-        private static string _userName = string.Empty;
-        public static string CurrentUserName { get => _userName; private set { _userName = value; } }
-
-        public static bool HasSignedIn => !string.IsNullOrEmpty(CurrentUserName);
-
         InputField _usernameField;
         InputField _passwordField;
         Button _signUpButton;
@@ -39,58 +30,18 @@ namespace InternalModBot
             _usernameField = moddedObject.GetObject<InputField>(0);
             _passwordField = moddedObject.GetObject<InputField>(1);
             _signUpButton = moddedObject.GetObject<Button>(2);
+            _signUpButton.onClick.AddListener(onSignUpButtonClicked);
             _signInButton = moddedObject.GetObject<Button>(3);
+            _signInButton.onClick.AddListener(onSignInButtonClicked);
             _errorText = moddedObject.GetObject<Text>(4);
             _xButton = moddedObject.GetObject<Button>(5);
+            _xButton.onClick.AddListener(onCloseButtonClicked);
 
             WindowObject = moddedObject.gameObject;
-        }
 
-        readonly string _sessionIdFilePath = Application.persistentDataPath + "/SessionID.txt";
+            makeInteractable();
 
-        void Start()
-        {
-            if (File.Exists(_sessionIdFilePath))
-            {
-                string sessionId = File.ReadAllText(_sessionIdFilePath);
-                API.SetSessionID(sessionId);
-
-                API.IsValidSession(sessionId, delegate (string data)
-                {
-                    if (data == "false")
-                    {
-                        API.SetSessionID("");
-
-                        File.Delete(_sessionIdFilePath);
-
-                        VersionLabelManager.Instance.SetLine(2, "Not signed in");
-                        return;
-                    }
-
-                    onSignedIn();
-
-                });
-            }
-            else
-            {
-                VersionLabelManager.Instance.SetLine(2, "Not signed in");
-            }
-
-            _signUpButton.onClick.AddListener(new UnityAction(onSignUpButtonClicked));
-            _signInButton.onClick.AddListener(new UnityAction(onSignInButtonClicked));
-
-            _xButton.onClick.AddListener(new UnityAction(onCloseButton));
-        }
-
-        /// <summary>
-        /// Sets the current session in the API
-        /// </summary>
-        /// <param name="sessionId"></param>
-        public void SetSession(string sessionId)
-        {
-            API.SetSessionID(sessionId);
-
-            File.WriteAllText(_sessionIdFilePath, sessionId);
+            GlobalEventManager.Instance.AddEventListener(ModBotUserIdentifier.USER_SIGN_IN_ATTEMPT_EVENT, onSignInAttempt);
         }
 
         /// <summary>
@@ -98,97 +49,58 @@ namespace InternalModBot
         /// </summary>
         public void OpenSignInForm()
         {
-            _usernameField.text = "";
-            _passwordField.text = "";
-
-            _errorText.text = "";
-
-            _signInButton.gameObject.SetActive(true);
-            _signUpButton.gameObject.SetActive(true);
-            _xButton.gameObject.SetActive(true);
-
+            _usernameField.text = string.Empty;
+            _passwordField.text = string.Empty;
+            _errorText.text = string.Empty;
             WindowObject.SetActive(true);
+            GameUIRoot.Instance.RefreshCursorEnabled();
         }
 
-        void onSignUpButtonClicked()
-        {
-            System.Diagnostics.Process.Start("https://modbot.org/");
-        }
-        void onSignInButtonClicked()
+        void makeNotInteractable()
         {
             _signInButton.gameObject.SetActive(false);
             _signUpButton.gameObject.SetActive(false);
             _xButton.gameObject.SetActive(false);
-            signInFromGame();
         }
 
-        void signInFromGame()
+        void makeInteractable()
         {
-            API.SignInFromGame(_usernameField.text, _passwordField.text, MultiplayerLoginManager.Instance.GetLocalPlayFabID(), onSignInInfoReceived);
+            _signInButton.gameObject.SetActive(true);
+            _signUpButton.gameObject.SetActive(true);
+            _xButton.gameObject.SetActive(true);
         }
 
-        void onSignInInfoReceived(JsonObject json)
+        void onSignUpButtonClicked()
         {
-            string error;
-            try
-            {
-                error = Convert.ToString(json["Error"]);
-            }
-            catch (NullReferenceException)
-            {
-                _errorText.text = "Could not connect to server";
-                _signInButton.gameObject.SetActive(true);
-                _signUpButton.gameObject.SetActive(true);
-                _xButton.gameObject.SetActive(true);
-                return;
-            }
-
-            if (error != "" && error != "null")
-            {
-                _errorText.text = error;
-                _signInButton.gameObject.SetActive(true);
-                _signUpButton.gameObject.SetActive(true);
-                _xButton.gameObject.SetActive(true);
-                return;
-            }
-
-            _errorText.text = "";
-            string sessionID = Convert.ToString(json["sessionID"]).Trim('\"');
-            SetSession(sessionID);
-
-            onCloseButton();
-
-            onSignedIn();
+            Application.OpenURL("https://modbot.org/");
         }
 
-        void onCloseButton()
+        void onSignInButtonClicked()
+        {
+            makeNotInteractable();
+            ModBotUserIdentifier.Instance.TrySignInWithCredentials(_usernameField.text, _passwordField.text);
+        }
+
+        void onCloseButtonClicked()
         {
             WindowObject.SetActive(false);
+            GameUIRoot.Instance.RefreshCursorEnabled();
         }
 
-        void onSignedIn()
+        void onSignInAttempt()
         {
-            API.GetCurrentUser(delegate (string userId)
-            {
-                API.GetUser(userId, delegate (JsonObject json)
-                {
-                    string username;
-                    try
-                    {
-                        username = Convert.ToString(json["username"]).Trim('\"');
-                        username = "<color=" + Convert.ToString(json["color"]) + ">" + username + "</color>";
-                    }
-                    catch (NullReferenceException)
-                    {
-                        DelegateScheduler.Instance.Schedule(onSignedIn, 2f);
-                        return;
-                    }
+            makeInteractable();
 
-                    debug.Log("logged in as " + username.Trim('\"'));
-                    VersionLabelManager.Instance.SetLine(2, "Signed in as: " + username);
-                    CurrentUserName = username;
-                });
-            });
+            ModBotUserIdentifier userIdentifier = ModBotUserIdentifier.Instance;
+            if (userIdentifier.HasFailedToSignIn())
+            {
+                _errorText.text = userIdentifier.GetSignInError();
+            }
+            else
+            {
+                onCloseButtonClicked();
+                _errorText.text = string.Empty;
+            }
         }
     }
 }

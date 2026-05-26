@@ -17,17 +17,19 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
+            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
+                throw new DirectoryNotFoundException("Mods folder not found!");
+
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             ModBotHarmonyInjectionManager.TryInject();
-
-            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
-                throw new DirectoryNotFoundException("Mods folder not found!");
+            CustomLevelEditorManager.Initialize();
+            OptionsSaver.PopulateSettingDictionary();
+            ModBotPrefs.Initialize();
 
             GameObject modBotManagers = new GameObject("ModBotManagers");
-
-            modBotManagers.AddComponent<ModsManager>();
+            modBotManagers.AddComponent<ModsManager>();                       // Handles mods
             modBotManagers.AddComponent<ModImagesManager>();                  // Gets images of installed mods
             modBotManagers.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
             modBotManagers.AddComponent<ModsPanelManager>();                  // Adds the mods button in the main menu and pause screen
@@ -35,14 +37,12 @@ namespace InternalModBot
             modBotManagers.AddComponent<UpgradeIconDownloader>();             // Downloads images from a URL to be used as an upgrade icon
             modBotManagers.AddComponent<ModdedMultiplayerEventListener>();    // Recieves all multiplayer events and sends them to any mods that has configured to recieve them
             modBotManagers.AddComponent<ModSharingManager>();                 // Handles sharing of mods to all clients on the same server
-            modBotManagers.AddComponent<ModBotUserIdentifier>();              // Keeps track of what users are currently using Mod-Bot
+            modBotManagers.AddComponent<ModBotUserIdentifier>();              // Handles singing in and keeps track of what users are currently using Mod-Bot
             modBotManagers.AddComponent<UpgradeAngleSetter>();                // Handles setting upgrade angles while in-game
             modBotManagers.AddComponent<DebugLineDrawingManager>();           // Handles drawing lines on screen
             modBotManagers.AddComponent<VersionLabelManager>();               // Handles custom version label stuff
             modBotManagers.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
             modBotManagers.AddComponent<ModdedTwitchManager>();               // Handles twitch chat messages
-
-            CustomLevelEditorManager.Initialize();
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
@@ -53,11 +53,11 @@ namespace InternalModBot
             catch (Exception e)
             {
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
-                ModBotUIRoot.Instance.ConsoleUI.Animator.Play("hideConsole");
+                ModBotUIRoot.Instance.ConsoleUI.ShowConsole();
             }
 
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.UpgradesRefreshed, new Action<FirstPersonMover>(PassOnToModsManager.AfterUpgradesRefreshed));
-            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, new Action(ModsManager.Instance.PassOnMod.OnLevelEditorStarted));
+            GlobalEventManager.Instance.AddEventListener<FirstPersonMover>(GlobalEvents.UpgradesRefreshed, afterUpgradesRefreshed);
+            GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, onLevelEditorStarted);
 
             IgnoreCrashesManager.Start();
 
@@ -70,6 +70,19 @@ namespace InternalModBot
             GameObject spawnedUI = InternalAssetBundleReferences.ModBot.InstantiateObject("Canvas");
             ModBotUIRoot modBotUIRoot = spawnedUI.AddComponent<ModBotUIRoot>();
             modBotUIRoot.Init();
+        }
+
+        static void afterUpgradesRefreshed(FirstPersonMover firstPersonMover)
+        {
+            if (firstPersonMover == null || firstPersonMover.gameObject == null || !firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
+                return;
+
+            ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(firstPersonMover, firstPersonMover.GetComponent<UpgradeCollection>());
+        }
+
+        static void onLevelEditorStarted()
+        {
+            ModsManager.Instance.PassOnMod.OnLevelEditorStarted();
         }
     }
 }

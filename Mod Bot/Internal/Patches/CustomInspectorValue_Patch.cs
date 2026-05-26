@@ -10,14 +10,14 @@ namespace InternalModBot
 
         [HarmonyPrefix]
         [HarmonyPatch(nameof(CustomInspectorValue.setValueOnObject))]
-        private static bool setValueOnObject_Prefix(CustomInspectorValue __instance)
+        static bool setValueOnObject_Prefix(CustomInspectorValue __instance)
         {
             return __instance._componentInstance && !__instance._componentInstance.GetComponent<LevelEditorMissingObject>();
         }
 
         [HarmonyPrefix]
         [HarmonyPatch(nameof(CustomInspectorValue.OnValueSetFromInspector))]
-        private static bool OnValueSetFromInspector_Prefix(CustomInspectorValue __instance)
+        static bool OnValueSetFromInspector_Prefix(CustomInspectorValue __instance)
         {
             return __instance._componentInstance && !__instance._componentInstance.GetComponent<LevelEditorMissingObject>();
         }

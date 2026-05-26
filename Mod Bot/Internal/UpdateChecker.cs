@@ -11,38 +11,50 @@ namespace InternalModBot
     /// </summary>
     internal class UpdateChecker : MonoBehaviour
     {
-        private static bool _hasChecked;
+        private static bool s_hasChecked;
 
-        void Start()
+        private void Start()
         {
-            if (_hasChecked) return; // check only once per session
+            if (s_hasChecked) return; // check only once per session
             StartCoroutine(checkVersion()); // Needs to be a Coroutine since the web requests are not asynchronous
         }
 
-        IEnumerator checkVersion()
+        private IEnumerator checkVersion()
         {
-            string installedModBotVersion = ModLibrary.Properties.Resources.ModBotVersion;
-            if (installedModBotVersion.ToLower().Contains("beta"))
+            string localVersionString = ModLibrary.Properties.Resources.ModBotVersion;
+            if (localVersionString.ToLower().Contains("beta"))
                 yield break;
+
+            if (!Version.TryParse(localVersionString, out Version localVersion))
+            {
+                debug.Log("Could not parse the LOCAL version of Mod-Bot", Color.yellow);
+                yield break;
+            }
 
             using (UnityWebRequest modBotVersionRequest = UnityWebRequest.Get("https://modbot.org/api?operation=getCurrentModBotVersion"))
             {
+                modBotVersionRequest.timeout = 10;
                 yield return modBotVersionRequest.SendWebRequest();
-                _hasChecked = true;
+                s_hasChecked = true;
 
                 if (modBotVersionRequest.result != UnityWebRequest.Result.Success)
                     yield break;
 
-                string newestModBotVersion = modBotVersionRequest.downloadHandler.text.Replace("\"", ""); // Latest ModBot version
-
-                if (!isCloudVersionNewer(installedModBotVersion, newestModBotVersion))
+                string remoteVersionString = modBotVersionRequest.downloadHandler.text.Trim().Replace("\"", string.Empty);
+                if (!Version.TryParse(remoteVersionString, out Version remoteVersion))
                 {
-                    string modBotUpToDateMessage = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotuptodate", installedModBotVersion);
+                    debug.Log("Could not parse the REMOTE version of Mod-Bot", Color.yellow);
+                    yield break;
+                }
+
+                if (localVersion >= remoteVersion)
+                {
+                    string modBotUpToDateMessage = ModBotLocalizationManager.FormatLocalizedStringFromID("modbotuptodate", localVersionString);
                     debug.Log(modBotUpToDateMessage, Color.green);
                     yield break;
                 }
 
-                string message = ModBotLocalizationManager.FormatLocalizedStringFromID("newversion_message", newestModBotVersion, installedModBotVersion);
+                string message = ModBotLocalizationManager.FormatLocalizedStringFromID("newversion_message", remoteVersionString, localVersionString);
                 string dismissButtonText = LocalizationManager.Instance.GetTranslatedString("newversion_dismiss");
                 string installButtonText = LocalizationManager.Instance.GetTranslatedString("newversion_install");
                 Generic2ButtonDialogue generic = new Generic2ButtonDialogue(message, dismissButtonText, null, installButtonText, onInstallButtonClicked);
@@ -51,55 +63,7 @@ namespace InternalModBot
             }
         }
 
-        bool isCloudVersionNewer(string installedVersion, string cloudVersion)
-        {
-            string[] installedVersionStrings = installedVersion.Split('.');
-            string[] cloudVersionStrings = cloudVersion.Split('.');
-
-            int lengthOfLongest = Mathf.Max(installedVersionStrings.Length, cloudVersionStrings.Length);
-
-            int[] installedVersionNumbers = new int[lengthOfLongest];
-            int[] cloudVersionNumbers = new int[lengthOfLongest];
-
-            for (int i = 0; i < lengthOfLongest; i++)
-            {
-                if (i >= installedVersionStrings.Length)
-                {
-                    installedVersionNumbers[i] = 0;
-                }
-                else if (int.TryParse(installedVersionStrings[i], out int number))
-                {
-                    installedVersionNumbers[i] = number;
-                }
-                else
-                {
-                    throw new Exception("The installed version string was invalid");
-                }
-
-                if (i >= cloudVersionStrings.Length)
-                {
-                    cloudVersionNumbers[i] = 0;
-                }
-                else if (int.TryParse(cloudVersionStrings[i], out int number))
-                {
-                    cloudVersionNumbers[i] = number;
-                }
-                else
-                {
-                    throw new Exception("The cloud version string was invalid");
-                }
-            }
-
-            for (int i = 0; i < lengthOfLongest; i++)
-            {
-                if (installedVersionNumbers[i] > cloudVersionNumbers[i])
-                    return false;
-            }
-
-            return installedVersion != cloudVersion;
-        }
-
-        void onInstallButtonClicked()
+        private void onInstallButtonClicked()
         {
             Application.OpenURL("https://modbot.org/");
         }

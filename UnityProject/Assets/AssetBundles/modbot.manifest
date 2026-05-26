@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.3.14f1
-CRC: 2487315138
+CRC: 3693724237
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 4fe8c3ac18e54aa4c413d0fe9aeeac93
+    Hash: f0215047c49adb35467f6ef047dd9669
   TypeTreeHash:
     serializedVersion: 2
     Hash: c72deb8c225dcab9cfbdd8caae7bcd85
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 4d6782e938263c88c975146c5407bf2d
+    Hash: 31e9aed7ee879f805be639a70ab4b72c
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -140,6 +140,7 @@ Assets:
 - Assets/Prefabs/ModOptions/PageButton.prefab
 - Assets/Prefabs/ModOptions/Checkbox.prefab
 - Assets/Images/ModBotLogo.png
+- Assets/Prefabs/ModBotOptions/ModBotOptionsCheckbox.prefab
 - Assets/Prefabs/ModOptions/CustomKeyCodeInput.prefab
 - Assets/Prefabs/ModOptions/DropDown.prefab
 - Assets/Prefabs/ModBotOptions/ModBotOptionsLabelAndButton.prefab

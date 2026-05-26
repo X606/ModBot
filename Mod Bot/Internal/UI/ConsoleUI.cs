@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModLibrary;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,7 +88,7 @@ namespace InternalModBot
             if (!_isInitialized)
                 return;
 
-            if (Input.GetKeyDown(ModBotInputManager.GetKeyCode(ModBotInputType.OpenConsole)))
+            if (Input.GetKeyDown(ModBotPrefs.GetKeyCode(ModBotInputType.OpenConsole)))
                 Flip();
         }
 
@@ -318,30 +319,6 @@ namespace InternalModBot
                         return "";
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Adds a few extension methods to the <see cref="ScrollRect"/> class
-    /// </summary>
-    public static class ScrollRectExtensions
-    {
-        /// <summary>
-        /// Scrolls the <see cref="ScrollRect"/> to the top
-        /// </summary>
-        /// <param name="scrollRect"></param>
-        public static void ScrollToTop(this ScrollRect scrollRect)
-        {
-            scrollRect.normalizedPosition = new Vector2(0, 1);
-        }
-
-        /// <summary>
-        /// Scrolls the <see cref="ScrollRect"/> to the bottom
-        /// </summary>
-        /// <param name="scrollRect"></param>
-        public static void ScrollToBottom(this ScrollRect scrollRect)
-        {
-            scrollRect.normalizedPosition = new Vector2(0, 0);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace InternalModBot
     {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(LevelEditorDataManager.SerializeWorldToDataObject))]
-        private static bool SerializeWorldToDataObject_Patch(LevelEditorDataManager __instance)
+        static bool SerializeWorldToDataObject_Patch(LevelEditorDataManager __instance)
         {
             List<LevelEditorLevelObject> customLevelObjects = new List<LevelEditorLevelObject>();
             CustomObjectsList customObjectsList = new CustomObjectsList()
@@ -57,7 +57,7 @@ namespace InternalModBot
 
         [HarmonyPrefix]
         [HarmonyPatch(nameof(LevelEditorDataManager.DeserializeInto))]
-        private static void DeserializeInto_Patch(Transform levelRoot, LevelEditorLevelData currentLevelData, bool isAsync = false)
+        static void DeserializeInto_Patch(Transform levelRoot, LevelEditorLevelData currentLevelData, bool isAsync = false)
         {
             // try to deserialize custom objects list and insert it into main list
             List<LevelEditorLevelObject> levelObjects = currentLevelData?.RootLevelObject?.Children;

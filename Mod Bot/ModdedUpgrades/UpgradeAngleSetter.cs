@@ -31,9 +31,6 @@ namespace InternalModBot
             _changedIconAngles.Clear();
 
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
-
-            if (_saveButtonObject != null)
-                Destroy(_saveButtonObject);
         }
 
         void createSaveButton()
@@ -41,7 +38,6 @@ namespace InternalModBot
             _saveButtonObject = InternalAssetBundleReferences.ModBot.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
             _saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
-
 
             Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
             saveButton.onClick.AddListener(saveAngleChangesToFile);

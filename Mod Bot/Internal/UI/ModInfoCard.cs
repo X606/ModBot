@@ -38,7 +38,7 @@ namespace InternalModBot
 
         public bool IsModInstalled => _localModInfo != null;
         public string ModName => _remoteModInfo.DisplayName;
-        public bool CanInteractWithSpecialData => ModBotSignInUI.HasSignedIn && _remoteModInfo != null && !string.IsNullOrEmpty(_remoteModInfo.UniqueID);
+        public bool CanInteractWithSpecialData => API.HasSession && _remoteModInfo != null && !string.IsNullOrEmpty(_remoteModInfo.UniqueID);
 
         private static ModsDownloadManager.ModDownloadInfo _downloadInfo;
         public static bool IsDownloadingAMod(string id) => _downloadInfo != null && _downloadInfo.Info != null && id.Equals(_downloadInfo.Info.UniqueID);
@@ -186,7 +186,7 @@ namespace InternalModBot
             _likesCount.text = _specialData.Likes.ToString();
 
             int downloadCount = _specialData.Downloads;
-            if(downloadCount < 1000)
+            if (downloadCount < 1000)
             {
                 _downloadCount.text = downloadCount.ToString();
             }

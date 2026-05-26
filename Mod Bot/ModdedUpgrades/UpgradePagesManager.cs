@@ -1,6 +1,4 @@
 ﻿// New mod loading system
-using HarmonyLib;
-using ModLibrary;
 using System.Collections.Generic;
 
 namespace InternalModBot
@@ -35,7 +33,7 @@ namespace InternalModBot
             return 0f;
         }
 
-        static bool isUpgradeOnCurrentPage(UpgradeType upgradeType, int level)
+        internal static bool IsUpgradeOnCurrentPage(UpgradeType upgradeType, int level)
         {
             return findUpgradeOnCurrentPage(upgradeType, level) != null;
         }
@@ -111,24 +109,6 @@ namespace InternalModBot
         internal static bool IsOnModdedUpgradesPage()
         {
             return AreModdedUpgradesAllowed && _currentPageIndex > 0;
-        }
-
-        [HarmonyPatch]
-        static class Patches
-        {
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(UpgradeDescription), "GetAngleOffset")]
-            static float UpgradeDescription_GetAngleOffset_Postfix(float __result, UpgradeDescription __instance)
-            {
-                return IsCurrentlyShowingModdedUpgrades ? GetUpgradeAngle(__instance.UpgradeType, __instance.Level) : __result;
-            }
-
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(UpgradeDescription), "IsUpgradeCurrentlyVisible")]
-            static bool UpgradeDescription_IsUpgradeCurrentlyVisible_Postfix(bool __result, UpgradeDescription __instance)
-            {
-                return IsCurrentlyShowingModdedUpgrades ? isUpgradeOnCurrentPage(__instance.UpgradeType, __instance.Level) : __result && !__instance.IsModdedUpgradeType();
-            }
         }
     }
 }
