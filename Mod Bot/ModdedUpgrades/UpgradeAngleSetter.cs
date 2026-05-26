@@ -15,9 +15,9 @@ namespace InternalModBot
     {
         Dictionary<ModdedUpgradeRepresenter, float> _changedIconAngles;
 
-        GameObject _saveButtonObject = null;
+        GameObject _saveButtonObject;
 
-        internal bool DebugModeEnabled = false;
+        private bool _editMode;
 
         void Start()
         {
@@ -31,6 +31,16 @@ namespace InternalModBot
             _changedIconAngles.Clear();
 
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
+        }
+
+        internal bool IsInEditingMode() => _editMode;
+
+        internal void ToggleEditingMode()
+        {
+            _editMode = !_editMode;
+
+            if (!GameUIRoot.Instance.UpgradeUI.isActiveAndEnabled) return;
+            RefreshIconEventTriggers();
         }
 
         void createSaveButton()
@@ -66,7 +76,7 @@ namespace InternalModBot
             }
 
             File.WriteAllLines(fullFilePath, lines);
-            Process.Start("notepad.exe", fullFilePath);
+            Process.Start(fullFilePath);
         }
 
         static string getUpgradeName(ModdedUpgradeRepresenter upgrade)
@@ -138,7 +148,7 @@ namespace InternalModBot
 
         bool canCurrentlyEditIconAngles()
         {
-            return DebugModeEnabled && UpgradePagesManager.IsCurrentlyShowingModdedUpgrades;
+            return _editMode && UpgradePagesManager.IsCurrentlyShowingModdedUpgrades;
         }
 
         internal void UpdateSaveButtonState()
@@ -153,8 +163,7 @@ namespace InternalModBot
         {
             if (!canCurrentlyEditIconAngles())
             {
-                if (_saveButtonObject != null)
-                    _saveButtonObject.SetActive(false);
+                if (_saveButtonObject) _saveButtonObject.SetActive(false);
 
                 return;
             }
@@ -181,6 +190,5 @@ namespace InternalModBot
                 eventTrigger.triggers.Add(scrollCallback);
             }
         }
-
     }
 }

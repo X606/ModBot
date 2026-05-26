@@ -1841,12 +1841,6 @@
             <param name="upgradeDescription"></param>
             <param name="url">The url to get the image from</param>
         </member>
-        <member name="M:ModLibrary.UpgradeExtensionMethods.EnterUpgradeIconAngleDebugMode(UpgradeManager)">
-            <summary>
-            Enables setting the angles in the upgrade UI by scrolling on them and generating the code to set the angles again
-            </summary>
-            <param name="upgradeManager"></param>
-        </member>
         <member name="T:ModLibrary.MainModClassAttribute">
             <summary>
             Put this on the mod class in your mod. the target class will act as the "Main" call of your mod

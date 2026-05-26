@@ -116,7 +116,7 @@ namespace InternalModBot
                     }
                 case "help":
                     {
-                        debug.Log("Avaliable mod-bot commands (not including commands from mods):\n" +
+                        debug.Log("Avaliable Mod-Bot commands (not including commands from mods):\n" +
                            "ignoreallcrashes [1 - 0], [on - off], [true, false]\n" +
                            "crash\n" +
                            "clearcache\n" +
@@ -124,7 +124,8 @@ namespace InternalModBot
                            "help\n" +
                            "getplayfabids [copy ids: true, false]\n" +
                            "viewlogs\n" +
-                           "savefolder"
+                           "savefolder\n" +
+                           "editupgradeangles"
 
                            , Color.yellow);
                         break;
@@ -190,6 +191,19 @@ namespace InternalModBot
                 case "savefolder":
                     {
                         Process.Start(Path.Combine(Application.persistentDataPath));
+                        break;
+                    }
+                case "editupgradeangles":
+                    {
+                        UpgradeAngleSetter.Instance.ToggleEditingMode();
+                        if (UpgradeAngleSetter.Instance.IsInEditingMode())
+                        {
+                            debug.Log("You can now edit the angles of modded upgrades by hovering your mouse over an icon and scrolling.\nPress \"Generate\" to get the code for setting upgrade angles.", Color.greenYellow);
+                        }
+                        else
+                        {
+                            debug.Log("You have left upgrade angle editing mode.", Color.greenYellow);
+                        }
                         break;
                     }
 #if DEBUG

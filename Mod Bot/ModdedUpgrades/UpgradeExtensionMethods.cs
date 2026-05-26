@@ -95,14 +95,5 @@ namespace ModLibrary
         {
             UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
         }
-
-        /// <summary>
-        /// Enables setting the angles in the upgrade UI by scrolling on them and generating the code to set the angles again
-        /// </summary>
-        /// <param name="upgradeManager"></param>
-        public static void EnterUpgradeIconAngleDebugMode(this UpgradeManager upgradeManager)
-        {
-            UpgradeAngleSetter.Instance.DebugModeEnabled = true;
-        }
     }
 }
