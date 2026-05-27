@@ -4182,6 +4182,19 @@
             </summary>
             <param name="scrollRect"></param>
         </member>
+        <member name="T:ModLibrary.UnityWebRequestTools">
+            <summary>
+            Handles extra cases of <see cref="T:UnityEngine.Networking.UnityWebRequest"/>
+            </summary>
+        </member>
+        <member name="M:ModLibrary.UnityWebRequestTools.AbortRequestIfNoProgress(UnityEngine.Networking.UnityWebRequest,System.Single,System.Action)">
+            <summary>
+            Aborts request if the download progress doesn't change within specified time
+            </summary>
+            <param name="request"></param>
+            <param name="timeout"></param>
+            <param name="abortCallback"></param>
+        </member>
         <member name="T:ModLibrary.ModBotUserIdentifier">
             <summary>
             Handles singing into Mod-Bot and used to find out if other players are using Mod-Bot

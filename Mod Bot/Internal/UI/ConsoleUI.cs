@@ -187,7 +187,7 @@ namespace InternalModBot
         private void refreshPosition()
         {
             Vector2 anchoredPosition = _rectTransform.anchoredPosition;
-            anchoredPosition.y = Mathf.LerpUnclamped(_rectTransform.sizeDelta.y + EXTRA_HEIGHT, 0f, EasingFunctions.InOutBack(_showProgress));
+            anchoredPosition.y = Mathf.LerpUnclamped(_rectTransform.sizeDelta.y + EXTRA_HEIGHT, 0f, EasingFunctions.OutBack(_showProgress));
             _rectTransform.anchoredPosition = anchoredPosition;
         }
 

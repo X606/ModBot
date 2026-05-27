@@ -131,6 +131,7 @@ namespace InternalModBot
         {
             _cards.Clear();
             TransformUtils.DestroyAllChildren(_container);
+            _searchField.interactable = false;
             ModBotUIRoot.Instance.LoadingBar.SetActive("Loading mods", 0f);
             ModsDownloadManager.GetModInfos(onGotModInfos, onReqestProgress);
         }
@@ -145,6 +146,8 @@ namespace InternalModBot
 
         private void onGotModInfos(ModsDownloadManager.GetModInfosResult getModInfosResult)
         {
+            _searchField.interactable = true;
+
             if (getModInfosResult.HasFailed())
             {
                 Hide();

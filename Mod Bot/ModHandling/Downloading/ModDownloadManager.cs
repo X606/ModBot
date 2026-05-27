@@ -21,6 +21,8 @@ namespace InternalModBot
 
         public const int LOAD_MOD_SPECIAL_DATAS_TIMEOUT = 10;
 
+        public const int DOWNLOAD_TIMEOUT = 10;
+
         public const bool DEBUG_PLACEHOLDER_MOD_INFOS = false;
 
         private static ModDownloadInfo _currentlyDownloadingMod;
@@ -64,8 +66,9 @@ namespace InternalModBot
                 DownloadProgress = 0f
             };
 
+            var loadedModInfo = ModsManager.Instance.GetLoadedModWithID(info.UniqueID);
             // If mod is already loaded, just cancel the download instead of throwing an exception
-            if (!update && ModsManager.Instance.GetLoadedModWithID(info.UniqueID) != null)
+            if (!update && loadedModInfo != null)
             {
                 if (callback != null) callback(new DownloadModResult() { Info = info });
                 endDownload();
@@ -89,11 +92,17 @@ namespace InternalModBot
             byte[] bytes;
             using (UnityWebRequest webRequest = UnityWebRequest.Get("https://modbot.org/api?operation=downloadMod&id=" + info.UniqueID))
             {
-                UnityWebRequestAsyncOperation request = webRequest.SendWebRequest();
+                UnityWebRequestAsyncOperation operation = webRequest.SendWebRequest();
 
-                while (!request.isDone)
+                bool hasBeenAbortedDueToNoProgress = false;
+                UnityWebRequestTools.AbortRequestIfNoProgress(webRequest, DOWNLOAD_TIMEOUT, delegate
                 {
-                    _currentlyDownloadingMod.DownloadProgress = request.progress;
+                    hasBeenAbortedDueToNoProgress = true;
+                });
+
+                while (!operation.isDone)
+                {
+                    _currentlyDownloadingMod.DownloadProgress = operation.progress;
                     yield return null;
                 }
 
@@ -104,7 +113,7 @@ namespace InternalModBot
                     if (callback != null) callback(new DownloadModResult()
                     {
                         Info = info,
-                        Error = webRequest.error
+                        Error = hasBeenAbortedDueToNoProgress ? "Download took too long. Check your internet connection." : webRequest.error
                     });
                     yield break;
                 }
@@ -122,7 +131,20 @@ namespace InternalModBot
             }));
 
             endDownload();
-            if (!update) ModsManager.Instance.LoadNewMods();
+            if (update)
+            {
+                if(loadedModInfo != null)
+                {
+                    // rename mod info file so the launcher doesn't count old mods
+                    string modInfoFile = Path.Combine(loadedModInfo.OwnerModInfo.FolderPath, ModsManager.MOD_INFO_FILE_NAME);
+                    if (File.Exists(modInfoFile)) File.Move(modInfoFile, modInfoFile + ".bak");
+                }
+            }
+            else
+            {
+                ModsManager.Instance.LoadNewMods();
+            }
+
             if (callback != null) callback(new DownloadModResult() { Info = info });
         }
 

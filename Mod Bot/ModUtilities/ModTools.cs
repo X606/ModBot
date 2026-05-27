@@ -1,9 +1,14 @@
 using ModLibrary.LevelEditor;
+using Pathfinding;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
+using static InternalModBot.ModsDownloadManager;
 
 namespace ModLibrary
 {
@@ -266,6 +271,52 @@ namespace ModLibrary
         public static void ScrollToBottom(this ScrollRect scrollRect)
         {
             scrollRect.normalizedPosition = new Vector2(0, 0);
+        }
+    }
+
+    /// <summary>
+    /// Handles extra cases of <see cref="UnityWebRequest"/>
+    /// </summary>
+    public static class UnityWebRequestTools
+    {
+        /// <summary>
+        /// Aborts request if the download progress doesn't change within specified time
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="timeout"></param>
+        /// <param name="abortCallback"></param>
+        public static void AbortRequestIfNoProgress(UnityWebRequest request, float timeout, Action abortCallback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(abortRequestIfNoProgress(request, timeout, abortCallback));
+        }
+
+        private static IEnumerator abortRequestIfNoProgress(UnityWebRequest request, float timeout, Action abortCallback)
+        {
+            float timeoutTime = Time.unscaledTime + timeout;
+            float progress = 0f;
+            while (!request.isDone)
+            {
+                yield return null;
+
+                float currentProgress = request.downloadProgress;
+                if (currentProgress == progress)
+                {
+                    if (Time.unscaledTime > timeoutTime)
+                    {
+                        try
+                        {
+                            request.Abort();
+                        }
+                        catch (Exception) { }
+
+                        if (abortCallback != null) abortCallback();
+                        yield break;
+                    }
+                    continue;
+                }
+                progress = currentProgress;
+                timeoutTime = Time.unscaledTime + timeout;
+            }
         }
     }
 }
