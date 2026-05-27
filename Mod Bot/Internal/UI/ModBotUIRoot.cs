@@ -32,7 +32,7 @@ namespace InternalModBot
         /// <summary>
         /// The generic 2 Button dialoge UI
         /// </summary>
-        public Generic2ButtonDialogeUI Generic2ButtonDialogeUI;
+        public Generic2ButtonDialogueUI Generic2ButtonDialogueUI;
         /// <summary>
         /// The mod options window UI
         /// </summary>
@@ -50,59 +50,68 @@ namespace InternalModBot
         /// </summary>
         public Canvas Root;
 
+        private bool _initialized;
+
         /// <summary>
         /// Sets up the mod-bot UI
         /// </summary>
         public void Init()
         {
-            ModdedObject moddedObject = base.GetComponent<ModdedObject>();
+            Root = GetComponent<Canvas>();
 
-            Root = moddedObject.GetComponent<Canvas>();
+            ModdedObject moddedObject = GetComponent<ModdedObject>();
 
-            ConsoleUI = gameObject.AddComponent<ConsoleUI>();
-            ConsoleUI.Init(moddedObject.GetObject<Animator>(0), moddedObject.GetObject<GameObject>(1), moddedObject.GetObject<GameObject>(2), moddedObject.GetObject<InputField>(3));
+            ConsoleUI = moddedObject.GetObject<GameObject>(0).AddComponent<ConsoleUI>();
+            ConsoleUI.Init();
 
             FPSCounter = gameObject.AddComponent<FPSCounterUI>();
-            FPSCounter.Init(moddedObject.GetObject<Text>(4));
+            FPSCounter.Init(moddedObject.GetObject<Text>(1));
 
-            ModSuggestingUI = gameObject.AddComponent<ModSuggestingUI>();
-            ModSuggestingUI.Init(moddedObject.GetObject<ModdedObject>(5));
+            Generic2ButtonDialogueUI = gameObject.AddComponent<Generic2ButtonDialogueUI>();
+            Generic2ButtonDialogueUI.Init(moddedObject.GetObject<ModdedObject>(2));
+
+            ModList = moddedObject.GetObject<GameObject>(3).AddComponent<ModListWindow>();
+            ModList.Init();
+
+            ModOptionsWindow = gameObject.AddComponent<ModOptionsWindow>();
+            ModOptionsWindow.Init(moddedObject.GetObject<ModdedObject>(4));
+
+            DownloadWindow = moddedObject.GetObject<GameObject>(5).AddComponent<ModDownloadWindow>();
+            DownloadWindow.Init();
 
             ModBotSignInUI = gameObject.AddComponent<ModBotSignInUI>();
             ModBotSignInUI.Init(moddedObject.GetObject<ModdedObject>(6));
 
-            Generic2ButtonDialogeUI = gameObject.AddComponent<Generic2ButtonDialogeUI>();
-            Generic2ButtonDialogeUI.Init(moddedObject.GetObject<ModdedObject>(8));
+            ModSuggestingUI = gameObject.AddComponent<ModSuggestingUI>();
+            ModSuggestingUI.Init(moddedObject.GetObject<ModdedObject>(7));
 
-            ModOptionsWindow = gameObject.AddComponent<ModOptionsWindow>();
-            ModOptionsWindow.Init(moddedObject.GetObject<ModdedObject>(9));
-
-            ModList = moddedObject.GetObject<ModdedObject>(7).gameObject.AddComponent<ModListWindow>();
-            ModList.Init();
-
-            DownloadWindow = moddedObject.GetObject<ModdedObject>(10).gameObject.AddComponent<ModDownloadWindow>();
-            DownloadWindow.Init();
-
-            LoadingBar = moddedObject.GetObject<ModdedObject>(11).gameObject.AddComponent<GenericLoadingBar>();
+            LoadingBar = moddedObject.GetObject<GameObject>(8).AddComponent<GenericLoadingBar>();
             LoadingBar.Init();
+
+            _initialized = true;
         }
 
         public bool AreAnyMenusOpen()
         {
-            return Generic2ButtonDialogue.IsWindowOpen ||
+            return _initialized && (Generic2ButtonDialogue.IsWindowOpen ||
                 ModList.gameObject.activeInHierarchy ||
                 ModOptionsWindow.WindowObject.activeInHierarchy ||
                 DownloadWindow.gameObject.activeInHierarchy ||
-                ModBotSignInUI.WindowObject.activeInHierarchy;
+                ModBotSignInUI.WindowObject.activeInHierarchy);
         }
 
         private void Update()
         {
+            if (!_initialized) return;
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 closeMenu();
                 refreshCursor();
             }
+
+            if (Input.GetKeyDown(ModBotPrefs.GetKeyCode(ModBotInputType.OpenConsole)))
+                ConsoleUI.Flip();
         }
 
         private void closeMenu()

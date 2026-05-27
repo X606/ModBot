@@ -49,6 +49,7 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 4929986361f56ba4682381dca5e421d6, type: 3}
     - {fileID: 2800000, guid: 39ed428294969ed48a7c2534e9d9c8d1, type: 3}
     - {fileID: 2800000, guid: 17862c025b1cca44cab3787e18aadb46, type: 3}
+    - {fileID: 2800000, guid: 04d25cfa262bdc744949ed4cc7cefc37, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -66,6 +67,7 @@ SpriteAtlas:
     - 187f38166da4de64e9e0281c6faef668: 21300000
     - d892d7e7d4fae6647a9be5fa8595768c: 21300000
     - b3677b983583e3a459dc62aec0c85e4d: 21300000
+    - 04d25cfa262bdc744949ed4cc7cefc37: 21300000
     - 546c8f4b358c78e4badc8258a02d13ce: 21300000
     - ab32a19c1f340bf4587fd9c57a5ba4e6: 21300000
     - ca55474f00a610e40a0fccffde345c98: 21300000
@@ -85,6 +87,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 187f38166da4de64e9e0281c6faef668, type: 3}
   - {fileID: 21300000, guid: d892d7e7d4fae6647a9be5fa8595768c, type: 3}
   - {fileID: 21300000, guid: b3677b983583e3a459dc62aec0c85e4d, type: 3}
+  - {fileID: 21300000, guid: 04d25cfa262bdc744949ed4cc7cefc37, type: 3}
   - {fileID: 21300000, guid: 546c8f4b358c78e4badc8258a02d13ce, type: 3}
   - {fileID: 21300000, guid: ab32a19c1f340bf4587fd9c57a5ba4e6, type: 3}
   - {fileID: 21300000, guid: ca55474f00a610e40a0fccffde345c98, type: 3}
@@ -103,6 +106,7 @@ SpriteAtlas:
   - ButtonLeftSide-BrightFill-ModBot-16x16_0
   - ButtonRightSide-ModBot-16x16_0
   - More-32x32
+  - Resize-16x16
   - Exit-16x16
   - Like-32x32
   - ButtonRightSide-BrightFill-ModBot-16x16_0

@@ -44,6 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" />
+    <Publicize Include="UnityEngine.UI" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accessor.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Internal\OverrideResourceManager.cs" />
     <Compile Include="ModHandling\Downloading\ModSpecialData.cs" />
     <Compile Include="ModUtilities\CameraManager.cs" />
+    <Compile Include="ModUtilities\EasingFunctions.cs" />
     <Compile Include="ModUtilities\LevelEditor\CustomObjectsList.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorDisableRendererAndCollision.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorMissingObject.cs" />
@@ -116,7 +118,7 @@
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotSettingsManager.cs" />
     <Compile Include="Internal\ThreadedDelegateScheduler.cs" />
-    <Compile Include="Internal\UI\Generic2ButtonDialogeUI.cs" />
+    <Compile Include="Internal\UI\Generic2ButtonDialogueUI.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />

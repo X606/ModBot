@@ -4817,32 +4817,32 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="T:InternalModBot.Generic2ButtonDialogeUI">
+        <member name="T:InternalModBot.Generic2ButtonDialogueUI">
             <summary>
             The generic 2 button dialoge window Ui
             </summary>
         </member>
-        <member name="F:InternalModBot.Generic2ButtonDialogeUI.Text">
+        <member name="F:InternalModBot.Generic2ButtonDialogueUI.Text">
             <summary>
             The text element in the UI
             </summary>
         </member>
-        <member name="F:InternalModBot.Generic2ButtonDialogeUI.Button1">
+        <member name="F:InternalModBot.Generic2ButtonDialogueUI.Button1">
             <summary>
             The first button in the UI
             </summary>
         </member>
-        <member name="F:InternalModBot.Generic2ButtonDialogeUI.Button2">
+        <member name="F:InternalModBot.Generic2ButtonDialogueUI.Button2">
             <summary>
             The second button in the UI
             </summary>
         </member>
-        <member name="F:InternalModBot.Generic2ButtonDialogeUI.UIRoot">
+        <member name="F:InternalModBot.Generic2ButtonDialogueUI.UIRoot">
             <summary>
             The actual root of the window
             </summary>
         </member>
-        <member name="M:InternalModBot.Generic2ButtonDialogeUI.Init(ModdedObject)">
+        <member name="M:InternalModBot.Generic2ButtonDialogueUI.Init(ModdedObject)">
             <summary>
             Sets up the generic 2 button dialoge from a modded object
             </summary>
@@ -4910,7 +4910,7 @@
             The mods list window UI
             </summary>
         </member>
-        <member name="F:InternalModBot.ModBotUIRoot.Generic2ButtonDialogeUI">
+        <member name="F:InternalModBot.ModBotUIRoot.Generic2ButtonDialogueUI">
             <summary>
             The generic 2 Button dialoge UI
             </summary>
@@ -5073,24 +5073,10 @@
             Used by Mod-Bot as the low level level of the debug console system
             </summary>
         </member>
-        <member name="F:InternalModBot.ConsoleUI.Animator">
-            <summary>
-            The animator of the console
-            </summary>
-        </member>
         <member name="F:InternalModBot.ConsoleUI.MAX_LINES_COUNT">
             <summary>
             The amount of lines we should allow in the console before we start removing lines
             </summary>
-        </member>
-        <member name="M:InternalModBot.ConsoleUI.Init(UnityEngine.Animator,UnityEngine.GameObject,UnityEngine.GameObject,UnityEngine.UI.InputField)">
-            <summary>
-            Initialized the <see cref="T:InternalModBot.ConsoleUI"/>
-            </summary>
-            <param name="animator"></param>
-            <param name="content"></param>
-            <param name="innerHolder"></param>
-            <param name="input"></param>
         </member>
         <member name="M:InternalModBot.ConsoleUI.Log(System.String)">
             <summary>

@@ -125,7 +125,8 @@ namespace InternalModBot
                            "getplayfabids [copy ids: true, false]\n" +
                            "viewlogs\n" +
                            "savefolder\n" +
-                           "editupgradeangles"
+                           "editupgradeangles\n" +
+                           "clear"
 
                            , Color.yellow);
                         break;

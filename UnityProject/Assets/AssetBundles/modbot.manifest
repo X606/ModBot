@@ -1,16 +1,16 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.3.14f1
-CRC: 3693724237
+CRC: 4218617115
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f0215047c49adb35467f6ef047dd9669
+    Hash: 41d75ad3589b256a7575817c203959ee
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c72deb8c225dcab9cfbdd8caae7bcd85
+    Hash: ab9db7ef39de56a4071835bda246c486
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 31e9aed7ee879f805be639a70ab4b72c
+    Hash: 3286cf0d7165ce1d96196d703747ec6a
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -31,6 +31,12 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 34943be6dab1ac0428c14d66e2095cba, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 3b7d267312dd80a418d4ed264b40a537, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe99b9ebeea69af46a5f5a2154564f77, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e9efa69418cf65b46ae8b01e9fd7adc8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
 - Class: 114
@@ -93,9 +99,19 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
 - AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.ArgumentCache
+- AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.Events.PersistentCallGroup
 - AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentListenerMode
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.UnityEvent
+- AssemblyName: UnityEngine.CoreModule
   ClassName: UnityEngine.RectOffset
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.EventSystems.EventTrigger/Entry
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.EventSystems.EventTrigger/TriggerEvent
 - AssemblyName: UnityEngine.UI
   ClassName: UnityEngine.UI.AnimationTriggers
 - AssemblyName: UnityEngine.UI

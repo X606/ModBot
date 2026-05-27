@@ -107,7 +107,7 @@ namespace InternalModBot
                 }, false, onModDownloaded);
                 _downloadInfo = ModsDownloadManager.GetDownloadingModInfo();
                 refreshModIsBeingDownloaded();
-            }, "Nevermind", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
+            }, "Nevermind", null, Generic2ButtonDialogueUI.ModDeletionSizeDelta);
         }
 
         private void onModDownloaded(ModsDownloadManager.DownloadModResult result)
@@ -239,7 +239,7 @@ namespace InternalModBot
                 if (_prevLikeCount != -1 && _prevLikeCount == _specialData.Likes)
                 {
                     _prevLikeCount = -1;
-                    _ = new Generic2ButtonDialogue("It seems like you have already liked the mod.", "I want to dislike the mod", UnLikeTheMod, "OK", null, Generic2ButtonDialogeUI.ModDeletionSizeDelta);
+                    _ = new Generic2ButtonDialogue("It seems like you have already liked the mod.", "I want to dislike the mod", UnLikeTheMod, "OK", null, Generic2ButtonDialogueUI.ModDeletionSizeDelta);
                 }
             });
         }
