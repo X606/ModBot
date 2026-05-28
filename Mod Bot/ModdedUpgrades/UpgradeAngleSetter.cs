@@ -11,7 +11,7 @@ namespace InternalModBot
     /// <summary>
     /// Allows for users to set upgrade angles manually while in the game
     /// </summary>
-    public class UpgradeAngleSetter : Singleton<UpgradeAngleSetter>
+    internal class UpgradeAngleSetter : Singleton<UpgradeAngleSetter>
     {
         Dictionary<ModdedUpgradeRepresenter, float> _changedIconAngles;
 

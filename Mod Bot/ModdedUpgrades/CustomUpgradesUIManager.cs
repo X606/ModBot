@@ -8,7 +8,7 @@ namespace ModLibrary
     /// <summary>
     /// Used by Mod-Bot to handle the custom upgrade pages. (Does things like handle the next and back buttons)
     /// </summary>
-    public class CustomUpgradesUIManager : Singleton<CustomUpgradesUIManager>
+    internal class CustomUpgradesUIManager : Singleton<CustomUpgradesUIManager>
     {
         GameObject _backButton;
         GameObject _nextButton;

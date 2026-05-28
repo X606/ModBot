@@ -21,12 +21,20 @@ namespace InternalModBot
 
         private AdaptivePerformanceManager _adaptivePerformanceManager;
 
+        private bool _isExperimentalBranch;
+
         private void Start()
         {
+            _isExperimentalBranch = ExperimentalBranchManager.Instance.IsExperimentalBranch;
             _adaptivePerformanceManager = AdaptivePerformanceManager.Instance;
             _adaptivePerformanceManager._fpsNextMeasureTime = Time.realtimeSinceStartup; // fix fps counter *adapting* too long after playing a while
 
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.UILanguageChanged, ForceRefreshNextFrame);
+        }
+
+        private void Update()
+        {
+            if (USE_GAME_MEASUREMENTS && !_isExperimentalBranch) _adaptivePerformanceManager.updateFPSMeasurement();
         }
 
         private void LateUpdate()
