@@ -63,15 +63,14 @@ namespace InternalModBot
             List<string> lines = new List<string>();
             foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in _changedIconAngles)
             {
-                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}f, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
+                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}f, this, {4}); // Page: {4}, UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName, {4}: Page index
 
                 string upgradeType = convertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
                 string level = upgradeAngle.Key.Level.ToString();
                 string angle = upgradeAngle.Value.ToString();
                 string upgradeName = getUpgradeName(upgradeAngle.Key);
 
-                string formatted = string.Format(item, upgradeType, level, angle, upgradeName);
-
+                string formatted = string.Format(item, upgradeType, level, angle, upgradeName, UpgradePagesManager.GetIndexOfCurrentPage());
                 lines.Add(formatted);
             }
 
