@@ -1,8 +1,7 @@
-﻿using InternalModBot;
-using ModLibrary.LevelEditor;
+﻿using ModLibrary.LevelEditor;
 using UnityEngine;
 
-namespace ModLibrary.Internal
+namespace InternalModBot
 {
     internal static class OverrideResourceManager
     {

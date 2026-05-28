@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary.Internal;
 using System.Reflection;
 using UnityEngine;
 

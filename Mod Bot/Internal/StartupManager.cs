@@ -23,6 +23,10 @@ namespace InternalModBot
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            // disable unity analytics to fix possible unity crash
+            AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
+            UnityEngine.Analytics.Analytics.enabled = false;
+
             ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
             OptionsSaver.PopulateSettingDictionary();
@@ -33,7 +37,7 @@ namespace InternalModBot
             modBotManagers.AddComponent<ModImagesManager>();                  // Gets images of installed mods
             modBotManagers.AddComponent<UpdateChecker>();                     // Checks for new Mod-Bot versions
             modBotManagers.AddComponent<ModsPanelManager>();                  // Adds the mods button in the main menu and pause screen
-            modBotManagers.AddComponent<CustomUpgradesUIManager>();              // Handles modded upgrades
+            modBotManagers.AddComponent<CustomUpgradesUIManager>();           // Handles modded upgrades
             modBotManagers.AddComponent<UpgradeIconDownloader>();             // Downloads images from a URL to be used as an upgrade icon
             modBotManagers.AddComponent<ModdedMultiplayerEventListener>();    // Recieves all multiplayer events and sends them to any mods that has configured to recieve them
             modBotManagers.AddComponent<ModSharingManager>();                 // Handles sharing of mods to all clients on the same server

@@ -51,7 +51,9 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Internal\ModBotUnloader.cs" />
     <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
+    <Compile Include="Internal\Patches\ModBotWebsiteAPI_API_Patch.cs" />
     <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
     <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
     <Compile Include="Internal\Patches\EnemyNameTag_Patch.cs" />
@@ -305,6 +307,10 @@
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Clone Drone in the Danger Zone\Clone Drone in the Danger Zone_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

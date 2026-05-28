@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary.Internal;
 using UnityEngine;
 
 namespace InternalModBot

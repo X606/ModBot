@@ -13,6 +13,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InternalModBot
 {
@@ -61,6 +62,12 @@ namespace InternalModBot
         {
             PassOnMod.GlobalUpdate();
             ThreadedDelegateScheduler.Update();
+        }
+
+        private void OnApplicationQuit()
+        {
+            Application.CancelQuit();
+            new GameObject().AddComponent<ModBotUnloader>();
         }
 
         /// <summary>
