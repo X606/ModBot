@@ -112,6 +112,11 @@ namespace InternalModBot
         {
             if (!_initialized) return false;
 
+            if (Generic2ButtonDialogueUI.UIRoot.activeInHierarchy) // block closing other menus if dialogue is active 
+            {
+                return true;
+            }
+
             if (ModBotSignInUI.WindowObject.activeInHierarchy)
             {
                 ModBotSignInUI.WindowObject.SetActive(false);
@@ -120,6 +125,11 @@ namespace InternalModBot
 
             if (DownloadWindow.gameObject.activeInHierarchy)
             {
+                if (DownloadWindow.IsInformationWindowActive())
+                {
+                    DownloadWindow.CloseInformationWindow();
+                    return true;
+                }
                 DownloadWindow.Hide();
                 return true;
             }

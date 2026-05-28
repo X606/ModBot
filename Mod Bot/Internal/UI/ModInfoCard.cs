@@ -24,7 +24,6 @@ namespace InternalModBot
         private Text _likesCount;
 
         private Button _moreInfoButton;
-        private Transform _controlsBG;
 
         private bool _initialized;
         private bool _isFading;
@@ -58,31 +57,26 @@ namespace InternalModBot
             moddedObject.GetObject<Text>(1).text = "By " + info.Author;
             moddedObject.GetObject<Text>(2).text = info.DisplayName;
             moddedObject.GetObject<Text>(3).text = info.Description;
-            moddedObject.GetObject<Button>(8).onClick.AddListener(CopyModID);
-            moddedObject.GetObject<Button>(9).onClick.AddListener(OpenModOnWebsite);
-            moddedObject.GetObject<Button>(7).onClick.AddListener(ShowDetails);
-            _likeButton = moddedObject.GetObject<Button>(15);
+            _likeButton = moddedObject.GetObject<Button>(10);
             _likeButton.onClick.AddListener(LikeTheMod);
-            _likeButton.interactable = false;
-            _likesCount = moddedObject.GetObject<Text>(13);
+            _likeButton.interactable = true;
+            _likesCount = moddedObject.GetObject<Text>(9);
             _moreInfoButton = moddedObject.GetObject<Button>(5);
-            _moreInfoButton.onClick.AddListener(ToggleControlsBGVisibility);
-            _downloadProgressBar = moddedObject.GetObject<Slider>(12);
-            _downloadCount = moddedObject.GetObject<Text>(11);
+            _moreInfoButton.onClick.AddListener(OnModInfoButtonClicked);
+            _downloadProgressBar = moddedObject.GetObject<Slider>(8);
+            _downloadCount = moddedObject.GetObject<Text>(7);
             _downloadButton = moddedObject.GetObject<Button>(4);
             _downloadButton.onClick.AddListener(downloadMod);
             _downloadButton.gameObject.SetActive(false);
-            _downloadedText = moddedObject.GetObject<Text>(10);
+            _downloadedText = moddedObject.GetObject<Text>(6);
             _thumbnail = moddedObject.GetObject<RawImage>(0);
-            _controlsBG = moddedObject.GetObject<Transform>(6);
-            _notVerifiedIcon = moddedObject.GetObject<Transform>(16);
+            _notVerifiedIcon = moddedObject.GetObject<Transform>(11);
             _notVerifiedIcon.gameObject.SetActive(false);
-            _bgRenderer = moddedObject.GetObject<CanvasRenderer>(17);
+            _bgRenderer = moddedObject.GetObject<CanvasRenderer>(12);
             _initialized = true;
 
             base.gameObject.SetActive(true);
             StartCoroutine(downloadImageAsync("https://modbot.org/api?operation=getModImage&size=256x256&id=" + _remoteModInfo.UniqueID));
-            SetControlsBGVisible(false);
             refreshModIsInstalled();
             refreshSpecialData();
             refreshModIsBeingDownloaded();
@@ -97,7 +91,8 @@ namespace InternalModBot
                 return;
             }
 
-            _ = new Generic2ButtonDialogue("Do you want to install this mod?\n" + _remoteModInfo.DisplayName, "Yes", delegate
+            ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
+            _ = new Generic2ButtonDialogue($"Install {_remoteModInfo.DisplayName.AddColor(color)}?", "Yes", delegate
             {
                 ModsDownloadManager.DownloadMod(new ModsDownloadManager.ModGeneralInfo()
                 {
@@ -119,8 +114,9 @@ namespace InternalModBot
 
             if (result.HasFailed())
             {
+                ColorUtility.TryParseHtmlString(LocalModInfoDisplay.VERSION_COLOR, out Color color);
                 ModsDownloadManager.ModGeneralInfo modInfo = result.Info;
-                _ = new Generic2ButtonDialogue($"Failed to download {modInfo.DisplayName}.\n{result.Error}",
+                _ = new Generic2ButtonDialogue($"Failed to download {modInfo.DisplayName.AddColor(color)}.\n{result.Error}",
                     "Ok", null,
                     "Ok", null);
 
@@ -233,13 +229,15 @@ namespace InternalModBot
             {
                 if (modSpecialData == null || _isDestroyed) return;
 
+                _likeButton.interactable = true;
+
                 _specialData = modSpecialData;
                 refreshSpecialData();
 
                 if (_prevLikeCount != -1 && _prevLikeCount == _specialData.Likes)
                 {
                     _prevLikeCount = -1;
-                    _ = new Generic2ButtonDialogue("It seems like you have already liked the mod.", "I want to dislike the mod", UnLikeTheMod, "OK", null, Generic2ButtonDialogueUI.ModDeletionSizeDelta);
+                    _ = new Generic2ButtonDialogue("You have already liked the mod.", "Take my like!", UnLikeTheMod, "OK", null, Generic2ButtonDialogueUI.ModDeletionSizeDelta);
                 }
             });
         }
@@ -254,51 +252,23 @@ namespace InternalModBot
             _isFading = true;
         }
 
-        public void ToggleControlsBGVisibility()
-        {
-            SetControlsBGVisible(!_controlsBG.gameObject.activeSelf);
-            _moreInfoButton.OnDeselect(null);
-        }
-        public void SetControlsBGVisible(bool value)
-        {
-            _controlsBG.gameObject.SetActive(value);
-        }
-
-        public void CopyModID()
-        {
-            if (_remoteModInfo == null || string.IsNullOrEmpty(_remoteModInfo.UniqueID))
-            {
-                return;
-            }
-
-            TextEditor textEditor = new TextEditor
-            {
-                text = _remoteModInfo.UniqueID
-            };
-            textEditor.SelectAll();
-            textEditor.Copy();
-            SetControlsBGVisible(false);
-        }
-
-        public void OpenModOnWebsite()
-        {
-            if (_remoteModInfo == null)
-            {
-                return;
-            }
-            Application.OpenURL("https://modbot.org/modPreview.html?modID=" + _remoteModInfo.UniqueID);
-            SetControlsBGVisible(false);
-        }
-
-        public void ShowDetails()
+        public void OnModInfoButtonClicked()
         {
             ModBotUIRoot.Instance.DownloadWindow.OpenInformationWindow(_remoteModInfo, _specialData, _thumbnail.texture);
-            SetControlsBGVisible(false);
         }
 
         public void LikeTheMod()
         {
-            if (!CanInteractWithSpecialData) return;
+            if (!CanInteractWithSpecialData)
+            {
+                if (ModBotUIRoot.Instance.ModBotSignInUI.WindowObject.activeInHierarchy) return;
+
+                _ = new Generic2ButtonDialogue("You have to be signed in to like mods", "Ok", null, "Sign in", delegate
+                {
+                    ModBotUIRoot.Instance.ModBotSignInUI.OpenSignInForm();
+                }, Generic2ButtonDialogueUI.ModDeletionSizeDelta);
+                return;
+            }
 
             _prevLikeCount = _specialData.Likes;
             _likeButton.interactable = false;
@@ -342,7 +312,7 @@ namespace InternalModBot
             }
 
             _downloadButton.interactable = !ModsDownloadManager.IsDownloadingAMod() || _downloadInfo == null;
-            if (!_downloadButton.interactable && Time.frameCount % 3 == 0)
+            if (!_downloadButton.interactable)
             {
                 refreshModIsBeingDownloaded();
             }

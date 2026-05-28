@@ -1,14 +1,11 @@
 using ModLibrary.LevelEditor;
-using Pathfinding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using static InternalModBot.ModsDownloadManager;
 
 namespace ModLibrary
 {

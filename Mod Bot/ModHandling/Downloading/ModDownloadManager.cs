@@ -66,7 +66,7 @@ namespace InternalModBot
                 DownloadProgress = 0f
             };
 
-            var loadedModInfo = ModsManager.Instance.GetLoadedModWithID(info.UniqueID);
+            LoadedModInfo loadedModInfo = ModsManager.Instance.GetLoadedModWithID(info.UniqueID);
             // If mod is already loaded, just cancel the download instead of throwing an exception
             if (!update && loadedModInfo != null)
             {
@@ -133,7 +133,7 @@ namespace InternalModBot
             endDownload();
             if (update)
             {
-                if(loadedModInfo != null)
+                if (loadedModInfo != null)
                 {
                     // rename mod info file so the launcher doesn't count old mods
                     string modInfoFile = Path.Combine(loadedModInfo.OwnerModInfo.FolderPath, ModsManager.MOD_INFO_FILE_NAME);

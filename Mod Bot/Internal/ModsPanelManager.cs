@@ -180,7 +180,8 @@ namespace InternalModBot
 
         private void patchErrorWindow()
         {
-            Transform errorWindowTransform = GameUIRoot.Instance.ErrorWindow.transform;
+            ErrorWindow errorWindow = GameUIRoot.Instance.ErrorWindow;
+            Transform errorWindowTransform = errorWindow.transform;
 
             LocalizedTextField titleLabel = errorWindowTransform.GetChild(0).GetChild(1).GetComponent<LocalizedTextField>();
             titleLabel.ChangeIDAndTryLocalize("crashscreen_customtitle");
@@ -188,6 +189,12 @@ namespace InternalModBot
             LocalizedTextField descriptionLabel = errorWindowTransform.GetChild(2).GetChild(1).GetComponent<LocalizedTextField>();
             descriptionLabel.ChangeIDAndTryLocalize("crashscreen_customdescription");
             descriptionLabel.GetComponent<Text>().fontSize = 9;
+
+            // fit more text
+            errorWindow.stackTraceLabel.fontSize = 9;
+            errorWindow.contextInfoLabel.resizeTextForBestFit = true;
+            errorWindow.contextInfoLabel.resizeTextMaxSize = 13;
+            errorWindow.contextInfoLabel.resizeTextMinSize = 1;
         }
 
         private void openModsMenu()

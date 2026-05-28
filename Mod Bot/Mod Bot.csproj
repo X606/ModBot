@@ -51,6 +51,7 @@
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
     <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
     <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
     <Compile Include="Internal\Patches\EnemyNameTag_Patch.cs" />

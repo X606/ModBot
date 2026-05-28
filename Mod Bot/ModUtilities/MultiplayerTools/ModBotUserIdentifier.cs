@@ -80,7 +80,11 @@ namespace ModLibrary
 
         internal void TrySingIn()
         {
-            if (SignInStatus == SignInStatuses.Success) return;
+            if (SignInStatus == SignInStatuses.Success)
+            {
+                setSignInStatus(SignInStatuses.Success); // refresh version label
+                return;
+            }
 
             if (!File.Exists(s_sessionIdFilePath))
             {

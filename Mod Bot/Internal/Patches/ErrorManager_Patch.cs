@@ -7,8 +7,8 @@ namespace InternalModBot
     static class ErrorManager_Patch
     {
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
-        static bool ErrorManager_HandleLog_Prefix()
+        [HarmonyPatch(nameof(ErrorManager.HandleLog))]
+        static bool HandleLog_Prefix()
         {
             return !IgnoreCrashesManager.GetIsIgnoringCrashes();
         }

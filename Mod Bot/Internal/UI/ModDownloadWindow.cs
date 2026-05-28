@@ -23,10 +23,14 @@ namespace InternalModBot
         private Text _modName;
         private Text _modDescription;
         private Text _modVersion;
+        private Button _modPageButton;
+        private Button _copyModIDButton;
 
         private readonly List<ModInfoCard> _cards = new List<ModInfoCard>();
 
         private ModsHolder _modsHolder;
+
+        private string _viewingModId;
 
         internal void Init()
         {
@@ -46,7 +50,11 @@ namespace InternalModBot
             _modName = moddedObject.GetObject<Text>(8);
             _modDescription = moddedObject.GetObject<Text>(9);
             _modVersion = moddedObject.GetObject<Text>(10);
-            moddedObject.GetObject<Button>(6).onClick.AddListener(closeInformationWindow);
+            _modPageButton = moddedObject.GetObject<Button>(11);
+            _modPageButton.onClick.AddListener(OpenModPage);
+            _copyModIDButton = moddedObject.GetObject<Button>(12);
+            _copyModIDButton.onClick.AddListener(CopyModID);
+            moddedObject.GetObject<Button>(6).onClick.AddListener(CloseInformationWindow);
 
             base.gameObject.SetActive(false);
         }
@@ -60,10 +68,12 @@ namespace InternalModBot
         public void Hide()
         {
             StopAllCoroutines();
-            closeInformationWindow();
+            CloseInformationWindow();
             ModBotUIRoot.Instance.LoadingBar.SetActive(false);
             base.gameObject.SetActive(false);
         }
+
+        public bool IsInformationWindowActive() => _informationWindow.gameObject.activeInHierarchy;
 
         public void ShowModsWithMatchingNames(string name)
         {
@@ -174,16 +184,44 @@ namespace InternalModBot
             _informationWindow.gameObject.SetActive(info != null && specialData != null);
             if (info == null || specialData == null)
             {
+                _viewingModId = null;
                 return;
             }
 
+            _viewingModId = info.UniqueID;
             _modName.text = info.DisplayName;
             _modDescription.text = info.Description;
             _modPreview.texture = previewImage;
             _modVersion.text = $"VERSION {info.Version}\n{specialData.Downloads} DOWNLOADS";
         }
 
-        private void closeInformationWindow()
+        public void CopyModID()
+        {
+            if (string.IsNullOrEmpty(_viewingModId)) return;
+
+            _copyModIDButton.interactable = false;
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _copyModIDButton.interactable = true;
+            }, 1f);
+
+            GUIUtility.systemCopyBuffer = _viewingModId;
+        }
+
+        public void OpenModPage()
+        {
+            if (string.IsNullOrEmpty(_viewingModId)) return;
+
+            _websiteButton.interactable = false;
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _websiteButton.interactable = true;
+            }, 1f);
+
+            Application.OpenURL("https://modbot.org/modPreview.html?modID=" + _viewingModId);
+        }
+
+        public void CloseInformationWindow()
         {
             OpenInformationWindow(null, null, null);
         }

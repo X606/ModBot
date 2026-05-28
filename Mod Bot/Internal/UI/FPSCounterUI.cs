@@ -58,7 +58,7 @@ namespace InternalModBot
             string text = ModBotLocalizationManager.FormatLocalizedStringFromID("fps_label", fps);
             if (ModBotPrefs.ShowMaxFPS)
             {
-                _fpsCounter.text = $"{text} <size=5>(Max: {_maxFPS})</size>";
+                _fpsCounter.text = $"{text} (Max: {_maxFPS})";
             }
             else
             {

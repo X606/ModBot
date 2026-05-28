@@ -157,7 +157,7 @@ namespace InternalModBot
         /// <param name="command"></param>
         public void RunCommand(string command)
         {
-            if(command == "clear")
+            if (command == "clear")
             {
                 Clear();
                 return;
