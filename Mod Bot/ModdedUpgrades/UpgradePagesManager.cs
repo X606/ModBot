@@ -1,5 +1,6 @@
 ﻿// New mod loading system
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -38,32 +39,37 @@ namespace InternalModBot
             return findUpgradeOnCurrentPage(upgradeType, level) != null;
         }
 
-        static ModdedUpgradesPage getPageForMod(string modID)
+        static List<ModdedUpgradesPage> getPagesForMod(string modID)
         {
-            return _upgradePages.Find(page => !page.IsDummyForVanillaPage && page.ModID == modID);
+            return _upgradePages.FindAll(page => !page.IsDummyForVanillaPage && page.ModID == modID);
         }
 
-        static ModdedUpgradesPage getOrCreatePageForMod(string modID)
+        static ModdedUpgradesPage getPageForMod(string modID, int index)
         {
-            ModdedUpgradesPage page = getPageForMod(modID);
+            return _upgradePages.Find(page => !page.IsDummyForVanillaPage && page.ModID == modID && page.Index == index);
+        }
+
+        static ModdedUpgradesPage getOrCreatePageForMod(string modID, int pageIndex)
+        {
+            ModdedUpgradesPage page = getPageForMod(modID, pageIndex);
             if (page == null)
             {
-                page = new ModdedUpgradesPage(modID);
+                page = new ModdedUpgradesPage(modID, pageIndex);
                 _upgradePages.Add(page);
             }
 
             return page;
         }
 
-        internal static void AddUpgrade(UpgradeType upgradeType, int level, string modID)
+        internal static void AddUpgrade(UpgradeType upgradeType, int level, string modID, int pageIndex)
         {
-            ModdedUpgradesPage page = getOrCreatePageForMod(modID);
+            ModdedUpgradesPage page = getOrCreatePageForMod(modID, pageIndex);
             page.AddUpgrade(upgradeType, level);
         }
 
-        internal static void OverrideAngleOfUpgrade(float angle, UpgradeType upgradeType, int level, string modID)
+        internal static void OverrideAngleOfUpgrade(float angle, UpgradeType upgradeType, int level, string modID, int pageIndex)
         {
-            ModdedUpgradesPage page = getPageForMod(modID);
+            ModdedUpgradesPage page = getPageForMod(modID, pageIndex);
             if (page != null)
             {
                 ModdedUpgradeRepresenter upgrade = page.GetUpgrade(upgradeType, level);
@@ -74,14 +80,29 @@ namespace InternalModBot
             }
         }
 
-        internal static void RemoveUpgradePage(string modID)
+        internal static void RemoveUpgradePages(string modID)
         {
-            ModdedUpgradesPage page = getPageForMod(modID);
-            if (page != null && _upgradePages.Remove(page))
+            List<ModdedUpgradesPage> pages = getPagesForMod(modID);
+            for (int i = 0; i < pages.Count; i++)
             {
-                if (_currentPageIndex >= _upgradePages.Count)
-                    _currentPageIndex = 0;
+                ModdedUpgradesPage page = pages[i];
+                if (_upgradePages.Remove(page))
+                {
+                    if (_currentPageIndex >= _upgradePages.Count)
+                        _currentPageIndex = 0;
+                }
             }
+        }
+
+        internal static int GetNumPagesAddedByMod(string modID)
+        {
+            int count = 0;
+            List<ModdedUpgradesPage> pages = getPagesForMod(modID);
+            for (int i = 0; i < pages.Count; i++)
+            {
+                count = Mathf.Max(pages[i].Index + 1, count);
+            }
+            return count;
         }
 
         internal static void PreviousPage()
@@ -101,9 +122,14 @@ namespace InternalModBot
             return CurrentPage.ModID;
         }
 
+        internal static int GetIndexOfCurrentPage()
+        {
+            return CurrentPage.Index;
+        }
+
         internal static bool HasPageForMod(string modID)
         {
-            return getPageForMod(modID) != null;
+            return _upgradePages.Find(page => !page.IsDummyForVanillaPage && page.ModID == modID) != null;
         }
 
         internal static bool IsOnModdedUpgradesPage()

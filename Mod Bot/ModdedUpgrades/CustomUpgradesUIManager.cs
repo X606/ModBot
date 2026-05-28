@@ -8,7 +8,7 @@ namespace ModLibrary
     /// <summary>
     /// Used by Mod-Bot to handle the custom upgrade pages. (Does things like handle the next and back buttons)
     /// </summary>
-    public class CustomUpgradeManager : Singleton<CustomUpgradeManager>
+    public class CustomUpgradesUIManager : Singleton<CustomUpgradesUIManager>
     {
         GameObject _backButton;
         GameObject _nextButton;
@@ -70,10 +70,12 @@ namespace ModLibrary
 
         static void refreshPageContents()
         {
-            GameUIRoot.Instance.UpgradeUI.PopulateIcons();
+            UpgradeUI upgradeUI = GameUIRoot.Instance.UpgradeUI;
+            upgradeUI.PopulateIcons();
 
-            GameUIRoot.Instance.UpgradeUI.TitleText.GetComponent<LocalizedTextField>().tryLocalizeTextField(); // Re-localize "Select Upgrade" text field
-            GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = false;
+            Text titleText = upgradeUI.TitleText;
+            titleText.GetComponent<LocalizedTextField>().tryLocalizeTextField(); // Re-localize "Select Upgrade" text field
+            titleText.resizeTextForBestFit = true;
 
             if (UpgradePagesManager.IsCurrentlyShowingModdedUpgrades)
             {
@@ -83,9 +85,18 @@ namespace ModLibrary
                     LoadedModInfo modInfo = ModsManager.Instance.GetLoadedModWithID(modID);
                     if (modInfo != null)
                     {
-                        GameUIRoot.Instance.UpgradeUI.TitleText.text += "\n[" + modInfo.OwnerModInfo.DisplayName + "]";
-                        GameUIRoot.Instance.UpgradeUI.TitleText.resizeTextForBestFit = true;
+                        string text;
+                        int totalPagesForMod = UpgradePagesManager.GetNumPagesAddedByMod(modID);
+                        if (totalPagesForMod > 1)
+                        {
+                            text = $"\n[{modInfo.OwnerModInfo.DisplayName}] [{UpgradePagesManager.GetIndexOfCurrentPage() + 1}/{totalPagesForMod}]";
+                        }
+                        else
+                        {
+                            text = $"\n[{modInfo.OwnerModInfo.DisplayName}]";
+                        }
 
+                        titleText.text += text;
                         UpgradeAngleSetter.Instance.RefreshIconEventTriggers();
                     }
                 }

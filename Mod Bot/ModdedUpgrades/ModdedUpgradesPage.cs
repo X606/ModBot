@@ -1,5 +1,4 @@
-﻿// New mod loading system
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace InternalModBot
@@ -7,24 +6,26 @@ namespace InternalModBot
     internal class ModdedUpgradesPage
     {
         public readonly string ModID;
+        public readonly int Index;
         public readonly List<ModdedUpgradeRepresenter> Upgrades;
 
         public readonly bool IsDummyForVanillaPage;
 
-        public ModdedUpgradesPage(string modID) : this(modID, new List<ModdedUpgradeRepresenter>(), false)
+        public ModdedUpgradesPage(string modID, int index) : this(modID, index, new List<ModdedUpgradeRepresenter>(), false)
         {
         }
 
-        ModdedUpgradesPage(string modID, List<ModdedUpgradeRepresenter> upgrades, bool isDummyForVanillaPage)
+        ModdedUpgradesPage(string modID, int index, List<ModdedUpgradeRepresenter> upgrades, bool isDummyForVanillaPage)
         {
             ModID = modID;
+            Index = index;
             Upgrades = upgrades;
             IsDummyForVanillaPage = isDummyForVanillaPage;
         }
 
         public static ModdedUpgradesPage CreateDummyPage()
         {
-            return new ModdedUpgradesPage(null, null, true);
+            return new ModdedUpgradesPage(null, 0, null, true);
         }
 
         public ModdedUpgradeRepresenter GetUpgrade(UpgradeType upgradeType, int level)

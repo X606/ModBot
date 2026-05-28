@@ -1774,17 +1774,17 @@
             <param name="postfixSource">The source of the postfix injection</param>
             <param name="mod">The owner of this injection</param>
         </member>
-        <member name="T:ModLibrary.CustomUpgradeManager">
+        <member name="T:ModLibrary.CustomUpgradesUIManager">
             <summary>
             Used by Mod-Bot to handle the custom upgrade pages. (Does things like handle the next and back buttons)
             </summary>
         </member>
-        <member name="M:ModLibrary.CustomUpgradeManager.BackClicked">
+        <member name="M:ModLibrary.CustomUpgradesUIManager.BackClicked">
             <summary>
             Should be called when the back button is clicked on the UI.
             </summary>
         </member>
-        <member name="M:ModLibrary.CustomUpgradeManager.NextClicked">
+        <member name="M:ModLibrary.CustomUpgradesUIManager.NextClicked">
             <summary>
             Should be called when the next button is clicked on the UI.
             </summary>
@@ -1802,6 +1802,15 @@
             <param name="upgrade">The <see cref="T:UpgradeDescription"/> of the upgrade to add</param>
             <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
         </member>
+        <member name="M:ModLibrary.UpgradeExtensionMethods.AddUpgrade(UpgradeManager,UpgradeDescription,ModLibrary.Mod,System.Int32)">
+            <summary>
+            Adds an upgrade to the page of the specified <see cref="T:ModLibrary.Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="F:UpgradeManager.UpgradeDescriptions"/>
+            </summary>
+            <param name="upgradeManager"></param>
+            <param name="upgrade">The <see cref="T:UpgradeDescription"/> of the upgrade to add</param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
+            <param name="pageIndex">The page number. Starts from 0</param>
+        </member>
         <member name="M:ModLibrary.UpgradeExtensionMethods.SetUpgradeAngle(UpgradeManager,UpgradeType,System.Int32,System.Single,ModLibrary.Mod)">
             <summary>
             Sets the angle of an upgrade with the specified <see cref="T:UpgradeType"/> and level
@@ -1811,6 +1820,17 @@
             <param name="level">The level of the <see cref="T:UpgradeDescription"/> to set the angle on</param>
             <param name="angle">The new angle to set</param>
             <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
+        </member>
+        <member name="M:ModLibrary.UpgradeExtensionMethods.SetUpgradeAngle(UpgradeManager,UpgradeType,System.Int32,System.Single,ModLibrary.Mod,System.Int32)">
+            <summary>
+            Sets the angle of an upgrade with the specified <see cref="T:UpgradeType"/> and level
+            </summary>
+            <param name="upgradeManager"></param>
+            <param name="upgradeType">The <see cref="T:UpgradeType"/> of the <see cref="T:UpgradeDescription"/> to set the angle on</param>
+            <param name="level">The level of the <see cref="T:UpgradeDescription"/> to set the angle on</param>
+            <param name="angle">The new angle to set</param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
+            <param name="pageIndex">The page number. Starts from 0</param>
         </member>
         <member name="M:ModLibrary.UpgradeExtensionMethods.IsModdedUpgradeType(UpgradeDescription)">
             <summary>
@@ -1833,6 +1853,15 @@
             <param name="upgradeDescription"></param>
             <param name="angle">The new angle of the <see cref="T:UpgradeDescription"/></param>
             <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
+        </member>
+        <member name="M:ModLibrary.UpgradeExtensionMethods.SetAngleOffset(UpgradeDescription,System.Single,ModLibrary.Mod,System.Int32)">
+            <summary>
+            Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="T:UpgradeManager"/>.AddUpgrade(<see cref="T:UpgradeDescription"/>, <see cref="T:ModLibrary.Mod"/>) is called
+            </summary>
+            <param name="upgradeDescription"></param>
+            <param name="angle">The new angle of the <see cref="T:UpgradeDescription"/></param>
+            <param name="mod">The <see cref="T:ModLibrary.Mod"/> that owns the upgrade</param>
+            <param name="pageIndex">The page number. Starts from 0</param>
         </member>
         <member name="M:ModLibrary.UpgradeExtensionMethods.SetIconFromURL(UpgradeDescription,System.String)">
             <summary>

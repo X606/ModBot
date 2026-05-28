@@ -130,7 +130,7 @@
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />
-    <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
+    <Compile Include="ModdedUpgrades\CustomUpgradesUIManager.cs" />
     <Compile Include="ModdedUpgrades\UpgradeAngleSetter.cs" />
     <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradeRepresenter.cs" />
