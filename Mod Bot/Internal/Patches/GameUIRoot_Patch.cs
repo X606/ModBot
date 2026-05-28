@@ -23,5 +23,12 @@ namespace InternalModBot
             }
             return true;
         }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(GameUIRoot.CloseCurrentMenu))]
+        static bool GameUIRoot_CloseCurrentMenu_Prefix()
+        {
+            return !ModBotUIRoot.Instance || !ModBotUIRoot.Instance.CloseCurrentMenu();
+        }
     }
 }

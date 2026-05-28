@@ -131,7 +131,10 @@ namespace InternalModBot
         {
             _cards.Clear();
             TransformUtils.DestroyAllChildren(_container);
+
             _searchField.interactable = false;
+            _searchField.text = string.Empty;
+
             ModBotUIRoot.Instance.LoadingBar.SetActive("Loading mods", 0f);
             ModsDownloadManager.GetModInfos(onGotModInfos, onReqestProgress);
         }

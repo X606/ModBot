@@ -23,17 +23,39 @@ namespace ModLibrary
 
         private static string _userName = string.Empty;
         /// <summary>
-        /// The user name of local user
+        /// The name of local user
         /// </summary>
         public static string UserName
         {
             get => _userName;
         }
 
+        private static string _userNameColored = string.Empty;
         /// <summary>
-        /// Has the local user signed in?
+        /// The name of local user with color
         /// </summary>
-        public static bool HasSignedIn => !string.IsNullOrEmpty(UserName);
+        public static string UserNameColored
+        {
+            get => _userNameColored;
+        }
+
+        private static string _userId = string.Empty;
+        /// <summary>
+        /// The ID of local user
+        /// </summary>
+        public static string UserID
+        {
+            get => _userId;
+        }
+
+        private static SignInStatuses _signInStatus;
+        /// <summary>
+        /// Current status of user authorization
+        /// </summary>
+        public static SignInStatuses SignInStatus
+        {
+            get => _signInStatus;
+        }
 
         private static readonly List<string> s_playFabIDs = new List<string>();
 
@@ -58,11 +80,7 @@ namespace ModLibrary
 
         internal void TrySingIn()
         {
-            if (HasSignedIn)
-            {
-                setSignInStatus(SignInStatuses.SignedIn);
-                return;
-            }
+            if (SignInStatus == SignInStatuses.Success) return;
 
             if (!File.Exists(s_sessionIdFilePath))
             {
@@ -89,6 +107,7 @@ namespace ModLibrary
         internal void TrySignInWithCredentials(string username, string password)
         {
             _signInError = null;
+            setSignInStatus(SignInStatuses.InProgress);
             API.SignInFromGame(username, password, MultiplayerLoginManager.Instance.GetLocalPlayFabID(), onSignInInfoReceived);
         }
 
@@ -144,12 +163,14 @@ namespace ModLibrary
             }
             catch (Exception)
             {
+                setSignInStatus(SignInStatuses.Failed);
                 _signInError = "Could not connect to server";
                 return;
             }
 
             if (!string.IsNullOrEmpty(error) && error != "null")
             {
+                setSignInStatus(SignInStatuses.Failed);
                 _signInError = error;
                 return;
             }
@@ -171,10 +192,11 @@ namespace ModLibrary
                 API.GetUser(userId, delegate (JsonObject json)
                 {
                     string username;
+                    string usernameColored;
                     try
                     {
                         username = Convert.ToString(json["username"]).Trim('\"');
-                        username = "<color=" + Convert.ToString(json["color"]) + ">" + username + "</color>";
+                        usernameColored = "<color=" + Convert.ToString(json["color"]) + ">" + username + "</color>";
                     }
                     catch (Exception)
                     {
@@ -191,8 +213,10 @@ namespace ModLibrary
 
                     debug.Log("Logged in as " + username.Trim('\"'));
 
+                    _userId = userId;
                     _userName = username;
-                    setSignInStatus(SignInStatuses.SignedIn);
+                    _userNameColored = usernameColored;
+                    setSignInStatus(SignInStatuses.Success);
                     GlobalEventManager.Instance.Dispatch(USER_SIGN_IN_ATTEMPT_EVENT);
                 });
             });
@@ -214,6 +238,8 @@ namespace ModLibrary
 
         private static void setSignInStatus(SignInStatuses status)
         {
+            _signInStatus = status;
+
             VersionLabelManager versionLabelManager = VersionLabelManager.Instance;
             if (!versionLabelManager) return;
 
@@ -228,11 +254,11 @@ namespace ModLibrary
                 case SignInStatuses.GettingUserInfo:
                     versionLabelManager.SetLine(2, "Getting user info...");
                     break;
-                case SignInStatuses.SignedIn:
-                    versionLabelManager.SetLine(2, $"Signed in as: {UserName}");
+                case SignInStatuses.Success:
+                    versionLabelManager.SetLine(2, $"Signed in as: {UserNameColored}");
                     break;
                 case SignInStatuses.Failed:
-                    versionLabelManager.SetLine(2, "<color=#990000>Failed to sign in</color>");
+                    versionLabelManager.SetLine(2, "<color=#990000>Authorization failed</color>");
                     break;
                 default:
                     versionLabelManager.SetLine(2, "hello");
@@ -240,12 +266,12 @@ namespace ModLibrary
             }
         }
 
-        private enum SignInStatuses
+        public enum SignInStatuses
         {
             None,
             InProgress,
             GettingUserInfo,
-            SignedIn,
+            Success,
             Failed,
         }
     }

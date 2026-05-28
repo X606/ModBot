@@ -52,6 +52,14 @@ namespace InternalModBot
 
         private bool _initialized;
 
+        private void Update()
+        {
+            if (!_initialized) return;
+
+            if (Input.GetKeyDown(ModBotPrefs.GetKeyCode(ModBotInputType.OpenConsole)))
+                ConsoleUI.Flip();
+        }
+
         /// <summary>
         /// Sets up the mod-bot UI
         /// </summary>
@@ -100,32 +108,20 @@ namespace InternalModBot
                 ModBotSignInUI.WindowObject.activeInHierarchy);
         }
 
-        private void Update()
+        public bool CloseCurrentMenu()
         {
-            if (!_initialized) return;
+            if (!_initialized) return false;
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                closeMenu();
-                refreshCursor();
-            }
-
-            if (Input.GetKeyDown(ModBotPrefs.GetKeyCode(ModBotInputType.OpenConsole)))
-                ConsoleUI.Flip();
-        }
-
-        private void closeMenu()
-        {
             if (ModBotSignInUI.WindowObject.activeInHierarchy)
             {
                 ModBotSignInUI.WindowObject.SetActive(false);
-                return;
+                return true;
             }
 
             if (DownloadWindow.gameObject.activeInHierarchy)
             {
                 DownloadWindow.Hide();
-                return;
+                return true;
             }
 
             if (ModOptionsWindow.WindowObject.activeInHierarchy)
@@ -133,24 +129,20 @@ namespace InternalModBot
                 if (ModOptionsWindow.Builder != null)
                 {
                     ModOptionsWindow.Builder.CloseWindow();
-                    return;
+                    return true;
                 }
 
                 ModOptionsWindow.WindowObject.gameObject.SetActive(false);
                 GameUIRoot.Instance.SetEscMenuDisabled(false);
-                return;
+                return true;
             }
 
             if (ModList.gameObject.activeInHierarchy)
             {
                 ModList.Hide();
-                return;
+                return true;
             }
-        }
-
-        private void refreshCursor()
-        {
-            GameUIRoot.Instance.RefreshCursorEnabled();
+            return false;
         }
     }
 }

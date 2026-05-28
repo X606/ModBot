@@ -91,21 +91,24 @@ namespace InternalModBot
         internal static void CreateSettingsWindow(ModBotSettingsBuilder builder)
         {
             builder.AddLabel("Interface");
-            builder.AddCheckbox("Hide custom tags", ModBotPrefs.HideCustomTags, delegate (Toggle toggle)
-            {
-                ModBotPrefs.HideCustomTags = toggle.isOn;
-                MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
-            });
             builder.AddCheckbox("Show max FPS", ModBotPrefs.ShowMaxFPS, delegate (Toggle toggle)
             {
                 ModBotPrefs.ShowMaxFPS = toggle.isOn;
                 ModBotUIRoot.Instance.FPSCounter.ForceRefreshNextFrame();
             });
+            builder.AddCheckbox("Hide custom player tags", ModBotPrefs.HideCustomTags, delegate (Toggle toggle)
+            {
+                ModBotPrefs.HideCustomTags = toggle.isOn;
+                MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
+
+                MultiplayerPlayerList playerList = GameUIRoot.Instance.MultiplayerPlayerList;
+                if (playerList.isActiveAndEnabled) playerList.refreshLabels();
+            });
 
             builder.AddLabel("Controls");
             foreach (ModBotPrefs.InputOption inputOption in ModBotPrefs.InputOptions)
             {
-                builder.AddLabelAndButton(inputOption.DisplayName, inputOption.Key.ToString(), new Color(0.3437611f, 0.5951038f, 0.9716981f), delegate (Button button)
+                builder.AddLabelAndButton(inputOption.DisplayName, inputOption.Key.ToString(), Color.lightGray, delegate (Button button)
                 {
                     StaticCoroutineRunner.StartStaticCoroutine(assignKeyFromNextInput(button, inputOption, 3f));
                 });
@@ -114,7 +117,34 @@ namespace InternalModBot
             builder.AddLabel("Website Integration");
             if (API.HasSession)
             {
-                builder.AddSingleButton("Edit tags", Color.green, delegate
+                if (ModBotUserIdentifier.SignInStatus != ModBotUserIdentifier.SignInStatuses.Success)
+                {
+                    if (ModBotUserIdentifier.SignInStatus == ModBotUserIdentifier.SignInStatuses.Failed)
+                    {
+                        Text erorText = builder.AddLabel($"Authorization failed. Check your internet connection");
+                        erorText.alignment = TextAnchor.MiddleCenter;
+                        erorText.color = Color.softRed;
+                        (erorText.transform.parent as RectTransform).sizeDelta = new Vector2(200f, 40f);
+                        return;
+                    }
+
+                    Text text1 = builder.AddLabel($"Signing in...");
+                    text1.alignment = TextAnchor.MiddleCenter;
+                    text1.color = Color.gray;
+                    (text1.transform.parent as RectTransform).sizeDelta = new Vector2(300f, 20f);
+                    return;
+                }
+
+                Text text = builder.AddLabel($"Signed in as: {ModBotUserIdentifier.UserNameColored}");
+                text.alignment = TextAnchor.MiddleCenter;
+                text.color = Color.gray;
+                (text.transform.parent as RectTransform).sizeDelta = new Vector2(300f, 20f);
+
+                builder.AddSingleButton("View profile", Color.dodgerBlue, delegate
+                {
+                    Process.Start($"https://modbot.org/userPage.html?userID={ModBotUserIdentifier.UserID}");
+                });
+                builder.AddSingleButton("Edit tags", Color.dodgerBlue, delegate
                 {
                     Process.Start("https://modbot.org/tagBrowsing.html");
                 });
@@ -133,9 +163,10 @@ namespace InternalModBot
             {
                 if (!ModBotUserIdentifier.Instance.CanSignIn())
                 {
-                    Text text = builder.AddLabel("Can't sign in. Check your internet connection");
+                    Text text = builder.AddLabel("You are offline. Check your internet connection");
                     text.alignment = TextAnchor.LowerCenter;
-                    text.color = Color.white;
+                    text.color = Color.softRed;
+                    (text.transform.parent as RectTransform).sizeDelta = new Vector2(200f, 40f);
                     return;
                 }
 

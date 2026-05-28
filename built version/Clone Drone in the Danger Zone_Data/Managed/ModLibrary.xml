@@ -4202,12 +4202,22 @@
         </member>
         <member name="P:ModLibrary.ModBotUserIdentifier.UserName">
             <summary>
-            The user name of local user
+            The name of local user
             </summary>
         </member>
-        <member name="P:ModLibrary.ModBotUserIdentifier.HasSignedIn">
+        <member name="P:ModLibrary.ModBotUserIdentifier.UserNameColored">
             <summary>
-            Has the local user signed in?
+            The name of local user with color
+            </summary>
+        </member>
+        <member name="P:ModLibrary.ModBotUserIdentifier.UserID">
+            <summary>
+            The ID of local user
+            </summary>
+        </member>
+        <member name="P:ModLibrary.ModBotUserIdentifier.SignInStatus">
+            <summary>
+            Current status of user authorization
             </summary>
         </member>
         <member name="M:ModLibrary.ModBotUserIdentifier.SetSession(System.String)">
