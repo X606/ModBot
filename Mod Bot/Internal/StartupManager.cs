@@ -27,7 +27,7 @@ namespace InternalModBot
             AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
             UnityEngine.Analytics.Analytics.enabled = false;
 
-            ModBotHarmonyInjectionManager.TryInject();
+            //ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
             OptionsSaver.PopulateSettingDictionary();
             ModBotPrefs.Initialize();

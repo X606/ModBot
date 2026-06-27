@@ -53,6 +53,7 @@
     <Compile Include="DataSaver.cs" />
     <Compile Include="Internal\ModBotUnloader.cs" />
     <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
+    <Compile Include="Internal\Patches\GameFlowManager_Patch.cs" />
     <Compile Include="Internal\Patches\ModBotWebsiteAPI_API_Patch.cs" />
     <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
     <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
