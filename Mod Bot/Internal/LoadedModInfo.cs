@@ -45,19 +45,17 @@ namespace InternalModBot
                     if (ModReference == null)
                     {
                         ModsManager.Instance.LoadMod(OwnerModInfo);
-
                     }
                     else
                     {
                         ModReference.OnModEnabled();
                     }
 
-
                     AutoInject();
                 }
                 else // If the mod is being disabled
                 {
-                    UpgradePagesManager.RemoveUpgradePage(OwnerModInfo.UniqueID);
+                    UpgradePagesManager.RemoveUpgradePages(OwnerModInfo.UniqueID);
 
                     new Harmony(ModReference.HarmonyID).UnpatchAll(ModReference.HarmonyID); // unpatches all of the patches made by the mod
 

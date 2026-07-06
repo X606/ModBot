@@ -1,12 +1,8 @@
-﻿using HarmonyLib;
-using ModLibrary;
+﻿using ModLibrary;
 using ModLibrary.Properties;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InternalModBot
 {
@@ -39,7 +35,7 @@ namespace InternalModBot
         static Queue<string> _localizationIDsToLog;
         static bool _isLogQueueCoroutineRunning;
 
-        static string currentLanguageID
+        public static string CurrentLanguageID
         {
             get
             {
@@ -56,7 +52,7 @@ namespace InternalModBot
 
         static string getLocalizationFileContentsForCurrentLanguage()
         {
-            switch (currentLanguageID)
+            switch (CurrentLanguageID)
             {
                 case LANGUAGE_ID_ENGLISH:
                     return Resources.ModBot_English;
@@ -201,7 +197,7 @@ namespace InternalModBot
             _isLogQueueCoroutineRunning = true;
 
             yield return new UnityEngine.WaitUntil(LocalizationManager.Instance.IsInitialized);
-            while(_localizationIDsToLog.Count > 0)
+            while (_localizationIDsToLog.Count > 0)
             {
                 string text = LocalizationManager.Instance.GetTranslatedString(_localizationIDsToLog.Dequeue());
                 debug.Log(text);
@@ -245,23 +241,6 @@ namespace InternalModBot
                 else
                 {
                     return "[nl: " + localizationID + "]";
-                }
-            }
-        }
-
-        [HarmonyPatch]
-        static class Patches
-        {
-            [HarmonyPostfix]
-            [HarmonyPatch(typeof(LocalizationManager), "populateDictionaryForCurrentLanguage")]
-            static void LocalizationManager_populateDictionaryForCurrentLanguage_Postfix(Dictionary<string, string> ____translatedStringsDictionary)
-            {
-                OnLocalizationDictionaryUpdated();
-                AddAllLocalizationStringsToDictionary(____translatedStringsDictionary);
-
-                if (ModsManager.Instance != null && ModsManager.Instance.PassOnMod != null)
-                {
-                    ModsManager.Instance.PassOnMod.OnLanguageChanged(currentLanguageID, ____translatedStringsDictionary);
                 }
             }
         }

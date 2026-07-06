@@ -1,169 +1,217 @@
-﻿using HarmonyLib;
-using ModBotWebsiteAPI;
+﻿using ModBotWebsiteAPI;
 using ModLibrary;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace InternalModBot
 {
-	/// <summary>
-	/// Handles settings on mod-bot page of the settings
-	/// </summary>
-	internal static class ModBotSettingsManager
-	{
-		static ModdedObject _settingsPageModdedObject;
-		/// <summary>
-		/// Sets up the <see cref="ModBotSettingsManager"/>
-		/// </summary>
-		/// <param name="moddedObject"></param>
-		public static void Init(ModdedObject moddedObject)
-		{
-			_settingsPageModdedObject = moddedObject;
+    /// <summary>
+    /// Handles settings on mod-bot page of the settings
+    /// </summary>
+    internal static class ModBotSettingsManager
+    {
+        static ModdedObject _settingsPageModdedObject;
 
-		}
+        /// <summary>
+        /// Sets up the <see cref="ModBotSettingsManager"/>
+        /// </summary>
+        /// <param name="moddedObject"></param>
+        public static void Init(ModdedObject moddedObject)
+        {
+            _settingsPageModdedObject = moddedObject;
+        }
 
-		class ModBotSettingsBuilder
-		{
-			Transform _holder;
+        public static ModdedObject GetSettingsPageModdedObject() => _settingsPageModdedObject;
 
-			GameObject _modBotOptionsLabelPrefab;
-			GameObject _modBotOptionsLabelAndButton;
-			GameObject _modBotOptionsSingleButton;
+        public class ModBotSettingsBuilder
+        {
+            Transform _holder;
 
-			public ModBotSettingsBuilder(ModdedObject moddedObject)
-			{
-				_holder = moddedObject.GetObject<GameObject>(0).transform;
+            GameObject _modBotOptionsLabelPrefab;
+            GameObject _modBotOptionsLabelAndButton;
+            GameObject _modBotOptionsSingleButton;
+            GameObject _modBotOptionsCheckbox;
 
-				TransformUtils.DestroyAllChildren(_holder);
+            public ModBotSettingsBuilder(ModdedObject moddedObject)
+            {
+                _holder = moddedObject.GetObject<GameObject>(0).transform;
 
-				_modBotOptionsLabelPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabel");
-				_modBotOptionsLabelAndButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabelAndButton");
-				_modBotOptionsSingleButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsSingleButton");
+                TransformUtils.DestroyAllChildren(_holder);
 
-			}
+                _modBotOptionsLabelPrefab = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabel");
+                _modBotOptionsLabelAndButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsLabelAndButton");
+                _modBotOptionsSingleButton = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsSingleButton");
+                _modBotOptionsCheckbox = InternalAssetBundleReferences.ModBot.GetObject("ModBotOptionsCheckbox");
+            }
 
-			public void AddLabel(string label)
-			{
-				ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelPrefab, _holder).GetComponent<ModdedObject>();
-				moddedObject.GetObject<Text>(0).text = label;
-			}
-			public void AddLabelAndButton(string label, string buttonText, Color buttonColor, Action<Button> onClick)
-			{
-				ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelAndButton, _holder).GetComponent<ModdedObject>();
-				moddedObject.GetObject<Text>(0).text = label;
-				Button button = moddedObject.GetObject<Button>(1);
-				button.GetComponentInChildren<Text>().text = buttonText;
-				button.GetComponent<Image>().color = buttonColor;
-				button.onClick.AddListener(delegate { onClick?.Invoke(button); });
-			}
-			public void AddSingleButton(string buttonText, Color buttonColor, Action<Button> onClick)
-			{
-				ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsSingleButton, _holder).GetComponent<ModdedObject>();
-				Button button = moddedObject.GetObject<Button>(0);
-				button.GetComponentInChildren<Text>().text = buttonText;
-				button.GetComponent<Image>().color = buttonColor;
-				button.onClick.AddListener(delegate { onClick?.Invoke(button); });
-			}
+            public Text AddLabel(string label)
+            {
+                ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelPrefab, _holder).GetComponent<ModdedObject>();
+                Text text = moddedObject.GetObject<Text>(0);
+                text.text = label;
+                return text;
+            }
 
-		}
+            public void AddLabelAndButton(string label, string buttonText, Color buttonColor, Action<Button> onClick)
+            {
+                ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsLabelAndButton, _holder).GetComponent<ModdedObject>();
+                moddedObject.GetObject<Text>(0).text = label;
+                Button button = moddedObject.GetObject<Button>(1);
+                button.GetComponentInChildren<Text>().text = buttonText;
+                button.GetComponent<Image>().color = buttonColor;
+                button.onClick.AddListener(delegate { onClick?.Invoke(button); });
+            }
 
-		/// <summary>
-		/// Populates the settings widow using the builder
-		/// </summary>
-		/// <param name="builder"></param>
-		static void CreateSettingsWindow(ModBotSettingsBuilder builder)
-		{
-			builder.AddLabel("Controls");
-			foreach (ModBotInputManager.InputOption inputOption in ModBotInputManager.InputOptions)
-			{
-				builder.AddLabelAndButton(inputOption.DisplayName, inputOption.Key.ToString(), new Color(0.3437611f, 0.5951038f, 0.9716981f), delegate(Button button)
-				{
-					StaticCoroutineRunner.StartStaticCoroutine(assignKeyFromNextInput(button, inputOption, 3f));
-				});
-			}
-			//builder.AddLabelAndButton("Open Console", "F1", new Color(0.3437611f, 0.5951038f, 0.9716981f), null);
-			//builder.AddLabelAndButton("Toggle FPS label", "F3", new Color(0.3437611f, 0.5951038f, 0.9716981f), null);
-			
-			builder.AddLabel("Website Integration");
-			if (API.HasSession)
-			{
-				builder.AddSingleButton("Edit tags", Color.green, delegate
-				{
-					Process.Start("https://modbot.org/tagBrowsing.html");
-				});
-				builder.AddSingleButton("Sign out", Color.red, delegate (Button button)
-				{
-					debug.Log("Logging out...");
-					API.SignOut(delegate (JsonObject json)
-					{
-						ModBotUIRoot.Instance.ModBotSignInUI.SetSession("");
-						VersionLabelManager.Instance.SetLine(2, "Not signed in");
-						CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
-					});
-				});
-			}
-			else
-			{
-				builder.AddSingleButton("Sign in", Color.green, delegate
-				{
-					GameUIRoot.Instance.SettingsMenu.Hide();
-					ModBotUIRoot.Instance.ModBotSignInUI.OpenSignInForm();
-				});
-			}
+            public void AddSingleButton(string buttonText, Color buttonColor, Action<Button> onClick)
+            {
+                ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsSingleButton, _holder).GetComponent<ModdedObject>();
+                Button button = moddedObject.GetObject<Button>(0);
+                button.GetComponentInChildren<Text>().text = buttonText;
+                button.GetComponent<Image>().color = buttonColor;
+                button.onClick.AddListener(delegate { onClick?.Invoke(button); });
+            }
 
-		}
+            public void AddCheckbox(string text, bool isOn, Action<Toggle> onClick)
+            {
+                ModdedObject moddedObject = GameObject.Instantiate(_modBotOptionsCheckbox, _holder).GetComponent<ModdedObject>();
+                Toggle toggle = moddedObject.GetObject<Toggle>(0);
+                toggle.isOn = isOn;
+                toggle.GetComponentInChildren<Text>().text = text;
+                toggle.onValueChanged.AddListener(delegate { onClick?.Invoke(toggle); });
+            }
+        }
 
-		static IEnumerator assignKeyFromNextInput(Button button, ModBotInputManager.InputOption input, float timeoutTime)
-		{
-			yield return new WaitForSecondsRealtime(0.1f); // wait a little so we dont pick up the mouse button
+        /// <summary>
+        /// Populates the settings widow using the builder
+        /// </summary>
+        /// <param name="builder"></param>
+        internal static void CreateSettingsWindow(ModBotSettingsBuilder builder)
+        {
+            builder.AddLabel("Interface");
+            builder.AddCheckbox("Show max FPS", ModBotPrefs.ShowMaxFPS, delegate (Toggle toggle)
+            {
+                ModBotPrefs.ShowMaxFPS = toggle.isOn;
+                ModBotUIRoot.Instance.FPSCounter.ForceRefreshNextFrame();
+            });
+            builder.AddCheckbox("Hide custom player tags", ModBotPrefs.HideCustomTags, delegate (Toggle toggle)
+            {
+                ModBotPrefs.HideCustomTags = toggle.isOn;
+                MultiplayerPlayerNameManager.Instance.TriggerRefreshNameTagsEvent();
 
-			Text buttonText = button.GetComponentInChildren<Text>();
-			buttonText.text = "INPUT NEW KEY";
+                MultiplayerPlayerList playerList = GameUIRoot.Instance.MultiplayerPlayerList;
+                if (playerList.isActiveAndEnabled) playerList.refreshLabels();
+            });
 
-			float passedTime = 0;
-			KeyCode[] allKeys = (KeyCode[])Enum.GetValues(typeof(KeyCode));
-			KeyCode? foundKey = null;
-			while (foundKey == null && passedTime < timeoutTime)
-			{
-				for (int i = 0; i < allKeys.Length; i++)
-				{
-					if (Input.GetKeyDown(allKeys[i]))
-					{
-						foundKey = allKeys[i];
-						break;
-					}
-				}
-				passedTime += Time.unscaledDeltaTime;
-				yield return null;
-			}
+            builder.AddLabel("Controls");
+            foreach (ModBotPrefs.InputOption inputOption in ModBotPrefs.InputOptions)
+            {
+                builder.AddLabelAndButton(inputOption.DisplayName, inputOption.Key.ToString(), Color.lightGray, delegate (Button button)
+                {
+                    StaticCoroutineRunner.StartStaticCoroutine(assignKeyFromNextInput(button, inputOption, 3f));
+                });
+            }
 
-			if (foundKey == null) // did we time out?
-			{
-				buttonText.text = input.Key.ToString();
-				yield break;
-			}
+            builder.AddLabel("Website Integration");
+            if (API.HasSession)
+            {
+                if (ModBotUserIdentifier.SignInStatus != ModBotUserIdentifier.SignInStatuses.Success)
+                {
+                    if (ModBotUserIdentifier.SignInStatus == ModBotUserIdentifier.SignInStatuses.Failed)
+                    {
+                        Text erorText = builder.AddLabel($"Authorization failed. Check your internet connection");
+                        erorText.alignment = TextAnchor.MiddleCenter;
+                        erorText.color = Color.softRed;
+                        (erorText.transform.parent as RectTransform).sizeDelta = new Vector2(200f, 40f);
+                        return;
+                    }
 
-			input.Key = foundKey.Value;
+                    Text text1 = builder.AddLabel($"Signing in...");
+                    text1.alignment = TextAnchor.MiddleCenter;
+                    text1.color = Color.gray;
+                    (text1.transform.parent as RectTransform).sizeDelta = new Vector2(300f, 20f);
+                    return;
+                }
 
-			buttonText.text = input.Key.ToString();
-		}
+                Text text = builder.AddLabel($"Signed in as: {ModBotUserIdentifier.UserNameColored}");
+                text.alignment = TextAnchor.MiddleCenter;
+                text.color = Color.gray;
+                (text.transform.parent as RectTransform).sizeDelta = new Vector2(300f, 20f);
 
-		[HarmonyPatch(typeof(SettingsMenu))]
-		static class SettingsMenu_Patch
-		{
-			[HarmonyPostfix]
-			[HarmonyPatch("populateSettings")]
-			static void populateSettings_Postfix()
-			{
-				CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
-			}
-		}
-	}
+                builder.AddSingleButton("View profile", Color.dodgerBlue, delegate
+                {
+                    Process.Start($"https://modbot.org/userPage.html?userID={ModBotUserIdentifier.UserID}");
+                });
+                builder.AddSingleButton("Edit tags", Color.dodgerBlue, delegate
+                {
+                    Process.Start("https://modbot.org/tagBrowsing.html");
+                });
+                builder.AddSingleButton("Sign out", Color.red, delegate (Button button)
+                {
+                    button.interactable = false;
+                    debug.Log("Logging out...");
+                    API.SignOut(delegate (JsonObject json)
+                    {
+                        ModBotUserIdentifier.Instance.SignOut();
+                        CreateSettingsWindow(new ModBotSettingsBuilder(_settingsPageModdedObject));
+                    });
+                });
+            }
+            else
+            {
+                if (!ModBotUserIdentifier.Instance.CanSignIn())
+                {
+                    Text text = builder.AddLabel("You are offline. Check your internet connection");
+                    text.alignment = TextAnchor.LowerCenter;
+                    text.color = Color.softRed;
+                    (text.transform.parent as RectTransform).sizeDelta = new Vector2(200f, 40f);
+                    return;
+                }
+
+                builder.AddSingleButton("Sign in", Color.green, delegate
+                {
+                    GameUIRoot.Instance.SettingsMenu.Hide();
+                    ModBotUIRoot.Instance.ModBotSignInUI.OpenSignInForm();
+                });
+            }
+
+        }
+
+        static IEnumerator assignKeyFromNextInput(Button button, ModBotPrefs.InputOption input, float timeoutTime)
+        {
+            yield return new WaitForSecondsRealtime(0.1f); // wait a little so we dont pick up the mouse button
+
+            Text buttonText = button.GetComponentInChildren<Text>();
+            buttonText.text = "INPUT NEW KEY";
+
+            float passedTime = 0;
+            KeyCode[] allKeys = (KeyCode[])Enum.GetValues(typeof(KeyCode));
+            KeyCode? foundKey = null;
+            while (foundKey == null && passedTime < timeoutTime)
+            {
+                for (int i = 0; i < allKeys.Length; i++)
+                {
+                    if (Input.GetKeyDown(allKeys[i]))
+                    {
+                        foundKey = allKeys[i];
+                        break;
+                    }
+                }
+                passedTime += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (foundKey == null) // did we time out?
+            {
+                buttonText.text = input.Key.ToString();
+                yield break;
+            }
+
+            input.Key = foundKey.Value;
+
+            buttonText.text = input.Key.ToString();
+        }
+    }
 }

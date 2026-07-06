@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bolt;
+﻿using Bolt;
 using ModLibrary;
-using System.Collections;
 
 namespace InternalModBot
 {
@@ -160,7 +154,7 @@ namespace InternalModBot
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
         }
-        
+
         public override void OnEvent(DismissAutomatedLaserBlastEvent evnt)
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
@@ -189,7 +183,7 @@ namespace InternalModBot
         public override void OnEvent(GenericStringForModdingEvent evnt)
         {
             ModSharingManager.Instance.OnModdedEvent(evnt);
-            ModBotUserIdentifier.Instance.OnEvent(evnt);
+            ModBotUserIdentifier.Instance.OnMultiplayerEvent(evnt);
             ModsManager.Instance.PassOnMod.OnMultiplayerEventReceived(evnt);
         }
 
@@ -258,16 +252,16 @@ namespace InternalModBot
             MultiplayerEventCallback.OnEventReceived(evnt);
         }
 
-		public override void Connected(BoltConnection connection)
-		{
-			ModBotUserIdentifier.Instance.OnLocalClientConnected();
-			ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
-		}
+        public override void Connected(BoltConnection connection)
+        {
+            ModBotUserIdentifier.Instance.OnLocalClientConnectedToMultiplayer();
+            ModsManager.Instance.PassOnMod.OnClientConnectedToServer();
+        }
 
-		public override void Disconnected(BoltConnection connection)
-		{
-			ModsManager.Instance.PassOnMod.OnClientDisconnectedFromServer();
-		}
+        public override void Disconnected(BoltConnection connection)
+        {
+            ModsManager.Instance.PassOnMod.OnClientDisconnectedFromServer();
+        }
 
         public override void OnEvent(ArenaLiftArrivedEvent evnt)
         {
@@ -295,6 +289,16 @@ namespace InternalModBot
         }
 
         public override void OnEvent(MatchInstance evnt)
+        {
+            MultiplayerEventCallback.OnEventReceived(evnt);
+        }
+
+        public override void OnEvent(AliveEnemiesAuditEvent evnt)
+        {
+            MultiplayerEventCallback.OnEventReceived(evnt);
+        }
+
+        public override void OnEvent(AliveEnemyKilledBasedOnClientFeedback evnt)
         {
             MultiplayerEventCallback.OnEventReceived(evnt);
         }

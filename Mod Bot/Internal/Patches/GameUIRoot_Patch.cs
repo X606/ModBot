@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -7,7 +6,7 @@ namespace InternalModBot
     static class GameUIRoot_Patch
     {
         [HarmonyPrefix]
-        [HarmonyPatch("RefreshCursorEnabled")]
+        [HarmonyPatch(nameof(GameUIRoot.RefreshCursorEnabled))]
         static bool GameUIRoot_RefreshCursorEnabled_Prefix()
         {
             if (ModBotUIRoot.Instance && ModBotUIRoot.Instance.AreAnyMenusOpen())
@@ -23,6 +22,13 @@ namespace InternalModBot
                 return false;
             }
             return true;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(GameUIRoot.CloseCurrentMenu))]
+        static bool GameUIRoot_CloseCurrentMenu_Prefix()
+        {
+            return !ModBotUIRoot.Instance || !ModBotUIRoot.Instance.CloseCurrentMenu();
         }
     }
 }

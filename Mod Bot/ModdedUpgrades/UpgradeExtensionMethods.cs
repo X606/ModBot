@@ -1,7 +1,5 @@
-﻿using System;
+﻿using InternalModBot;
 using System.Collections.Generic;
-using System.Text;
-using InternalModBot;
 
 namespace ModLibrary
 {
@@ -18,10 +16,22 @@ namespace ModLibrary
         /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod)
         {
+            AddUpgrade(upgradeManager, upgrade, mod, 0);
+        }
+
+        /// <summary>
+        /// Adds an upgrade to the page of the specified <see cref="Mod"/>, if the upgrade is a modded upgrade or not currently used it will also be added to <see cref="UpgradeManager.UpgradeDescriptions"/>
+        /// </summary>
+        /// <param name="upgradeManager"></param>
+        /// <param name="upgrade">The <see cref="UpgradeDescription"/> of the upgrade to add</param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
+        /// <param name="pageIndex">The page number. Starts from 0</param>
+        public static void AddUpgrade(this UpgradeManager upgradeManager, UpgradeDescription upgrade, Mod mod, int pageIndex)
+        {
             if (upgrade.IsModdedUpgradeType() || !UpgradeManager.Instance.IsUpgradeTypeAndLevelUsed(upgrade.UpgradeType, upgrade.Level))
                 UpgradeManager.Instance.UpgradeDescriptions.Add(upgrade);
 
-            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID);
+            UpgradePagesManager.AddUpgrade(upgrade.UpgradeType, upgrade.Level, mod.ModInfo.UniqueID, pageIndex);
 
             if (upgrade is AbilityUpgrade)
             {
@@ -49,11 +59,25 @@ namespace ModLibrary
         /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, Mod mod)
         {
+            SetUpgradeAngle(upgradeManager, upgradeType, level, angle, mod, 0);
+        }
+
+        /// <summary>
+        /// Sets the angle of an upgrade with the specified <see cref="UpgradeType"/> and level
+        /// </summary>
+        /// <param name="upgradeManager"></param>
+        /// <param name="upgradeType">The <see cref="UpgradeType"/> of the <see cref="UpgradeDescription"/> to set the angle on</param>
+        /// <param name="level">The level of the <see cref="UpgradeDescription"/> to set the angle on</param>
+        /// <param name="angle">The new angle to set</param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
+        /// <param name="pageIndex">The page number. Starts from 0</param>
+        public static void SetUpgradeAngle(this UpgradeManager upgradeManager, UpgradeType upgradeType, int level, float angle, Mod mod, int pageIndex)
+        {
             UpgradeDescription upgradeDescription = UpgradeManager.Instance.GetUpgrade(upgradeType, level);
             if (upgradeDescription == null)
                 return;
 
-            upgradeDescription.SetAngleOffset(angle, mod);
+            upgradeDescription.SetAngleOffset(angle, mod, pageIndex);
         }
 
         /// <summary>
@@ -84,8 +108,19 @@ namespace ModLibrary
         /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
         public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod)
         {
-            // New mod loading system
-            UpgradePagesManager.OverrideAngleOfUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID);
+            UpgradePagesManager.OverrideAngleOfUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID, 0);
+        }
+
+        /// <summary>
+        /// Sets angle offset of this upgrade on the mod page, NOTE: Needs to be run AFTER <see cref="UpgradeManager"/>.AddUpgrade(<see cref="UpgradeDescription"/>, <see cref="Mod"/>) is called
+        /// </summary>
+        /// <param name="upgradeDescription"></param>
+        /// <param name="angle">The new angle of the <see cref="UpgradeDescription"/></param>
+        /// <param name="mod">The <see cref="Mod"/> that owns the upgrade</param>
+        /// <param name="pageIndex">The page number. Starts from 0</param>
+        public static void SetAngleOffset(this UpgradeDescription upgradeDescription, float angle, Mod mod, int pageIndex)
+        {
+            UpgradePagesManager.OverrideAngleOfUpgrade(angle, upgradeDescription.UpgradeType, upgradeDescription.Level, mod.ModInfo.UniqueID, pageIndex);
         }
 
         /// <summary>
@@ -96,15 +131,6 @@ namespace ModLibrary
         public static void SetIconFromURL(this UpgradeDescription upgradeDescription, string url)
         {
             UpgradeIconDownloader.Instance.SetIconOnUpgrade(upgradeDescription, url);
-        }
-
-        /// <summary>
-        /// Enables setting the angles in the upgrade UI by scrolling on them and generating the code to set the angles again
-        /// </summary>
-        /// <param name="upgradeManager"></param>
-        public static void EnterUpgradeIconAngleDebugMode(this UpgradeManager upgradeManager)
-        {
-            UpgradeAngleSetter.Instance.DebugModeEnabled = true;
         }
     }
 }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ModLibrary;
-using Bolt;
-using UnityEngine;
-using InternalModBot;
+﻿using Bolt;
+using System;
 
 namespace ModLibrary
 {

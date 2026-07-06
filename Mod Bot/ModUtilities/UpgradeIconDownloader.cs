@@ -1,11 +1,6 @@
 ﻿using ModLibrary;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -45,20 +40,15 @@ namespace InternalModBot
             // If there already is an icon with a modded icon texture, destroy both
             if (upgrade.Icon != null && upgrade.Icon.texture != null && upgrade.Icon.texture.name.EndsWith(CUSTOM_ICON_POSTFIX))
             {
-                GameObject.Destroy(upgrade.Icon.texture);
-                GameObject.Destroy(upgrade.Icon);
+                Destroy(upgrade.Icon.texture);
+                Destroy(upgrade.Icon);
             }
 
             string textureName = fileName + CUSTOM_ICON_POSTFIX;
-            if (File.Exists(upgradeIconsFolderPath + fileName))
+            string textureFilePath = Path.Combine(upgradeIconsFolderPath, fileName);
+            if (File.Exists(textureFilePath))
             {
-                byte[] imageData = File.ReadAllBytes(upgradeIconsFolderPath + fileName);
-
-                Texture2D texture = new Texture2D(2, 2, TextureFormat.RGB24, false);
-                texture.name = textureName;
-                texture.LoadImage(imageData);
-
-                upgrade.Icon = getSpriteFromTexture(texture);
+                StartCoroutine(loadImageFromDiskAndSetIconOnUpgrade(upgrade, textureFilePath, textureName));
             }
             else
             {
@@ -72,9 +62,9 @@ namespace InternalModBot
             {
                 yield return webRequest.SendWebRequest();
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    debug.Log(webRequest.error, Color.red);
+                    debug.Log($"Failed to download upgrade icon \"{textureName}\" from network. ({webRequest.error})", Color.red);
                     upgrade.Icon = null;
                     yield break;
                 }
@@ -84,13 +74,35 @@ namespace InternalModBot
 
                 upgrade.Icon = getSpriteFromTexture(texture);
 
-                File.WriteAllBytes(upgradeIconsFolderPath + getFileNameForUpgrade(upgrade), texture.EncodeToPNG());
+                string textureFilePath = Path.Combine(upgradeIconsFolderPath, getFileNameForUpgrade(upgrade));
+                File.WriteAllBytes(Path.Combine(upgradeIconsFolderPath, textureFilePath), texture.EncodeToPNG());
+            }
+        }
+
+        static IEnumerator loadImageFromDiskAndSetIconOnUpgrade(UpgradeDescription upgrade, string path, string textureName)
+        {
+            using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture($"file://{path}"))
+            {
+                webRequest.timeout = 5;
+                yield return webRequest.SendWebRequest();
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
+                {
+                    debug.Log($"Failed to load upgrade icon \"{textureName}\" from disk. ({webRequest.error})", Color.red);
+                    upgrade.Icon = null;
+                    yield break;
+                }
+
+                Texture2D texture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
+                texture.name = textureName;
+
+                upgrade.Icon = getSpriteFromTexture(texture);
             }
         }
 
         static Sprite getSpriteFromTexture(Texture2D texture)
         {
-            return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), Vector2.one * 0.5f);
+            return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
         }
 
         static string getFileNameForUpgrade(UpgradeDescription upgrade)

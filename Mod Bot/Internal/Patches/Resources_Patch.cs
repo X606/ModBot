@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -8,45 +7,37 @@ namespace InternalModBot
     [HarmonyPatch]
     static class Resources_Load_Patch
     {
+        /// <summary>
+        /// Finds <see cref="Resources.Load(string, System.Type)"/>
+        /// </summary>
+        /// <returns></returns>
         static MethodBase TargetMethod()
         {
-            return typeof(Resources).GetMethods(BindingFlags.Public | BindingFlags.Static).Single((m) => m.Name == "Load" && m.ReturnType == typeof(UnityEngine.Object) && m.GetMethodBody() != null);
-        }
-
-        [HarmonyPostfix]
-        static UnityEngine.Object Load_Postfix(UnityEngine.Object __result, string path)
-        {
-            UnityEngine.Object overrideResource;
-
-            if (ModsManager.Instance != null)
+            MethodInfo[] methods = typeof(Resources).GetMethods(BindingFlags.Public | BindingFlags.Static);
+            foreach (MethodInfo method in methods)
             {
-                overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
-                if (overrideResource != null)
+                if (!method.IsGenericMethod && method.Name == nameof(Resources.Load))
                 {
-                    return overrideResource;
+                    ParameterInfo[] parameters = method.GetParameters();
+                    if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string) && parameters[1].ParameterType == typeof(System.Type))
+                    {
+                        return method;
+                    }
                 }
             }
-
-            return __result;
+            return null;
         }
 
-        /* Harmony REALLY does not like generic methods, I have given up on trying to make this work, it will continue being in Injector.exe
-        [ExtraInjectionData(Namespace = "UnityEngine", HasGenericParameters = true, GenericParameterTypes = new Type[] { typeof(UnityEngine.Object) }, ArgumentTypes = new Type[] { typeof(string) })]
-        public static UnityEngine.Object Resources_Load_Postfix_T(UnityEngine.Object __result, string path)
+        [HarmonyPrefix]
+        static bool Load_Prefix(ref Object __result, string path, System.Type systemTypeInstance)
         {
-            UnityEngine.Object moddedResource = LevelEditorObjectAdder.GetObjectData(path);
-            if (moddedResource != null)
-                return moddedResource;
-
-            if (ModsManager.Instance != null)
+            Object overrideResource = OverrideResourceManager.GetObjectOverride(path, systemTypeInstance);
+            if (overrideResource != null)
             {
-                moddedResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(path);
-                if (moddedResource != null)
-                    return moddedResource;
+                __result = overrideResource;
+                return false;
             }
-
-            return __result;
+            return true;
         }
-        */
     }
 }

@@ -1,19 +1,14 @@
 ﻿using HarmonyLib;
 using InternalModBot;
 using System;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 
 namespace ModLibrary
 {
     internal class InjectionInfo
     {
-		public InjectionTargetAttribute InjectionTargetAttribute;
-		public MethodInfo PatchMethod;
+        public InjectionTargetAttribute InjectionTargetAttribute;
+        public MethodInfo PatchMethod;
 
         public InjectionInfo(InjectionTargetAttribute injectionTargetAttribute, MethodInfo patchMethod)
         {
@@ -21,7 +16,7 @@ namespace ModLibrary
             PatchMethod = patchMethod;
         }
 
-		public void Patch(Harmony harmonyInstance)
+        public void Patch(Harmony harmonyInstance)
         {
             debug.Log("Patching " + InjectionTargetAttribute.TargetMethod.FullDescription() + " with " + InjectionTargetAttribute.PatchType + " " + PatchMethod.FullDescription() + " with harmony ID " + harmonyInstance.Id);
 

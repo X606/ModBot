@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,10 +51,10 @@ namespace InternalModBot
             Text numberDisplay = spawnedModdedObject.GetObject<Text>(2);
 
             object loadedValue = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedValue != null && loadedValue is int intValue)
+            if (loadedValue != null && loadedValue is int intValue)
                 slider.value = intValue;
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange((int)slider.value);
 
             numberDisplay.text = slider.value.ToString();
@@ -67,7 +63,7 @@ namespace InternalModBot
             {
                 OptionsSaver.SetSetting(owner, SaveID, (int)value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange((int)value);
 
                 numberDisplay.text = value.ToString();

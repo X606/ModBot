@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props')" />
+  <Import Project="..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props" Condition="Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Debug\ModLibrary.xml</DocumentationFile>
+    <DocumentationFile>bin\ModLibrary.xml</DocumentationFile>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,34 +38,54 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Release\ModLibrary.xml</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DocumentationFile>bin\ModLibrary.xml</DocumentationFile>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" />
+    <Publicize Include="UnityEngine.UI" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accessor.cs" />
     <Compile Include="AssetBundleInfo.cs" />
     <Compile Include="AssetLoader.cs" />
     <Compile Include="DataSaver.cs" />
+    <Compile Include="Internal\ModBotUnloader.cs" />
+    <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
+    <Compile Include="Internal\Patches\ModBotWebsiteAPI_API_Patch.cs" />
+    <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
+    <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
+    <Compile Include="Internal\Patches\EnemyNameTag_Patch.cs" />
+    <Compile Include="Internal\Patches\MultiplayerPlayerInfoState_Patch.cs" />
+    <Compile Include="Internal\Patches\Resources_Patch.cs" />
+    <Compile Include="Internal\OverrideResourceManager.cs" />
+    <Compile Include="ModHandling\Downloading\ModSpecialData.cs" />
+    <Compile Include="ModUtilities\CameraManager.cs" />
+    <Compile Include="ModUtilities\EasingFunctions.cs" />
+    <Compile Include="ModUtilities\LevelEditor\CustomObjectsList.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelEditorDisableRendererAndCollision.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelEditorMissingObject.cs" />
+    <Compile Include="ModUtilities\LevelEditor\LevelObjectPath.cs" />
+    <Compile Include="Internal\Patches\CustomInspectorValue_Patch.cs" />
     <Compile Include="Internal\Patches\GameUIRoot_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorDataManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelObjectsLibraryManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LevelEditorObjectPlacementManager_Patch.cs" />
+    <Compile Include="Internal\Patches\LibraryListItemDisplay_Patch.cs" />
+    <Compile Include="Internal\Patches\LocalizationManager_Patch.cs" />
+    <Compile Include="Internal\Patches\ObjectPlacedInLevel_Patch.cs" />
+    <Compile Include="Internal\TypeMigrationSerializationBinder.cs" />
     <Compile Include="Internal\UI\GenericLoadingBar.cs" />
     <Compile Include="Internal\UI\LocalModInfoDisplay.cs" />
     <Compile Include="Internal\UI\ModDownloadWindow.cs" />
-    <Compile Include="Internal\UI\ModInfoDisplay.cs" />
+    <Compile Include="Internal\UI\ModInfoCard.cs" />
     <Compile Include="Generic2ButtonDialogue.cs" />
     <Compile Include="Internal\ModdedTwitchManager.cs" />
     <Compile Include="Internal\Patches\Character_Patch.cs" />
     <Compile Include="Internal\Patches\ErrorManager_Patch.cs" />
-    <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
     <Compile Include="Internal\Patches\LevelEditorUI_Patch.cs" />
-    <Compile Include="Internal\Patches\EscMenu_Patch.cs" />
     <Compile Include="Internal\Patches\FirstPersonMover_Patch.cs" />
-    <Compile Include="Internal\Patches\LevelManager_SpawnCurrentLevel_ReversePatch.cs" />
-    <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
-    <Compile Include="Internal\Patches\Resources_Patch.cs" />
     <Compile Include="Internal\Reflection\ConstructorInfoKey.cs" />
     <Compile Include="Internal\Reflection\DelegateInfoKey.cs" />
     <Compile Include="Internal\Reflection\EventInfoKey.cs" />
@@ -81,16 +101,11 @@
     <Compile Include="ModHandling\ModImagesManager.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForTaskCompletion.cs" />
     <Compile Include="ModdedUpgrades\ModdedUpgradesPage.cs" />
-    <Compile Include="ModdedUpgrades\UpgradeUtilities.cs" />
-    <Compile Include="ModHandling\ModDownloading\ModDownloadManager.cs" />
-    <Compile Include="ModHandling\ModDownloading\ModsHolder.cs" />
+    <Compile Include="ModHandling\Downloading\ModDownloadManager.cs" />
+    <Compile Include="ModHandling\Downloading\ModsHolder.cs" />
     <Compile Include="ModUtilities\CodeInstrucionComparisonMode.cs" />
     <Compile Include="ModUtilities\ExtensionMethods\StringExtensions.cs" />
     <Compile Include="ModUtilities\LevelEditor\LevelEditorModdedMetadataManager.cs" />
-    <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
-    <Compile Include="Patching\Attributes\Prefix\InjectionPrefixTargetAttribute.cs" />
-    <Compile Include="Patching\InjectionInfo.cs" />
-    <Compile Include="Patching\Attributes\InjectionTargetAttribute.cs" />
     <Compile Include="Internal\InternalAssetBundleReferences.cs" />
     <Compile Include="Internal\CalledFromInjections.cs" />
     <Compile Include="Debug.cs" />
@@ -98,24 +113,14 @@
     <Compile Include="Internal\DebugLineDrawing.cs" />
     <Compile Include="Injector.cs" />
     <Compile Include="Internal\InternalUtils.cs" />
-    <Compile Include="Internal\LevelEditor\ModBotCustomLevelEditorManager.cs" />
-    <Compile Include="Internal\LevelEditor\Scriptable.cs" />
+    <Compile Include="ModUtilities\LevelEditor\CustomLevelEditorManager.cs" />
     <Compile Include="Internal\LineInfo.cs" />
     <Compile Include="Internal\ModBotHarmonyInjectionManager.cs" />
-    <Compile Include="Internal\ModBotInputManager.cs" />
+    <Compile Include="Internal\ModBotPrefs.cs" />
     <Compile Include="Internal\ModBotLocalizationManager.cs" />
     <Compile Include="Internal\ModBotSettingsManager.cs" />
-    <Compile Include="Internal\Scripting\JavascriptScriptObject.cs" />
-    <Compile Include="Internal\Scripting\LuaScriptObject.cs" />
-    <Compile Include="Internal\Scripting\ScriptObject.cs" />
-    <Compile Include="Internal\Scripting\Types\DebugRef.cs" />
-    <Compile Include="Internal\Scripting\Types\GlobalScriptFunctions.cs" />
-    <Compile Include="Internal\Scripting\Types\InputRef.cs" />
-    <Compile Include="Internal\Scripting\Types\LevelObjectsRef.cs" />
-    <Compile Include="Internal\Scripting\Types\InstanceTypes\GameObjectRef.cs" />
-    <Compile Include="Internal\Scripting\Types\InstanceTypes\Vector3Ref.cs" />
     <Compile Include="Internal\ThreadedDelegateScheduler.cs" />
-    <Compile Include="Internal\UI\Generic2ButtonDialogeUI.cs" />
+    <Compile Include="Internal\UI\Generic2ButtonDialogueUI.cs" />
     <Compile Include="Internal\UI\ModBotSignInUI.cs" />
     <Compile Include="Internal\UI\FPSCounterUI.cs" />
     <Compile Include="Internal\UI\ModBotUIRoot.cs" />
@@ -125,12 +130,11 @@
     <Compile Include="Internal\UI\ModOptionsWindow.cs" />
     <Compile Include="Internal\UI\ModSuggestingUI.cs" />
     <Compile Include="Internal\VersionLabelManager.cs" />
-    <Compile Include="LevelEditorObjectAdder.cs" />
     <Compile Include="Internal\UI\ConsoleUI.cs" />
-    <Compile Include="ModdedUpgrades\CustomUpgradeManager.cs" />
+    <Compile Include="ModdedUpgrades\CustomUpgradesUIManager.cs" />
     <Compile Include="ModdedUpgrades\UpgradeAngleSetter.cs" />
     <Compile Include="ModdedUpgrades\UpgradeExtensionMethods.cs" />
-    <Compile Include="ModdedUpgrades\ModdedUpgradeTypeAndLevel.cs" />
+    <Compile Include="ModdedUpgrades\ModdedUpgradeRepresenter.cs" />
     <Compile Include="ModdedUpgrades\UpgradePagesManager.cs" />
     <Compile Include="Internal\LoadedModInfo.cs" />
     <Compile Include="ModHandling\MainModClassAttribute.cs" />
@@ -169,6 +173,10 @@
     <Compile Include="ModUtilities\UpgradeIconDownloader.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelAndUpgradeInitialization.cs" />
     <Compile Include="ModUtilities\YieldInstructions\WaitForCharacterModelInitialization.cs" />
+    <Compile Include="Patching\Attributes\InjectionTargetAttribute.cs" />
+    <Compile Include="Patching\Attributes\Postfix\InjectionPostfixTargetAttribute.cs" />
+    <Compile Include="Patching\Attributes\Prefix\InjectionPrefixTargetAttribute.cs" />
+    <Compile Include="Patching\InjectionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\UpdateChecker.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -185,8 +193,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\UsedDlls\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.4.2\lib\net48\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -204,21 +212,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\bolt.user.dll</HintPath>
     </Reference>
-    <Reference Include="Esprima, Version=1.0.1258.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Esprima.1.0.1258\lib\net45\Esprima.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.1.3.2\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jint.3.0.0-beta-1715\lib\net45\Jint.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.4.2.13, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.4.2\lib\netstandard2.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="ModBotWebsiteAPI">
       <HintPath>..\UsedDlls\ModBotWebsiteAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="MoonSharp.Interpreter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
-      <HintPath>..\packages\MoonSharp.2.0.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>..\UsedDlls\netstandard.dll</HintPath>
@@ -231,12 +230,28 @@
       <HintPath>..\UsedDlls\Rewired_Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core">
       <HintPath>..\UsedDlls\System.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime">
       <HintPath>..\UsedDlls\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -292,6 +307,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Clone Drone in the Danger Zone\Clone Drone in the Danger Zone_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\UsedDlls\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
@@ -337,15 +356,15 @@
     <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
 set "modlibraryxml=$(TargetName).xml"
 
-copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
-copy /Y "$(TargetDir)%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
+copy /y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
+copy /y "$(TargetDir)/../%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.props'))" />
-    <Error Condition="!Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets'))" />
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.props'))" />
+    <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
   </Target>
-  <Import Project="..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.1.0.3\build\Krafs.Publicizer.targets')" />
+  <Import Project="..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
 </Project>

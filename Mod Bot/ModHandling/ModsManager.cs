@@ -13,11 +13,12 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace InternalModBot
 {
     /// <summary>
-    /// Handles mod loading, disableing and enableing.
+    /// Handles mod loading, disabling and enabling.
     /// </summary>
     public class ModsManager : Singleton<ModsManager>
     {
@@ -61,6 +62,12 @@ namespace InternalModBot
         {
             PassOnMod.GlobalUpdate();
             ThreadedDelegateScheduler.Update();
+        }
+
+        private void OnApplicationQuit()
+        {
+            Application.CancelQuit();
+            new GameObject().AddComponent<ModBotUnloader>();
         }
 
         /// <summary>
@@ -352,19 +359,25 @@ namespace InternalModBot
                 return false;
             }
 
+            bool firstTimeLoading;
+
             Assembly loadedAssembly = null;
             Type mainType = null;
             if (_cachedAssemblies.ContainsKey(modInfo.UniqueID))
             {
+                firstTimeLoading = false;
+
                 ModAssemblyCache modAssemblyCache = _cachedAssemblies[modInfo.UniqueID];
                 loadedAssembly = modAssemblyCache.LoadedAssembly;
                 mainType = modAssemblyCache.MainClassType;
             }
             else
             {
+                firstTimeLoading = true;
+
                 try
                 {
-                    loadedAssembly = Assembly.LoadFile(dllPath);
+                    loadedAssembly = Assembly.Load(AssemblyName.GetAssemblyName(dllPath));
                 }
                 catch
                 {
@@ -436,6 +449,19 @@ namespace InternalModBot
             {
                 error = new ModLoadError(modInfo, "Caught exception in OnModLoaded, exception details: " + e.ToString());
                 return false;
+            }
+
+            if (firstTimeLoading)
+            {
+                try
+                {
+                    loadedMod.OnModLoadedFirstTime();
+                }
+                catch (Exception e)
+                {
+                    error = new ModLoadError(modInfo, $"Caught exception in AddLevelEditorObjects, exception details: " + e.ToString());
+                    return false;
+                }
             }
 
             StartCoroutine(callOnModRefreshedNextFrame(loadedModInfo));

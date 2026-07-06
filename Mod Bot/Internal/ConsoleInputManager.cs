@@ -1,8 +1,5 @@
 ﻿using HarmonyLib;
-using InternalModBot.Scripting;
-using ModBotWebsiteAPI;
 using ModLibrary;
-using Rewired;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -119,22 +116,24 @@ namespace InternalModBot
                     }
                 case "help":
                     {
-                        debug.Log("Avaliable mod-bot commands (not including commands from mods):\n" +
+                        debug.Log("Avaliable Mod-Bot commands (not including commands from mods):\n" +
                            "ignoreallcrashes [1 - 0], [on - off], [true, false]\n" +
                            "crash\n" +
                            "clearcache\n" +
                            "listpatches\n" +
                            "help\n" +
                            "getplayfabids [copy ids: true, false]\n" +
-                           "viewlogs\n" + 
-                           "savefolder"
+                           "viewlogs\n" +
+                           "savefolder\n" +
+                           "editupgradeangles\n" +
+                           "clear"
 
                            , Color.yellow);
                         break;
                     }
                 case "getplayfabids":
                     {
-                        var usage = "Usage: getplayfabids [true, false] \ntrue - will copy the results into clipboard, false - won't";
+                        string usage = "Usage: getplayfabids [true, false] \ntrue - will copy the results into clipboard, false - won't";
                         bool? shouldCopy = null;
                         if (subCommands.Length < 2 || subCommands.Length > 2)
                         {
@@ -156,13 +155,13 @@ namespace InternalModBot
                             return;
                         }
 
-                        var players = CharacterTracker.Instance.GetAllPlayers();
-                        var namesAndIds = new StringBuilder();
+                        List<FirstPersonMover> players = CharacterTracker.Instance.GetAllPlayers();
+                        StringBuilder namesAndIds = new StringBuilder();
                         debug.Log("\n");
                         for (int i = 0; i < players.Count; i++)
                         {
                             FirstPersonMover player = players[i];
-                            var playfabID = player.GetPlayFabID();
+                            string playfabID = player.GetPlayFabID();
 
                             MultiplayerPlayerInfoManager.Instance.GetPlayerInfoState(playfabID).GetOrPrepareSafeDisplayName(delegate (string displayName)
                             {
@@ -193,6 +192,19 @@ namespace InternalModBot
                 case "savefolder":
                     {
                         Process.Start(Path.Combine(Application.persistentDataPath));
+                        break;
+                    }
+                case "editupgradeangles":
+                    {
+                        UpgradeAngleSetter.Instance.ToggleEditingMode();
+                        if (UpgradeAngleSetter.Instance.IsInEditingMode())
+                        {
+                            debug.Log("You can now edit the angles of modded upgrades by hovering your mouse over an icon and scrolling.\nPress \"Generate\" to get the code for setting upgrade angles.", Color.greenYellow);
+                        }
+                        else
+                        {
+                            debug.Log("You have left upgrade angle editing mode.", Color.greenYellow);
+                        }
                         break;
                     }
 #if DEBUG
@@ -298,17 +310,6 @@ namespace InternalModBot
         public static bool GetIsIgnoringCrashes()
         {
             return _isIgnoringCrashes;
-        }
-
-        [HarmonyPatch]
-        static class Patches
-        {
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(ErrorManager), "HandleLog")]
-            static bool ErrorManager_HandleLog_Prefix()
-            {
-                return !GetIsIgnoringCrashes();
-            }
         }
     }
 }

@@ -6,20 +6,17 @@ namespace InternalModBot
     [HarmonyPatch(typeof(ResourceRequest))]
     static class ResourceRequest_Patch
     {
-        [HarmonyPostfix]
-        [HarmonyPatch("asset", MethodType.Getter)]
-        static UnityEngine.Object asset_Getter_Postfix(UnityEngine.Object __result, string ___m_Path)
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ResourceRequest.asset), MethodType.Getter)]
+        static bool asset_Getter_Prefix(UnityEngine.Object __result, string ___m_Path, System.Type ___m_Type)
         {
-            UnityEngine.Object overrideResource;
-
-            if (ModsManager.Instance != null)
+            Object overrideResource = OverrideResourceManager.GetObjectOverride(___m_Path, ___m_Type);
+            if (overrideResource != null)
             {
-                overrideResource = ModsManager.Instance.PassOnMod.OnResourcesLoad(___m_Path);
-                if (overrideResource != null)
-                    return overrideResource;
+                __result = overrideResource;
+                return false;
             }
-
-            return __result;
+            return true;
         }
     }
 }

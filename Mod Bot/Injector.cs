@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using HarmonyLib;
+using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using HarmonyLib;
 
 namespace ModLibrary
 {
@@ -32,11 +28,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
+            if (injectTarget == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
+            if (injectionPrefix == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
 
             instance.Patch(injectTarget, new HarmonyMethod(injectionPrefix));
@@ -68,11 +64,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
+            if (injectTarget == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
+            if (injectionPrefix == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
 
             instance.Patch(injectTarget, null, new HarmonyMethod(injectionPrefix));
@@ -106,15 +102,15 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             MethodInfo injectTarget = typeof(InjectionTarget).GetMethod(injectTargetMethod, FLAGS);
-            if(injectTarget == null)
+            if (injectTarget == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
 
             MethodInfo injectionPrefix = typeof(PrefixTarget).GetMethod(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null)
+            if (injectionPrefix == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
 
             MethodInfo injectionPostfix = typeof(PostfixTarget).GetMethod(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null)
+            if (injectionPostfix == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
 
             instance.Patch(injectTarget, new HarmonyMethod(injectionPrefix), new HarmonyMethod(injectionPostfix));
@@ -149,11 +145,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
 
             PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetProperty, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetProperty);
 
             instance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix.GetGetMethod()));
@@ -185,11 +181,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
 
             PropertyInfo injectionPrefix = typeof(PostfixTarget).GetProperty(postfixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetProperty);
 
             instance.Patch(injectTarget.GetGetMethod(), null, new HarmonyMethod(injectionPrefix.GetGetMethod()));
@@ -223,15 +219,15 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
-            if(injectTarget == null || injectTarget.GetGetMethod() == null)
+            if (injectTarget == null || injectTarget.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
 
             PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
 
             PropertyInfo injectionPostfix = typeof(PostfixTarget).GetProperty(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null || injectionPostfix.GetGetMethod() == null)
+            if (injectionPostfix == null || injectionPostfix.GetGetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
 
             instance.Patch(injectTarget.GetGetMethod(), new HarmonyMethod(injectionPrefix.GetGetMethod()), new HarmonyMethod(injectionPostfix.GetGetMethod()));
@@ -266,11 +262,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
 
             PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetProperty);
 
             instance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix.GetSetMethod()));
@@ -302,11 +298,11 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetProperty, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetProperty);
 
             PropertyInfo injectionPrefix = typeof(PostfixTarget).GetProperty(postfixTargetProperty, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetProperty);
 
             instance.Patch(injectTarget.GetSetMethod(), null, new HarmonyMethod(injectionPrefix.GetSetMethod()));
@@ -340,15 +336,15 @@ namespace ModLibrary
             Harmony instance = new Harmony(mod.HarmonyID);
 
             PropertyInfo injectTarget = typeof(InjectionTarget).GetProperty(injectTargetMethod, FLAGS);
-            if(injectTarget == null || injectTarget.GetSetMethod() == null)
+            if (injectTarget == null || injectTarget.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(InjectionTarget).Name + "." + injectTargetMethod);
 
             PropertyInfo injectionPrefix = typeof(PrefixTarget).GetProperty(prefixTargetMethod, FLAGS);
-            if(injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
+            if (injectionPrefix == null || injectionPrefix.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PrefixTarget).Name + "." + prefixTargetMethod);
 
             PropertyInfo injectionPostfix = typeof(PostfixTarget).GetProperty(postfixTargetMethod, FLAGS);
-            if(injectionPostfix == null || injectionPostfix.GetSetMethod() == null)
+            if (injectionPostfix == null || injectionPostfix.GetSetMethod() == null)
                 throw new ArgumentException("Could not find " + typeof(PostfixTarget).Name + "." + postfixTargetMethod);
 
             instance.Patch(injectTarget.GetSetMethod(), new HarmonyMethod(injectionPrefix.GetSetMethod()), new HarmonyMethod(injectionPostfix.GetSetMethod()));
@@ -370,4 +366,4 @@ namespace ModLibrary
         #endregion
     }
 }
-    
+

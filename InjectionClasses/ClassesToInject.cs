@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace InjectionClasses
@@ -11,14 +7,6 @@ namespace InjectionClasses
     {
         public string ID;
 
-        public List<UnityEngine.Object> objects;
-    }
-    
-    public class XButton : MonoBehaviour
-    {
-        public void Close()
-        {
-            gameObject.SetActive(false);
-        }
+        public List<Object> objects;
     }
 }

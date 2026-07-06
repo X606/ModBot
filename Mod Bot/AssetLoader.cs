@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
+﻿using InternalModBot;
 using UnityEngine;
-using System.Collections;
-using UnityEngine.Networking;
-using InternalModBot;
-using System.Diagnostics;
 
 namespace ModLibrary
 {
@@ -130,7 +121,7 @@ namespace ModLibrary
             string path = InternalUtils.GetCallerModPath();
             return getObjectFromFileInternal<T>(assetBundleName, objectName, path + customPath);
         }
-        
+
 
         /// <summary>
         /// Clears the cache for loaded assets

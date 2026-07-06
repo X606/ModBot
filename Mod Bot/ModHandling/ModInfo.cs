@@ -1,10 +1,7 @@
 ﻿using InternalModBot;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.IO;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace ModLibrary
 {

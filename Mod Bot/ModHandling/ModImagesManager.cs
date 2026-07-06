@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ModLibrary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -47,7 +47,7 @@ namespace InternalModBot
 
                 _processingModImages.Remove(modInfo.UniqueID);
 
-                if (webRequest.isNetworkError || webRequest.isHttpError)
+                if (webRequest.result != UnityWebRequest.Result.Success)
                 {
                     if (callback != null) callback(null);
                 }

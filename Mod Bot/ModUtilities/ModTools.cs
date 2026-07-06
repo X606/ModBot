@@ -1,7 +1,11 @@
+using ModLibrary.LevelEditor;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace ModLibrary
 {
@@ -210,6 +214,106 @@ namespace ModLibrary
             }
 
             return mindSpaceBodyParts;
+        }
+
+        /// <summary>
+        /// Check if <see cref="ObjectPlacedInLevel"/> was added by one of the mods
+        /// </summary>
+        /// <param name="objectPlacedInLevel"></param>
+        /// <returns></returns>
+        public static bool IsCustomLevelObject(this ObjectPlacedInLevel objectPlacedInLevel)
+        {
+            return objectPlacedInLevel && objectPlacedInLevel.LevelObjectEntry != null && objectPlacedInLevel.LevelObjectEntry.IsCustomLevelObject();
+        }
+
+        /// <summary>
+        /// Check if <see cref="LevelObjectEntry"/> is related to a mod
+        /// </summary>
+        /// <param name="levelObjectEntry"></param>
+        /// <returns></returns>
+        public static bool IsCustomLevelObject(this LevelObjectEntry levelObjectEntry)
+        {
+            if (levelObjectEntry == null || string.IsNullOrEmpty(levelObjectEntry.PathUnderResources))
+                return false;
+
+            return CustomLevelEditorManager.IsPathToCustomObject(levelObjectEntry.PathUnderResources);
+        }
+
+        /// <summary>
+        /// Quickly creates a sprite from texture
+        /// </summary>
+        /// <param name="texture2D"></param>
+        /// <returns></returns>
+        public static Sprite ToSprite(this Texture2D texture2D) => texture2D ? Sprite.Create(texture2D, new Rect(0f, 0f, texture2D.width, texture2D.height), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect) : null;
+    }
+
+    /// <summary>
+    /// Adds a few extension methods to the <see cref="ScrollRect"/> class
+    /// </summary>
+    public static class ScrollRectExtensions
+    {
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the top
+        /// </summary>
+        /// <param name="scrollRect"></param>
+        public static void ScrollToTop(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 1);
+        }
+
+        /// <summary>
+        /// Scrolls the <see cref="ScrollRect"/> to the bottom
+        /// </summary>
+        /// <param name="scrollRect"></param>
+        public static void ScrollToBottom(this ScrollRect scrollRect)
+        {
+            scrollRect.normalizedPosition = new Vector2(0, 0);
+        }
+    }
+
+    /// <summary>
+    /// Handles extra cases of <see cref="UnityWebRequest"/>
+    /// </summary>
+    public static class UnityWebRequestTools
+    {
+        /// <summary>
+        /// Aborts request if the download progress doesn't change within specified time
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="timeout"></param>
+        /// <param name="abortCallback"></param>
+        public static void AbortRequestIfNoProgress(UnityWebRequest request, float timeout, Action abortCallback)
+        {
+            StaticCoroutineRunner.StartStaticCoroutine(abortRequestIfNoProgress(request, timeout, abortCallback));
+        }
+
+        private static IEnumerator abortRequestIfNoProgress(UnityWebRequest request, float timeout, Action abortCallback)
+        {
+            float timeoutTime = Time.unscaledTime + timeout;
+            float progress = 0f;
+            while (!request.isDone)
+            {
+                yield return null;
+
+                float currentProgress = request.downloadProgress;
+                if (currentProgress == progress)
+                {
+                    if (Time.unscaledTime > timeoutTime)
+                    {
+                        try
+                        {
+                            request.Abort();
+                        }
+                        catch (Exception) { }
+
+                        if (abortCallback != null) abortCallback();
+                        yield break;
+                    }
+                    continue;
+                }
+                progress = currentProgress;
+                timeoutTime = Time.unscaledTime + timeout;
+            }
         }
     }
 }

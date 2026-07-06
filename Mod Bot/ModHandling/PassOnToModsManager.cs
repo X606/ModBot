@@ -77,9 +77,6 @@ namespace InternalModBot
         /// </summary>
         protected internal override void OnLevelEditorStarted()
         {
-#if MODDED_LEVEL_OBJECTS
-            LevelEditorObjectAdder.OnLevelEditorStarted();
-#endif
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
             for (int i = 0; i < mods.Count; i++)
             {
@@ -90,6 +87,44 @@ namespace InternalModBot
                 catch (Exception exc)
                 {
                     Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnLevelEditorStarted)}.\n", exc)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void OnObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].OnObjectPlacedInLevelInitialized(objectPlacedInLevel, levelRoot);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnObjectPlacedInLevelInitialized)}.\n", exc)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        protected internal override void AfterObjectPlacedInLevelInitialized(ObjectPlacedInLevel objectPlacedInLevel, Transform levelRoot)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                try
+                {
+                    mods[i].AfterObjectPlacedInLevelInitialized(objectPlacedInLevel, levelRoot);
+                }
+                catch (Exception exc)
+                {
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(AfterObjectPlacedInLevelInitialized)}.\n", exc)));
                 }
             }
         }
@@ -189,18 +224,6 @@ namespace InternalModBot
                     Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnCharacterUpdate)}.\n", exc)));
                 }
             }
-        }
-
-        /// <summary>
-        /// Moved from <see cref="CalledFromInjections"/>, checks for <see langword="null"/> and calls <see cref="AfterUpgradesRefreshed(FirstPersonMover, UpgradeCollection)"/>
-        /// </summary>
-        /// <param name="firstPersonMover"></param>
-        protected internal static void AfterUpgradesRefreshed(FirstPersonMover firstPersonMover)
-        {
-            if (firstPersonMover == null || firstPersonMover.gameObject == null || !firstPersonMover.IsAlive() || firstPersonMover.GetCharacterModel() == null)
-                return;
-
-            ModsManager.Instance.PassOnMod.AfterUpgradesRefreshed(firstPersonMover, firstPersonMover.GetComponent<UpgradeCollection>());
         }
 
         /// <summary>
@@ -337,6 +360,34 @@ namespace InternalModBot
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
+        protected internal override UnityEngine.Object OnResourcesLoad(string path, Type objectType)
+        {
+            List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
+            for (int i = 0; i < mods.Count; i++)
+            {
+                UnityEngine.Object obj;
+                try
+                {
+                    obj = mods[i].OnResourcesLoad(path, objectType);
+                }
+                catch (Exception exc)
+                {
+                    obj = null;
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at OnResourcesLoad(string path, Type objectType).\n", exc)));
+                }
+
+                if (obj != null)
+                    return obj;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Calls this method on all mods
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         protected internal override UnityEngine.Object OnResourcesLoad(string path)
         {
             List<Mod> mods = ModsManager.Instance.GetAllLoadedActiveMods();
@@ -350,7 +401,7 @@ namespace InternalModBot
                 catch (Exception exc)
                 {
                     obj = null;
-                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at {nameof(OnResourcesLoad)}.\n", exc)));
+                    Debug.LogException(new Exception(string.Concat($"{mods[i].ModInfo.DisplayName} caused an exception at OnResourcesLoad(string path).\n", exc)));
                 }
 
                 if (obj != null)

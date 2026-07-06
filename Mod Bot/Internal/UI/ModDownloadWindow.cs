@@ -1,11 +1,9 @@
-﻿using BestHTTP.SocketIO;
-using ModLibrary;
-using Newtonsoft.Json.Linq;
+﻿using ModLibrary;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace InternalModBot
@@ -14,8 +12,8 @@ namespace InternalModBot
     {
         private Button _xButton;
 
-        private ModdedObject _modInfoEntryPrefab;
-        private Transform _modInfoEntriesContainer;
+        private ModdedObject _modCardPrefab;
+        private Transform _container;
 
         private InputField _searchField;
         private Button _websiteButton;
@@ -25,29 +23,38 @@ namespace InternalModBot
         private Text _modName;
         private Text _modDescription;
         private Text _modVersion;
+        private Button _modPageButton;
+        private Button _copyModIDButton;
 
-        private readonly List<ModInfoDisplay> _displays = new List<ModInfoDisplay>();
+        private readonly List<ModInfoCard> _cards = new List<ModInfoCard>();
 
         private ModsHolder _modsHolder;
+
+        private string _viewingModId;
 
         internal void Init()
         {
             ModdedObject moddedObject = base.GetComponent<ModdedObject>();
             _xButton = moddedObject.GetObject<Button>(3);
             _xButton.onClick.AddListener(Hide);
-            _modInfoEntryPrefab = moddedObject.GetObject<ModdedObject>(0);
-            _modInfoEntryPrefab.gameObject.SetActive(false);
-            _modInfoEntriesContainer = moddedObject.GetObject<Transform>(2);
+            _modCardPrefab = moddedObject.GetObject<ModdedObject>(0);
+            _modCardPrefab.gameObject.SetActive(false);
+            _container = moddedObject.GetObject<Transform>(2);
             _searchField = moddedObject.GetObject<InputField>(1);
             _searchField.onValueChanged.AddListener(ShowModsWithMatchingNames);
             _websiteButton = moddedObject.GetObject<Button>(4);
             _websiteButton.onClick.AddListener(OpenWebsite);
             _informationWindow = moddedObject.GetObject<Transform>(5);
+            _informationWindow.gameObject.SetActive(false);
             _modPreview = moddedObject.GetObject<RawImage>(7);
             _modName = moddedObject.GetObject<Text>(8);
             _modDescription = moddedObject.GetObject<Text>(9);
             _modVersion = moddedObject.GetObject<Text>(10);
-            moddedObject.GetObject<Button>(6).onClick.AddListener(closeInformationWindow);
+            _modPageButton = moddedObject.GetObject<Button>(11);
+            _modPageButton.onClick.AddListener(OpenModPage);
+            _copyModIDButton = moddedObject.GetObject<Button>(12);
+            _copyModIDButton.onClick.AddListener(CopyModID);
+            moddedObject.GetObject<Button>(6).onClick.AddListener(CloseInformationWindow);
 
             base.gameObject.SetActive(false);
         }
@@ -61,14 +68,16 @@ namespace InternalModBot
         public void Hide()
         {
             StopAllCoroutines();
-            closeInformationWindow();
+            CloseInformationWindow();
             ModBotUIRoot.Instance.LoadingBar.SetActive(false);
             base.gameObject.SetActive(false);
         }
 
+        public bool IsInformationWindowActive() => _informationWindow.gameObject.activeInHierarchy;
+
         public void ShowModsWithMatchingNames(string name)
         {
-            foreach (ModInfoDisplay ui in _displays)
+            foreach (ModInfoCard ui in _cards)
             {
                 if (string.IsNullOrWhiteSpace(name))
                 {
@@ -81,45 +90,77 @@ namespace InternalModBot
 
         public void PopulateModsHolder()
         {
-            if (!base.gameObject.activeInHierarchy)
-            {
-                return;
-            }
-            _ = StartCoroutine(asyncPopulateModsHolder());
-        }
-        private IEnumerator asyncPopulateModsHolder()
-        {
-            float wait = 0.04f;
-            int index = 1;
+            if (!base.gameObject.activeInHierarchy) return;
+
+            StopAllCoroutines();
+
+            List<Tuple<ModInfo, int>> modsAndLikes = new List<Tuple<ModInfo, int>>();
             foreach (ModInfo info in _modsHolder.Mods)
             {
+                ModSpecialData specialData = ModsDownloadManager.GetSpecialDataFor(info.UniqueID);
+                if (specialData == null)
+                {
+                    modsAndLikes.Add(new Tuple<ModInfo, int>(info, -1));
+                    continue;
+                }
+
+                modsAndLikes.Add(new Tuple<ModInfo, int>(info, -specialData.Likes));
+            }
+
+            foreach (Tuple<ModInfo, int> tuple in modsAndLikes.OrderBy(t => t.Item2))
+            {
+                ModInfo info = tuple.Item1;
+                ModSpecialData specialData = ModsDownloadManager.GetSpecialDataFor(info.UniqueID);
+
                 if (info.Tags != null && info.Tags.Contains("vr")) continue;
 
-                yield return new WaitForSecondsRealtime(wait);
+                ModInfoCard infoCard = Instantiate(_modCardPrefab, _container).gameObject.AddComponent<ModInfoCard>();
+                infoCard.Init(info, specialData);
+                infoCard.MakeInvisible();
+                _cards.Add(infoCard);
+            }
 
-                ModInfoDisplay modInfoDisplay = Instantiate(_modInfoEntryPrefab, _modInfoEntriesContainer).gameObject.AddComponent<ModInfoDisplay>();
-                modInfoDisplay.Init(info);
-                _displays.Add(modInfoDisplay);
+            StartCoroutine(fadeOutModCards());
+        }
 
-                index++;
-                if (index >= 9)
-                {
-                    wait = 0.1f;
-                }
+        private IEnumerator fadeOutModCards()
+        {
+            bool hasToWait = true;
+            foreach (ModInfoCard card in _cards)
+            {
+                if (card.IsOffScreen()) hasToWait = false; // fade out only first couple of entries as they're the first thing the use sees
+
+                if (hasToWait) yield return new WaitForSecondsRealtime(0.05f);
+
+                card.FadeOut();
             }
             yield break;
         }
 
         internal void LoadDownloadPage()
         {
-            _displays.Clear();
-            TransformUtils.DestroyAllChildren(_modInfoEntriesContainer);
+            _cards.Clear();
+            TransformUtils.DestroyAllChildren(_container);
+
+            _searchField.interactable = false;
+            _searchField.text = string.Empty;
+
             ModBotUIRoot.Instance.LoadingBar.SetActive("Loading mods", 0f);
-            ModsDownloadManager.GetModInfos(OnGotModInfos);
+            ModsDownloadManager.GetModInfos(onGotModInfos, onReqestProgress);
         }
 
-        internal void OnGotModInfos(ModsDownloadManager.GetModInfosResult getModInfosResult)
+        private void onReqestProgress(ModsDownloadManager.GetModInfosProgress progress)
         {
+            if (!base.gameObject.activeInHierarchy) return;
+
+            float totalProgress = (progress.GettingSpecialData ? 0.5f : 0f) + (progress.Progress * 0.5f);
+            ModBotUIRoot.Instance.LoadingBar.SetProgress(totalProgress);
+        }
+
+        private void onGotModInfos(ModsDownloadManager.GetModInfosResult getModInfosResult)
+        {
+            _searchField.interactable = true;
+
             if (getModInfosResult.HasFailed())
             {
                 Hide();
@@ -138,21 +179,49 @@ namespace InternalModBot
             Application.OpenURL("https://modbot.org/modBrowsing.html");
         }
 
-        public void OpenInformationWindow(ModInfo info, Dictionary<string, JToken> specialData, Texture previewImage)
+        internal void OpenInformationWindow(ModInfo info, ModSpecialData specialData, Texture previewImage)
         {
             _informationWindow.gameObject.SetActive(info != null && specialData != null);
             if (info == null || specialData == null)
             {
+                _viewingModId = null;
                 return;
             }
 
+            _viewingModId = info.UniqueID;
             _modName.text = info.DisplayName;
             _modDescription.text = info.Description;
             _modPreview.texture = previewImage;
-            _modVersion.text = "version " + info.Version + ", " + specialData["Downloads"].ToObject<string>() + " downloads";
+            _modVersion.text = $"VERSION {info.Version}\n{specialData.Downloads} DOWNLOADS";
         }
 
-        private void closeInformationWindow()
+        public void CopyModID()
+        {
+            if (string.IsNullOrEmpty(_viewingModId)) return;
+
+            _copyModIDButton.interactable = false;
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _copyModIDButton.interactable = true;
+            }, 1f);
+
+            GUIUtility.systemCopyBuffer = _viewingModId;
+        }
+
+        public void OpenModPage()
+        {
+            if (string.IsNullOrEmpty(_viewingModId)) return;
+
+            _websiteButton.interactable = false;
+            DelegateScheduler.Instance.Schedule(delegate
+            {
+                _websiteButton.interactable = true;
+            }, 1f);
+
+            Application.OpenURL("https://modbot.org/modPreview.html?modID=" + _viewingModId);
+        }
+
+        public void CloseInformationWindow()
         {
             OpenInformationWindow(null, null, null);
         }

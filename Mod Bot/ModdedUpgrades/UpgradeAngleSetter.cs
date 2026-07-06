@@ -1,26 +1,23 @@
-﻿using System;
+﻿using ModLibrary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using ModLibrary;
 
 namespace InternalModBot
 {
     /// <summary>
     /// Allows for users to set upgrade angles manually while in the game
     /// </summary>
-    public class UpgradeAngleSetter : Singleton<UpgradeAngleSetter>
+    internal class UpgradeAngleSetter : Singleton<UpgradeAngleSetter>
     {
         Dictionary<ModdedUpgradeRepresenter, float> _changedIconAngles;
 
-        GameObject _saveButtonObject = null;
+        GameObject _saveButtonObject;
 
-        internal bool DebugModeEnabled = false;
+        private bool _editMode;
 
         void Start()
         {
@@ -34,19 +31,25 @@ namespace InternalModBot
             _changedIconAngles.Clear();
 
             GlobalEventManager.Instance.RemoveEventListener(GlobalEvents.UpgradeUIOpened, RefreshIconEventTriggers);
+        }
 
-            if (_saveButtonObject != null)
-                Destroy(_saveButtonObject);
+        internal bool IsInEditingMode() => _editMode;
+
+        internal void ToggleEditingMode()
+        {
+            _editMode = !_editMode;
+
+            if (!GameUIRoot.Instance.UpgradeUI.isActiveAndEnabled) return;
+            RefreshIconEventTriggers();
         }
 
         void createSaveButton()
         {
             _saveButtonObject = InternalAssetBundleReferences.ModBot.InstantiateObject("GenerateButton");
             _saveButtonObject.transform.SetParent(GameUIRoot.Instance.UpgradeUI.transform.GetChild(1), false);
-			_saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
+            _saveButtonObject.GetComponent<RectTransform>().localPosition = new Vector3(300f, -25f, 0f);
 
-
-			Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
+            Button saveButton = _saveButtonObject.GetComponentInChildren<Button>();
             saveButton.onClick.AddListener(saveAngleChangesToFile);
 
             saveButton.GetComponentInChildren<LocalizedTextField>().LocalizationID = "upgrade_screen_generate";
@@ -60,20 +63,19 @@ namespace InternalModBot
             List<string> lines = new List<string>();
             foreach (KeyValuePair<ModdedUpgradeRepresenter, float> upgradeAngle in _changedIconAngles)
             {
-                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}f, this); // UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName
+                string item = "UpgradeManager.Instance.SetUpgradeAngle({0}, {1}, {2}f, this, {4}); // Page: {4}, UpgradeName: {3}, UpgradeType: {0}, Level: {1}"; // {0}: UpgradeType, {1}: Level, {2}: Angle, {3}: UpgradeName, {4}: Page index
 
                 string upgradeType = convertUpgradeTypeToString(upgradeAngle.Key.UpgradeType);
                 string level = upgradeAngle.Key.Level.ToString();
                 string angle = upgradeAngle.Value.ToString();
                 string upgradeName = getUpgradeName(upgradeAngle.Key);
 
-                string formatted = string.Format(item, upgradeType, level, angle, upgradeName);
-
+                string formatted = string.Format(item, upgradeType, level, angle, upgradeName, UpgradePagesManager.GetIndexOfCurrentPage());
                 lines.Add(formatted);
             }
 
             File.WriteAllLines(fullFilePath, lines);
-            Process.Start("notepad.exe", fullFilePath);
+            Process.Start(fullFilePath);
         }
 
         static string getUpgradeName(ModdedUpgradeRepresenter upgrade)
@@ -145,7 +147,7 @@ namespace InternalModBot
 
         bool canCurrentlyEditIconAngles()
         {
-            return DebugModeEnabled && UpgradePagesManager.IsCurrentlyShowingModdedUpgrades;
+            return _editMode && UpgradePagesManager.IsCurrentlyShowingModdedUpgrades;
         }
 
         internal void UpdateSaveButtonState()
@@ -160,8 +162,7 @@ namespace InternalModBot
         {
             if (!canCurrentlyEditIconAngles())
             {
-                if (_saveButtonObject != null)
-                    _saveButtonObject.SetActive(false);
+                if (_saveButtonObject) _saveButtonObject.SetActive(false);
 
                 return;
             }
@@ -188,6 +189,5 @@ namespace InternalModBot
                 eventTrigger.triggers.Add(scrollCallback);
             }
         }
-
     }
 }

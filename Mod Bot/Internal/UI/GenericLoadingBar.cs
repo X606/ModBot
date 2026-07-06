@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using ModLibrary;
+using UnityEngine;
 using UnityEngine.UI;
-using ModLibrary;
 
 namespace InternalModBot
 {
@@ -34,7 +34,7 @@ namespace InternalModBot
 
         public void SetProgress(float value)
         {
-            if(_progressBar == null)
+            if (_progressBar == null)
             {
                 return;
             }

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using ModLibrary;
+﻿using ModLibrary;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace InternalModBot
 {
@@ -15,6 +11,11 @@ namespace InternalModBot
     internal class DebugLineDrawingManager : Singleton<DebugLineDrawingManager>
     {
         List<LineInfo> _linesToDraw = new List<LineInfo>();
+
+        private void Start()
+        {
+            StartCoroutine(runAtEndOfFrame());
+        }
 
         /// <summary>
         /// Adds a line to the lines to draw this frame
@@ -27,39 +28,25 @@ namespace InternalModBot
 
         void Update()
         {
-            Camera main = Camera.main;
-            if (main == null)
-            {
-                FirstPersonMover player = CharacterTracker.Instance.GetPlayerRobot();
-                if (player == null)
-                    return;
-
-                main = player.GetPlayerCamera();
-                if (main == null)
-                    return;
-
-            }
-            if (main.GetComponent<DebugLineDrawer>() == null)
-            {
-                main.gameObject.AddComponent<DebugLineDrawer>();
-            }
-            
-            StartCoroutine(runAtEndOfFrame());
+            Camera camera = CameraManager.MainCamera;
+            if (camera && !camera.GetComponent<DebugLineDrawer>()) camera.gameObject.AddComponent<DebugLineDrawer>();
         }
 
         IEnumerator runAtEndOfFrame()
         {
-            yield return new WaitForEndOfFrame();
-
-            for (int i = 0; i < _linesToDraw.Count; i++)
+            while (true)
             {
-                if (_linesToDraw[i].EndTime <= Time.unscaledTime)
+                yield return new WaitForEndOfFrame();
+
+                for (int i = 0; i < _linesToDraw.Count; i++)
                 {
-                    _linesToDraw.RemoveAt(i);
-                    i--;
+                    if (_linesToDraw[i].EndTime <= Time.unscaledTime)
+                    {
+                        _linesToDraw.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
-
         }
 
         class DebugLineDrawer : MonoBehaviour
@@ -75,7 +62,7 @@ namespace InternalModBot
             {
                 GL.Begin(GL.LINES);
 
-                for(int i = 0; i < Instance._linesToDraw.Count; i++)
+                for (int i = 0; i < Instance._linesToDraw.Count; i++)
                 {
                     _lineMaterial.SetPass(0);
 

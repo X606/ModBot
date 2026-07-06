@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ModLibrary;
+﻿using ModLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,17 +39,17 @@ namespace InternalModBot
             moddedObject.GetObject<GameObject>(1).GetComponent<Text>().text = DisplayName;
 
             object loadedBool = OptionsSaver.LoadSetting(owner, SaveID);
-            if(loadedBool != null && loadedBool is bool boolValue)
+            if (loadedBool != null && loadedBool is bool boolValue)
                 toggle.isOn = boolValue;
 
-            if(OnChange != null)
+            if (OnChange != null)
                 OnChange(toggle.isOn);
 
             toggle.onValueChanged.AddListener(delegate (bool value)
             {
                 OptionsSaver.SetSetting(owner, SaveID, value, true);
 
-                if(OnChange != null)
+                if (OnChange != null)
                     OnChange(value);
             });
 

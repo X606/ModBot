@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,7 +60,7 @@ namespace ModLibrary
             });
 
             KeyCode? selectedKeyCode = null;
-            foreach(KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
+            foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))
             {
                 if (Input.GetKeyDown(keyCode))
                 {
@@ -73,7 +69,7 @@ namespace ModLibrary
                 }
             }
 
-            if(!selectedKeyCode.HasValue)
+            if (!selectedKeyCode.HasValue)
             {
                 SelectedKey = SelectedKey;
                 yield break;

@@ -46,7 +46,7 @@ namespace InternalModBot
         public override int GetHashCode()
         {
             int hashCode = base.GetHashCode();
-            
+
             hashCode ^= (hashCode * -1521134295) + (IndexTypes?.Length ?? 0);
             if (IndexTypes != null)
             {
