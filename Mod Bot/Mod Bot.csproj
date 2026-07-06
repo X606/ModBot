@@ -58,7 +58,6 @@
     <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
     <Compile Include="Internal\Patches\EnemyNameTag_Patch.cs" />
     <Compile Include="Internal\Patches\MultiplayerPlayerInfoState_Patch.cs" />
-    <Compile Include="Internal\Patches\ResourceRequest_Patch.cs" />
     <Compile Include="Internal\Patches\Resources_Patch.cs" />
     <Compile Include="Internal\OverrideResourceManager.cs" />
     <Compile Include="ModHandling\Downloading\ModSpecialData.cs" />
