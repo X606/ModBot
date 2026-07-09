@@ -26,6 +26,7 @@ namespace InternalModBot
             if (s_hasPopulatedSettingDictionary) return;
             s_hasPopulatedSettingDictionary = true;
 
+            if (!File.Exists(_settingsFilePath)) return;
             string json = File.ReadAllText(_settingsFilePath);
 
             object deserializedObject = JsonConvert.DeserializeObject(json);

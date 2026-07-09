@@ -24,8 +24,8 @@ namespace InternalModBot
             stopwatch.Start();
 
             // disable unity analytics to fix possible unity crash
-            AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
-            UnityEngine.Analytics.Analytics.enabled = false;
+            /*AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
+            UnityEngine.Analytics.Analytics.enabled = false;*/
 
             ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
