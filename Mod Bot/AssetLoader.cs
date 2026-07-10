@@ -1,4 +1,5 @@
 ﻿using InternalModBot;
+using System.IO;
 using UnityEngine;
 
 namespace ModLibrary
@@ -19,7 +20,7 @@ namespace ModLibrary
         /// <returns></returns>
         public static string GetModsFolderDirectory()
         {
-            return InternalUtils.GetSubdomain(Application.dataPath) + MODS_FOLDER_NAME;
+            return Path.Combine(InternalUtils.GetSubdomain(Application.dataPath), MODS_FOLDER_NAME);
         }
 
         static AssetBundleInfo getAssetBundle(string name, string pathFromDataPath = MODS_FOLDER_NAME)

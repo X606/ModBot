@@ -17,8 +17,19 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
-            if (!Directory.Exists(AssetLoader.GetModsFolderDirectory())) // If the mods folder does not exist, something probably went wrong during installation
-                throw new DirectoryNotFoundException("Mods folder not found!");
+            // If the mods folder does not exist, something probably went wrong during installation, but try creating it anyway
+            string modsDirectory = AssetLoader.GetModsFolderDirectory();
+            if (!Directory.Exists(modsDirectory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(modsDirectory);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Can't create mods folder at: " + modsDirectory, e);
+                }
+            }
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
