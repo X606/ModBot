@@ -38,10 +38,11 @@ namespace InternalModBot
             /*AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
             UnityEngine.Analytics.Analytics.enabled = false;*/
 
+            ModBotUnloader.AddQuitHandler();
             ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
-            OptionsSaver.PopulateSettingDictionary();
             ModBotPrefs.Initialize();
+            OptionsSaver.PopulateSettingDictionary();
 
             GameObject modBotManagers = new GameObject("ModBotManagers");
             modBotManagers.AddComponent<ModsManager>();                       // Handles mods
@@ -61,7 +62,7 @@ namespace InternalModBot
 
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
-                initilizeUI(); // Initialize all custom UI
+                initializeUi(); // Initialize all custom UI
 
                 ModsManager.Instance.Initialize(); // Loads all mods in the mods folder
             }
@@ -80,7 +81,7 @@ namespace InternalModBot
             debug.Log("Initialized Mod-Bot in " + stopwatch.Elapsed.TotalSeconds + " seconds");
         }
 
-        static void initilizeUI()
+        static void initializeUi()
         {
             GameObject spawnedUI = InternalAssetBundleReferences.ModBot.InstantiateObject("Canvas");
             ModBotUIRoot modBotUIRoot = spawnedUI.AddComponent<ModBotUIRoot>();

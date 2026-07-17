@@ -6,14 +6,36 @@ using UnityEngine.SceneManagement;
 namespace InternalModBot
 {
     // temp workaround for weird unity crashes on exit
-    // idk why, but it seems that asset bundles cause this for some reason
-    // setting the right unity version, re-saving prefabs didn't help
-    // triggered by ModsManager
-
+    // unity 6 is sensitive to any loaded assemblies that weren't bundled with the game
     internal class ModBotUnloader : MonoBehaviour
     {
+        private static bool s_hasAddedQuitHandler;
+
+        private static bool s_isUnloadingGame;
+
+        public static void AddQuitHandler()
+        {
+            if (s_hasAddedQuitHandler) return;
+
+            Application.wantsToQuit += wantToQuit;
+
+            s_hasAddedQuitHandler = true;
+        }
+
+        private static bool wantToQuit()
+        {
+            if (IsUnloadingGame()) // just for the case if the game doesn't unload for some reason, it should still be possible to close the game normally
+            {
+                return true;
+            }
+
+            new GameObject().AddComponent<ModBotUnloader>();
+            return false;
+        }
+
         private void Awake()
         {
+            s_isUnloadingGame = true;
             DontDestroyOnLoad(gameObject);
             StartCoroutine(unloadSceneThenQuit());
         }
@@ -27,5 +49,7 @@ namespace InternalModBot
             Process.GetCurrentProcess().Kill();
             yield break;
         }
+
+        public static bool IsUnloadingGame() => s_isUnloadingGame;
     }
 }

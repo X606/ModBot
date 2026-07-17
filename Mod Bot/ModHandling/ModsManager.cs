@@ -64,12 +64,6 @@ namespace InternalModBot
             ThreadedDelegateScheduler.Update();
         }
 
-        private void OnApplicationQuit()
-        {
-            Application.CancelQuit();
-            new GameObject().AddComponent<ModBotUnloader>();
-        }
-
         /// <summary>
         /// Reloads all loaded mods
         /// </summary>

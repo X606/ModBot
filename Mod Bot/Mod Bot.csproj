@@ -55,6 +55,7 @@
     <Compile Include="Internal\Patches\ErrorWindow_Patch.cs" />
     <Compile Include="Internal\Patches\ModBotWebsiteAPI_API_Patch.cs" />
     <Compile Include="Internal\Patches\SettingsMenu_Patch.cs" />
+    <Compile Include="Internal\Patches\TileHandlerHelper_Patch.cs" />
     <Compile Include="Internal\Patches\UpgradeDescription_Patch.cs" />
     <Compile Include="Internal\Patches\EnemyNameTag_Patch.cs" />
     <Compile Include="Internal\Patches\MultiplayerPlayerInfoState_Patch.cs" />
