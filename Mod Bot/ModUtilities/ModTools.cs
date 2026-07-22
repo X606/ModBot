@@ -279,9 +279,9 @@ namespace ModLibrary
         /// <summary>
         /// Aborts request if the download progress doesn't change within specified time
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="timeout"></param>
-        /// <param name="abortCallback"></param>
+        /// <param name="request">The request to track</param>
+        /// <param name="timeout">The time in seconds the request will be aborted in if no progress is detected</param>
+        /// <param name="abortCallback">Called when the request is aborted due to timeout</param>
         public static void AbortRequestIfNoProgress(UnityWebRequest request, float timeout, Action abortCallback)
         {
             StaticCoroutineRunner.StartStaticCoroutine(abortRequestIfNoProgress(request, timeout, abortCallback));
@@ -293,8 +293,6 @@ namespace ModLibrary
             float progress = 0f;
             while (!request.isDone)
             {
-                yield return null;
-
                 float currentProgress = request.downloadProgress;
                 if (currentProgress == progress)
                 {
@@ -313,6 +311,8 @@ namespace ModLibrary
                 }
                 progress = currentProgress;
                 timeoutTime = Time.unscaledTime + timeout;
+
+                yield return null;
             }
         }
     }
