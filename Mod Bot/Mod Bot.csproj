@@ -354,7 +354,15 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
+    <PostBuildEvent>echo Compiling Steam build...
+set "managed=built version\Clone Drone in the Danger Zone_Data\Managed\"
+set "modlibraryxml=$(TargetName).xml"
+
+copy /y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
+copy /y "$(TargetDir)/../%25modlibraryxml%25" "$(SolutionDir)%25managed%25%25modlibraryxml%25"
+
+echo Compiling Epic Games build...
+set "managed=built version_epic\Clone Drone in the Danger Zone.exe_Data\Managed\"
 set "modlibraryxml=$(TargetName).xml"
 
 copy /y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"

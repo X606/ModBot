@@ -44,6 +44,8 @@ namespace InternalModBot
             ModBotPrefs.Initialize();
             OptionsSaver.PopulateSettingDictionary();
 
+            UnityEngine.Debug.Log("Initialized Mod-bot and mods settings");
+
             GameObject modBotManagers = new GameObject("ModBotManagers");
             modBotManagers.AddComponent<ModsManager>();                       // Handles mods
             modBotManagers.AddComponent<ModImagesManager>();                  // Gets images of installed mods
@@ -60,6 +62,8 @@ namespace InternalModBot
             modBotManagers.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
             modBotManagers.AddComponent<ModdedTwitchManager>();               // Handles twitch chat messages
 
+            UnityEngine.Debug.Log("Created Mod-bot managers");
+
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
                 initializeUi(); // Initialize all custom UI
@@ -71,6 +75,8 @@ namespace InternalModBot
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
                 ModBotUIRoot.Instance.ConsoleUI.ShowConsole();
             }
+
+            if (!GlobalEventManager.Instance) throw new NullReferenceException("Global event manager not found!");
 
             GlobalEventManager.Instance.AddEventListener<FirstPersonMover>(GlobalEvents.UpgradesRefreshed, afterUpgradesRefreshed);
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, onLevelEditorStarted);
