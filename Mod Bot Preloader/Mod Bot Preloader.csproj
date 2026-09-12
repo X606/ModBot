@@ -69,4 +69,9 @@
     <Error Condition="!Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets'))" />
   </Target>
   <Import Project="..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>set "managed=built version\"
+
+copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

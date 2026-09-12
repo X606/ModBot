@@ -1,49 +1,40 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace Doorstop
 {
     internal static class Entrypoint
     {
-        public static Thread MainThread;
+        /// <summary>
+        /// Minimum amount of loaded assemblies to apply patches
+        /// </summary>
+        private const int MIN_REQUIRED_LOADED_ASSEMBLIES = 100;
 
         public static void Start()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(AppDomain.CurrentDomain.ToString());
+            // todo: add compatibility with other mod loaders that use doorstop (like bepinex)
+            // probably read a file with paths to their .dll files
 
-            try
-            {
-                MainThread = Thread.CurrentThread;
-                Thread initThread = new Thread(WaitForUnityLoad);
-                initThread.Start();
-            }
-            catch (Exception e)
-            {
-                string location = Assembly.GetExecutingAssembly().Location;
-                location = location.Remove(location.LastIndexOf('\\'));
-
-                stringBuilder.AppendLine(location);
-                stringBuilder.AppendLine(e.ToString());
-            }
-            finally
-            {
-                File.WriteAllText("LOG.log", stringBuilder.ToString());
-            }
+            new Thread(WaitForGameInitialization).Start();
         }
 
-        private static void WaitForUnityLoad()
+        /// <summary>
+        /// Waits until specific amount of assemblies is loaded then patches the game
+        /// </summary>
+        private static void WaitForGameInitialization()
         {
             while (true)
             {
                 try
                 {
-                    if (AppDomain.CurrentDomain.GetAssemblies().Length > 100)
+                    if (AppDomain.CurrentDomain.GetAssemblies().Length > MIN_REQUIRED_LOADED_ASSEMBLIES)
                     {
-                        prefix();
+                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(getPathToAssembly("ModLibrary"));
+                        Type type = Assembly.Load(assemblyName).GetType("InternalModBot.ModBotHarmonyInjectionManager");
+                        MethodInfo method = type.GetMethod("TryInject", BindingFlags.Static | BindingFlags.Public);
+                        method.Invoke(null, null);
                         break;
                     }
                 }
@@ -56,49 +47,10 @@ namespace Doorstop
             }
         }
 
-
-        private static void prefix()
-        {
-            new test();
-        }
-
-        internal static Assembly ResolveCurrentDirectory(object sender, ResolveEventArgs args)
-        {
-            AssemblyName assemblyName = new AssemblyName(args.Name);
-            Assembly result;
-            try
-            {
-                string location = Assembly.GetExecutingAssembly().Location;
-                location = location.Remove(location.LastIndexOf('\\'));
-
-                result = Assembly.LoadFile(Path.Combine(location, "Clone Drone in the Danger Zone_Data", "Managed", assemblyName.Name + ".dll"));
-            }
-            catch (Exception)
-            {
-                result = null;
-            }
-            return result;
-        }
-
         private static string getPathToAssembly(string assemblyName)
         {
-            string location = Assembly.GetExecutingAssembly().Location;
-            location = location.Remove(location.LastIndexOf('\\'));
-
-            return Path.Combine(location, "Clone Drone in the Danger Zone_Data", "Managed", assemblyName + ".dll");
-        }
-
-        private class test
-        {
-            public test()
-            {
-                AssemblyName assemblyName = AssemblyName.GetAssemblyName(getPathToAssembly("ModLibrary"));
-                Type type = Assembly.Load(assemblyName).GetType("InternalModBot.ModBotHarmonyInjectionManager");
-                MethodInfo method = type.GetMethod("TryInject", BindingFlags.Static | BindingFlags.Public);
-                method.Invoke(null, null);
-
-                UnityEngine.Debug.Log("Injected Mod-Bot patches!");
-            }
+            string gameDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return Path.Combine(gameDir, "Clone Drone in the Danger Zone_Data", "Managed", assemblyName + ".dll");
         }
     }
 }
