@@ -4493,7 +4493,7 @@
         </member>
         <member name="P:ModLibrary.Properties.Resources.ModBotVersion">
             <summary>
-              Looks up a localized string similar to 2.1.0.1.
+              Looks up a localized string similar to 2.1.1.0.
             </summary>
         </member>
         <member name="M:InternalModBot.Resources_Load_Patch.TargetMethod">
