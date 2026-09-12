@@ -4220,9 +4220,9 @@
             <summary>
             Aborts request if the download progress doesn't change within specified time
             </summary>
-            <param name="request"></param>
-            <param name="timeout"></param>
-            <param name="abortCallback"></param>
+            <param name="request">The request to track</param>
+            <param name="timeout">The time in seconds the request will be aborted in if no progress is detected</param>
+            <param name="abortCallback">Called when the request is aborted due to timeout</param>
         </member>
         <member name="T:ModLibrary.ModBotUserIdentifier">
             <summary>

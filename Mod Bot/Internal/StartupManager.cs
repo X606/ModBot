@@ -17,7 +17,7 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
-            // If the mods folder does not exist, something probably went wrong during installation, but try creating it anyway
+            // Make sure the mods folder does exist
             string modsDirectory = AssetLoader.GetModsFolderDirectory();
             if (!Directory.Exists(modsDirectory))
             {
@@ -34,12 +34,7 @@ namespace InternalModBot
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // disable unity analytics to fix possible unity crash
-            /*AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
-            UnityEngine.Analytics.Analytics.enabled = false;*/
-
             ModBotUnloader.AddQuitHandler();
-            ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
             ModBotPrefs.Initialize();
             OptionsSaver.PopulateSettingDictionary();
