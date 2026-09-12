@@ -16,22 +16,14 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\HD Steam\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -70,8 +62,12 @@
   </Target>
   <Import Project="..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>set "managed=built version\"
+    <PostBuildEvent>echo Compiling Steam build...
+set "managed=built version\dz_steam\"
+copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
 
+echo Compiling EGS build...
+set "managed=built version\dz_epic\"
 copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
