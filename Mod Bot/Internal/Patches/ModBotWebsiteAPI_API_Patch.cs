@@ -19,21 +19,23 @@ namespace InternalModBot
 
         static IEnumerator sendRequestCoroutine1(string url, string data, Action<string> callback, string sessionId)
         {
-            UnityWebRequest webRequest = new UnityWebRequest(url)
+            using (UnityWebRequest webRequest = new UnityWebRequest(url)
             {
                 uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(data)),
                 downloadHandler = new DownloadHandlerBuffer(),
                 method = "POST"
-            };
+            })
+            {
+                webRequest.timeout = 20;
 
-            if (sessionId != null) webRequest.SetRequestHeader("Cookie", "SessionID=" + sessionId);
+                if (sessionId != null) webRequest.SetRequestHeader("Cookie", "SessionID=" + sessionId);
 
-            yield return webRequest.SendWebRequest();
+                yield return webRequest.SendWebRequest();
 
-            if (webRequest.result != UnityWebRequest.Result.Success) yield break;
+                if (webRequest.result != UnityWebRequest.Result.Success) yield break;
 
-            callback(webRequest.downloadHandler.text);
-            webRequest.Dispose();
+                callback(webRequest.downloadHandler.text);
+            }
             yield break;
         }
 
@@ -46,21 +48,23 @@ namespace InternalModBot
 
         static IEnumerator sendRequestCoroutine2(string url, string data, Action<JsonObject> callback, string sessionId)
         {
-            UnityWebRequest webRequest = new UnityWebRequest(url)
+            using (UnityWebRequest webRequest = new UnityWebRequest(url)
             {
                 uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(data)),
                 downloadHandler = new DownloadHandlerBuffer(),
                 method = "POST"
-            };
+            })
+            {
+                webRequest.timeout = 20;
 
-            if (sessionId != null) webRequest.SetRequestHeader("Cookie", "SessionID=" + sessionId);
+                if (sessionId != null) webRequest.SetRequestHeader("Cookie", "SessionID=" + sessionId);
 
-            yield return webRequest.SendWebRequest();
+                yield return webRequest.SendWebRequest();
 
-            if (webRequest.result != UnityWebRequest.Result.Success) yield break;
+                if (webRequest.result != UnityWebRequest.Result.Success) yield break;
 
-            callback(new JsonObject(webRequest.downloadHandler.text));
-            webRequest.Dispose();
+                callback(new JsonObject(webRequest.downloadHandler.text));
+            }
             yield break;
         }
     }

@@ -4743,12 +4743,12 @@
         </member>
         <member name="T:InternalModBot.ModBotHarmonyInjectionManager">
             <summary>
-            Handles all of Mod-Bots runtils patching
+            Handles all Mod-Bot injections
             </summary>
         </member>
         <member name="M:InternalModBot.ModBotHarmonyInjectionManager.TryInject">
             <summary>
-            Injects all patches if it is not already done
+            Injects all patches. Called from preloader
             </summary>
         </member>
         <member name="T:InternalModBot.ModBotPrefs">
