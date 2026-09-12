@@ -12,6 +12,12 @@ namespace Doorstop
         /// </summary>
         private const int MIN_REQUIRED_LOADED_ASSEMBLIES = 100;
 
+        private const string GAME_DATA_DIRECTORY_NAME = "Clone Drone in the Danger Zone_Data";
+
+        private const string MODBOT_INJECTION_MANAGER_NAME = "InternalModBot.ModBotHarmonyInjectionManager";
+
+        private const string MODBOT_TRY_INJECT_NAME = "TryInject";
+
         public static void Start()
         {
             // todo: add compatibility with other mod loaders that use doorstop (like bepinex)
@@ -31,10 +37,17 @@ namespace Doorstop
                 {
                     if (AppDomain.CurrentDomain.GetAssemblies().Length > MIN_REQUIRED_LOADED_ASSEMBLIES)
                     {
-                        AssemblyName assemblyName = AssemblyName.GetAssemblyName(getPathToAssembly("ModLibrary"));
-                        Type type = Assembly.Load(assemblyName).GetType("InternalModBot.ModBotHarmonyInjectionManager");
-                        MethodInfo method = type.GetMethod("TryInject", BindingFlags.Static | BindingFlags.Public);
+                        Assembly assembly = Assembly.Load(AssemblyName.GetAssemblyName(getPathToAssembly("ModLibrary.dll")));
+                        if (assembly == null) throw new Exception("Mod-Bot assembly not found!");
+
+                        Type type = assembly.GetType(MODBOT_INJECTION_MANAGER_NAME);
+                        if(type == null) throw new Exception("Injection manager not found!");
+
+                        MethodInfo method = type.GetMethod(MODBOT_TRY_INJECT_NAME, BindingFlags.Static | BindingFlags.Public);
+                        if (method == null) throw new Exception("Injection method not found!");
+
                         method.Invoke(null, null);
+
                         break;
                     }
                 }
@@ -47,10 +60,10 @@ namespace Doorstop
             }
         }
 
-        private static string getPathToAssembly(string assemblyName)
+        private static string getPathToAssembly(string assemblyFileName)
         {
             string gameDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return Path.Combine(gameDir, "Clone Drone in the Danger Zone_Data", "Managed", assemblyName + ".dll");
+            return Path.Combine(gameDir, GAME_DATA_DIRECTORY_NAME, "Managed", assemblyFileName);
         }
     }
 }
