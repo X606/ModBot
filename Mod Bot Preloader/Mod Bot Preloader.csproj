@@ -26,20 +26,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\UsedDlls\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\UsedDlls\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\UsedDlls\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="0Harmony" />
@@ -62,12 +51,8 @@
   </Target>
   <Import Project="..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets" Condition="Exists('..\packages\Krafs.Publicizer.2.3.0\build\Krafs.Publicizer.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>echo Compiling Steam build...
-set "managed=built version\dz_steam\"
-copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"
-
-echo Compiling EGS build...
-set "managed=built version\dz_epic\"
+    <PostBuildEvent>echo Compiling preloader...
+set "managed=built version\modbot_dz\ModBot\"
 copy /Y "$(TargetPath)" "$(SolutionDir)%25managed%25$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
