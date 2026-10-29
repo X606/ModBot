@@ -30,23 +30,30 @@ namespace Doorstop
             // load additional Doorstop assembly
             if (File.Exists(iniFilePath) && tryParseAdditionalAssemblyPath(iniFilePath, out string additionalAssemblyPath))
             {
-                string additionalPath = Path.Combine(gameFolder, additionalAssemblyPath);
-                if (File.Exists(additionalPath))
+                try
                 {
-                    Assembly assembly = Assembly.LoadFile(additionalPath);
-                    if (assembly != null)
+                    string additionalPath = Path.Combine(gameFolder, additionalAssemblyPath);
+                    if (File.Exists(additionalPath))
                     {
-                        Type type = assembly.GetType("Doorstop.Entrypoint");
-                        if (type != null)
+                        Assembly assembly = Assembly.LoadFile(additionalPath);
+                        if (assembly != null)
                         {
-                            MethodInfo method = type.GetMethod("Start", BindingFlags.Static | BindingFlags.Public);
-                            if (method != null)
+                            Type type = assembly.GetType("Doorstop.Entrypoint");
+                            if (type != null)
                             {
-                                Environment.SetEnvironmentVariable("DOORSTOP_INVOKE_DLL_PATH", additionalPath);
-                                method.Invoke(null, null);
+                                MethodInfo method = type.GetMethod("Start", BindingFlags.Static | BindingFlags.Public);
+                                if (method != null)
+                                {
+                                    Environment.SetEnvironmentVariable("DOORSTOP_INVOKE_DLL_PATH", additionalPath);
+                                    method.Invoke(null, null);
+                                }
                             }
                         }
                     }
+                }
+                catch(Exception exc)
+                {
+                    logCrash(exc);
                 }
             }
 
