@@ -17,6 +17,12 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
+            if (ModsManager.Instance)
+            {
+                UnityEngine.Debug.Log("Attempted to call OnStartUp when Mod-Bot is already initialized!");
+                return;
+            }
+
             // Make sure the mods folder does exist
             string modsDirectory = AssetLoader.GetModsFolderDirectory();
             if (!Directory.Exists(modsDirectory))

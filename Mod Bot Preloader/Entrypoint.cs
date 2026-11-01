@@ -11,11 +11,11 @@ namespace Doorstop
         /// <summary>
         /// Minimum amount of loaded assemblies to apply patches
         /// </summary>
-        private const int MIN_REQUIRED_LOADED_ASSEMBLIES = 100;
+        private const int MIN_REQUIRED_LOADED_ASSEMBLIES = 50;
 
         private const string MODBOT_INI_FILE = "modbot.ini";
 
-        private const string ADDTIONAL_TARGET_ASSEMBLY_VAR = "additional_target_assembly=";
+        private const string ADDITIONAL_TARGET_ASSEMBLY_VAR = "additional_target_assembly=";
 
         private const string MODBOT_INJECTION_MANAGER_NAME = "InternalModBot.ModBotHarmonyInjectionManager";
 
@@ -27,8 +27,8 @@ namespace Doorstop
             string gameFolder = Path.GetDirectoryName(modbotFolder);
             string iniFilePath = Path.Combine(gameFolder, MODBOT_INI_FILE);
 
-            // load additional Doorstop assembly
-            if (File.Exists(iniFilePath) && tryParseAdditionalAssemblyPath(iniFilePath, out string additionalAssemblyPath))
+            // load additional Doorstop assembly that is not Mod-Bot
+            if (File.Exists(iniFilePath) && tryParseAdditionalAssemblyPath(iniFilePath, out string additionalAssemblyPath) && !additionalAssemblyPath.EndsWith("ModLibrary.Preloader.dll"))
             {
                 try
                 {
@@ -51,7 +51,7 @@ namespace Doorstop
                         }
                     }
                 }
-                catch(Exception exc)
+                catch (Exception exc)
                 {
                     logCrash(exc);
                 }
@@ -91,7 +91,7 @@ namespace Doorstop
                     logCrash(exc);
                     break;
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(50);
             }
         }
 
@@ -107,9 +107,9 @@ namespace Doorstop
                     string line;
                     while ((line = streamReader.ReadLine()) != null)
                     {
-                        if (line.StartsWith(ADDTIONAL_TARGET_ASSEMBLY_VAR))
+                        if (line.StartsWith(ADDITIONAL_TARGET_ASSEMBLY_VAR))
                         {
-                            path = line.Substring(ADDTIONAL_TARGET_ASSEMBLY_VAR.Length);
+                            path = line.Substring(ADDITIONAL_TARGET_ASSEMBLY_VAR.Length).Trim(' ', '\\', '/');
                             break;
                         }
                     }

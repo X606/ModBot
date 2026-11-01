@@ -126,7 +126,7 @@ namespace InternalModBot
             if (modInfo == null)
                 return;
 
-            upgradeDescription.SetAngleOffset(newAngle, modInfo.ModReference);
+            upgradeDescription.SetAngleOffset(newAngle, modInfo.ModReference, UpgradePagesManager.GetIndexOfCurrentPage());
         }
 
         void updateIcon(UpgradeUIIcon icon, BaseEventData eventData)
