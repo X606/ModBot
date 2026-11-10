@@ -4,6 +4,17 @@ namespace InternalModBot
 {
     internal static class InternalAssetBundleReferences
     {
-        internal static AssetBundleInfo ModBot => AssetLoader.GetAssetBundle("modbot", "Clone Drone in the Danger Zone_Data/");
+        private static AssetBundleInfo _modbotBundle;
+        internal static AssetBundleInfo ModBot
+        {
+            get
+            {
+                if (_modbotBundle == null)
+                {
+                    _modbotBundle = AssetLoader.GetAssetBundle("modbot", "ModBot/");
+                }
+                return _modbotBundle;
+            }
+        }
     }
 }

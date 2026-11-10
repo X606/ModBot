@@ -1,22 +1,30 @@
 ﻿using HarmonyLib;
-using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace InternalModBot
 {
     /// <summary>
-    /// Handles all of Mod-Bots runtils patching
+    /// Handles all Mod-Bot injections
     /// </summary>
-    internal static class ModBotHarmonyInjectionManager
+    public static class ModBotHarmonyInjectionManager
     {
         /// <summary>
-        /// Injects all patches if it is not already done
+        /// Injects all patches. Called from preloader
         /// </summary>
         public static void TryInject()
         {
-            Harmony harmony = new Harmony("com.Mod-Bot.Internal");
-            if (!harmony.GetPatchedMethods().Any())
+            try
+            {
+                Harmony harmony = new Harmony("com.Mod-Bot.Internal");
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
+            }
+            catch (System.Exception exc)
+            {
+                throw new System.Exception("Failed to inject Mod-Bot patches", exc); // throw exception so preloader can catch it and write to CRASH.log file
+            }
+
+            Debug.Log("Successfully injected Mod-Bot patches!");
         }
     }
 }

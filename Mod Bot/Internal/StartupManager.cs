@@ -17,7 +17,13 @@ namespace InternalModBot
         /// </summary>
         public static void OnStartUp()
         {
-            // If the mods folder does not exist, something probably went wrong during installation, but try creating it anyway
+            if (ModsManager.Instance)
+            {
+                UnityEngine.Debug.Log("Attempted to call OnStartUp when Mod-Bot is already initialized!");
+                return;
+            }
+
+            // Make sure the mods folder does exist
             string modsDirectory = AssetLoader.GetModsFolderDirectory();
             if (!Directory.Exists(modsDirectory))
             {
@@ -34,15 +40,12 @@ namespace InternalModBot
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            // disable unity analytics to fix possible unity crash
-            /*AnalyticsManager.Instance.SendDataToUnityAnalytics = false;
-            UnityEngine.Analytics.Analytics.enabled = false;*/
-
             ModBotUnloader.AddQuitHandler();
-            ModBotHarmonyInjectionManager.TryInject();
             CustomLevelEditorManager.Initialize();
             ModBotPrefs.Initialize();
             OptionsSaver.PopulateSettingDictionary();
+
+            UnityEngine.Debug.Log("Initialized Mod-bot and mods settings");
 
             GameObject modBotManagers = new GameObject("ModBotManagers");
             modBotManagers.AddComponent<ModsManager>();                       // Handles mods
@@ -60,6 +63,8 @@ namespace InternalModBot
             modBotManagers.AddComponent<MultiplayerPlayerNameManager>();      // Handles custom player tags and name overrides in multiplayer
             modBotManagers.AddComponent<ModdedTwitchManager>();               // Handles twitch chat messages
 
+            UnityEngine.Debug.Log("Created Mod-bot managers");
+
             try // If an exception is thrown here, the crash screen wont appear, so we have to implement our own
             {
                 initializeUi(); // Initialize all custom UI
@@ -71,6 +76,8 @@ namespace InternalModBot
                 debug.Log(e.Message + "\n" + e.StackTrace, Color.red);
                 ModBotUIRoot.Instance.ConsoleUI.ShowConsole();
             }
+
+            if (!GlobalEventManager.Instance) throw new NullReferenceException("Global event manager not found!");
 
             GlobalEventManager.Instance.AddEventListener<FirstPersonMover>(GlobalEvents.UpgradesRefreshed, afterUpgradesRefreshed);
             GlobalEventManager.Instance.AddEventListener(GlobalEvents.LevelEditorStarted, onLevelEditorStarted);
