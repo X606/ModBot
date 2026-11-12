@@ -1,0 +1,1 @@
+If you're installing Mod-Bot manually, specify THIS folder as the beta location (NOT "modbot_dz" or "libs" folders)
